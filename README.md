@@ -1,5 +1,16 @@
 # Genesis-Plaza SDK7
 
+NOTICE!
+
+Code that has been commented out and needs revisiting should be tagged with 
+
+```
+/*
+//TODO TAG:PORT-REIMPLEMENT-ME
+code block to be revistied here
+*/
+```
+
 _A few screenshots of Genesis Plaza._
 
 ![screenshots](https://github.com/decentraland-scenes/Genesis-Plaza/blob/master/screenshots/genesis-plaza-final.jpg)
