@@ -43,7 +43,7 @@ export function placeJukeBox() {
   musicStreamEntityRef.playing = false
 
   GltfContainer.create(baseJukeBox, {
-    src: 'models/Jukebox_Base.glb'
+    src: 'models/core_building/jukebox/Jukebox_Base.glb'
   })
 
   Transform.create(baseJukeBox, {
@@ -53,7 +53,7 @@ export function placeJukeBox() {
   })
 
   GltfContainer.create(baseJukeBoxLights1,{
-    src:'models/Lights_01.glb',
+    src:'models/core_building/jukebox/Lights_01.glb'
   })
   VisibilityComponent.create(baseJukeBoxLights1, {visible: false})
 
@@ -62,7 +62,7 @@ export function placeJukeBox() {
   })
 
   GltfContainer.create(baseJukeBoxLights2,{
-    src:'models/Lights_02.glb',
+    src:'models/core_building/jukebox/Lights_02.glb',
   })
   VisibilityComponent.create(baseJukeBoxLights2, {visible: false})
 
@@ -92,7 +92,7 @@ export function placeJukeBox() {
   
 
   let onButton =  new JukeboxButton(
-    'models/Button_On.glb', 
+    'models/core_building/jukebox/Button_On.glb', 
     'Button_On',
     () => {
       let musicState = barMusicStream && barMusicStream.playing
@@ -104,7 +104,7 @@ export function placeJukeBox() {
   )
 
   let nextButton = new JukeboxButton(
-    'models/ButtonForward.glb', 
+    'models/core_building/jukebox/ButtonForward.glb', 
     'Button_Forward',
     () => {
       barCurrentRadioIndex += 1
@@ -121,7 +121,7 @@ export function placeJukeBox() {
   )
 
   let prewiousButton = new JukeboxButton(
-    'models/Button_Previous.glb',
+    'models/core_building/jukebox/Button_Previous.glb',
     'Button_Preview',
     () => {
       barCurrentRadioIndex -= 1
