@@ -1,9 +1,10 @@
-/*import { sceneMessageBus } from '../serverHandler'
-import { OctoComments, octopus } from './barNPCs'
-import { tutorialRunning } from 'src/lobby/portalBeam'*/
+//import { OctoComments, octopus } from './barNPCs'
 import { Animator, AudioSource, AudioStream, Entity, GltfContainer, InputAction, Material, MeshRenderer, TextShape, Transform, VisibilityComponent, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
-import * as utils from '@dcl/ecs-scene-utils'
+import * as utils from '@dcl-sdk/utils'
+import { sceneMessageBus } from '../serverHandler'
+import { tutorialRunning } from '../../lobby/portalBeam'
+
 
 export enum Radios {
   RAVE = 'https://icecast.ravepartyradio.org/ravepartyradio-192.mp3',
@@ -24,7 +25,8 @@ let radioIsOn: boolean = true
 
 
 
-export let barMusicStream: AudioStream 
+export let barMusicStream: AudioStream
+
 const barMusicStreamEnt = engine.addEntity()
 
 
@@ -71,7 +73,6 @@ export function placeJukeBox() {
   })
 
 
-  //Text
   let JukeboxScreen = engine.addEntity()
   let JukeBoxText = engine.addEntity()
 
@@ -96,9 +97,9 @@ export function placeJukeBox() {
     'Button_On',
     () => {
       let musicState = barMusicStream && barMusicStream.playing
-      /*sceneMessageBus.emit('BarRadioToggle', {
+      sceneMessageBus.emit('BarRadioToggle', {
         state: !musicState,
-      })*/
+      })
     },
     'On/Off'
   )
@@ -112,9 +113,9 @@ export function placeJukeBox() {
       TextShape.getMutable(JukeBoxText).text = 'Radio:\n' + getRadioName(barCurrentRadioIndex)
 
       if (barMusicStream && barMusicStream.playing) {
-        /*sceneMessageBus.emit('setBarRadio', {
+        sceneMessageBus.emit('setBarRadio', {
           index: barCurrentRadioIndex,
-        })*/
+        })
       }
     },
     'Next'
@@ -129,15 +130,15 @@ export function placeJukeBox() {
       TextShape.getMutable(JukeBoxText).text = 'Radio:\n' + getRadioName(barCurrentRadioIndex)
 
       if (barMusicStream && barMusicStream.playing) {
-        /*sceneMessageBus.emit('setBarRadio', {
+        sceneMessageBus.emit('setBarRadio', {
           index: barCurrentRadioIndex,
-        })*/
+        })
       }
     },
     'Previous'
   )
 
-  /*sceneMessageBus.on('BarRadioToggle', (e) => {
+  sceneMessageBus.on('BarRadioToggle', (e) => {
     if (barMusicStream && e.state === barMusicStream.playing) return
     if (e.state) {
       barRadioOn()
@@ -149,9 +150,8 @@ export function placeJukeBox() {
   })
 
   sceneMessageBus.on('setBarRadio', (e) => {
-    // update display
 
-    let newRadio: Radios
+    let newRadio: Radios | null
     switch (e.index) {
       case 0:
         newRadio = Radios.RAVE
@@ -197,7 +197,7 @@ export function placeJukeBox() {
     sceneMessageBus.emit('setBarRadio', {
       index: barCurrentRadioIndex,
     })
-  })*/
+  })
 }
 
 export class JukeboxButton {
@@ -256,10 +256,10 @@ export class JukeboxButton {
 }
 
 function barRadioOn(station?: Radios) {
-  //if (tutorialRunning) return
+  if (tutorialRunning) return
   if (isInBar) {
-    new utils.Delay(100, () => {
-      
+    //utils.timers.clearTimeout(10)
+    utils.timers.setTimeout(() =>{
       barMusicStream.volume = FullVolume
 
       AudioStream.getMutable(barMusicStreamEnt)
@@ -267,7 +267,9 @@ function barRadioOn(station?: Radios) {
 
       VisibilityComponent.getMutable(baseJukeBoxLights1).visible = true
       VisibilityComponent.getMutable(baseJukeBoxLights2).visible = true
-    })
+    },
+    100
+    )
   }
   radioIsOn = true
 }
@@ -281,10 +283,10 @@ function barRadioOff() {
 }
 
 export function setBarMusicOn() {
-  /*if (tutorialRunning) return
+  if (tutorialRunning) return
   sceneMessageBus.emit('enteredRadioRange', {
     radio: barCurrentRadioIndex,
-  })*/
+  })
   isInBar = true
   if (barMusicStream) {
     barMusicStream.volume = FullVolume
@@ -293,8 +295,6 @@ export function setBarMusicOn() {
   if (radioIsOn && barCurrentRadio) {
     barRadioOn(barCurrentRadio)
   }
-
-  //log('triggered!')
 }
 
 export function outOfBar() {
@@ -311,7 +311,7 @@ export function setBarMusicOff() {
 }
 
 export function lowerVolume() {
-  if (isInBar /*|| tutorialRunning*/) return
+  if (isInBar || tutorialRunning) return
 
   if (radioIsOn && barMusicStream && !barMusicStream.playing) {
     barMusicStream.playing = true
@@ -324,7 +324,7 @@ export function lowerVolume() {
 }
 
 export function raiseVolume() {
-  //if (tutorialRunning) return
+  if (tutorialRunning) return
   isInBar = true
   if (radioIsOn && barMusicStream && !barMusicStream.playing) {
     barMusicStream.playing = true
@@ -397,16 +397,19 @@ export function addMicFeedback() {
         audioSrc.volume = 1
         audioSrc.playing = true
 
-        //sceneMessageBus.emit('micFeedback', {})
+        sceneMessageBus.emit('micFeedback', {})
 
-        /*
+        /*  IS USING NPC.ts THAT IT ISN'T BEEN IMPORTED YET
         if (!firstTimeMic) {
           firstTimeMic = true
+          
           octopus.talk(OctoComments, 'mic')
           
-          utils.setTimeout(6000, () => {
+          utils.timers.setTimeout(() => {
             octopus.endInteraction()
-          })
+          },
+          6000
+          )
         }*/
       },
       {
@@ -415,16 +418,13 @@ export function addMicFeedback() {
   )
 
 
-
   Material.setPbrMaterial(mic, {
         texture: Material.Texture.Common({
             src: 'images/transparent-texture.png'
         })
   })
 
-
-
-  /*
+  
   sceneMessageBus.on('micFeedback', (e) => {
     if (!isInBar) return
 
@@ -432,5 +432,5 @@ export function addMicFeedback() {
   
     audioSrc.volume = 0.2
     audioSrc.playing = true
-  })*/
+  })
 }
