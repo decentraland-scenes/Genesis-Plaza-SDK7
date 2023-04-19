@@ -4,6 +4,7 @@ import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import * as utils from '@dcl-sdk/utils'
 import { sceneMessageBus } from '../serverHandler'
 import { tutorialRunning } from '../../lobby/portalBeam'
+import { audioStream } from '../..'
 
 
 export enum Radios {
@@ -25,7 +26,8 @@ let radioIsOn: boolean = true
 
 
 
-export let barMusicStream: AudioStream
+export let barMusicStream = audioStream 
+
 
 const barMusicStreamEnt = engine.addEntity()
 
@@ -151,7 +153,9 @@ export function placeJukeBox() {
 
   sceneMessageBus.on('setBarRadio', (e) => {
 
-    let newRadio: Radios | null
+    let newRadio: Radios
+    //newRadio = Radios.SIGNS
+
     switch (e.index) {
       case 0:
         newRadio = Radios.RAVE
@@ -168,9 +172,9 @@ export function placeJukeBox() {
       case 4:
         newRadio = Radios.SIGNS
         break
-      case null:
+      /*case null:
         newRadio = null
-        break
+        break*/
     }
 
     if (
@@ -181,12 +185,13 @@ export function placeJukeBox() {
       return
     if (barMusicStream) {
       barMusicStream.playing = false
-      barMusicStream = null
+      //barMusicStream = null
     }
     barCurrentRadioIndex = e.index
     barCurrentRadio = newRadio
 
-    JukeBoxText.value = 'Radio:\n' + getRadioName(barCurrentRadioIndex)
+
+    TextShape.getMutable(JukeBoxText).text = 'Radio:\n' + getRadioName(barCurrentRadioIndex)
 
     barRadioOn(barCurrentRadio)
   })
