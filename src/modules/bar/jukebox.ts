@@ -36,9 +36,12 @@ let baseJukeBox = engine.addEntity()
 let baseJukeBoxLights1 = engine.addEntity()
 let baseJukeBoxLights2 = engine.addEntity()
 
+placeJukeBox()
 
 export function placeJukeBox() {
 
+  console.log("jukeBox.ts placeJukeBox has being called")
+  
   AudioStream.create(barMusicStreamEnt, barMusicStream)
   //barMusicStream = new AudioStream(barCurrentRadio)
 
@@ -404,7 +407,8 @@ export function addMicFeedback() {
 
         sceneMessageBus.emit('micFeedback', {})
 
-        /*  IS USING NPC.ts THAT IT ISN'T BEEN IMPORTED YET
+        /*
+        //TODO TAG:PORT-REIMPLEMENT-ME
         if (!firstTimeMic) {
           firstTimeMic = true
           
@@ -421,7 +425,6 @@ export function addMicFeedback() {
         hoverText: 'Use mic',
       }  
   )
-
 
   Material.setPbrMaterial(mic, {
         texture: Material.Texture.Common({
