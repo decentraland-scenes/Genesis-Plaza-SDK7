@@ -18,7 +18,7 @@ export enum Radios {
 let FullVolume = 0.1
 let DistantVolume = 0.03
 
-export let isInBar: boolean = false
+export let isInBar: boolean = true
 let barCurrentRadio: Radios 
 let barCurrentRadioIndex: number = 0
 let radioCount = 4
@@ -264,8 +264,10 @@ export class JukeboxButton {
 function barRadioOn(station?: Radios) {
   if (tutorialRunning) return
   if (isInBar) {
+    console.log("jukebox.ts ButtonOnOf has been pressed")
     utils.timers.clearTimeout(10)
     utils.timers.setTimeout(() =>{
+      console.log("jukebox.ts ButtonOnOf has been pressed, function called with timeOut")
       let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
       audioStreamRef.volume = FullVolume
 
@@ -386,6 +388,7 @@ function getRadioName(radio: number) {
 
 let firstTimeMic: boolean = false
 
+/* TODO TAG:PORT-REIMPLEMENT-ME
 export function addMicFeedback() {
 
   let feedback = engine.addEntity()
@@ -428,7 +431,7 @@ export function addMicFeedback() {
           },
           6000
           )
-        }*/
+        }
       },
       {
         hoverText: 'Use mic',
@@ -451,3 +454,4 @@ export function addMicFeedback() {
     audioSrc.playing = true
   })
 }
+*/
