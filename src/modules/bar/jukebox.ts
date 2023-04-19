@@ -25,17 +25,8 @@ let radioCount = 4
 let radioIsOn: boolean = true
 
 
-declare class AudioStreaming{
-  readonly url: string;
-  playing: boolean;
-  volume: number;
-  constructor(url: string);
-}
 
-export let barMusicStream: AudioStreaming 
-
-
-const barMusicStreamEnt = engine.addEntity()
+const audioStreamEntity = engine.addEntity()
 
 
 let baseJukeBox = engine.addEntity()
@@ -48,10 +39,9 @@ export function placeJukeBox() {
 
   console.log("jukeBox.ts placeJukeBox has being called")
 
-  AudioStream.create(barMusicStreamEnt, barMusicStream)
-  //barMusicStream = new AudioStream(barCurrentRadio)
+  AudioStream.create(audioStreamEntity)
 
-  let musicStreamEntityRef = AudioStream.getMutable(barMusicStreamEnt)
+  let musicStreamEntityRef = AudioStream.getMutable(audioStreamEntity)
   musicStreamEntityRef.volume = FullVolume
   musicStreamEntityRef.playing = false
 
@@ -101,13 +91,13 @@ export function placeJukeBox() {
     text: 'Radio:\nRave Party',
     fontSize: 1
   })
-  
 
   let onButton =  new JukeboxButton(
     'models/core_building/jukebox/Button_On.glb', 
     'Button_On',
     () => {
-      let musicState = barMusicStream && barMusicStream.playing
+      let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
+      let musicState = audioStreamRef && audioStreamRef.playing
       sceneMessageBus.emit('BarRadioToggle', {
         state: !musicState,
       })
@@ -123,7 +113,8 @@ export function placeJukeBox() {
       if (barCurrentRadioIndex > radioCount) barCurrentRadioIndex = 0
       TextShape.getMutable(JukeBoxText).text = 'Radio:\n' + getRadioName(barCurrentRadioIndex)
 
-      if (barMusicStream && barMusicStream.playing) {
+      let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
+      if (audioStreamRef && audioStreamRef.playing) {
         sceneMessageBus.emit('setBarRadio', {
           index: barCurrentRadioIndex,
         })
@@ -140,7 +131,8 @@ export function placeJukeBox() {
       if (barCurrentRadioIndex < 0) barCurrentRadioIndex = radioCount - 1
       TextShape.getMutable(JukeBoxText).text = 'Radio:\n' + getRadioName(barCurrentRadioIndex)
 
-      if (barMusicStream && barMusicStream.playing) {
+      let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
+      if (audioStreamRef && audioStreamRef.playing) {
         sceneMessageBus.emit('setBarRadio', {
           index: barCurrentRadioIndex,
         })
@@ -150,7 +142,8 @@ export function placeJukeBox() {
   )
 
   sceneMessageBus.on('BarRadioToggle', (e) => {
-    if (barMusicStream && e.state === barMusicStream.playing) return
+    let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
+    if (audioStreamRef && e.state === audioStreamRef.playing) return
     if (e.state) {
       barRadioOn()
       radioIsOn = true
@@ -185,14 +178,16 @@ export function placeJukeBox() {
         break
     }
 
+    let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
+
     if (
       barCurrentRadio === newRadio &&
-      barMusicStream &&
-      barMusicStream.playing
+      audioStreamRef &&
+      audioStreamRef.playing
     )
       return
-    if (barMusicStream) {
-      barMusicStream.playing = false
+    if (audioStreamRef) {
+      audioStreamRef.playing = false
       //barMusicStream = null
     }
     barCurrentRadioIndex = e.index
@@ -273,9 +268,10 @@ function barRadioOn(station?: Radios) {
   if (isInBar) {
     utils.timers.clearTimeout(10)
     utils.timers.setTimeout(() =>{
-      barMusicStream.volume = FullVolume
+      let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
+      audioStreamRef.volume = FullVolume
 
-      AudioStream.getMutable(barMusicStreamEnt)
+      AudioStream.getMutable(audioStreamEntity)
       //barMusicStreamEnt.addComponentOrReplace(barMusicStream)
 
       VisibilityComponent.getMutable(baseJukeBoxLights1).visible = true
@@ -288,8 +284,9 @@ function barRadioOn(station?: Radios) {
 }
 
 function barRadioOff() {
-  if (barMusicStream) {
-    barMusicStream.playing = false
+  let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
+  if (audioStreamRef) {
+    audioStreamRef.playing = false
   }
   VisibilityComponent.getMutable(baseJukeBoxLights1).visible = false
   VisibilityComponent.getMutable(baseJukeBoxLights2).visible = false
@@ -297,12 +294,15 @@ function barRadioOff() {
 
 export function setBarMusicOn() {
   if (tutorialRunning) return
+
+  let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
+
   sceneMessageBus.emit('enteredRadioRange', {
     radio: barCurrentRadioIndex,
   })
   isInBar = true
-  if (barMusicStream) {
-    barMusicStream.volume = FullVolume
+  if (audioStreamRef) {
+    audioStreamRef.volume = FullVolume
   }
 
   if (radioIsOn && barCurrentRadio) {
@@ -326,11 +326,12 @@ export function setBarMusicOff() {
 export function lowerVolume() {
   if (isInBar || tutorialRunning) return
 
-  if (radioIsOn && barMusicStream && !barMusicStream.playing) {
-    barMusicStream.playing = true
+  let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
+  if (radioIsOn && audioStreamRef && !audioStreamRef.playing) {
+    audioStreamRef.playing = true
   }
-  if (barMusicStream) {
-    barMusicStream.volume = DistantVolume
+  if (audioStreamRef) {
+    audioStreamRef.volume = DistantVolume
   }
 
   return
@@ -338,20 +339,25 @@ export function lowerVolume() {
 
 export function raiseVolume() {
   if (tutorialRunning) return
+
   isInBar = true
-  if (radioIsOn && barMusicStream && !barMusicStream.playing) {
-    barMusicStream.playing = true
+  let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
+
+  if (radioIsOn && audioStreamRef && !audioStreamRef.playing) {
+    audioStreamRef.playing = true
   }
 
-  if(barMusicStream != null) barMusicStream.volume = FullVolume
+  if(audioStreamRef != null) audioStreamRef.volume = FullVolume
 }
 
 export function setStreamVolume(vol: number) {
   if (!isInBar) return
 
-  if(barMusicStream != null){
-    barMusicStream.playing = true
-    barMusicStream.volume = vol
+  let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
+
+  if(audioStreamRef != null){
+    audioStreamRef.playing = true
+    audioStreamRef.volume = vol
   }
 }
 
