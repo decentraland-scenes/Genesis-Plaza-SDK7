@@ -33,43 +33,41 @@ let baseJukeBox = engine.addEntity()
 let baseJukeBoxLights1 = engine.addEntity()
 let baseJukeBoxLights2 = engine.addEntity()
 
-placeJukeBox()
-
 export function placeJukeBox() {
 
   console.log("jukeBox.ts placeJukeBox has being called")
 
-  AudioStream.create(audioStreamEntity)
+  AudioStream.createOrReplace(audioStreamEntity)
 
   let musicStreamEntityRef = AudioStream.getMutable(audioStreamEntity)
   musicStreamEntityRef.volume = FullVolume
   musicStreamEntityRef.playing = false
 
-  GltfContainer.create(baseJukeBox, {
+  GltfContainer.createOrReplace(baseJukeBox, {
     src: 'models/core_building/jukebox/Jukebox_Base.glb'
   })
 
-  Transform.create(baseJukeBox, {
+  Transform.createOrReplace(baseJukeBox, {
     position: Vector3.create(179, 0, 144),
     rotation: Quaternion.create(0, -45, 0),
     scale: Vector3.create(0.75, 0.75, 0.75),
   })
 
-  GltfContainer.create(baseJukeBoxLights1,{
+  GltfContainer.createOrReplace(baseJukeBoxLights1,{
     src:'models/core_building/jukebox/Lights_01.glb'
   })
-  VisibilityComponent.create(baseJukeBoxLights1, {visible: false})
+  VisibilityComponent.createOrReplace(baseJukeBoxLights1, {visible: false})
 
-  Transform.create(baseJukeBoxLights1, {
+  Transform.createOrReplace(baseJukeBoxLights1, {
     parent: baseJukeBox
   })
 
-  GltfContainer.create(baseJukeBoxLights2,{
+  GltfContainer.createOrReplace(baseJukeBoxLights2,{
     src:'models/core_building/jukebox/Lights_02.glb',
   })
-  VisibilityComponent.create(baseJukeBoxLights2, {visible: false})
+  VisibilityComponent.createOrReplace(baseJukeBoxLights2, {visible: false})
 
-  Transform.create(baseJukeBoxLights1, {
+  Transform.createOrReplace(baseJukeBoxLights1, {
     parent: baseJukeBox
   })
 
@@ -77,17 +75,17 @@ export function placeJukeBox() {
   let JukeboxScreen = engine.addEntity()
   let JukeBoxText = engine.addEntity()
 
-  Transform.create(JukeBoxText, {
+  Transform.createOrReplace(JukeBoxText, {
     parent:JukeboxScreen
   })
   
-  Transform.create(JukeboxScreen, {
+  Transform.createOrReplace(JukeboxScreen, {
     position: Vector3.create(0, 2.55, 0.25),
     rotation: Quaternion.create(0, 180, 0),
     parent:baseJukeBox
   })
 
-  TextShape.create(JukeBoxText,{
+  TextShape.createOrReplace(JukeBoxText,{
     text: 'Radio:\nRave Party',
     fontSize: 1
   })
@@ -216,20 +214,20 @@ export class JukeboxButton {
     let _entity = engine.addEntity()
     this.entity = _entity
 
-    GltfContainer.create(this.entity, {
+    GltfContainer.createOrReplace(this.entity, {
         src: modelUrl
     })
-    Transform.create(this.entity, {
+    Transform.createOrReplace(this.entity, {
         parent:baseJukeBox
     })
     
-    AudioSource.create(this.entity, {
+    AudioSource.createOrReplace(this.entity, {
         audioClipUrl: 'sounds/click.mp3',
         loop: false,
         playing: false,
     })
 
-    Animator.create(this.entity, {
+    Animator.createOrReplace(this.entity, {
         states:[{
             name: animationName,
             clip: animationName,
@@ -393,7 +391,7 @@ export function addMicFeedback() {
   let feedback = engine.addEntity()
   let mic = engine.addEntity()
 
-  Transform.create(mic, {
+  Transform.createOrReplace(mic, {
     position: Vector3.create(160, 2.2, 167.7),
     scale: Vector3.create(0.35, 0.35, 0.35),
   })
@@ -401,7 +399,7 @@ export function addMicFeedback() {
   MeshRenderer.setBox(mic)
 
   
-  AudioSource.create(feedback, {
+  AudioSource.createOrReplace(feedback, {
     audioClipUrl: 'sounds/micFeedback.mp3',
     loop: false,
     playing: true,

@@ -27,6 +27,8 @@ const portalControl = new TeleportController()
 
 export function addCloudLobby(){
 
+  console.log("cloudLobby.ts addCloudLobby has been called")
+
   const menuScale = 1.2
   const center = Vector3.create(lobbyCenter.x, lobbyHeight + 1.5, lobbyCenter.z)
 
