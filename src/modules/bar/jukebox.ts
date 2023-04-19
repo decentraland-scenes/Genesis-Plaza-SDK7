@@ -154,7 +154,7 @@ export function placeJukeBox() {
   sceneMessageBus.on('setBarRadio', (e) => {
 
     let newRadio: Radios
-    //newRadio = Radios.SIGNS
+    newRadio = Radios.SIGNS
 
     switch (e.index) {
       case 0:
