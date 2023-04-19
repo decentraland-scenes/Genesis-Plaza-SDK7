@@ -4,7 +4,7 @@ import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import * as utils from '@dcl-sdk/utils'
 import { sceneMessageBus } from '../serverHandler'
 import { tutorialRunning } from '../../lobby/portalBeam'
-import { audioStream } from '../..'
+
 
 
 export enum Radios {
@@ -25,8 +25,14 @@ let radioCount = 4
 let radioIsOn: boolean = true
 
 
+declare class AudioStreaming{
+  readonly url: string;
+  playing: boolean;
+  volume: number;
+  constructor(url: string);
+}
 
-export let barMusicStream = audioStream 
+export let barMusicStream: AudioStreaming 
 
 
 const barMusicStreamEnt = engine.addEntity()
@@ -41,7 +47,7 @@ placeJukeBox()
 export function placeJukeBox() {
 
   console.log("jukeBox.ts placeJukeBox has being called")
-  
+
   AudioStream.create(barMusicStreamEnt, barMusicStream)
   //barMusicStream = new AudioStream(barCurrentRadio)
 
@@ -157,7 +163,6 @@ export function placeJukeBox() {
   sceneMessageBus.on('setBarRadio', (e) => {
 
     let newRadio: Radios
-    newRadio = Radios.SIGNS
 
     switch (e.index) {
       case 0:
@@ -175,9 +180,9 @@ export function placeJukeBox() {
       case 4:
         newRadio = Radios.SIGNS
         break
-      /*case null:
-        newRadio = null
-        break*/
+      default:
+        newRadio = Radios.DELTA
+        break
     }
 
     if (
@@ -266,7 +271,7 @@ export class JukeboxButton {
 function barRadioOn(station?: Radios) {
   if (tutorialRunning) return
   if (isInBar) {
-    //utils.timers.clearTimeout(10)
+    utils.timers.clearTimeout(10)
     utils.timers.setTimeout(() =>{
       barMusicStream.volume = FullVolume
 
