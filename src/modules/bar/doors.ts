@@ -1,5 +1,5 @@
 //import * as utils from '@dcl/ecs-scene-utils'
-//import { barMusicStream, isInBar } from './jukebox'
+
 import { sceneMessageBus } from '../serverHandler'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { PBGltfContainer, TransformTypeWithOptionals } from '@dcl/sdk/ecs'
