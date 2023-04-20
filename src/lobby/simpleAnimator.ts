@@ -7,10 +7,12 @@ export const AnimatedItem = engine.defineComponent('animated-id', {
     isHighlighted: Schemas.Boolean,
     defaultPosition: Schemas.Vector3 ,
     highlightPosition: Schemas.Vector3 ,
+    defaultScale: Schemas.Vector3 ,
+    highlightScale: Schemas.Vector3 ,
     animFraction:Schemas.Number,
     animVeclocity:Schemas.Number,
     speed:Schemas.Number,   
-    done:Schemas.Boolean,
+    done:Schemas.Boolean,    
 })
 
 const SPRING_CONSTANT = 50

@@ -25,3 +25,11 @@ export function  _openExternalURL(url:string){
   log("_openExternalURL IMPLEMENT ME3!!!!")
   openExternalUrl({url:url})
 } 
+
+//TODO TAG:PORT-REIMPLEMENT-ME
+export function _teleportTo(coords:string){
+  log("_teleportTo IMPLEMENT ME!!!!")
+  log("_teleportTo IMPLEMENT ME2!!!!")
+  log("_teleportTo IMPLEMENT ME3!!!!")
+  //teleportTo(coords)  
+}

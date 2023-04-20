@@ -6,16 +6,15 @@ import { MenuItem } from './menuItem'
 import * as sfx from './resources/sounds'
 import { lobbyCenter } from './resources/globals'
 import { getCurrentTime, getTimeStamp } from './checkApi'
-import { Entity, GltfContainer, Transform, engine } from '@dcl/sdk/ecs'
-import { Vector3 } from '@dcl/sdk/math'
+import { Entity, GltfContainer, InputAction, TextAlignMode, TextShape, Transform, TransformTypeWithOptionals, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
+import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { liveSignShape } from './resources/resources'
+import { _openExternalURL, _teleportTo } from '../back-ports/backPorts'
 
 let dummyLiveBadge = engine.addEntity()
 Transform.create(dummyLiveBadge, {
   position: Vector3.create(lobbyCenter.x, lobbyCenter.y - 20, lobbyCenter.z),
 })
-
-
 
 GltfContainer.create(dummyLiveBadge, { 
 	src: resource.liveSignShape.src 
@@ -28,20 +27,18 @@ export class EventMenuItem extends MenuItem {
   public scale: Vector3
   public scaleMultiplier: number
 
+  entity:Entity
   itemBox: Entity
-  title: Entity
-  titleText: TextShape
+  title: Entity  
   leftDetailsRoot: Entity
   dateRoot: Entity
   dateMonthRoot: Entity
   dateBG: Entity
   date: Date
   live: boolean
-  liveSign: Entity
-  liveText: TextShape
+  liveSign: Entity  
   detailsRoot: Entity
-  jumpInButton: Entity
-  jumpButtonTextShape: TextShape
+  jumpInButton: Entity  
   jumpButtonText: Entity
   detailText: Entity
   detailTextPanel: Entity
@@ -50,563 +47,544 @@ export class EventMenuItem extends MenuItem {
   detailEventTitle: Entity
   readMoreButton: Entity
   coordsPanel: Entity
-  coords: Entity
-  coordsText: TextShape
+  coords: Entity  
   timePanel: Entity
-  startTime: Entity
-  startTimeText: TextShape
-  detailTitle: TextShape
-  detailTextContent: TextShape
+  startTime: Entity  
+  
 
   constructor(
-    _transform: TranformConstructorArgs,
-    _alphaTexture: Texture,
+    _transform: TransformTypeWithOptionals,
+    _alphaTexture: string,
     _event: any
   ) {
     super()
-    this.addComponent(new Transform(_transform))
+    this.entity = engine.addEntity()
+    Transform.create(this.entity,_transform)
 
+   
     // event card root
-    this.itemBox = new Entity()
-    this.itemBox.addComponent(
-      new Transform({
-        position: Vector3.create(0, 0, 0),
-        scale: Vector3.create(1, 1, 1),
-      })
-    )
-    this.itemBox.addComponent(resource.menuTitleBGShape)
-    this.itemBox.setParent(this)
+    this.itemBox = engine.addEntity()
+    Transform.create(this.itemBox, {
+      position: Vector3.create(0, 0, 0),
+      scale: Vector3.create(1, 1, 1),
+    })    
+    GltfContainer.createOrReplace(this.itemBox, resource.menuTitleBGShape )    
+    Transform.getMutable(this.itemBox).parent = this.entity
 
     this.defaultItemScale = Vector3.create(2, 2, 2)
-
     this.scale = Vector3.create(1, 0.5, 1)
     this.scaleMultiplier = 1.2
+
     this.thumbNail = new ThumbnailPlane(
-      new Texture(_event.image),
+      _event.image,
       {
         position: Vector3.create(0.25, 0.27, 0),
+        rotation: Quaternion.Zero(),
         scale: Vector3.create(1.1, 0.55, 1),
+        parent: this.entity
       },
       _alphaTexture
-    )
-    this.thumbNail.setParent(this.itemBox)
+    )      
 
-    this.leftDetailsRoot = new Entity()
-    this.leftDetailsRoot.addComponent(
-      new Transform({
+    this.leftDetailsRoot = engine.addEntity()
+    Transform.create( this.leftDetailsRoot, {      
         position: Vector3.create(-0.32, 0.28, -0.02),
-        scale: Vector3.create(0.9, 0.9, 0.9),
-      })
-    )
-    this.leftDetailsRoot.setParent(this.itemBox)
+        rotation: Quaternion.Zero(),
+        scale: Vector3.create(0.9, 0.9, 0.9),    
+        parent: this.itemBox  
+    })    
 
     // LIVE SIGN
     this.live = _event.live
+    this.liveSign = engine.addEntity()
 
-    this.liveText = new TextShape()
-    this.liveText.fontSize = 3
-    this.liveText.color = Color3.Green()
+    Transform.create(this.liveSign, {
+      position: Vector3.create(-0.25, 0, 0),
+      scale: Vector3.create(0.4, 0.4, 0.4),
+    })   
 
-    this.liveSign = new Entity()
-    this.liveSign.addComponent(
-      new Transform({
-        position: Vector3.create(-0.25, 0, 0),
-        scale: Vector3.create(0.4, 0.4, 0.4),
-      })
-    )
+    GltfContainer.createOrReplace(this.liveSign, resource.liveSignShape )   
 
-    this.liveSign.addComponent(resource.liveSignShape)
-    this.dateBG = new Entity()
-    this.dateBG.addComponent(
-      new Transform({
-        position: Vector3.create(-0.25, 0, 0),
-        scale: Vector3.create(0.4, 0.4, 0.4),
-      })
-    )
-    this.dateBG.addComponent(resource.dateBGShape)
+    // TextShape.create(this.liveSign,{
+    //   text:"",
+    //   fontSize: 3})    
+    // this.liveText.fontSize = 3
+    // this.liveText.color = Color3.Green()    
+   
+    this.dateBG = engine.addEntity()
+    Transform.create(this.dateBG, {
+      position: Vector3.create(-0.25, 0, 0),
+      scale: Vector3.create(0.4, 0.4, 0.4),
+    })       
+    GltfContainer.createOrReplace(this.dateBG, resource.dateBGShape)    
 
-    this.dateRoot = new Entity()
-    this.dateRoot.addComponent(
-      new Transform({
-        position: Vector3.create(0, -0.15, -0.05),
-      })
-    )
-    this.dateRoot.setParent(this.dateBG)
-
-    this.dateMonthRoot = new Entity()
-    this.dateMonthRoot.addComponent(
-      new Transform({
-        position: Vector3.create(0, 0.25, -0.05),
-      })
-    )
-    this.dateMonthRoot.setParent(this.dateBG)
-
-    let dateText = new TextShape()
-    let dateMonthText = new TextShape()
 
     this.date = new Date(_event.next_start_at)
 
-    dateText.value = this.date.getDate().toString()
-    dateText.fontSize = 5
-    dateText.color = resource.dateDayColor
-    dateText.outlineColor = resource.dateDayColor
-    dateText.outlineWidth = 0.2
+    this.dateRoot = engine.addEntity()
+    Transform.create(this.dateRoot, {
+      position: Vector3.create(0, -0.15, -0.05),
+      parent: this.dateBG
+    })       
 
-    dateMonthText.value = monthToString(this.date.getMonth()).toUpperCase()
-    dateMonthText.fontSize = 3
-    dateMonthText.color = resource.dateMonthColor
+    this.dateMonthRoot = engine.addEntity()
+    Transform.create(this.dateMonthRoot, {
+      position: Vector3.create(0, 0.25, -0.05),
+      parent: this.dateBG
+    })   
 
-    this.dateRoot.addComponent(dateText)
-    this.dateMonthRoot.addComponent(dateMonthText)
+    TextShape.create(this.dateRoot, {
+      text:this.date.getDate().toString(),
+      fontSize:5,
+      textColor: resource.dateDayColor,
+      outlineColor: resource.dateDayColor,
+      outlineWidth: 0.2
+    })
+
+    TextShape.create(this.dateMonthRoot, {
+      text: monthToString(this.date.getMonth()).toUpperCase(),
+      fontSize:3,
+      textColor: resource.dateMonthColor,      
+    })   
+
+    
 
     if (this.live) {
       //add live badge
-      this.liveSign.setParent(this.leftDetailsRoot)
+      
+      Transform.getMutable(this.liveSign).parent = this.leftDetailsRoot
     } else {
       // add calendar panel
-      this.dateBG.setParent(this.leftDetailsRoot)
+      Transform.getMutable( this.dateBG).parent = this.leftDetailsRoot
+      
     }
 
-    //selection event animation
-    this.addComponent(
-      new AnimatedItem(
-        {
-          position: Vector3.create(0, 0, 0),
-          scale: Vector3.create(
-            this.defaultItemScale.x,
-            this.defaultItemScale.y,
-            this.defaultItemScale.z
-          ),
-        },
-        {
-          position: Vector3.create(0, 0, -0.6),
-          scale: Vector3.create(2.3, 2.3, 2.3),
-        },
-        2
-      )
-    )
+    AnimatedItem.create(this.entity, {
+      wasClicked:false,
+      isHighlighted:false,
+      defaultPosition: Vector3.create(0, 0, 0),
+      highlightPosition: Vector3.create(0, 0, -0.6),
+      defaultScale: Vector3.create(
+        this.defaultItemScale.x,
+        this.defaultItemScale.y,
+        this.defaultItemScale.z
+      ),
+      highlightScale: Vector3.create(2.3, 2.3, 2.3),
+      animFraction: 0,
+      animVeclocity: 0,
+      speed: 2,
+      done: false
+    })    
 
     // DETAILS APPEARING ON SELECTION EVENT
-    this.detailsRoot = new Entity()
-    this.detailsRoot.addComponent(new Transform())
-    this.detailsRoot.setParent(this)
+    this.detailsRoot = engine.addEntity()
 
-    this.timePanel = new Entity()
-    this.timePanel.addComponent(
-      new Transform({
-        position: Vector3.create(-0.4, 0, -0.2),
-        rotation: Quaternion.Euler(0, -30, 0),
-      })
-    )
-    this.timePanel.addComponent(resource.timePanelShape)
-    this.timePanel.setParent(this.detailsRoot)
+    Transform.create(this.detailsRoot, {
+      parent: this.entity
+    })   
 
-    this.timePanel.addComponent(
-      new AnimatedItem(
-        {
-          position: Vector3.create(-0.7, 0.25, 0.1),
-          scale: Vector3.create(0, 0, 0),
-        },
-        {
-          position: Vector3.create(-1.1, 0.25, -0.2),
-          scale: Vector3.create(1, 1, 1),
-        },
-        2
-      )
-    )
+    this.timePanel = engine.addEntity()
+    Transform.create(this.timePanel, {
+      position: Vector3.create(-0.4, 0, -0.2),
+      rotation: Quaternion.fromEulerDegrees(0, -30, 0),
+      parent: this.detailsRoot
+    })
+    GltfContainer.createOrReplace(this.timePanel, resource.timePanelShape)    
 
-    this.startTime = new Entity()
+    AnimatedItem.create(this.timePanel, {
+      wasClicked:false,
+      isHighlighted:false,
+      defaultPosition: Vector3.create(-0.7, 0.25, 0.1),
+      highlightPosition: Vector3.create(-1.1, 0.25, -0.2),
+      defaultScale: Vector3.create(0, 0, 0),
+      highlightScale:  Vector3.create(1, 1, 1),
+      animFraction: 0,
+      animVeclocity: 0,
+      speed: 2,
+      done: false
+    })   
 
-    this.startTimeText = new TextShape()
-    this.startTimeText.font = new Font(Fonts.SanFrancisco_Heavy)
-    this.startTimeText.value = _event.next_start_at.substring(11, 16) + '\nUTC'
+    this.startTime = engine.addEntity()
 
-    this.startTime.addComponent(
-      new Transform({
-        scale: Vector3.create(0.1, 0.1, 0.1),
-      })
-    )
-    this.startTime.addComponent(this.startTimeText)
-    this.startTime.setParent(this.timePanel)
+    Transform.create(this.startTime, {
+      scale: Vector3.create(0.1, 0.1, 0.1),
+      parent: this.timePanel
+    })
+    TextShape.create(this.startTime, {
+      text: _event.next_start_at.substring(11, 16) + '\nUTC'
 
-    // TITLE
-    this.titleText = new TextShape()
-    this.title = new Entity()
+    })
+    
+    //this.startTimeText.font = new Font(Fonts.SanFrancisco_Heavy)
+   
+
+    // TITLE    
+    this.title = engine.addEntity()
+    Transform.create(this.title, {
+      position: Vector3.create(0, -0.15, -0.01),
+      scale: Vector3.create(0.3, 0.3, 0.3),
+      parent: this.itemBox
+    })
     let rawText: string = _event.name
-
     //  remove non-UTF-8 characters
     rawText = cleanString(rawText)
-
     rawText = wordWrap(rawText, 36, 3)
-    this.titleText.value = rawText
-    this.titleText.font = new Font(Fonts.SanFrancisco_Heavy)
-    this.titleText.height = 20
-    this.titleText.width = 2
 
-    this.titleText.fontSize = 2
-    this.titleText.color = Color3.Black()
-    this.titleText.hTextAlign = 'center'
-    this.titleText.vTextAlign = 'center'
-
-    this.title.addComponent(
-      new Transform({
-        position: Vector3.create(0, -0.15, -0.01),
-        scale: Vector3.create(0.3, 0.3, 0.3),
-      })
-    )
-    this.title.addComponent(this.titleText)
-
-    this.title.setParent(this.itemBox)
+    TextShape.create(this.title, {
+      text: rawText,
+      height: 20,
+      width: 2,
+      fontSize: 2,
+      textColor: Color4.Black(),
+      textAlign: TextAlignMode.TAM_MIDDLE_CENTER
+    })
+    
 
     // -- COORDS PANEL
-    this.coordsPanel = new Entity()
-    this.coordsPanel.addComponent(
-      new Transform({
-        position: Vector3.create(-0.3, -0.2, 0),
+    this.coordsPanel = engine.addEntity()
+
+    Transform.create(this.coordsPanel, {
+      position: Vector3.create(-0.3, -0.2, 0),
         scale: Vector3.create(0.4, 0.4, 0.4),
-      })
-    )
-    this.coordsPanel.addComponent(resource.coordsPanelShape)
-    this.coordsPanel.setParent(this.detailsRoot)
-    this.coordsPanel.addComponent(
-      new AnimatedItem(
-        {
-          position: Vector3.create(0, 0.0, 0.2),
-          scale: Vector3.create(0.1, 0.1, 0.1),
-        },
-        {
-          position: Vector3.create(-0.4, -0.25, -0.05),
-          scale: Vector3.create(0.5, 0.5, 0.5),
-        },
-        1.9
-      )
-    )
-    this.coordsPanel.addComponent(
-      new OnPointerDown(
-        async function () {
-          teleportTo(_event.coordinates[0] + ',' + _event.coordinates[1])
-        },
-        {
-          button: ActionButton.POINTER,
-          hoverText: 'GO THERE',
-        }
-        //movePlayerTo({ x: lobbyCenter.x, y: 110, z: lobbyCenter.z-8 } )
-      )
-    )
+        parent: this.detailsRoot
+    })
+    GltfContainer.create(this.coordsPanel, resource.coordsPanelShape)
+    AnimatedItem.create(this.coordsPanel, {
+      wasClicked:false,
+      isHighlighted:false,
+      defaultPosition: Vector3.create(0, 0.0, 0.2),
+      highlightPosition: Vector3.create(-0.4, -0.25, -0.05),
+      defaultScale:Vector3.create(0.1, 0.1, 0.1),
+      highlightScale: Vector3.create(0.5, 0.5, 0.5),
+      animFraction: 0,
+      animVeclocity: 0,
+      speed: 1.9,
+      done: false
+    })  
 
-    this.coords = new Entity()
-    this.coordsText = new TextShape()
-    this.coordsText.value = _event.coordinates[0] + ',' + _event.coordinates[1]
-    this.coordsText.color = Color3.FromHexString('#111111')
-    this.coordsText.font = new Font(Fonts.SanFrancisco_Heavy)
-
-    this.coords.addComponent(this.coordsText)
-    this.coords.addComponent(
-      new Transform({
-        position: Vector3.create(0.18, -0.33, -0.05),
-        scale: Vector3.create(0.18, 0.18, 0.18),
-      })
+    pointerEventsSystem.onPointerDown(this.coordsPanel,
+      (e) => {
+        _teleportTo(_event.coordinates[0] + ',' + _event.coordinates[1])      
+      },
+      { hoverText: 'GO THERE', button: InputAction.IA_POINTER }
     )
+    
 
-    this.coords.setParent(this.coordsPanel)
+    this.coords = engine.addEntity()
+    Transform.create(this.coords,{
+      position: Vector3.create(0.18, -0.33, -0.05),
+      scale: Vector3.create(0.18, 0.18, 0.18),
+      parent: this.coordsPanel
+    })  
+    TextShape.create(this.coords, {
+      text: _event.coordinates[0] + ',' + _event.coordinates[1],
+      textColor: Color4.fromHexString('#111111FF')
+    })      
+    
 
     // -- JUMP IN BUTTON
-    this.jumpInButton = new Entity()
-    this.jumpInButton.addComponent(
-      new Transform({
-        position: Vector3.create(0, -0.2, 0),
-        scale: Vector3.create(0.4, 0.4, 0.4),
-      })
-    )
-    this.jumpInButton.addComponent(resource.jumpInButtonShape)
-    this.jumpInButton.setParent(this.detailsRoot)
-    this.jumpInButton.addComponent(
-      new AnimatedItem(
-        {
-          position: Vector3.create(0, 0.0, 0.2),
-          scale: Vector3.create(0.1, 0.1, 0.1),
-        },
-        {
-          position: Vector3.create(0.4, -0.25, -0.05),
-          scale: Vector3.create(0.5, 0.5, 0.5),
-        },
-        1.8
-      )
-    )
+    this.jumpInButton = engine.addEntity()
+    Transform.create(this.jumpInButton, {
+      position: Vector3.create(0, -0.2, 0),
+      scale: Vector3.create(0.4, 0.4, 0.4),
+      parent: this.detailsRoot
+    })
+    GltfContainer.create(this.jumpInButton, resource.jumpInButtonShape)
+    
+    AnimatedItem.create(this.jumpInButton, {
+      wasClicked:false,
+      isHighlighted:false,
+      defaultPosition: Vector3.create(0, 0.0, 0.2),
+      highlightPosition:  Vector3.create(0.4, -0.25, -0.05),
+      defaultScale:Vector3.create(0.1, 0.1, 0.1),
+      highlightScale: Vector3.create(0.5, 0.5, 0.5),
+      animFraction: 0,
+      animVeclocity: 0,
+      speed: 1.8,
+      done: false
+    })     
 
-    this.jumpButtonText = new Entity()
-    this.jumpButtonTextShape = new TextShape()
-
-    this.jumpButtonTextShape.color = Color3.FromHexString('#FFFFFF')
-    this.jumpButtonTextShape.font = new Font(Fonts.SanFrancisco_Heavy)
-    this.jumpButtonTextShape.hTextAlign = 'center'
-
-    this.jumpButtonText.addComponent(this.jumpButtonTextShape)
-    this.jumpButtonText.addComponent(
-      new Transform({
-        position: Vector3.create(0, -0.33, -0.05),
-        scale: Vector3.create(0.22, 0.22, 0.22),
-      })
-    )
-
-    this.jumpButtonText.setParent(this.jumpInButton)
+    this.jumpButtonText = engine.addEntity()
+    Transform.create( this.jumpButtonText, {
+      position: Vector3.create(0, -0.33, -0.05),
+      scale: Vector3.create(0.22, 0.22, 0.22),
+      parent: this.jumpInButton
+    })
+    TextShape.create(this.jumpButtonText, {
+      text:  ' ',
+      textColor: Color4.White(),
+      textAlign: TextAlignMode.TAM_MIDDLE_CENTER
+    })      
 
     if (this.live) {
-      this.jumpButtonTextShape.value = 'JUMP IN'
-      this.jumpInButton.addComponent(
-        new OnPointerDown(
-          async function () {
-            teleportTo(_event.coordinates[0] + ',' + _event.coordinates[1])
-          },
-          {
-            button: ActionButton.POINTER,
-            hoverText: 'JUMP IN',
-          }
-          //movePlayerTo({ x: lobbyCenter.x, y: 110, z: lobbyCenter.z-8 } )
-        )
+      TextShape.getMutable(this.jumpButtonText).text = 'JUMP IN'
+      
+      pointerEventsSystem.onPointerDown(this.jumpInButton,
+        (e) => {
+          _teleportTo(_event.coordinates[0] + ',' + _event.coordinates[1])      
+        },
+        { hoverText: 'JUMP IN', button: InputAction.IA_POINTER }
       )
-    } else {
-      this.jumpButtonTextShape.value = 'SIGN UP'
-      this.jumpInButton.addComponent(
-        new OnPointerDown(
-          async function () {
-            // rsvpToEvent(_event.id, getTimeStamp())
-            openExternalURL(
-              'https://events.decentraland.org/en/?event=' + _event.id
-            )
-          },
-          {
-            button: ActionButton.POINTER,
-            hoverText: 'CHECK EVENT PAGE',
-          }
-        )
+    } 
+    else {
+      TextShape.getMutable(this.jumpButtonText).text = 'SIGN UP'
+
+      pointerEventsSystem.onPointerDown(this.jumpInButton,
+        async (e) => {
+          _openExternalURL(
+            'https://events.decentraland.org/en/?event=' + _event.id
+          )    
+        },
+        { hoverText: 'CHECK EVENT PAGE', button: InputAction.IA_POINTER }
       )
+      
     }
 
     // EVENT DETAILS TEXT
-    this.detailTextPanel = new Entity()
-    this.detailTextPanel.addComponent(
-      new Transform({
-        position: Vector3.create(0.8, 0, 0.2),
+    this.detailTextPanel = engine.addEntity()
+    Transform.create(this.detailTextPanel, {
+      position: Vector3.create(0.8, 0, 0.2),
         scale: Vector3.create(0, 0.8, 0),
-        rotation: Quaternion.Euler(0, 30, 0),
-      })
-    )
-    this.detailTextPanel.addComponent(resource.detailsBGShape)
-    this.detailTextPanel.setParent(this.detailsRoot)
-    this.detailTextPanel.addComponent(
-      new AnimatedItem(
-        {
-          position: Vector3.create(0.8, 0, 0.2),
-          scale: Vector3.create(0, 0.8, 0),
-        },
-        {
-          position: Vector3.create(0.9, 0, -0.1),
-          scale: Vector3.create(1, 1, 1),
-        },
-        2.2
-      )
-    )
+        rotation: Quaternion.fromEulerDegrees(0, 30, 0),
+        parent: this.detailsRoot
+    })
+    GltfContainer.create(this.detailTextPanel, resource.detailsBGShape)    
+    
+    AnimatedItem.create(this.detailTextPanel, {
+      wasClicked:false,
+      isHighlighted:false,
+      defaultPosition:  Vector3.create(0.8, 0, 0.2),
+      highlightPosition:  Vector3.create(0.9, 0, -0.1),
+      defaultScale: Vector3.create(0, 0.8, 0),
+      highlightScale:  Vector3.create(1, 1, 1),
+      animFraction: 0,
+      animVeclocity: 0,
+      speed: 2.2,
+      done: false
+    }) 
 
-    this.detailTitle = new TextShape()
-
-    //  remove non-UTF-8 characters and wrap
-    this.detailTitle.value = wordWrap(cleanString(_event.name), 45, 3)
-
-    this.detailTitle.font = new Font(Fonts.SanFrancisco_Heavy)
-    this.detailTitle.height = 20
-    this.detailTitle.width = 2
-
-    this.detailTitle.fontSize = 2
-    this.detailTitle.color = Color3.Black()
-    this.detailTitle.hTextAlign = 'left'
-    this.detailTitle.vTextAlign = 'top'
-
-    this.detailEventTitle = new Entity()
-    this.detailEventTitle.addComponent(
-      new Transform({
-        position: Vector3.create(0.1, 0.55, 0),
-        scale: Vector3.create(0.3, 0.3, 0.3),
-      })
-    )
-    this.detailEventTitle.addComponent(this.detailTitle)
-    this.detailEventTitle.setParent(this.detailTextPanel)
-
-    this.detailTextContent = new TextShape()
-    this.detailTextContent.value =
-      '\n\n' + wordWrap(cleanString(_event.description), 75, 11) + '</cspace>'
-    this.detailTextContent.font = new Font(Fonts.SanFrancisco_Semibold)
-    this.detailTextContent.height = 20
-    this.detailTextContent.width = 2
-    this.detailTextContent.fontSize = 1
-    this.detailTextContent.color = Color3.FromHexString('#111111')
-    this.detailTextContent.hTextAlign = 'left'
-    this.detailTextContent.vTextAlign = 'top'
-    this.detailTextContent.lineSpacing = '0'
-
-    this.detailText = new Entity()
-    this.detailText.addComponent(
-      new Transform({
-        position: Vector3.create(0.1, 0.48, 0),
+    // EVENT DETAILS TITLE
+    this.detailEventTitle = engine.addEntity()
+    Transform.create(this.detailEventTitle, {
+      position: Vector3.create(0.1, 0.55, 0),
+      scale: Vector3.create(0.3, 0.3, 0.3),
+      parent: this.detailTextPanel
+    })
+    TextShape.create(this.detailEventTitle, {
+      text: wordWrap(cleanString(_event.name), 45, 3),
+      height: 20,
+      width: 2,
+      fontSize: 2,
+      textColor: Color4.Black(),
+      textAlign: TextAlignMode.TAM_TOP_LEFT
+    })
+   
+    
+ // EVENT DETAILS TEXT BODY
+    this.detailText = engine.addEntity()
+    Transform.create(this.detailText, {
+      position: Vector3.create(0.1, 0.48, 0),
         scale: Vector3.create(0.4, 0.4, 0.4),
-      })
-    )
-    this.detailText.addComponent(this.detailTextContent)
-    this.detailText.setParent(this.detailTextPanel)
+        parent: this.detailTextPanel
+    })
+    TextShape.create(this.detailText, {
+      text:  '\n\n' + wordWrap(cleanString(_event.description), 75, 11) + '</cspace>',
+      fontSize: 1,
+      height: 20,
+      width: 2,
+      textColor: Color4.fromHexString("#111111FF"),
+      textAlign: TextAlignMode.TAM_TOP_LEFT,
+      lineSpacing: 0
+    })   
 
     //details website button
-    this.readMoreButton = new Entity()
-    this.readMoreButton.addComponent(
-      new Transform({
-        position: Vector3.create(0.23, -0.2, 0),
-      })
-    )
-    this.readMoreButton.addComponent(resource.readMoreBtnShape)
-    this.readMoreButton.addComponent(
-      new OnPointerDown(
-        () => {
-          openExternalURL(
-            'https://events.decentraland.org/en/?event=' + _event.id
-          )
-        },
-        { hoverText: 'READ MORE' }
-      )
-    )
-    this.readMoreButton.setParent(this.detailTextPanel)
+    this.readMoreButton = engine.addEntity()
+    Transform.create(this.readMoreButton, {
+      position: Vector3.create(0.23, -0.2, 0),
+      parent: this.detailTextPanel
+    })    
+    GltfContainer.create(this.readMoreButton, resource.readMoreBtnShape) 
+
+    pointerEventsSystem.onPointerDown(this.readMoreButton,
+      async (e) => {
+        _openExternalURL(
+          'https://events.decentraland.org/en/?event=' + _event.id
+        )   
+      },
+      { hoverText: 'READ MORE', button: InputAction.IA_POINTER }
+    )    
 
     // highlights BG on selection
-    this.highlightRays = new Entity()
-    this.highlightRays.addComponent(new Transform())
-    this.highlightRays.addComponent(resource.highlightRaysShape)
-    this.highlightRays.setParent(this.detailsRoot)
-    this.highlightRays.addComponent(
-      new AnimatedItem(
-        {
-          position: Vector3.create(0, 0, 0.05),
-          scale: Vector3.create(0, 0, 0),
-        },
-        {
-          position: Vector3.create(0, 0, 0.05),
-          scale: Vector3.create(1, 1, 1),
-        },
-        3
-      )
-    )
+    this.highlightRays = engine.addEntity()
+    Transform.create(this.highlightRays, {
+      parent: this.detailsRoot
+    })
+    GltfContainer.create(this.highlightRays, resource.highlightRaysShape) 
+    
+    AnimatedItem.create(this.highlightRays, {
+      wasClicked:false,
+      isHighlighted:false,
+      defaultPosition: Vector3.create(0, 0, 0.05),
+      highlightPosition:  Vector3.create(0, 0, 0.05),
+      defaultScale: Vector3.create(0, 0, 0),
+      highlightScale:  Vector3.create(1, 1, 1),
+      animFraction: 0,
+      animVeclocity: 0,
+      speed: 3,
+      done: false
+    })     
+   
 
-    this.highlightFrame = new Entity()
-    this.highlightFrame.addComponent(new Transform())
-    this.highlightFrame.addComponent(resource.highlightFrameShape)
-    this.highlightFrame.setParent(this.highlightRays)
+    this.highlightFrame = engine.addEntity()
+    Transform.create(this.highlightFrame, {
+      parent: this.highlightRays
+    })
+    GltfContainer.create(this.highlightFrame, resource.highlightFrameShape)    
+    
   }
+
   updateItemInfo(_event: any) {
     //image
-    this.thumbNail.updateImage(new Texture(_event.image))
+    this.thumbNail.updateImage(_event.image)
 
     //live or not
     this.live = _event.live
     if (this.live) {
       //add live badge
-      this.liveSign.setParent(this.leftDetailsRoot)
+      Transform.getMutable(this.liveSign).parent = this.leftDetailsRoot      
 
       //update jump in button
-      this.jumpButtonTextShape.value = 'JUMP IN'
-      this.jumpInButton.getComponent(OnPointerDown).callback =
-        async function () {
-          teleportTo(_event.coordinates[0] + ',' + _event.coordinates[1])
-        }
-      this.jumpInButton.getComponent(OnPointerDown).hoverText = 'JUMP IN'
-      this.jumpInButton.getComponent(OnPointerDown).button =
-        ActionButton.POINTER
-      this.dateBG.setParent(null)
-    } else {
+      TextShape.getMutable(this.jumpButtonText).text = 'JUMP IN'
+
+      pointerEventsSystem.onPointerDown(this.jumpInButton,
+        (e) => {
+          _teleportTo(_event.coordinates[0] + ',' + _event.coordinates[1])      
+        },
+        { hoverText: 'JUMP IN', button: InputAction.IA_POINTER }
+      )      
+      
+      Transform.getMutable(this.dateBG).parent = engine.RootEntity
+      
+    } 
+    else {
       // add calendar panel
-      this.dateBG.setParent(this.leftDetailsRoot)
+      Transform.getMutable(this.dateBG).parent = this.leftDetailsRoot
 
       //update jump in button to sign up button
-      this.jumpButtonTextShape.value = 'SIGN UP'
+      TextShape.getMutable(this.jumpButtonText).text = 'SIGN UP'
+      
 
-      this.jumpInButton.getComponent(OnPointerDown).callback =
-        async function () {
-          // rsvpToEvent(_event.id, getTimeStamp())
-          openExternalURL(
+      pointerEventsSystem.onPointerDown(this.jumpInButton,
+        (e) => {
+          _openExternalURL(
             'https://events.decentraland.org/en/?event=' + _event.id
-          )
-        }
-      this.jumpInButton.getComponent(OnPointerDown).hoverText =
-        'CHECK EVENT PAGE'
-      this.jumpInButton.getComponent(OnPointerDown).button =
-        ActionButton.POINTER
-      this.liveSign.setParent(null)
+          )     
+        },
+        { hoverText: 'CHECK EVENT PAGE', button: InputAction.IA_POINTER }
+      )          
+      
+      Transform.getMutable(this.liveSign).parent = engine.RootEntity
     }
 
     //date
     this.date = new Date(_event.next_start_at)
-    this.dateRoot.getComponent(TextShape).value = this.date.getDate().toString()
-    this.dateMonthRoot.getComponent(TextShape).value = monthToString(
+    TextShape.getMutable(this.dateRoot).text = this.date.getDate().toString()
+    TextShape.getMutable(this.dateMonthRoot).text =  monthToString(
       this.date.getMonth()
     ).toUpperCase()
 
     //time
-    this.startTimeText.value = _event.next_start_at.substring(11, 16) + '\nUTC'
+    TextShape.getMutable(this.startTime).text = _event.next_start_at.substring(11, 16) + '\nUTC'    
 
     //title
     let rawText: string = _event.name
     //  remove non-UTF-8 characters
     rawText = cleanString(rawText)
     rawText = wordWrap(rawText, 36, 3)
-    this.title.getComponent(TextShape).value = rawText
+
+    TextShape.getMutable(this.title).text = rawText
+    
 
     //coords
-    this.coords.getComponent(TextShape).value =
-      _event.coordinates[0] + ',' + _event.coordinates[1]
-    this.coordsPanel.addComponentOrReplace(
-      new OnPointerDown(
-        async function () {
-          // log("teleporting to:" +(_event.coordinates[0] + "," + _event.coordinates[1]) )
-          teleportTo(_event.coordinates[0] + ',' + _event.coordinates[1])
-        },
-        {
-          button: ActionButton.POINTER,
-          hoverText: 'GO THERE',
-        }
-        //movePlayerTo({ x: lobbyCenter.x, y: 110, z: lobbyCenter.z-8 } )
-      )
-    )
+    TextShape.getMutable(this.coords).text = (_event.coordinates[0] + ',' + _event.coordinates[1])
+    
+    pointerEventsSystem.onPointerDown(this.coordsPanel,
+      (e) => {
+        _teleportTo(_event.coordinates[0] + ',' + _event.coordinates[1])     
+      },
+      { hoverText: 'GO THERE', button: InputAction.IA_POINTER }
+    )      
+    
     //detail text
     //remove non-UTF-8 characters and wrap
-    this.detailTitle.value = wordWrap(cleanString(_event.name), 45, 3)
+    TextShape.getMutable(this.detailEventTitle).text =  wordWrap(cleanString(_event.name), 45, 3)
 
     //remove non-UTF-8 characters and wrap
-    this.detailTextContent.value =
-      '\n\n' + wordWrap(cleanString(_event.description), 75, 11) + '</cspace>'
-
+    TextShape.getMutable(this.detailText).text = '\n\n' + wordWrap(cleanString(_event.description), 75, 11) + '</cspace>'
+    
     //details website button (read more)
-    this.readMoreButton.getComponent(OnPointerDown).callback = () => {
-      openExternalURL('https://events.decentraland.org/en/?event=' + _event.id)
-    }
-    this.readMoreButton.getComponent(OnPointerDown).hoverText = 'READ MORE'
+    pointerEventsSystem.onPointerDown(this.readMoreButton,
+      (e) => {
+        _openExternalURL('https://events.decentraland.org/en/?event=' + _event.id)    
+      },
+      { hoverText: 'READ MORE', button: InputAction.IA_POINTER }
+    )  
+
   }
+
   select() {
+
+    let jumpInButtonInfo = AnimatedItem.getMutable(this.jumpInButton)
+    let detailTextInfo = AnimatedItem.getMutable(this.detailTextPanel)
+    let highlightRaysInfo = AnimatedItem.getMutable(this.highlightRays)
+    let coordsPanelInfo = AnimatedItem.getMutable(this.coordsPanel)
+    let timePanelInfo = AnimatedItem.getMutable(this.timePanel)
+
     if (!this.selected) {
-      // engine.addEntity(this.detailsRoot)
+      
       this.selected = true
-      this.jumpInButton.getComponent(AnimatedItem).activate()
-      this.detailTextPanel.getComponent(AnimatedItem).activate()
-      this.highlightRays.getComponent(AnimatedItem).activate()
-      this.coordsPanel.getComponent(AnimatedItem).activate()
-      this.timePanel.getComponent(AnimatedItem).activate()
+      jumpInButtonInfo.isHighlighted = true
+      jumpInButtonInfo.done = false
+
+      detailTextInfo.isHighlighted = true
+      detailTextInfo.done = false
+
+      highlightRaysInfo.isHighlighted = true
+      highlightRaysInfo.done = false
+
+      coordsPanelInfo.isHighlighted = true
+      coordsPanelInfo.done = false
+
+      timePanelInfo.isHighlighted = true
+      timePanelInfo.done = false      
+
     }
   }
+
   deselect(_silent?: boolean) {
     if (this.selected) {
-      this.selected = false
-      // engine.removeEntity(this.detailsRoot)
+      this.selected = false      
     }
-    this.jumpInButton.getComponent(AnimatedItem).deactivate()
-    this.detailTextPanel.getComponent(AnimatedItem).deactivate()
-    this.highlightRays.getComponent(AnimatedItem).deactivate()
-    this.coordsPanel.getComponent(AnimatedItem).deactivate()
-    this.timePanel.getComponent(AnimatedItem).deactivate()
+    let jumpInButtonInfo = AnimatedItem.getMutable(this.jumpInButton)
+    let detailTextInfo = AnimatedItem.getMutable(this.detailTextPanel)
+    let highlightRaysInfo = AnimatedItem.getMutable(this.highlightRays)
+    let coordsPanelInfo = AnimatedItem.getMutable(this.coordsPanel)
+    let timePanelInfo = AnimatedItem.getMutable(this.timePanel)
+
+    jumpInButtonInfo.isHighlighted = false
+    jumpInButtonInfo.done = false
+
+    detailTextInfo.isHighlighted = false
+    detailTextInfo.done = false
+
+    highlightRaysInfo.isHighlighted = false
+    highlightRaysInfo.done = false
+
+    coordsPanelInfo.isHighlighted = false
+    coordsPanelInfo.done = false
+
+    timePanelInfo.isHighlighted = false
+    timePanelInfo.done = false  
 
     // if(!_silent){
     //     sfx.menuDeselectSource.playOnce()
