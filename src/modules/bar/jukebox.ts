@@ -19,7 +19,7 @@ let FullVolume = 0.1
 let DistantVolume = 0.03
 
 export let isInBar: boolean = true
-let barCurrentRadio: Radios 
+let barCurrentRadio: Radios | null = Radios.RAVE
 let barCurrentRadioIndex: number = 0
 let radioCount = 4
 let radioIsOn: boolean = true
@@ -295,6 +295,7 @@ function barRadioOff() {
 export function setBarMusicOn() {
   if (tutorialRunning) return
 
+  console.log("jukebox.ts| setBarMusicOn has been called")
   let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
 
   sceneMessageBus.emit('enteredRadioRange', {

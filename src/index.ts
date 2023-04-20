@@ -4,13 +4,14 @@ import { addBuildings } from './modules/buildings'
 //import { placeDoors } from './modules/bar/doors'
 import { barPlatforms } from './modules/platforms'
 import { addCloudLobby } from './lobby/cloudLobby'
-import { placeJukeBox } from './modules/bar/jukebox'
+import { placeJukeBox, setBarMusicOn } from './modules/bar/jukebox'
 
 
 // export all the functions required to make the scene work
 export * from '@dcl/sdk'
 
 placeJukeBox()
+setBarMusicOn()
 
 //// ADD CLOUD LOBBY
 
