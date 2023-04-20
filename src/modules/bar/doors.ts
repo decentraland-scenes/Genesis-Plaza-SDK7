@@ -2,27 +2,25 @@
 //import { barMusicStream, isInBar } from './jukebox'
 import { sceneMessageBus } from '../serverHandler'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
-import { PBGltfContainer, TransformTypeWithOptionals } from '@dcl/sdk/ecs'
+import { Animator, AudioSource, Entity, GltfContainer, PBGltfContainer, Transform, TransformTypeWithOptionals, engine } from '@dcl/sdk/ecs'
 import { log } from '../../back-ports/backPorts'
 
 //TODO TAG:PORT-REIMPLEMENT-ME
-/*
-let open = new AudioClip('sounds/door-open.mp3')
-let close = new AudioClip('sounds/door-close.mp3')
-open.volume = 1
-open.loop = false
-close.volume = 1
-close.loop = false
+
+let openUrl = 'sounds/door-open.mp3'
+let closeUrl = 'sounds/door-close.mp3'
+
 
 /// Reusable class for all platforms
-export class Door extends Entity {
+export class Door  {
   //model: PBGltfContainer
-  animationOpen: AnimationState
-  animationClose: AnimationState
+  entity:Entity
+  animationOpen: string//AnimationState
+  animationClose: string//AnimationState
   isOpen: boolean = false
   isPlayerIn: boolean = false
-  soundOpen: AudioClip
-  soundClose: AudioClip
+  soundOpen: Entity
+  soundClose: Entity
 
   constructor(
     model: PBGltfContainer,
@@ -34,24 +32,56 @@ export class Door extends Entity {
     messageBusHandle: string,
     withTrigger: boolean = true
   ) {
-    super()
-    engine.addEntity(this)
 
-    this.addComponent(model)
-    this.addComponent(new Transform(doorPos))
+    this.entity = engine.addEntity()
+    //engine.addEntity(this)
 
-    this.addComponent(new Animator())
+    GltfContainer.create(this.entity,model)
+    Transform.create(this.entity,doorPos)
+    //this.addComponent(new Transform(doorPos))
 
-    this.animationOpen = new AnimationState(animationOpen, { looping: false })
-    this.getComponent(Animator).addClip(this.animationOpen)
+    //this.addComponent(new Animator())
+    Animator.create(this.entity, {
+      states:[
+        {
+          name: animationOpen,
+          clip: animationOpen,
+          playing: false,
+          loop: false
+        },
+        {
+          name: animationClose,
+          clip: animationClose,
+          playing: false,
+          loop: false
+        }
+      ]
+    }
+    )
+    this.animationOpen = animationOpen
+    this.animationClose = animationClose
+   
+    this.soundOpen = engine.addEntity()
+    Transform.create(this.soundOpen,{parent:this.entity})
 
-    this.animationClose = new AnimationState(animationClose, {
-      looping: false,
+    this.soundClose = engine.addEntity()
+    Transform.create(this.soundClose,{parent:this.entity})
+    
+    AudioSource.create(this.soundOpen,{
+      audioClipUrl:closeUrl,
+      volume:1,
+      loop: false,
+      playing: false
     })
-    this.getComponent(Animator).addClip(this.animationClose)
 
-    this.addComponent(new AudioSource(open))
-
+    AudioSource.create(this.soundOpen,{
+      audioClipUrl:openUrl,
+      volume:1,
+      loop: false,
+      playing: false
+    })
+    /*
+    //TODO TAG:PORT-REIMPLEMENT-ME
     if (withTrigger) {
       const triggerEntity = new Entity()
       triggerEntity.addComponent(new Transform(triggerPos))
@@ -78,37 +108,38 @@ export class Door extends Entity {
       )
       engine.addEntity(triggerEntity)
     }
+    */
 
-    // this.animationClose1.stop()
-    // this.animationClose2.stop()
-    this.animationOpen.stop()
+    Animator.getClip(this.entity,this.animationOpen).playing = false
+    Animator.getClip(this.entity,this.animationClose).playing = false
   }
 
   public open(): void {
     if (this.isOpen) return
-    this.animationClose.stop()
-    this.animationOpen.stop()
-
-    this.animationOpen.play()
+    
+    Animator.getClip(this.entity,this.animationOpen).playing = false
+    Animator.getClip(this.entity,this.animationClose).playing = false
+    
+    Animator.getClip(this.entity,this.animationOpen).playing = true
 
     this.isOpen = true
 
-    const source = new AudioSource(open)
-    this.addComponentOrReplace(source)
-    source.playing = true
+    AudioSource.getMutable(this.soundOpen).playing = true
+    AudioSource.getMutable(this.soundClose).playing = false
   }
 
   public close(): void {
     if (!this.isOpen || this.isPlayerIn) return
-    this.animationOpen.stop()
-    this.animationClose.stop()
+    
+    Animator.getClip(this.entity,this.animationOpen).playing = false
+    Animator.getClip(this.entity,this.animationClose).playing = false
+    
+    Animator.getClip(this.entity,this.animationClose).playing = true
 
-    this.animationClose.play()
     this.isOpen = false
 
-    const source = new AudioSource(close)
-    this.addComponentOrReplace(source)
-    source.playing = true
+    AudioSource.getMutable(this.soundOpen).playing = false
+    AudioSource.getMutable(this.soundClose).playing = true
   }
 }
 
@@ -206,4 +237,3 @@ export function placeDoors() {
     }
   })
 }
-*/
