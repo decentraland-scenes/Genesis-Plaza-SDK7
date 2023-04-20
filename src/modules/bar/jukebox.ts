@@ -1,5 +1,5 @@
 //import { OctoComments, octopus } from './barNPCs'
-import { Animator, AudioSource, AudioStream, Entity, GltfContainer, InputAction, Material, MeshRenderer, TextShape, Transform, VisibilityComponent, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
+import { Animator, AudioSource, AudioStream, Entity, GltfContainer, InputAction, Material, MeshRenderer, PBAudioStream, TextShape, Transform, VisibilityComponent, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import * as utils from '@dcl-sdk/utils'
 import { sceneMessageBus } from '../serverHandler'
@@ -15,11 +15,12 @@ export enum Radios {
   JAZZ = 'https://live.vegascity.fm/radio/8010/the_flamingos.mp3',
 }
 
-let FullVolume = 0.1
+let FullVolume = 1
 let DistantVolume = 0.03
 
-export let isInBar: boolean = true
-let barCurrentRadio: Radios | null = Radios.RAVE
+export let isInBar: boolean = false
+let barCurrentRadio: Radios | null = Radios.RAVE 
+let pbAudioStream: PBAudioStream = {url: barCurrentRadio}
 let barCurrentRadioIndex: number = 0
 let radioCount = 4
 let radioIsOn: boolean = true
@@ -37,7 +38,7 @@ export function placeJukeBox() {
 
   console.log("jukeBox.ts placeJukeBox has being called")
 
-  AudioStream.createOrReplace(audioStreamEntity)
+  AudioStream.createOrReplace(audioStreamEntity, pbAudioStream)
 
   let musicStreamEntityRef = AudioStream.getMutable(audioStreamEntity)
   musicStreamEntityRef.volume = FullVolume
@@ -264,14 +265,16 @@ export class JukeboxButton {
 function barRadioOn(station?: Radios) {
   if (tutorialRunning) return
   if (isInBar) {
-    console.log("jukebox.ts ButtonOnOf has been pressed")
+    console.log("jukebox.ts ButtonOn has been pressed")
     utils.timers.clearTimeout(10)
     utils.timers.setTimeout(() =>{
-      console.log("jukebox.ts ButtonOnOf has been pressed, function called with timeOut")
       let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
+
+      if(station)
+      audioStreamRef.url = station
+
       audioStreamRef.volume = FullVolume
 
-      AudioStream.getMutable(audioStreamEntity)
       //barMusicStreamEnt.addComponentOrReplace(barMusicStream)
 
       VisibilityComponent.getMutable(baseJukeBoxLights1).visible = true
@@ -284,6 +287,7 @@ function barRadioOn(station?: Radios) {
 }
 
 function barRadioOff() {
+  console.log("jukebox.ts ButtonOff has been pressed")
   let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
   if (audioStreamRef) {
     audioStreamRef.playing = false
@@ -295,7 +299,7 @@ function barRadioOff() {
 export function setBarMusicOn() {
   if (tutorialRunning) return
 
-  console.log("jukebox.ts| setBarMusicOn has been called")
+  console.log("jukebox.ts setBarMusicOn has been called")
   let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
 
   sceneMessageBus.emit('enteredRadioRange', {
