@@ -15,7 +15,7 @@ export enum Radios {
   JAZZ = 'https://live.vegascity.fm/radio/8010/the_flamingos.mp3',
 }
 
-let FullVolume = 1
+let FullVolume = 0.1
 let DistantVolume = 0.03
 
 export let isInBar: boolean = false
@@ -24,7 +24,6 @@ let pbAudioStream: PBAudioStream = {url: barCurrentRadio}
 let barCurrentRadioIndex: number = 0
 let radioCount = 4
 let radioIsOn: boolean = true
-
 
 
 const audioStreamEntity = engine.addEntity()
@@ -274,8 +273,14 @@ function barRadioOn(station?: Radios) {
     utils.timers.setTimeout(() =>{
       let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
 
-      if(station)
-      audioStreamRef.url = station
+      //audioStreamRef.url = station ? station : Radios.RAVE 
+      if(station){
+        audioStreamRef.url = station
+      }else{
+        audioStreamRef.url = Radios.RAVE 
+      }
+
+      audioStreamRef.playing = true
 
       audioStreamRef.volume = FullVolume
 
