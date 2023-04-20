@@ -95,8 +95,10 @@ export function placeJukeBox() {
     'models/core_building/jukebox/Button_On.glb', 
     'Button_On',
     () => {
+      console.log("jukebox.ts","press.onButton","ENTRY")
       let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
       let musicState = audioStreamRef && audioStreamRef.playing
+      console.log("jukebox.ts","press.onButton","emit.BarRadioToggle")
       sceneMessageBus.emit('BarRadioToggle', {
         state: !musicState,
       })
@@ -141,6 +143,7 @@ export function placeJukeBox() {
   )
 
   sceneMessageBus.on('BarRadioToggle', (e) => {
+    console.log("jukebox.ts","onBarRadioToggle","ENTRY")
     let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
     if (audioStreamRef && e.state === audioStreamRef.playing) return
     if (e.state) {
@@ -263,6 +266,7 @@ export class JukeboxButton {
 }
 
 function barRadioOn(station?: Radios) {
+  console.log("jukebox.ts","barRadioOn","ENTRY")
   if (tutorialRunning) return
   if (isInBar) {
     console.log("jukebox.ts ButtonOn has been pressed")
