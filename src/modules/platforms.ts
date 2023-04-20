@@ -12,7 +12,7 @@ import { addPunchBag } from './interactiveItems'
 
 //TODO TAG:PORT-REIMPLEMENT-ME
 export class Platform  {
-  host:Entity
+  entity:Entity
   animationName: string
   delayId?: number
 
@@ -25,16 +25,16 @@ export class Platform  {
     messageBusHandle: string,
     extraAction?: () => void
   ) {
-    this.host = engine.addEntity()
+    this.entity = engine.addEntity()
 
-    GltfContainer.create(this.host,model)
-    Transform.create(this.host,platformPos)
+    GltfContainer.create(this.entity,model)
+    Transform.create(this.entity,platformPos)
     
 
     
     this.animationName = animation
 
-     Animator.create(this.host, {
+     Animator.create(this.entity, {
       states:[{
           name: animation,
           clip: animation,
@@ -70,7 +70,7 @@ export class Platform  {
   }
 
   public activate(): void {
-    Animator.getClip(this.host,this.animationName).playing = true
+    Animator.getClip(this.entity,this.animationName).playing = true
   }
 }
 
@@ -168,8 +168,6 @@ export function placePlatforms() {
     'trainActivated'
   )
     
-  //TODO TAG:PORT-REIMPLEMENT-ME
-  
   sceneMessageBus.on('artichokeElevatorActivated', (e) => {
     artichoke_Elevator.activate()
     log('artichoke elevator')
