@@ -216,7 +216,6 @@ export function placeJukeBox() {
       return
     if (audioStreamRef) {
       audioStreamRef.playing = false
-      //barMusicStream = null
     }
     barCurrentRadioIndex = e.index
     barCurrentRadio = newRadio
@@ -300,7 +299,6 @@ function barRadioOn(station?: Radios) {
     utils.timers.setTimeout(() =>{
       let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
 
-      //audioStreamRef.url = station ? station : Radios.RAVE 
       if(station){
         audioStreamRef.url = station
       }else{
@@ -311,7 +309,6 @@ function barRadioOn(station?: Radios) {
 
       audioStreamRef.volume = FullVolume
 
-      //barMusicStreamEnt.addComponentOrReplace(barMusicStream)
 
       VisibilityComponent.getMutable(baseJukeBoxLights1).visible = true
       VisibilityComponent.getMutable(baseJukeBoxLights2).visible = true
@@ -472,7 +469,6 @@ function setBarRadioWhenMultyplayerIsOff(){
     return
   if (audioStreamRef) {
     audioStreamRef.playing = false
-    //barMusicStream = null
   }
   barCurrentRadioIndex = index
   barCurrentRadio = newRadio
@@ -484,7 +480,6 @@ function setBarRadioWhenMultyplayerIsOff(){
 }
 
 
-let firstTimeMic: boolean = false
 
 /* TODO TAG:PORT-REIMPLEMENT-ME
 export function addMicFeedback() {
