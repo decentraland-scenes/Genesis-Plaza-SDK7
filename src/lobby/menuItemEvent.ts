@@ -6,7 +6,7 @@ import { MenuItem } from './menuItem'
 import * as sfx from './resources/sounds'
 import { lobbyCenter } from './resources/globals'
 import { getCurrentTime, getTimeStamp } from './checkApi'
-import { Entity, GltfContainer, InputAction, TextAlignMode, TextShape, Transform, TransformTypeWithOptionals, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
+import { Entity, GltfContainer, InputAction, TextAlignMode, TextShape, Transform, TransformType, TransformTypeWithOptionals, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { liveSignShape } from './resources/resources'
 import { _openExternalURL, _teleportTo } from '../back-ports/backPorts'
@@ -53,7 +53,7 @@ export class EventMenuItem extends MenuItem {
   
 
   constructor(
-    _transform: TransformTypeWithOptionals,
+    _transform: TransformType,
     _alphaTexture: string,
     _event: any
   ) {
@@ -75,6 +75,7 @@ export class EventMenuItem extends MenuItem {
     this.scale = Vector3.create(1, 0.5, 1)
     this.scaleMultiplier = 1.2
 
+    
     this.thumbNail = new ThumbnailPlane(
       _event.image,
       {
@@ -162,8 +163,8 @@ export class EventMenuItem extends MenuItem {
     AnimatedItem.create(this.entity, {
       wasClicked:false,
       isHighlighted:false,
-      defaultPosition: Vector3.create(0, 0, 0),
-      highlightPosition: Vector3.create(0, 0, -0.6),
+      defaultPosition: _transform.position,
+      highlightPosition: Vector3.create(_transform.position.x,_transform.position.y, _transform.position.z-0.6),
       defaultScale: Vector3.create(
         this.defaultItemScale.x,
         this.defaultItemScale.y,
@@ -172,7 +173,7 @@ export class EventMenuItem extends MenuItem {
       highlightScale: Vector3.create(2.3, 2.3, 2.3),
       animFraction: 0,
       animVeclocity: 0,
-      speed: 2,
+      speed: 0.5,
       done: false
     })    
 
@@ -200,7 +201,7 @@ export class EventMenuItem extends MenuItem {
       highlightScale:  Vector3.create(1, 1, 1),
       animFraction: 0,
       animVeclocity: 0,
-      speed: 2,
+      speed: 0.5,
       done: false
     })   
 
@@ -234,9 +235,9 @@ export class EventMenuItem extends MenuItem {
       text: rawText,
       height: 20,
       width: 2,
-      fontSize: 2,
+      fontSize: 2,      
       textColor: Color4.Black(),
-      textAlign: TextAlignMode.TAM_MIDDLE_CENTER
+      textAlign: TextAlignMode.TAM_MIDDLE_CENTER,
     })
     
 
@@ -254,11 +255,11 @@ export class EventMenuItem extends MenuItem {
       isHighlighted:false,
       defaultPosition: Vector3.create(0, 0.0, 0.2),
       highlightPosition: Vector3.create(-0.4, -0.25, -0.05),
-      defaultScale:Vector3.create(0.1, 0.1, 0.1),
+      defaultScale:Vector3.create(0.0, 0.0, 0.0),
       highlightScale: Vector3.create(0.5, 0.5, 0.5),
       animFraction: 0,
       animVeclocity: 0,
-      speed: 1.9,
+      speed: 0.45,
       done: false
     })  
 
@@ -296,11 +297,11 @@ export class EventMenuItem extends MenuItem {
       isHighlighted:false,
       defaultPosition: Vector3.create(0, 0.0, 0.2),
       highlightPosition:  Vector3.create(0.4, -0.25, -0.05),
-      defaultScale:Vector3.create(0.1, 0.1, 0.1),
+      defaultScale:Vector3.create(0.0, 0.0, 0.0),
       highlightScale: Vector3.create(0.5, 0.5, 0.5),
       animFraction: 0,
       animVeclocity: 0,
-      speed: 1.8,
+      speed: 0.4,
       done: false
     })     
 
@@ -359,7 +360,7 @@ export class EventMenuItem extends MenuItem {
       highlightScale:  Vector3.create(1, 1, 1),
       animFraction: 0,
       animVeclocity: 0,
-      speed: 2.2,
+      speed: 0.6,
       done: false
     }) 
 
@@ -430,7 +431,7 @@ export class EventMenuItem extends MenuItem {
       highlightScale:  Vector3.create(1, 1, 1),
       animFraction: 0,
       animVeclocity: 0,
-      speed: 3,
+      speed: 0.9,
       done: false
     })     
    

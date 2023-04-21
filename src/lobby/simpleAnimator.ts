@@ -19,10 +19,11 @@ const SPRING_CONSTANT = 50
 
 function LerpTowards(
     a_Target:Vector3,
-    a_Current:Vector3
+    a_Current:Vector3,
+    speed:number
     ):Vector3{
   
-    return Vector3.lerp(a_Current, a_Target, 0.5)
+    return Vector3.lerp(a_Current, a_Target, speed)
   }
   
 function distance(vec1:Vector3, vec2:Vector3):number{
@@ -48,14 +49,22 @@ for (const [entity] of animatedItems) {
         if(!info.done){         
                 
             if(distance(info.highlightPosition, transform.position) > snapThreshold){
-                transform.position = LerpTowards(info.highlightPosition, transform.position)  
+                transform.position = LerpTowards(info.highlightPosition, transform.position, info.speed)  
             }
             else{
                 Vector3.copyFrom(info.highlightPosition, transform.position)
                 positionDone = true
             }
 
-            if(positionDone){
+            if(distance(info.highlightScale, transform.scale) > snapThreshold){
+                transform.scale = LerpTowards(info.highlightScale, transform.scale, info.speed)  
+            }
+            else{
+                Vector3.copyFrom(info.highlightScale, transform.scale)
+                scaleDone = true
+            }
+
+            if(positionDone && scaleDone){
                 info.done = true
             }
         }                   
@@ -64,14 +73,22 @@ for (const [entity] of animatedItems) {
         if(!info.done){                    
 
             if(distance(info.defaultPosition, transform.position) > snapThreshold){
-                transform.position = LerpTowards(info.defaultPosition, transform.position) 
+                transform.position = LerpTowards(info.defaultPosition, transform.position, info.speed) 
             }
             else{
                 Vector3.copyFrom(info.defaultPosition, transform.position)
                 positionDone = true     
             } 
 
-            if(positionDone){
+            if(distance(info.defaultScale, transform.scale) > snapThreshold){
+                transform.scale = LerpTowards(info.defaultScale, transform.scale, info.speed) 
+            }
+            else{
+                Vector3.copyFrom(info.defaultScale, transform.scale)
+                scaleDone = true     
+            } 
+
+            if(positionDone && scaleDone){
                 info.done = true
             }
         

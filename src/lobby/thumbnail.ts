@@ -17,27 +17,44 @@ export class ThumbnailPlane {
             this.alphaImage = "images/rounded_alpha.png"
         }
         
-        this.entity = engine.addEntity()
-
+        this.entity = engine.addEntity()       
         Transform.create(this.entity, {
-            position: Vector3.create(8, 1, 8)
+            position: _transform.position,
+            scale: _transform.scale,
+            parent: _transform.parent
         })
         
         MeshRenderer.setPlane(this.entity, [
-            0,0,          
-            1,0,          
-            1,1,          
-            0,1,
-          //----
-            1,0,          
-            0,0,
-            0,1,
-            1,1,
+            
+
+            0, //lower-right corner
+            0,
+
+            0, //upper-right corner
+            1,
+
+            1, //upper left-corner
+            1,
+            
+            1, //lower-left corner
+            0,
+
+            0, //lower-right corner
+            0,
+
+            0, //upper-right corner
+            1,
+
+            1, //upper left-corner
+            1,
+            
+            1, //lower-left corner
+            0,
         ])         
         
         Material.setPbrMaterial(this.entity, {
             texture: Material.Texture.Common({
-                src: this.image            
+                src: _image       
             }),
             alphaTexture: Material.Texture.Common({
                 src: this.alphaImage
@@ -49,15 +66,16 @@ export class ThumbnailPlane {
 
         Transform.createOrReplace(this.entity, {
             position: Vector3.create(_transform.position.x, _transform.position.y, _transform.position.z),
-            scale: Vector3.create(_transform.scale.x, _transform.scale.y, _transform.scale.z)
+            scale: Vector3.create(_transform.scale.x, _transform.scale.y, _transform.scale.z),
+            parent: _transform.parent
         })        
 
     }
-    updateImage(texture:string){
+    updateImage(_texture:string){
 
         Material.setPbrMaterial(this.entity, {
             texture: Material.Texture.Common({
-                src: texture           
+                src: _texture          
             }),
             alphaTexture: Material.Texture.Common({
                 src: this.alphaImage
