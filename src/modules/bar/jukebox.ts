@@ -19,7 +19,9 @@ let isMultyplayerEnabled = false
 let FullVolume = 0.1
 let DistantVolume = 0.03
 
-export let isInBar: boolean = false
+//this has to be set false and triggered inside Index.ts see: https://github.com/nobodysGitHub/Genesis-Plaza/blob/master/src/game.ts#L92
+export let isInBar: boolean = true
+
 let barCurrentRadio: Radios | null = Radios.RAVE 
 let pbAudioStream: PBAudioStream = {url: barCurrentRadio}
 let barCurrentRadioIndex: number = 0
@@ -345,7 +347,7 @@ export function setBarMusicOn() {
 
     let radio = barCurrentRadioIndex
     if (radio === barCurrentRadioIndex) return
-    
+
     setBarRadioWhenMultyplayerIsOff()
   }
 
