@@ -6,7 +6,6 @@ import { sceneMessageBus } from '../serverHandler'
 import { tutorialRunning } from '../../lobby/portalBeam'
 
 
-
 export enum Radios {
   RAVE = 'https://icecast.ravepartyradio.org/ravepartyradio-192.mp3',
   DELTA = 'https://cdn.instream.audio/:9069/stream?_=171cd6c2b6e',
@@ -14,6 +13,8 @@ export enum Radios {
   SIGNS = 'https://edge.singsingmusic.net/MC2.mp3',
   JAZZ = 'https://live.vegascity.fm/radio/8010/the_flamingos.mp3',
 }
+
+let isMultyplayerEnabled = false
 
 let FullVolume = 0.1
 let DistantVolume = 0.03
@@ -25,6 +26,7 @@ let barCurrentRadioIndex: number = 0
 let radioCount = 4
 let radioIsOn: boolean = true
 
+let JukeBoxText: Entity
 
 const audioStreamEntity = engine.addEntity()
 
@@ -32,6 +34,7 @@ const audioStreamEntity = engine.addEntity()
 let baseJukeBox = engine.addEntity()
 let baseJukeBoxLights1 = engine.addEntity()
 let baseJukeBoxLights2 = engine.addEntity()
+
 
 export function placeJukeBox() {
 
@@ -73,7 +76,7 @@ export function placeJukeBox() {
 
 
   let JukeboxScreen = engine.addEntity()
-  let JukeBoxText = engine.addEntity()
+  JukeBoxText = engine.addEntity()
 
   Transform.createOrReplace(JukeBoxText, {
     parent:JukeboxScreen
@@ -95,12 +98,24 @@ export function placeJukeBox() {
     'Button_On',
     () => {
       console.log("jukebox.ts","press.onButton","ENTRY")
+
       let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
       let musicState = audioStreamRef && audioStreamRef.playing
-      console.log("jukebox.ts","press.onButton","emit.BarRadioToggle")
-      sceneMessageBus.emit('BarRadioToggle', {
-        state: !musicState,
-      })
+      
+      if(isMultyplayerEnabled){
+        sceneMessageBus.emit('BarRadioToggle', {
+          state: !musicState,
+        })
+      }else{
+        let state = !musicState
+        if (state) {
+          barRadioOn()
+          radioIsOn = true
+        } else {
+          barRadioOff()
+          radioIsOn = false
+        }
+      }
     },
     'On/Off'
   )
@@ -115,9 +130,14 @@ export function placeJukeBox() {
 
       let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
       if (audioStreamRef && audioStreamRef.playing) {
-        sceneMessageBus.emit('setBarRadio', {
-          index: barCurrentRadioIndex,
-        })
+        
+        if(isMultyplayerEnabled){
+          sceneMessageBus.emit('setBarRadio', {
+            index: barCurrentRadioIndex,
+          })
+        }else{
+          setBarRadioWhenMultyplayerIsOff()
+        }
       }
     },
     'Next'
@@ -133,9 +153,14 @@ export function placeJukeBox() {
 
       let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
       if (audioStreamRef && audioStreamRef.playing) {
-        sceneMessageBus.emit('setBarRadio', {
-          index: barCurrentRadioIndex,
-        })
+
+        if(isMultyplayerEnabled){
+          sceneMessageBus.emit('setBarRadio', {
+            index: barCurrentRadioIndex,
+          })
+        }else{
+          setBarRadioWhenMultyplayerIsOff()
+        }
       }
     },
     'Previous'
@@ -311,9 +336,19 @@ export function setBarMusicOn() {
   console.log("jukebox.ts setBarMusicOn has been called")
   let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
 
-  sceneMessageBus.emit('enteredRadioRange', {
-    radio: barCurrentRadioIndex,
-  })
+  if(isMultyplayerEnabled){
+    sceneMessageBus.emit('enteredRadioRange', {
+      radio: barCurrentRadioIndex,
+    })
+  }else{
+    if (!isInBar || barCurrentRadio === null || tutorialRunning) return
+
+    let radio = barCurrentRadioIndex
+    if (radio === barCurrentRadioIndex) return
+    
+    setBarRadioWhenMultyplayerIsOff()
+  }
+
   isInBar = true
   if (audioStreamRef) {
     audioStreamRef.volume = FullVolume
@@ -399,6 +434,53 @@ function getRadioName(radio: number) {
   }
   return radioName
 }
+
+function setBarRadioWhenMultyplayerIsOff(){
+  let newRadio: Radios
+  let index = barCurrentRadioIndex
+
+  switch (index) {
+    case 0:
+      newRadio = Radios.RAVE
+      break
+    case 1:
+      newRadio = Radios.DELTA
+      break
+    case 2:
+      newRadio = Radios.GRAFFITI
+      break
+    case 3:
+      newRadio = Radios.JAZZ
+      break
+    case 4:
+      newRadio = Radios.SIGNS
+      break
+    default:
+      newRadio = Radios.DELTA
+      break
+  }
+
+  let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
+
+  if (
+    barCurrentRadio === newRadio &&
+    audioStreamRef &&
+    audioStreamRef.playing
+  )
+    return
+  if (audioStreamRef) {
+    audioStreamRef.playing = false
+    //barMusicStream = null
+  }
+  barCurrentRadioIndex = index
+  barCurrentRadio = newRadio
+
+
+  TextShape.getMutable(JukeBoxText).text = 'Radio:\n' + getRadioName(barCurrentRadioIndex)
+
+  barRadioOn(barCurrentRadio)
+}
+
 
 let firstTimeMic: boolean = false
 
