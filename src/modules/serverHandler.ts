@@ -9,6 +9,7 @@ import { MessageBusExt } from './messageBusExt';
 //import { updateTradeCentrer } from './marketData'
 
 export const sceneMessageBus = new MessageBusExt();
+sceneMessageBus.isMultiplayerEnabledAll = false
 /*
 export let awsServer = 'https://genesis-plaza.s3.us-east-2.amazonaws.com/'
 export let fireBaseServer =

@@ -104,20 +104,9 @@ export function placeJukeBox() {
       let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
       let musicState = audioStreamRef && audioStreamRef.playing
       
-      if(isMultyplayerEnabled){
-        sceneMessageBus.emit('BarRadioToggle', {
-          state: !musicState,
-        })
-      }else{
-        let state = !musicState
-        if (state) {
-          barRadioOn()
-          radioIsOn = true
-        } else {
-          barRadioOff()
-          radioIsOn = false
-        }
-      }
+      sceneMessageBus.emit('BarRadioToggle', {
+        state: !musicState
+      })
     },
     'On/Off'
   )
@@ -132,14 +121,9 @@ export function placeJukeBox() {
 
       let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
       if (audioStreamRef && audioStreamRef.playing) {
-        
-        if(isMultyplayerEnabled){
-          sceneMessageBus.emit('setBarRadio', {
-            index: barCurrentRadioIndex,
-          })
-        }else{
-          setBarRadioWhenMultyplayerIsOff()
-        }
+        sceneMessageBus.emit('setBarRadio', {
+          index: barCurrentRadioIndex
+        })        
       }
     },
     'Next'
@@ -155,14 +139,9 @@ export function placeJukeBox() {
 
       let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
       if (audioStreamRef && audioStreamRef.playing) {
-
-        if(isMultyplayerEnabled){
-          sceneMessageBus.emit('setBarRadio', {
-            index: barCurrentRadioIndex,
-          })
-        }else{
-          setBarRadioWhenMultyplayerIsOff()
-        }
+        sceneMessageBus.emit('setBarRadio', {
+          index: barCurrentRadioIndex,
+        }) 
       }
     },
     'Previous'
@@ -335,18 +314,10 @@ export function setBarMusicOn() {
   console.log("jukebox.ts setBarMusicOn has been called")
   let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
 
-  if(isMultyplayerEnabled){
-    sceneMessageBus.emit('enteredRadioRange', {
-      radio: barCurrentRadioIndex,
-    })
-  }else{
-    if (!isInBar || barCurrentRadio === null || tutorialRunning) return
-
-    let radio = barCurrentRadioIndex
-    if (radio === barCurrentRadioIndex) return
-
-    setBarRadioWhenMultyplayerIsOff()
-  }
+  sceneMessageBus.emit('enteredRadioRange', {
+    radio: barCurrentRadioIndex,
+  })
+  
 
   isInBar = true
   if (audioStreamRef) {
@@ -432,51 +403,6 @@ function getRadioName(radio: number) {
       break
   }
   return radioName
-}
-
-function setBarRadioWhenMultyplayerIsOff(){
-  let newRadio: Radios
-  let index = barCurrentRadioIndex
-
-  switch (index) {
-    case 0:
-      newRadio = Radios.RAVE
-      break
-    case 1:
-      newRadio = Radios.DELTA
-      break
-    case 2:
-      newRadio = Radios.GRAFFITI
-      break
-    case 3:
-      newRadio = Radios.JAZZ
-      break
-    case 4:
-      newRadio = Radios.SIGNS
-      break
-    default:
-      newRadio = Radios.DELTA
-      break
-  }
-
-  let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
-
-  if (
-    barCurrentRadio === newRadio &&
-    audioStreamRef &&
-    audioStreamRef.playing
-  )
-    return
-  if (audioStreamRef) {
-    audioStreamRef.playing = false
-  }
-  barCurrentRadioIndex = index
-  barCurrentRadio = newRadio
-
-
-  TextShape.getMutable(JukeBoxText).text = 'Radio:\n' + getRadioName(barCurrentRadioIndex)
-
-  barRadioOn(barCurrentRadio)
 }
 
 

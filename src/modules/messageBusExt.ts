@@ -17,9 +17,10 @@ export class MessageBusExt extends MessageBus{
     return result
   }
   emit(message: string, payload: Record<any, any>){
-    if(this.isMultiplayerEnabledAll){
+    if(!this.isMultiplayerEnabledAll){
       this.cbLookup[message](payload,'me')
+    }else{
+      super.emit(message,payload)
     }
-    this.emit(message,payload)
   }
 }
