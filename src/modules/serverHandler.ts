@@ -1,4 +1,5 @@
 import {MessageBus} from '@dcl/sdk/message-bus'
+import { MessageBusExt } from './messageBusExt';
 /*import {
   ArtichokeFloatingTextShape,
   setTowerText,
@@ -7,7 +8,7 @@ import {MessageBus} from '@dcl/sdk/message-bus'
 } from './messageboard'*/
 //import { updateTradeCentrer } from './marketData'
 
-export const sceneMessageBus = new MessageBus()
+export const sceneMessageBus = new MessageBusExt();
 /*
 export let awsServer = 'https://genesis-plaza.s3.us-east-2.amazonaws.com/'
 export let fireBaseServer =
