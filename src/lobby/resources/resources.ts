@@ -55,9 +55,9 @@ export let vortex2Shape:PBGltfContainer=            {src:modelFolder + "vortex2.
 export let divingSignShape:PBGltfContainer=         {src:modelFolder + "diving_sign.glb"}
 
 
-export const dateBGColor:Color4 = Color4.fromHexString("#cdcdcd")
-export const dateMonthColor:Color4 = Color4.fromHexString("#ff3333")
-export const dateDayColor:Color4 = Color4.fromHexString("#000000")
+export const dateBGColor:Color4 = Color4.fromHexString("#cdcdcdff")
+export const dateMonthColor:Color4 = Color4.fromHexString("#ff3333ff")
+export const dateDayColor:Color4 = Color4.fromHexString("#000000ff")
 
 export let dateUIBGMaterial:PBMaterial_PbrMaterial = {
     albedoColor : dateBGColor,
