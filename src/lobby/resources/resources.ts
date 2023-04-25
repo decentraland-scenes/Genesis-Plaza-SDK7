@@ -41,6 +41,7 @@ export let scrollInstructionShape:PBGltfContainer = {src:modelFolder + "scroll_i
 export let playerCounterBGShape:PBGltfContainer =   {src:modelFolder + "player_counter_bg.glb"}
 export let refreshShape:PBGltfContainer =           {src:modelFolder + "refresh_button.glb"}
 export let loadMoreShape:PBGltfContainer =          {src:modelFolder + "load_more_btn.glb"}
+export let menuArrowShape:PBGltfContainer =         {src:modelFolder + "menu_arrow.glb"}
 
 // CLOUDS
 export let cloudDissolveShape:PBGltfContainer=      {src:modelFolder + "cloud_dissolve.glb"}

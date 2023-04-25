@@ -1,6 +1,6 @@
 import { Schemas, Transform, engine } from '@dcl/sdk/ecs'
 import { NoArgCallBack } from './resources/globals'
-import { Vector3 } from '@dcl/sdk/math'
+import { Quaternion, Vector3 } from '@dcl/sdk/math'
 
 export const AnimatedItem = engine.defineComponent('animated-id', {
     wasClicked: Schemas.Boolean,
@@ -11,6 +11,12 @@ export const AnimatedItem = engine.defineComponent('animated-id', {
     highlightScale: Schemas.Vector3 ,
     animFraction:Schemas.Number,
     animVeclocity:Schemas.Number,
+    speed:Schemas.Number,   
+    done:Schemas.Boolean,    
+})
+
+export const SlerpItem = engine.defineComponent('slerped-id', {    
+    targetRotation: Schemas.Quaternion,   
     speed:Schemas.Number,   
     done:Schemas.Boolean,    
 })
@@ -35,66 +41,83 @@ function distance(vec1:Vector3, vec2:Vector3):number{
   
   //simple animator handler
 export function ItemAnimationSystem(dt: number) {
-const animatedItems = engine.getEntitiesWith(AnimatedItem, Transform)
+    const animatedItems = engine.getEntitiesWith(AnimatedItem, Transform)
+    const slerpedItems = engine.getEntitiesWith(SlerpItem, Transform)
+    const snapThreshold = 0.25
 
-const snapThreshold = 0.25
-
-for (const [entity] of animatedItems) {
-    const info = AnimatedItem.getMutable(entity)
-    const transform = Transform.getMutable(entity)
-    let scaleDone = false
-    let positionDone = false
-    
-    if(info.isHighlighted){     
-        if(!info.done){         
-                
-            if(distance(info.highlightPosition, transform.position) > snapThreshold){
-                transform.position = LerpTowards(info.highlightPosition, transform.position, info.speed)  
-            }
-            else{
-                Vector3.copyFrom(info.highlightPosition, transform.position)
-                positionDone = true
-            }
-
-            if(distance(info.highlightScale, transform.scale) > snapThreshold){
-                transform.scale = LerpTowards(info.highlightScale, transform.scale, info.speed)  
-            }
-            else{
-                Vector3.copyFrom(info.highlightScale, transform.scale)
-                scaleDone = true
-            }
-
-            if(positionDone && scaleDone){
-                info.done = true
-            }
-        }                   
-    }
-    else{
-        if(!info.done){                    
-
-            if(distance(info.defaultPosition, transform.position) > snapThreshold){
-                transform.position = LerpTowards(info.defaultPosition, transform.position, info.speed) 
-            }
-            else{
-                Vector3.copyFrom(info.defaultPosition, transform.position)
-                positionDone = true     
-            } 
-
-            if(distance(info.defaultScale, transform.scale) > snapThreshold){
-                transform.scale = LerpTowards(info.defaultScale, transform.scale, info.speed) 
-            }
-            else{
-                Vector3.copyFrom(info.defaultScale, transform.scale)
-                scaleDone = true     
-            } 
-
-            if(positionDone && scaleDone){
-                info.done = true
-            }
+    // POSITION AND SCALE
+    for (const [entity] of animatedItems) {
+        const info = AnimatedItem.getMutable(entity)
+        const transform = Transform.getMutable(entity)
+        let scaleDone = false
+        let positionDone = false
         
+        if(info.isHighlighted){     
+            if(!info.done){         
+                    
+                if(distance(info.highlightPosition, transform.position) > snapThreshold){
+                    transform.position = LerpTowards(info.highlightPosition, transform.position, info.speed)  
+                }
+                else{
+                    Vector3.copyFrom(info.highlightPosition, transform.position)
+                    positionDone = true
+                }
+
+                if(distance(info.highlightScale, transform.scale) > snapThreshold){
+                    transform.scale = LerpTowards(info.highlightScale, transform.scale, info.speed)  
+                }
+                else{
+                    Vector3.copyFrom(info.highlightScale, transform.scale)
+                    scaleDone = true
+                }
+
+                if(positionDone && scaleDone){
+                    info.done = true
+                }
+            }                   
         }
+        else{
+            if(!info.done){                    
+
+                if(distance(info.defaultPosition, transform.position) > snapThreshold){
+                    transform.position = LerpTowards(info.defaultPosition, transform.position, info.speed) 
+                }
+                else{
+                    Vector3.copyFrom(info.defaultPosition, transform.position)
+                    positionDone = true     
+                } 
+
+                if(distance(info.defaultScale, transform.scale) > snapThreshold){
+                    transform.scale = LerpTowards(info.defaultScale, transform.scale, info.speed) 
+                }
+                else{
+                    Vector3.copyFrom(info.defaultScale, transform.scale)
+                    scaleDone = true     
+                } 
+
+                if(positionDone && scaleDone){
+                    info.done = true
+                }
+            
+            }
         }
+    }
+
+    //ROTATION
+    for (const [entity] of slerpedItems) {
+        const info = SlerpItem.getMutable(entity)
+        const transform = Transform.getMutable(entity)
+
+        if(Quaternion.angle(transform.rotation, info.targetRotation) > 1){
+            transform.rotation = Quaternion.slerp(transform.rotation, info.targetRotation, 0.6)
+        }
+        else{
+            transform.rotation = Quaternion.slerp(transform.rotation, info.targetRotation, 1)
+        }
+            
+        
     }
 }
 
 engine.addSystem(ItemAnimationSystem)
+

@@ -346,7 +346,7 @@ export class EventMenuItem extends MenuItem {
     Transform.create(this.detailTextPanel, {
       position: Vector3.create(0.8, 0, 0.2),
         scale: Vector3.create(0, 0.8, 0),
-        rotation: Quaternion.fromEulerDegrees(0, 30, 0),
+        rotation: Quaternion.fromEulerDegrees(-30, 0, 0),
         parent: this.detailsRoot
     })
     GltfContainer.create(this.detailTextPanel, resource.detailsBGShape)    
@@ -354,8 +354,8 @@ export class EventMenuItem extends MenuItem {
     AnimatedItem.create(this.detailTextPanel, {
       wasClicked:false,
       isHighlighted:false,
-      defaultPosition:  Vector3.create(0.8, 0, 0.2),
-      highlightPosition:  Vector3.create(0.9, 0, -0.1),
+      defaultPosition:  Vector3.create(0.0, 0, 0.2),
+      highlightPosition:  Vector3.create(-0.88, 0.88, -0.1),
       defaultScale: Vector3.create(0, 0.8, 0),
       highlightScale:  Vector3.create(1, 1, 1),
       animFraction: 0,
@@ -535,6 +535,7 @@ export class EventMenuItem extends MenuItem {
 
   select() {
 
+    let rootInfo = AnimatedItem.getMutable(this.entity)
     let jumpInButtonInfo = AnimatedItem.getMutable(this.jumpInButton)
     let detailTextInfo = AnimatedItem.getMutable(this.detailTextPanel)
     let highlightRaysInfo = AnimatedItem.getMutable(this.highlightRays)
@@ -544,6 +545,9 @@ export class EventMenuItem extends MenuItem {
     if (!this.selected) {
       
       this.selected = true
+      rootInfo.isHighlighted = true
+      rootInfo.done = false
+
       jumpInButtonInfo.isHighlighted = true
       jumpInButtonInfo.done = false
 
@@ -566,11 +570,15 @@ export class EventMenuItem extends MenuItem {
     if (this.selected) {
       this.selected = false      
     }
+    let rootInfo = AnimatedItem.getMutable(this.entity)
     let jumpInButtonInfo = AnimatedItem.getMutable(this.jumpInButton)
     let detailTextInfo = AnimatedItem.getMutable(this.detailTextPanel)
     let highlightRaysInfo = AnimatedItem.getMutable(this.highlightRays)
     let coordsPanelInfo = AnimatedItem.getMutable(this.coordsPanel)
     let timePanelInfo = AnimatedItem.getMutable(this.timePanel)
+
+    rootInfo.isHighlighted = false
+    rootInfo.done = false
 
     jumpInButtonInfo.isHighlighted = false
     jumpInButtonInfo.done = false
