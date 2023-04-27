@@ -14,8 +14,6 @@ export enum Radios {
   JAZZ = 'https://live.vegascity.fm/radio/8010/the_flamingos.mp3',
 }
 
-let isMultyplayerEnabled = false
-
 let FullVolume = 0.1
 let DistantVolume = 0.03
 
@@ -23,7 +21,11 @@ let DistantVolume = 0.03
 export let isInBar: boolean = true
 
 let barCurrentRadio: Radios | null = Radios.RAVE 
-let pbAudioStream: PBAudioStream = {url: barCurrentRadio}
+let defaultStartStream: PBAudioStream = {
+  url: barCurrentRadio,
+  playing:false,
+  volume:FullVolume
+}
 let barCurrentRadioIndex: number = 0
 let radioCount = 4
 let radioIsOn: boolean = true
@@ -42,19 +44,16 @@ export function placeJukeBox() {
 
   console.log("jukeBox.ts placeJukeBox has being called")
 
-  AudioStream.createOrReplace(audioStreamEntity, pbAudioStream)
+  AudioStream.createOrReplace(audioStreamEntity,  defaultStartStream)
 
-  let musicStreamEntityRef = AudioStream.getMutable(audioStreamEntity)
-  musicStreamEntityRef.volume = FullVolume
-  musicStreamEntityRef.playing = false
-
+  
   GltfContainer.createOrReplace(baseJukeBox, {
-    src: 'models/core_building/jukebox/Jukebox_Base.glb'
+    src: 'models/core_building/jukebox/Jukebox_Base.glb' 
   })
 
   Transform.createOrReplace(baseJukeBox, {
-    position: Vector3.create(179, 0, 144),
-    rotation: Quaternion.create(0, -45, 0),
+    position: Vector3.create(179, 0, 144), 
+    rotation: Quaternion.fromEulerDegrees(0, -45, 0),
     scale: Vector3.create(0.75, 0.75, 0.75),
   })
 
@@ -157,7 +156,7 @@ export function placeJukeBox() {
     } else {
       barRadioOff()
       radioIsOn = false
-    }
+    } 
   })
 
   sceneMessageBus.on('setBarRadio', (e) => {
@@ -270,24 +269,19 @@ export class JukeboxButton {
 }
 
 function barRadioOn(station?: Radios) {
-  console.log("jukebox.ts","barRadioOn","ENTRY")
+  console.log("jukebox.ts","barRadioOn","ENTRY",station)
   if (tutorialRunning) return
   if (isInBar) {
     console.log("jukebox.ts ButtonOn has been pressed")
-    utils.timers.clearTimeout(10)
+    //utils.timers.clearTimeout(10) 
     utils.timers.setTimeout(() =>{
-      let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
-
-      if(station){
-        audioStreamRef.url = station
-      }else{
-        audioStreamRef.url = Radios.RAVE 
-      }
-
-      audioStreamRef.playing = true
-
-      audioStreamRef.volume = FullVolume
-
+      console.log("jukebox.ts","barRadioOn","timer.fired",station)
+      //debugger
+      AudioStream.createOrReplace(audioStreamEntity, {
+        url: station ? station : Radios.RAVE
+        ,playing:true
+        ,volume:FullVolume 
+      })
 
       VisibilityComponent.getMutable(baseJukeBoxLights1).visible = true
       VisibilityComponent.getMutable(baseJukeBoxLights2).visible = true
@@ -300,7 +294,7 @@ function barRadioOn(station?: Radios) {
 
 function barRadioOff() {
   console.log("jukebox.ts ButtonOff has been pressed")
-  let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
+  let audioStreamRef = AudioStream.getMutableOrNull(audioStreamEntity)
   if (audioStreamRef) {
     audioStreamRef.playing = false
   }
@@ -312,7 +306,7 @@ export function setBarMusicOn() {
   if (tutorialRunning) return
 
   console.log("jukebox.ts setBarMusicOn has been called")
-  let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
+  let audioStreamRef = AudioStream.getMutableOrNull(audioStreamEntity)
 
   sceneMessageBus.emit('enteredRadioRange', {
     radio: barCurrentRadioIndex,
