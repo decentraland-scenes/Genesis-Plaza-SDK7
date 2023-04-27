@@ -267,14 +267,14 @@ export class JukeboxButton {
     adioSource.playing = true
   }
 }
-
+let barRadioOnTimeoutId:number|undefined = undefined
 function barRadioOn(station?: Radios) {
   console.log("jukebox.ts","barRadioOn","ENTRY",station)
   if (tutorialRunning) return
   if (isInBar) {
     console.log("jukebox.ts ButtonOn has been pressed")
-    //utils.timers.clearTimeout(10) 
-    utils.timers.setTimeout(() =>{
+    if(barRadioOnTimeoutId)utils.timers.clearTimeout(barRadioOnTimeoutId) 
+    barRadioOnTimeoutId = utils.timers.setTimeout(() =>{
       console.log("jukebox.ts","barRadioOn","timer.fired",station)
       //debugger
       AudioStream.createOrReplace(audioStreamEntity, {
