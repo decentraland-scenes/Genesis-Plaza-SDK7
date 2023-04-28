@@ -1,4 +1,4 @@
-import { ThumbnailPlane } from "./thumbnail"
+import { ThumbnailPlane } from "./subItems/thumbnail"
 import { monthToString, wordWrap } from "./helperFunctions"
 import * as resource from "./resources/resources"
 import { Vector3 } from "@dcl/sdk/math"

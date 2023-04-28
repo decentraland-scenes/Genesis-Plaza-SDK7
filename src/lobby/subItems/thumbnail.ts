@@ -1,4 +1,4 @@
-import { Entity, Material, MeshRenderer, PBMaterial, PBMeshRenderer_PlaneMesh, Transform, TransformType, TransformTypeWithOptionals, engine } from "@dcl/sdk/ecs"
+import { Entity, Material, MeshRenderer, PBMaterial, PBMeshRenderer_PlaneMesh, Transform, TransformType, TransformTypeWithOptionals, VisibilityComponent, engine } from "@dcl/sdk/ecs"
 import { Vector3 } from "@dcl/sdk/math"
 
 export class ThumbnailPlane {
@@ -23,6 +23,7 @@ export class ThumbnailPlane {
             scale: _transform.scale,
             parent: _transform.parent
         })
+        VisibilityComponent.create(this.entity, {visible: true})
         
         MeshRenderer.setPlane(this.entity, [
             
@@ -85,5 +86,11 @@ export class ThumbnailPlane {
             roughness: 1
         })
 
+    }
+    hide(){
+        VisibilityComponent.getMutable(this.entity).visible = false
+    }
+    show(){
+        VisibilityComponent.getMutable(this.entity).visible = true
     }
 }

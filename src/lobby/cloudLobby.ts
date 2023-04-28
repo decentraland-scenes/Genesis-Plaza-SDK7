@@ -120,7 +120,7 @@ export function addCloudLobby(){
 
   //HORIZONTAL EVENT MENU
   let eventMenu = new EventMenu( Vector3.create(lobbyCenter.x, 1.5, lobbyCenter.z))
-  eventMenu.updateEventsMenu(8)
+  eventMenu.updateEventsMenu(20)
 
   /*
   //TODO TAG:PORT-REIMPLEMENT-ME

@@ -2,7 +2,7 @@ import { EventMenuItem } from "./menuItemEvent";
 import { getEvents } from "./checkApi";
 import { MenuItem } from "./menuItem";
 import { Quaternion, Vector3 } from "@dcl/sdk/math";
-import { Entity, GltfContainer, InputAction, MeshCollider, MeshRenderer, Transform, engine, pointerEventsSystem } from "@dcl/sdk/ecs";
+import { Entity, GltfContainer, InputAction, MeshCollider, MeshRenderer, Transform, VisibilityComponent, engine, pointerEventsSystem } from "@dcl/sdk/ecs";
 import * as resource from "./resources/resources"
 import { AnimatedItem, SlerpItem } from "./simpleAnimator";
 
@@ -11,6 +11,7 @@ import { AnimatedItem, SlerpItem } from "./simpleAnimator";
 export class EventMenu {
     items:EventMenuItem[]
     itemRoots:Entity[]
+    currentItem: number = 0
     menuRoot:Entity
     spacing:number
     angleSpacing:number
@@ -19,6 +20,7 @@ export class EventMenu {
     scrollLeftButton:Entity
     scrollRightButton:Entity
     scrollTarget:Quaternion
+    visibleItems:number
 
     constructor(_position:Vector3){
         this.spacing = 3.3
@@ -26,6 +28,7 @@ export class EventMenu {
         this.items = []
         this.itemRoots = []
         this.radius = 16
+        this.visibleItems = 3
 
         this.menuRoot = engine.addEntity()
         Transform.create(this.menuRoot, {
@@ -123,23 +126,66 @@ export class EventMenu {
       }
     }
 
-    scroll(left:boolean){
+    hideItem(_itemID:number){
+      this.items[_itemID].hide()      
+    }
+    showItem(_itemID:number){
+      this.items[_itemID].show()      
+    }
 
-      this.deselectAll()
-      let angle = this.angleSpacing
-
-      if(!left){
-        angle = -this.angleSpacing
-      }
-
-      let transform = Transform.getMutable(this.scrollerRoot)    
+    scroll(left:boolean){      
         
-      this.scrollTarget = Quaternion.multiply(this.scrollTarget, Quaternion.fromEulerDegrees(0,angle,0))      
-      
-      SlerpItem.createOrReplace(this.scrollerRoot, {
-        targetRotation:this.scrollTarget
-      })
+        let angle = this.angleSpacing
 
+
+        if(!left){
+          angle = -this.angleSpacing
+
+          if (this.currentItem < this.items.length - 1) {
+            this.deselectAll()
+            this.currentItem += 1
+            this.selectItem(this.items[this.currentItem])
+            if(this.currentItem > 1){
+              this.hideItem(this.currentItem -2)           
+            }
+            if(this.currentItem + 1 < this.items.length - 1){
+              this.showItem(this.currentItem + 1)           
+            }
+
+            let transform = Transform.getMutable(this.scrollerRoot)          
+            this.scrollTarget = Quaternion.multiply(this.scrollTarget, Quaternion.fromEulerDegrees(0,angle,0))      
+            
+            SlerpItem.createOrReplace(this.scrollerRoot, {
+              targetRotation:this.scrollTarget
+            })    
+            
+          
+          }
+        }
+        else{        
+          if (this.currentItem > 0) {
+            this.deselectAll()
+            this.currentItem -= 1
+            this.selectItem(this.items[this.currentItem])
+
+            if(this.currentItem > 1){
+              this.showItem(this.currentItem - 1)           
+            }
+            if(this.currentItem + 1 < this.items.length - 1){
+              this.hideItem(this.currentItem + 2)           
+            }
+
+            let transform = Transform.getMutable(this.scrollerRoot)          
+            this.scrollTarget = Quaternion.multiply(this.scrollTarget, Quaternion.fromEulerDegrees(0,angle,0))      
+            
+            SlerpItem.createOrReplace(this.scrollerRoot, {
+              targetRotation:this.scrollTarget
+            })                
+          }
+        }
+
+        
+        
     }
     
     
@@ -161,8 +207,9 @@ export class EventMenu {
             rotation: Quaternion.fromEulerDegrees(0, angle,0),
             parent: this.scrollerRoot
         }) 
-        
+        //VisibilityComponent.create(_item.entity, {visible: false})
         this.itemRoots.push(itemRoot)
+        
         
           
 
@@ -219,6 +266,17 @@ export class EventMenu {
             ))
           }    
         }
+        for(let i=0; i < this.items.length; i++){         
+          
+            if(i < this.visibleItems){
+              this.items[i].show()
+            }
+            else{
+              this.items[i].hide()
+            }
+              
+          } 
+           this.selectItem(this.items[0])
     } 
     }
 }

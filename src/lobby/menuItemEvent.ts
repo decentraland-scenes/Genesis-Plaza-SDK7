@@ -1,4 +1,4 @@
-import { ThumbnailPlane } from './thumbnail'
+import { ThumbnailPlane } from './subItems/thumbnail'
 import { cleanString, monthToString, wordWrap } from './helperFunctions'
 import { AnimatedItem } from './simpleAnimator'
 import * as resource from './resources/resources'
@@ -6,7 +6,7 @@ import { MenuItem } from './menuItem'
 import * as sfx from './resources/sounds'
 import { lobbyCenter } from './resources/globals'
 import { getCurrentTime, getTimeStamp } from './checkApi'
-import { Entity, GltfContainer, InputAction, TextAlignMode, TextShape, Transform, TransformType, TransformTypeWithOptionals, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
+import { Entity, GltfContainer, InputAction, TextAlignMode, TextShape, Transform, TransformType, TransformTypeWithOptionals, VisibilityComponent, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { liveSignShape } from './resources/resources'
 import { _openExternalURL, _teleportTo } from '../back-ports/backPorts'
@@ -69,6 +69,7 @@ export class EventMenuItem extends MenuItem {
       scale: Vector3.create(1, 1, 1),
     })    
     GltfContainer.createOrReplace(this.itemBox, resource.menuTitleBGShape )    
+    VisibilityComponent.create(this.itemBox, {visible: true})
     Transform.getMutable(this.itemBox).parent = this.entity
 
     this.defaultItemScale = Vector3.create(2, 2, 2)
@@ -85,9 +86,11 @@ export class EventMenuItem extends MenuItem {
         parent: this.entity
       },
       _alphaTexture
-    )      
+    )  
+       
 
     this.leftDetailsRoot = engine.addEntity()
+    
     Transform.create( this.leftDetailsRoot, {      
         position: Vector3.create(-0.32, 0.28, -0.02),
         rotation: Quaternion.Zero(),
@@ -103,7 +106,7 @@ export class EventMenuItem extends MenuItem {
       position: Vector3.create(-0.25, 0, 0),
       scale: Vector3.create(0.4, 0.4, 0.4),
     })   
-
+    VisibilityComponent.create(this.liveSign, {visible: true})
     GltfContainer.createOrReplace(this.liveSign, resource.liveSignShape )   
 
     // TextShape.create(this.liveSign,{
@@ -117,6 +120,7 @@ export class EventMenuItem extends MenuItem {
       position: Vector3.create(-0.25, 0, 0),
       scale: Vector3.create(0.4, 0.4, 0.4),
     })       
+    VisibilityComponent.create(this.dateBG, {visible: true})
     GltfContainer.createOrReplace(this.dateBG, resource.dateBGShape)    
 
 
@@ -127,21 +131,22 @@ export class EventMenuItem extends MenuItem {
       position: Vector3.create(0, -0.15, -0.05),
       parent: this.dateBG
     })       
-
+    
     this.dateMonthRoot = engine.addEntity()
     Transform.create(this.dateMonthRoot, {
       position: Vector3.create(0, 0.25, -0.05),
       parent: this.dateBG
     })   
+    VisibilityComponent.create(this.dateMonthRoot, {visible: true})
 
     TextShape.create(this.dateRoot, {
       text:this.date.getDate().toString(),
       fontSize:5,
       textColor: resource.dateDayColor,
       outlineColor: resource.dateDayColor,
-      outlineWidth: 0.2
+      outlineWidth: 0.2,      
     })
-
+    VisibilityComponent.create(this.dateRoot, {visible: true})
     TextShape.create(this.dateMonthRoot, {
       text: monthToString(this.date.getMonth()).toUpperCase(),
       fontSize:3,
@@ -237,9 +242,11 @@ export class EventMenuItem extends MenuItem {
       width: 2,
       fontSize: 2,      
       textColor: Color4.Black(),
+      outlineColor: Color4.Black(),
+      outlineWidth: 0.2,
       textAlign: TextAlignMode.TAM_MIDDLE_CENTER,
     })
-    
+    VisibilityComponent.create(this.title, {visible: true})
 
     // -- COORDS PANEL
     this.coordsPanel = engine.addEntity()
@@ -253,7 +260,7 @@ export class EventMenuItem extends MenuItem {
     AnimatedItem.create(this.coordsPanel, {
       wasClicked:false,
       isHighlighted:false,
-      defaultPosition: Vector3.create(0, 0.0, 0.2),
+      defaultPosition: Vector3.create(0, -0.2, 0.2),
       highlightPosition: Vector3.create(-0.4, -0.25, -0.05),
       defaultScale:Vector3.create(0.0, 0.0, 0.0),
       highlightScale: Vector3.create(0.5, 0.5, 0.5),
@@ -279,7 +286,9 @@ export class EventMenuItem extends MenuItem {
     })  
     TextShape.create(this.coords, {
       text: _event.coordinates[0] + ',' + _event.coordinates[1],
-      textColor: Color4.fromHexString('#111111FF')
+      textColor: Color4.fromHexString('#111111FF'),
+      outlineColor: Color4.fromHexString('#111111FF'),
+      outlineWidth: 0.1
     })      
     
 
@@ -295,7 +304,7 @@ export class EventMenuItem extends MenuItem {
     AnimatedItem.create(this.jumpInButton, {
       wasClicked:false,
       isHighlighted:false,
-      defaultPosition: Vector3.create(0, 0.0, 0.2),
+      defaultPosition: Vector3.create(0, -0.2, 0.2),
       highlightPosition:  Vector3.create(0.4, -0.25, -0.05),
       defaultScale:Vector3.create(0.0, 0.0, 0.0),
       highlightScale: Vector3.create(0.5, 0.5, 0.5),
@@ -314,7 +323,9 @@ export class EventMenuItem extends MenuItem {
     TextShape.create(this.jumpButtonText, {
       text:  ' ',
       textColor: Color4.White(),
-      textAlign: TextAlignMode.TAM_MIDDLE_CENTER
+      textAlign: TextAlignMode.TAM_MIDDLE_CENTER,
+      outlineColor: Color4.White(),
+      outlineWidth: 0.2
     })      
 
     if (this.live) {
@@ -354,9 +365,9 @@ export class EventMenuItem extends MenuItem {
     AnimatedItem.create(this.detailTextPanel, {
       wasClicked:false,
       isHighlighted:false,
-      defaultPosition:  Vector3.create(0.0, 0, 0.2),
+      defaultPosition:  Vector3.create(-0.88, 0, 1),
       highlightPosition:  Vector3.create(-0.88, 0.88, -0.1),
-      defaultScale: Vector3.create(0, 0.8, 0),
+      defaultScale: Vector3.create(1, 0.0, 0),
       highlightScale:  Vector3.create(1, 1, 1),
       animFraction: 0,
       animVeclocity: 0,
@@ -377,7 +388,9 @@ export class EventMenuItem extends MenuItem {
       width: 2,
       fontSize: 2,
       textColor: Color4.Black(),
-      textAlign: TextAlignMode.TAM_TOP_LEFT
+      textAlign: TextAlignMode.TAM_TOP_LEFT,
+      outlineColor: Color4.Black(),
+      outlineWidth: 0.2
     })
    
     
@@ -599,6 +612,24 @@ export class EventMenuItem extends MenuItem {
     //     sfx.menuDeselectSource.playOnce()
     // }
   }
-  show() {}
-  hide() {}
+  show() {
+    VisibilityComponent.getMutable(this.itemBox).visible = true
+    VisibilityComponent.getMutable(this.dateBG).visible = true
+    VisibilityComponent.getMutable(this.liveSign).visible = true
+    VisibilityComponent.getMutable(this.dateMonthRoot).visible = true
+    VisibilityComponent.getMutable(this.dateRoot).visible = true
+    VisibilityComponent.getMutable(this.title).visible = true
+    this.thumbNail.show()
+    Transform.getMutable(this.entity).scale = Vector3.One()
+  }
+  hide() {
+    VisibilityComponent.getMutable(this.itemBox).visible = false
+    VisibilityComponent.getMutable(this.dateBG).visible = false
+    VisibilityComponent.getMutable(this.liveSign).visible = false
+    VisibilityComponent.getMutable(this.dateMonthRoot).visible = false
+    VisibilityComponent.getMutable(this.dateRoot).visible = false
+    VisibilityComponent.getMutable(this.title).visible = false
+    this.thumbNail.hide()
+    Transform.getMutable(this.entity).scale = Vector3.Zero()
+  }
 }
