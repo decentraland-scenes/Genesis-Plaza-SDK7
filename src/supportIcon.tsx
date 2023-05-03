@@ -10,7 +10,7 @@ const iconHeight = 36
 
 let promptVisibility: DisplayType = "none"
 let isPromptVisible = false
-const promptPath = 'images/ui/textPanel.png'
+const promptPath = 'images/ui/promptBase.png'
 const destinationUrl = "https://intercom.decentraland.org/"
 const promptDescriptionValue = 'Having trouble \nwith your experience?'
 const promptWidth = 280
@@ -18,17 +18,19 @@ const promptHeight = 150
 const promptPositionTop = 0
 const promptPositionRight = 350
 
-const promptTextPositionTop = 8
+const promptTextPositionTop = 20
 const promptTextPositionRight = 55
 
-const closeButtonPath = 'images/ui/closeButton.png'
-const closeButtonPositionTop = 0
-const closeButtonPositionRight = 180
+const closeButtonPath = 'images/ui/closeButton2.png'
+const closeButtonPositionTop = 10
+const closeButtonPositionRight = 170
 
-const getSupportButtonPath = 'images/ui/buttonE.png'
-const getSupportButtonValue = 'Get Support'
-const getSupportButtonPositionTop = 95
-const getSupportButtonPositionRight = -10
+const supportButtonPath = 'images/ui/promptButton.png'
+const supportButtonValue = 'Get Support'
+const supportButtonHeight = 40
+const supportNuttonWidth = 100
+const supportButtonPositionTop = 95
+const supportButtonPositionRight = -10
 
 
 
@@ -37,24 +39,34 @@ const getSupportButtonPositionRight = -10
 
 export function CreateSupportIcon(){
     return(
-        <Button
-          uiTransform={{ 
-            width: iconWidth,
-            height: iconHeight, 
-            position: `${iconPositionTop} ${iconPositionRight}` 
-        }}
-          uiBackground={{ texture: {src: iconPath} }}
-          value=''
-          onMouseDown={() => {
-            if(isPromptVisible){
-                promptVisibility = "none"
-                isPromptVisible = false
-            }else{
-                promptVisibility = "flex"
-                isPromptVisible = true
-            }
-          }}
-        />
+        <UiEntity
+        
+              uiTransform={{ 
+                padding: 15,
+                margin: 15
+                
+            }}
+        >
+            
+            <Button
+              uiTransform={{ 
+                width: iconWidth,
+                height: iconHeight, 
+                position: `${iconPositionTop} ${iconPositionRight}` 
+            }}
+              uiBackground={{ texture: {src: iconPath} }}
+              value=''
+              onMouseDown={() => {
+                if(isPromptVisible){
+                    promptVisibility = "none"
+                    isPromptVisible = false
+                }else{
+                    promptVisibility = "flex"
+                    isPromptVisible = true
+                }
+              }}
+            />
+        </UiEntity>
     )
 }
 
@@ -100,15 +112,16 @@ export function CreateSupportPromt(){
 
             <Button
                 uiTransform={{ 
-                    width: 100,
-                    height: 40, 
-                    position: `${getSupportButtonPositionTop} ${getSupportButtonPositionRight}` 
+                    width: supportNuttonWidth,
+                    height: supportButtonHeight, 
+                    position: `${supportButtonPositionTop} ${supportButtonPositionRight}` 
                 }}
-                uiBackground={{ texture: {src: getSupportButtonPath} }}
-                value = {getSupportButtonValue}
+                uiBackground={{ texture: {src: supportButtonPath} }}
+                value = {supportButtonValue}
                 fontSize= {14}
                 textAlign='middle-center'
                 onMouseDown={() => {
+                    
                     _openExternalURL(destinationUrl)
                 }}
             />
