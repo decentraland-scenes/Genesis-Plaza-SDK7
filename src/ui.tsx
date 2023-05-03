@@ -6,7 +6,7 @@ import { Color4 } from '@dcl/sdk/math'
 import ReactEcs, { Button, Label, ReactEcsRenderer, UiEntity } from '@dcl/sdk/react-ecs'
 import { Cube } from './components'
 import { createCube } from './factory'
-import { CreateSupportIcon } from './supportIcon'
+import { CreateSupportIcon, CreateSupportPromt } from './supportIcon'
 
 function uiComponent(){
   return(
@@ -81,7 +81,8 @@ function getPlayerPosition() {
 
 const uiComponents = () => [
   //uiComponent(), 
-  CreateSupportIcon()
+  CreateSupportIcon(),
+  CreateSupportPromt()
 ]
 
 export function setupUi() {
