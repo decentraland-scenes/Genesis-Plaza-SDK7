@@ -1,19 +1,14 @@
-import {
-    engine,
-    Transform,
-} from '@dcl/sdk/ecs'
 import { Color4 } from '@dcl/sdk/math'
-import ReactEcs, { Button, DisplayType, Label, ReactEcsRenderer, UiEntity } from '@dcl/sdk/react-ecs'
-import { Cube } from './components'
-import { createCube } from './factory'
+import ReactEcs, { Button, DisplayType, Label, UiEntity } from '@dcl/sdk/react-ecs'
+import { _openExternalURL } from './back-ports/backPorts'
 
 const iconPath = 'images/ui/support_icon.png'
 const iconPositionTop = 10
 const iconPositionRight = 110
-const width = 34
-const height = 34
+const iconWidth = 36
+const iconHeight = 36
 
-let promptVisibility: DisplayType = "flex"
+let promptVisibility: DisplayType = "none"
 let isPromptVisible = false
 const promptPath = 'images/ui/textPanel.png'
 const destinationUrl = "https://intercom.decentraland.org/"
@@ -44,8 +39,8 @@ export function CreateSupportIcon(){
     return(
         <Button
           uiTransform={{ 
-            width: 36,
-            height: 36, 
+            width: iconWidth,
+            height: iconHeight, 
             position: `${iconPositionTop} ${iconPositionRight}` 
         }}
           uiBackground={{ texture: {src: iconPath} }}
@@ -114,10 +109,9 @@ export function CreateSupportPromt(){
                 fontSize= {14}
                 textAlign='middle-center'
                 onMouseDown={() => {
-                    
+                    _openExternalURL(destinationUrl)
                 }}
             />
         </UiEntity>
-
     )
 }
