@@ -16,7 +16,7 @@ export const menuDownSource = 'sounds/menu_woosh.mp3'
 export const menuDownSourceVolume = 1
 
 export const menuScrollEndSource = 'sounds/menu_scroll_end.mp3'
-export const menuScrollEndSourceVolume = 1
+export const menuScrollEndSourceVolume = 2
 
 export const menuSelectSource = 'sounds/menu_select.mp3'
 export const menuSelectSourceVolume = 1

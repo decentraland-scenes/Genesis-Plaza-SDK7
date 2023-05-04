@@ -16,7 +16,7 @@ export class MenuItem {
 
     }
            
-    select(){    
+    select(_silent:boolean){    
     }
     deselect(_silent?:boolean){
         // this.selected = false            

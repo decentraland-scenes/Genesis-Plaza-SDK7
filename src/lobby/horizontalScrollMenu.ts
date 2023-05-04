@@ -1,8 +1,9 @@
 import { EventMenuItem } from "./menuItemEvent";
 import { getEvents } from "./checkApi";
 import { MenuItem } from "./menuItem";
+import * as sfx from './resources/sounds'
 import { Quaternion, Vector3 } from "@dcl/sdk/math";
-import { Entity, GltfContainer, InputAction, MeshCollider, MeshRenderer, Transform, VisibilityComponent, engine, pointerEventsSystem } from "@dcl/sdk/ecs";
+import { AudioSource, ColliderLayer, Entity, GltfContainer, InputAction, MeshCollider, MeshRenderer, Transform, VisibilityComponent, engine, pointerEventsSystem } from "@dcl/sdk/ecs";
 import * as resource from "./resources/resources"
 import { AnimatedItem, SlerpItem } from "./simpleAnimator";
 
@@ -11,8 +12,10 @@ import { AnimatedItem, SlerpItem } from "./simpleAnimator";
 export class EventMenu {
     items:EventMenuItem[]
     itemRoots:Entity[]
+    clickBoxes:Entity[]
     currentItem: number = 0
     menuRoot:Entity
+    audioRoot:Entity
     spacing:number
     angleSpacing:number
     scrollerRoot:Entity
@@ -27,8 +30,9 @@ export class EventMenu {
         this.angleSpacing = 12
         this.items = []
         this.itemRoots = []
+        this.clickBoxes = []
         this.radius = 16
-        this.visibleItems = 3
+        this.visibleItems = 8
 
         this.menuRoot = engine.addEntity()
         Transform.create(this.menuRoot, {
@@ -43,9 +47,9 @@ export class EventMenu {
         })
 
         let menuCenter = Transform.get(this.menuRoot).position
-        let angle = -this.angleSpacing *0.75
-        let rotatedPosVector =  Vector3.rotate(Vector3.scale(Vector3.Forward(), this.radius*0.98), Quaternion.fromEulerDegrees(0,angle,0))
-        rotatedPosVector.y = -0.8
+        let angle = -this.angleSpacing *0.8
+        let rotatedPosVector =  Vector3.rotate(Vector3.scale(Vector3.Forward(), this.radius*0.99), Quaternion.fromEulerDegrees(0,angle,0))
+        rotatedPosVector.y = -1.1
         
         //scroll left
         this.scrollLeftButton = engine.addEntity()
@@ -66,9 +70,9 @@ export class EventMenu {
 
 
         //scroll right
-        angle = this.angleSpacing*0.75
-        rotatedPosVector =  Vector3.rotate(Vector3.scale(Vector3.Forward(), this.radius*0.98), Quaternion.fromEulerDegrees(0,angle,0))
-        rotatedPosVector.y = -0.8
+        angle = this.angleSpacing*0.8
+        rotatedPosVector =  Vector3.rotate(Vector3.scale(Vector3.Forward(), this.radius*0.99), Quaternion.fromEulerDegrees(0,angle,0))
+        rotatedPosVector.y = -1.1
         this.scrollRightButton = engine.addEntity()
         Transform.create(this.scrollRightButton, {
           position: rotatedPosVector,
@@ -88,14 +92,18 @@ export class EventMenu {
          
         this.scrollTarget = Transform.get(this.scrollerRoot).rotation
 
-
+        this.audioRoot = engine.addEntity()
+        Transform.create(this.audioRoot, {
+          position: Vector3.scale(Vector3.Forward(), this.radius),          
+          parent: this.menuRoot
+        })
 
     }
 
-    selectItem(_item: EventMenuItem) {
+    selectItem(_itemID: number, _silent:boolean) {
 
         this.deselectAll()
-        _item.select()
+        this.items[_itemID].select(_silent)
         //if(_id < this.items.length){
         // this.items[_id].select()
         // if (AnimatedItem.getMutableOrNull(_item.entity) != null) {
@@ -107,30 +115,35 @@ export class EventMenu {
         // } else {
         //   _item.select()
         // }
+        const transformClickBox = Transform.getMutable(this.clickBoxes[_itemID])
+      transformClickBox.scale.y = 1.58
+      transformClickBox.position.y = -0.25
     }
 
-    deselectItem(_item: MenuItem, _silent: boolean) {
+    deselectItem(_itemID: number, _silent: boolean) {
       
-      if (_item.selected) {            
-          _item.deselect(_silent)          
-      } else {
-        _item.deselect(_silent)
-      }
+     
+      this.items[_itemID].deselect(_silent)
+      const transformClickBox = Transform.getMutable(this.clickBoxes[_itemID])
+      transformClickBox.scale.y = 0.8
+      transformClickBox.position.y = 0
     }
 
     deselectAll() {
       for (let i = 0; i < this.items.length; i++) {          
         //this.items[i].deselect()          
-        this.deselectItem(this.items[i], true)
+        this.deselectItem(i, true)
         //this.clickBoxes[i].getComponent(OnPointerDown).hoverText = 'SELECT'
       }
     }
 
     hideItem(_itemID:number){
       this.items[_itemID].hide()      
+      MeshCollider.getMutable(this.clickBoxes[_itemID]).collisionMask = 0     
     }
     showItem(_itemID:number){
-      this.items[_itemID].show()      
+      this.items[_itemID].show()   
+      MeshCollider.getMutable(this.clickBoxes[_itemID]).collisionMask =  ColliderLayer.CL_PHYSICS | ColliderLayer.CL_POINTER   
     }
 
     scroll(left:boolean){      
@@ -144,13 +157,18 @@ export class EventMenu {
           if (this.currentItem < this.items.length - 1) {
             this.deselectAll()
             this.currentItem += 1
-            this.selectItem(this.items[this.currentItem])
-            if(this.currentItem > 1){
-              this.hideItem(this.currentItem -2)           
+            this.selectItem(this.currentItem, true)
+
+            if(this.currentItem >= this.visibleItems/2){    
+              this.hideItem(Math.floor(this.currentItem - this.visibleItems/2))
+            }    
+
+            if(this.currentItem + this.visibleItems/2 -1 < this.items.length - 1){
+              this.showItem(this.currentItem + this.visibleItems/2 -1)           
             }
-            if(this.currentItem + 1 < this.items.length - 1){
-              this.showItem(this.currentItem + 1)           
-            }
+
+            
+            
 
             let transform = Transform.getMutable(this.scrollerRoot)          
             this.scrollTarget = Quaternion.multiply(this.scrollTarget, Quaternion.fromEulerDegrees(0,angle,0))      
@@ -158,21 +176,37 @@ export class EventMenu {
             SlerpItem.createOrReplace(this.scrollerRoot, {
               targetRotation:this.scrollTarget
             })    
+            this.playAudio(sfx.menuUpSource, sfx.menuUpSourceVolume)
             
           
           }
+          else{
+            this.playAudio(sfx.menuScrollEndSource, sfx.menuDeselectSourceVolume)
+          }
+          
         }
         else{        
           if (this.currentItem > 0) {
             this.deselectAll()
             this.currentItem -= 1
-            this.selectItem(this.items[this.currentItem])
+            this.selectItem(this.currentItem, true)
 
-            if(this.currentItem > 1){
-              this.showItem(this.currentItem - 1)           
+            for(let i=0; i <  this.visibleItems/2; i++){
+              if(this.currentItem - i > 1){
+                this.showItem(this.currentItem - i)           
+              }
             }
-            if(this.currentItem + 1 < this.items.length - 1){
-              this.hideItem(this.currentItem + 2)           
+
+            // if(this.currentItem + this.visibleItems/2 < this.items.length - 1){
+            //   this.hideItem(this.currentItem + 2)           
+            // }
+
+            if(Math.floor(this.currentItem - this.visibleItems/2 + 1) > 1){    
+              this.showItem(Math.floor(this.currentItem - this.visibleItems/2 + 1 ))
+            }    
+
+            if(this.currentItem + this.visibleItems/2 < this.items.length - 1){
+              this.hideItem(this.currentItem + this.visibleItems/2)           
             }
 
             let transform = Transform.getMutable(this.scrollerRoot)          
@@ -181,6 +215,11 @@ export class EventMenu {
             SlerpItem.createOrReplace(this.scrollerRoot, {
               targetRotation:this.scrollTarget
             })                
+
+            this.playAudio(sfx.menuDownSource, sfx.menuDownSourceVolume)
+          }
+          else{
+            this.playAudio(sfx.menuScrollEndSource, sfx.menuDeselectSourceVolume)
           }
         }
 
@@ -208,9 +247,7 @@ export class EventMenu {
             parent: this.scrollerRoot
         }) 
         //VisibilityComponent.create(_item.entity, {visible: false})
-        this.itemRoots.push(itemRoot)
-        
-        
+        this.itemRoots.push(itemRoot)        
           
 
         // COLLIDER BOX FOR USER INPUT
@@ -221,24 +258,28 @@ export class EventMenu {
         })
         //GltfContainer.create(clickBox, resource.shelfShape)
         MeshCollider.setBox(clickBox)
+        let transform = Transform.getMutable(_item.entity)
+        transform.parent = itemRoot       
+        this.items.push(_item)
+        let id= this.items.length -1
         
         pointerEventsSystem.onPointerDown(clickBox,
             (e) => {
                 if (!_item.selected) {
-                    this.selectItem(_item)
+                    this.selectItem( id, false)
                     //clickBox.getComponent(OnPointerDown).hoverText = 'DESELECT'
                     //sfx.menuSelectSource.playOnce()
                 } else {
-                    this.deselectItem(_item, false)
+                    this.deselectItem(id, false)
                     //clickBox.getComponent(OnPointerDown).hoverText = 'SELECT'
                     //sfx.menuDeselectSource.playOnce()
                 }   
             },
             { hoverText: 'SELECT', button: InputAction.IA_POINTER }
         )   
-        let transform = Transform.getMutable(_item.entity)
-        transform.parent = itemRoot       
-        this.items.push(_item)
+        this.clickBoxes.push(clickBox)
+
+        
     }
 
     async updateEventsMenu(_count:number){
@@ -249,34 +290,45 @@ export class EventMenu {
                 return
               } 
          
-        for(let i=0; i < events.length; i++){
-      
-          if (i < this.items.length){
-            this.items[i].updateItemInfo(events[i])
-          }
-          else{
-            console.log(events[i])
-            this.addMenuItem(new EventMenuItem({ 
-                position: Vector3.create(0,0,0),
-                rotation: Quaternion.Zero(),   
-                scale: Vector3.create(2,2,2)
-              },        
-              "images/rounded_alpha.png",
-              events[i]
-            ))
-          }    
-        }
-        for(let i=0; i < this.items.length; i++){         
-          
-            if(i < this.visibleItems){
-              this.items[i].show()
+          for(let i=0; i < events.length; i++){
+        
+            if (i < this.items.length){
+              this.items[i].updateItemInfo(events[i])
             }
             else{
-              this.items[i].hide()
-            }
-              
-          } 
-           this.selectItem(this.items[0])
-    } 
+              console.log(events[i])
+              this.addMenuItem(new EventMenuItem({ 
+                  position: Vector3.create(0,0,0),
+                  rotation: Quaternion.Zero(),   
+                  scale: Vector3.create(2,2,2)
+                },        
+                "images/rounded_alpha.png",
+                events[i]
+              ))
+            }    
+          }
+
+          for(let i=0; i < this.items.length; i++){         
+            
+              if(i < this.visibleItems/2 ){
+                //this.items[i].show()
+                this.showItem(i)             
+              }
+              else{
+                this.hideItem(i)
+                //this.items[i].hide()
+              }
+                
+            } 
+            this.selectItem(0, true)
+      } 
     }
+    playAudio(sourceUrl:string, volume:number){
+      AudioSource.createOrReplace(this.audioRoot, {
+        audioClipUrl: sourceUrl,
+        playing: true,
+        loop:false,
+        volume: volume
+    })
+  }
 }

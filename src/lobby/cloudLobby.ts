@@ -1,4 +1,4 @@
-import { Vector3 } from '@dcl/sdk/math'
+import { Quaternion, Vector3 } from '@dcl/sdk/math'
 //import { TeleportController } from './portalBeam'
 /*
 import {
@@ -119,7 +119,13 @@ export function addCloudLobby(){
 
 
   //HORIZONTAL EVENT MENU
-  let eventMenu = new EventMenu( Vector3.create(lobbyCenter.x, 1.5, lobbyCenter.z))
+  let menuHorizontalFrame = engine.addEntity()
+  GltfContainer.create(menuHorizontalFrame,{src:'models/lobby/menu_horizontal_bg.glb'})
+  Transform.create(menuHorizontalFrame,{
+      rotation: Quaternion.fromEulerDegrees(0, 180, 0),
+      position: Vector3.create(lobbyCenter.x,0,lobbyCenter.z)
+    })
+  let eventMenu = new EventMenu( Vector3.create(lobbyCenter.x, 2, lobbyCenter.z))
   eventMenu.updateEventsMenu(20)
 
   /*

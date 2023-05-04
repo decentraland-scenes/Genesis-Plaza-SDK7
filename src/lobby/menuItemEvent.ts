@@ -6,7 +6,7 @@ import { MenuItem } from './menuItem'
 import * as sfx from './resources/sounds'
 import { lobbyCenter } from './resources/globals'
 import { getCurrentTime, getTimeStamp } from './checkApi'
-import { Entity, GltfContainer, InputAction, TextAlignMode, TextShape, Transform, TransformType, TransformTypeWithOptionals, VisibilityComponent, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
+import { AudioSource, Entity, GltfContainer, InputAction, TextAlignMode, TextShape, Transform, TransformType, TransformTypeWithOptionals, VisibilityComponent, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { liveSignShape } from './resources/resources'
 import { _openExternalURL, _teleportTo } from '../back-ports/backPorts'
@@ -28,6 +28,7 @@ export class EventMenuItem extends MenuItem {
   public scaleMultiplier: number
 
   entity:Entity
+  
   itemBox: Entity
   title: Entity  
   leftDetailsRoot: Entity
@@ -44,12 +45,14 @@ export class EventMenuItem extends MenuItem {
   detailTextPanel: Entity
   highlightRays: Entity
   highlightFrame: Entity
-  detailEventTitle: Entity
+  //detailEventTitle: Entity
   readMoreButton: Entity
   coordsPanel: Entity
   coords: Entity  
   timePanel: Entity
   startTime: Entity  
+
+
   
 
   constructor(
@@ -169,7 +172,7 @@ export class EventMenuItem extends MenuItem {
       wasClicked:false,
       isHighlighted:false,
       defaultPosition: _transform.position,
-      highlightPosition: Vector3.create(_transform.position.x,_transform.position.y, _transform.position.z-0.6),
+      highlightPosition: Vector3.create(_transform.position.x,_transform.position.y+1, _transform.position.z-0.6),
       defaultScale: Vector3.create(
         this.defaultItemScale.x,
         this.defaultItemScale.y,
@@ -252,7 +255,7 @@ export class EventMenuItem extends MenuItem {
     this.coordsPanel = engine.addEntity()
 
     Transform.create(this.coordsPanel, {
-      position: Vector3.create(-0.3, -0.2, 0),
+      position: Vector3.create(-0.3, 0, 0),
         scale: Vector3.create(0.4, 0.4, 0.4),
         parent: this.detailsRoot
     })
@@ -260,13 +263,13 @@ export class EventMenuItem extends MenuItem {
     AnimatedItem.create(this.coordsPanel, {
       wasClicked:false,
       isHighlighted:false,
-      defaultPosition: Vector3.create(0, -0.2, 0.2),
-      highlightPosition: Vector3.create(-0.4, -0.25, -0.05),
+      defaultPosition: Vector3.create(0, 0.5, 0.3),
+      highlightPosition: Vector3.create(-0.4, 0.88, 0),
       defaultScale:Vector3.create(0.0, 0.0, 0.0),
       highlightScale: Vector3.create(0.5, 0.5, 0.5),
       animFraction: 0,
       animVeclocity: 0,
-      speed: 0.45,
+      speed: 0.4,
       done: false
     })  
 
@@ -280,7 +283,7 @@ export class EventMenuItem extends MenuItem {
 
     this.coords = engine.addEntity()
     Transform.create(this.coords,{
-      position: Vector3.create(0.18, -0.33, -0.05),
+      position: Vector3.create(0.18, -0.36, -0.05),
       scale: Vector3.create(0.18, 0.18, 0.18),
       parent: this.coordsPanel
     })  
@@ -304,8 +307,8 @@ export class EventMenuItem extends MenuItem {
     AnimatedItem.create(this.jumpInButton, {
       wasClicked:false,
       isHighlighted:false,
-      defaultPosition: Vector3.create(0, -0.2, 0.2),
-      highlightPosition:  Vector3.create(0.4, -0.25, -0.05),
+      defaultPosition: Vector3.create(0, 0.5, 0.5),
+      highlightPosition:  Vector3.create(0.4, 0.88, 0),
       defaultScale:Vector3.create(0.0, 0.0, 0.0),
       highlightScale: Vector3.create(0.5, 0.5, 0.5),
       animFraction: 0,
@@ -352,22 +355,22 @@ export class EventMenuItem extends MenuItem {
       
     }
 
-    // EVENT DETAILS TEXT
+    // EVENT DETAILS TEXT PANEL
     this.detailTextPanel = engine.addEntity()
     Transform.create(this.detailTextPanel, {
-      position: Vector3.create(0.8, 0, 0.2),
-        scale: Vector3.create(0, 0.8, 0),
-        rotation: Quaternion.fromEulerDegrees(-30, 0, 0),
+      position: Vector3.create(0, 0, 0.2),
+        scale: Vector3.create(0.8, 0.8, 0),
+        rotation: Quaternion.fromEulerDegrees(0, 0, 0),
         parent: this.detailsRoot
     })
     GltfContainer.create(this.detailTextPanel, resource.detailsBGShape)    
-    
+    VisibilityComponent.create(this.detailTextPanel, {visible: true})
     AnimatedItem.create(this.detailTextPanel, {
       wasClicked:false,
       isHighlighted:false,
-      defaultPosition:  Vector3.create(-0.88, 0, 1),
-      highlightPosition:  Vector3.create(-0.88, 0.88, -0.1),
-      defaultScale: Vector3.create(1, 0.0, 0),
+      defaultPosition:  Vector3.create(0, 0, 0.02),
+      highlightPosition:  Vector3.create(0, -0.6, 0.02),
+      defaultScale: Vector3.create(0.98, 0, 0),
       highlightScale:  Vector3.create(1, 1, 1),
       animFraction: 0,
       animVeclocity: 0,
@@ -376,39 +379,41 @@ export class EventMenuItem extends MenuItem {
     }) 
 
     // EVENT DETAILS TITLE
-    this.detailEventTitle = engine.addEntity()
-    Transform.create(this.detailEventTitle, {
-      position: Vector3.create(0.1, 0.55, 0),
-      scale: Vector3.create(0.3, 0.3, 0.3),
-      parent: this.detailTextPanel
-    })
-    TextShape.create(this.detailEventTitle, {
-      text: wordWrap(cleanString(_event.name), 45, 3),
-      height: 20,
-      width: 2,
-      fontSize: 2,
-      textColor: Color4.Black(),
-      textAlign: TextAlignMode.TAM_TOP_LEFT,
-      outlineColor: Color4.Black(),
-      outlineWidth: 0.2
-    })
+    // this.detailEventTitle = engine.addEntity()
+    // Transform.create(this.detailEventTitle, {
+    //   position: Vector3.create(0.1, 0.55, 0),
+    //   scale: Vector3.create(0.3, 0.3, 0.3),
+    //   parent: this.detailTextPanel
+    // })
+    // TextShape.create(this.detailEventTitle, {
+    //   text: wordWrap(cleanString(_event.name), 45, 3),
+    //   height: 20,
+    //   width: 2,
+    //   fontSize: 2,
+    //   textColor: Color4.Black(),
+    //   textAlign: TextAlignMode.TAM_TOP_LEFT,
+    //   outlineColor: Color4.Black(),
+    //   outlineWidth: 0.2
+    // })
    
     
  // EVENT DETAILS TEXT BODY
     this.detailText = engine.addEntity()
     Transform.create(this.detailText, {
-      position: Vector3.create(0.1, 0.48, 0),
+      position: Vector3.create(-0.70, 0.35, -0.02),
         scale: Vector3.create(0.4, 0.4, 0.4),
         parent: this.detailTextPanel
     })
     TextShape.create(this.detailText, {
-      text:  '\n\n' + wordWrap(cleanString(_event.description), 75, 11) + '</cspace>',
+      text:  '\n\n' + wordWrap(cleanString(_event.description), 70, 11) + '</cspace>',
       fontSize: 1,
       height: 20,
       width: 2,
       textColor: Color4.fromHexString("#111111FF"),
       textAlign: TextAlignMode.TAM_TOP_LEFT,
-      lineSpacing: 0
+      lineSpacing: 0,
+      outlineColor: Color4.fromHexString("#111111FF"),
+      outlineWidth: 0.3
     })   
 
     //details website button
@@ -531,10 +536,10 @@ export class EventMenuItem extends MenuItem {
     
     //detail text
     //remove non-UTF-8 characters and wrap
-    TextShape.getMutable(this.detailEventTitle).text =  wordWrap(cleanString(_event.name), 45, 3)
+    //TextShape.getMutable(this.detailEventTitle).text =  wordWrap(cleanString(_event.name), 45, 3)
 
     //remove non-UTF-8 characters and wrap
-    TextShape.getMutable(this.detailText).text = '\n\n' + wordWrap(cleanString(_event.description), 75, 11) + '</cspace>'
+    TextShape.getMutable(this.detailText).text = '\n\n' + wordWrap(cleanString(_event.description), 70, 11) + '</cspace>'
     
     //details website button (read more)
     pointerEventsSystem.onPointerDown(this.readMoreButton,
@@ -546,7 +551,7 @@ export class EventMenuItem extends MenuItem {
 
   }
 
-  select() {
+  select(_silent:boolean) {
 
     let rootInfo = AnimatedItem.getMutable(this.entity)
     let jumpInButtonInfo = AnimatedItem.getMutable(this.jumpInButton)
@@ -556,6 +561,10 @@ export class EventMenuItem extends MenuItem {
     let timePanelInfo = AnimatedItem.getMutable(this.timePanel)
 
     if (!this.selected) {
+      
+      if(!_silent){
+        this.playAudio(sfx.menuSelectSource, sfx.menuSelectSourceVolume)
+      }
       
       this.selected = true
       rootInfo.isHighlighted = true
@@ -581,6 +590,10 @@ export class EventMenuItem extends MenuItem {
 
   deselect(_silent?: boolean) {
     if (this.selected) {
+      if(!_silent){
+        this.playAudio(sfx.menuDeselectSource, sfx.menuDeselectSourceVolume)
+      }
+      
       this.selected = false      
     }
     let rootInfo = AnimatedItem.getMutable(this.entity)
@@ -619,6 +632,7 @@ export class EventMenuItem extends MenuItem {
     VisibilityComponent.getMutable(this.dateMonthRoot).visible = true
     VisibilityComponent.getMutable(this.dateRoot).visible = true
     VisibilityComponent.getMutable(this.title).visible = true
+    VisibilityComponent.getMutable(this.detailTextPanel).visible = true
     this.thumbNail.show()
     Transform.getMutable(this.entity).scale = Vector3.One()
   }
@@ -629,7 +643,17 @@ export class EventMenuItem extends MenuItem {
     VisibilityComponent.getMutable(this.dateMonthRoot).visible = false
     VisibilityComponent.getMutable(this.dateRoot).visible = false
     VisibilityComponent.getMutable(this.title).visible = false
+    VisibilityComponent.getMutable(this.detailTextPanel).visible = false
     this.thumbNail.hide()
     Transform.getMutable(this.entity).scale = Vector3.Zero()
+  }
+
+  playAudio(sourceUrl:string, volume:number){
+      AudioSource.createOrReplace(this.entity, {
+        audioClipUrl: sourceUrl,
+        playing: true,
+        loop:false,
+        volume: volume
+    })
   }
 }

@@ -43,7 +43,7 @@ function distance(vec1:Vector3, vec2:Vector3):number{
 export function ItemAnimationSystem(dt: number) {
     const animatedItems = engine.getEntitiesWith(AnimatedItem, Transform)
     const slerpedItems = engine.getEntitiesWith(SlerpItem, Transform)
-    const snapThreshold = 0.25
+    const snapThreshold = 0.05
 
     // POSITION AND SCALE
     for (const [entity] of animatedItems) {
