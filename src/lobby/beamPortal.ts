@@ -75,8 +75,14 @@ GltfContainer.createOrReplace(beam, {
 
 export class TeleportController {
     triggerBoxUp: TriggerBox
+    triggerBoxUpPosition: Vector3
+    triggerBoxUpScale: Vector3
     triggerBoxDown: TriggerBox
+    triggerBoxDownPosition: Vector3
+    triggerBoxDownScale: Vector3
     triggerBoxFallCheck: TriggerBox
+    triggerBoxFallCheckPosition: Vector3
+    triggerBoxFallCheckScale: Vector3
     triggers: TriggerBox[]
     delayedTriggers: TriggerBox[]
     portalSys: PortalCheckSystem
@@ -93,22 +99,12 @@ export class TeleportController {
   
       // Trigger to handle teleporting the player up to the cloud
       this.triggerBoxUp = engine.addEntity()
+      this.triggerBoxUpPosition = Vector3.create(lobbyCenter.x, lobbyCenter.y, lobbyCenter.z)
+      this.triggerBoxUpScale = Vector3.create(6, 4.5, 6)
+      
       utils.triggers.addTrigger(this.triggerBoxUp, utils.NO_LAYERS, utils.ALL_LAYERS, 
-        [{type: "box", position: {x: 4, y: 1, z: 4}, scale: {x: 8, y: 1, z: 8}}],
+        [{type: "box", position: this.triggerBoxUpPosition, scale: this.triggerBoxUpScale}],
         function(){
-
-        }
-      )
-
-
-
-
-
-
-      this.triggerBoxUp = new TriggerBox(
-        new Vector3(lobbyCenter.x, lobbyCenter.y, lobbyCenter.z),
-        new Vector3(6, 4.5, 6),
-        () => {
           movePlayerTo(
             { x: lobbyCenter.x + 5, y: 140, z: lobbyCenter.z - 10 },
             { x: lobbyCenter.x, y: 80, z: lobbyCenter.z }
@@ -122,14 +118,19 @@ export class TeleportController {
         }
       )
       this.triggerBoxUp.addComponent(new DelayedTriggerBox(3))
-  
-      engine.addEntity(this.triggerBoxUp)
+
+
+
+
   
       // Trigger that handles landing offset
-      this.triggerBoxDown = new TriggerBox(
-        new Vector3(lobbyCenter.x, lobbyCenter.y + 8, lobbyCenter.z),
-        new Vector3(6, 6, 6),
-        () => {
+      this.triggerBoxDown = engine.addEntity()
+      this.triggerBoxDownPosition = Vector3.create(lobbyCenter.x, lobbyCenter.y + 8, lobbyCenter.z)
+      this.triggerBoxDownScale = Vector3.create(6, 6, 6)
+
+      utils.triggers.addTrigger(this.triggerBoxDown, utils.NO_LAYERS, utils.ALL_LAYERS, 
+        [{type: "box", position: this.triggerBoxDownPosition, scale: this.triggerBoxDownScale}],
+        function(){
           movePlayerTo(
             { x: lobbyCenter.x - 5, y: 0, z: lobbyCenter.z + 2 },
             { x: lobbyCenter.x, y: 2, z: lobbyCenter.z - 12 }
@@ -139,22 +140,23 @@ export class TeleportController {
           this.impactSound.getComponent(AudioSource).playOnce()
         }
       )
-      engine.addEntity(this.triggerBoxDown)
   
       // Trigger to play fall SFX
-      this.triggerBoxFallCheck = new TriggerBox(
-        new Vector3(lobbyCenter.x, lobbyCenter.y + 90, lobbyCenter.z),
-        new Vector3(6, 10, 6),
-        () => {
+      this.triggerBoxFallCheck = engine.addEntity()
+      this.triggerBoxFallCheckPosition = Vector3.create(lobbyCenter.x, lobbyCenter.y + 90, lobbyCenter.z)
+      this.triggerBoxFallCheckScale = Vector3.create(6, 10, 6)
+
+      utils.triggers.addTrigger(this.triggerBoxFallCheck, utils.NO_LAYERS, utils.ALL_LAYERS, 
+        [{type: "box", position: this.triggerBoxFallCheckPosition, scale: this.triggerBoxFallCheckScale],
+        function(){
           sfx.lobbyMusicSource.playing = false
           sfx.lobbyAmbienceSource.playing = false
           this.beamFallSound.getComponent(AudioSource).playOnce()
-  
+
           //disable after one fire
           this.triggerBoxFallCheck.active = false
         }
       )
-      engine.addEntity(this.triggerBoxFallCheck)
   
       this.delayedTriggers.push(this.triggerBoxUp)
       this.triggers.push(this.triggerBoxDown)
