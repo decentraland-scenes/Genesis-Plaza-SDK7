@@ -32,7 +32,7 @@ export class EventMenu {
         this.itemRoots = []
         this.clickBoxes = []
         this.radius = 16
-        this.visibleItems = 6
+        this.visibleItems = 8
 
         this.menuRoot = engine.addEntity()
         Transform.create(this.menuRoot, {
@@ -203,7 +203,7 @@ export class EventMenu {
               this.showItem(Math.floor(this.currentItem - this.visibleItems/2 + 1 ))
             }    
 
-            if(this.currentItem + this.visibleItems/2 < this.items.length - 1){
+            if(this.currentItem + this.visibleItems/2 < this.items.length){
               this.hideItem(this.currentItem + this.visibleItems/2)           
             }
 

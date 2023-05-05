@@ -49,28 +49,28 @@ export function initClouds(){
       )
 
 
-      let cloudsSmall = engine.addEntity()
+      // let cloudsSmall = engine.addEntity()
       
       
-      Transform.create(cloudsSmall,{
-          position: Vector3.create(lobbyCenter.x,lobbyHeight-0.2,lobbyCenter.z),
-          rotation: Quaternion.fromEulerDegrees(0, 0, 0),
-          scale: Vector3.create(1.0,1.0,1.0)          
-      })
+      // Transform.create(cloudsSmall,{
+      //     position: Vector3.create(lobbyCenter.x,lobbyHeight-0.2,lobbyCenter.z),
+      //     rotation: Quaternion.fromEulerDegrees(0, 0, 0),
+      //     scale: Vector3.create(1.0,1.0,1.0)          
+      // })
     
-      GltfContainer.create(cloudsSmall,resource.cloudSmallShape)
-      addCloudRotate(cloudsSmall,false,2)
+      // GltfContainer.create(cloudsSmall,resource.cloudSmallShape)
+      // addCloudRotate(cloudsSmall,false,2)
       
 
-      let cloudsSmall2 = engine.addEntity()
+      // let cloudsSmall2 = engine.addEntity()
       
-      Transform.create(cloudsSmall2,{
-            position: Vector3.create(lobbyCenter.x,lobbyHeight-0.2,lobbyCenter.z),
-            rotation: Quaternion.fromEulerDegrees(0, 0, 0),          
-        })
+      // Transform.create(cloudsSmall2,{
+      //       position: Vector3.create(lobbyCenter.x,lobbyHeight-0.2,lobbyCenter.z),
+      //       rotation: Quaternion.fromEulerDegrees(0, 0, 0),          
+      //   })
       
-      GltfContainer.create(cloudsSmall2,resource.cloudSmall2Shape)
-      addCloudRotate(cloudsSmall2,true,1.5)
+      // GltfContainer.create(cloudsSmall2,resource.cloudSmall2Shape)
+      // addCloudRotate(cloudsSmall2,true,1.5)
       
 
       let cloudsBig = engine.addEntity()
