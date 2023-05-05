@@ -23,7 +23,7 @@
     "trailingComma": "none"
   },
   "dependencies": {
-    "@dcl-sdk/utils": "^1.0.2"
+    "@dcl-sdk/utils": "^1.1.0"
   },
   "bundleDependencies": [
     "@dcl-sdk/utils"

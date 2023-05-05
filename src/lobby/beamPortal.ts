@@ -5,6 +5,8 @@ import { lobbyHeight } from './resources/globals'
 import { isInBar, setBarMusicOn } from '../modules/bar/jukebox'
 import { tutorialEnableObservable } from '../modules/tutorialHandler'
 
+import * as utils from '@dcl-sdk/utils'
+
 // AMBIENT SOUND, WATER + BIRDS
 let ambienceBox = engine.addEntity()
 AudioSource.create(ambienceBox,{
@@ -90,7 +92,19 @@ export class TeleportController {
       this.delayedTriggers = []
   
       // Trigger to handle teleporting the player up to the cloud
-      
+      this.triggerBoxUp = engine.addEntity()
+      utils.triggers.addTrigger(this.triggerBoxUp, utils.NO_LAYERS, utils.ALL_LAYERS, 
+        [{type: "box", position: {x: 4, y: 1, z: 4}, scale: {x: 8, y: 1, z: 8}}],
+        function(){
+
+        }
+      )
+
+
+
+
+
+
       this.triggerBoxUp = new TriggerBox(
         new Vector3(lobbyCenter.x, lobbyCenter.y, lobbyCenter.z),
         new Vector3(6, 4.5, 6),
