@@ -105,10 +105,8 @@ export class TeleportController {
       utils.triggers.addTrigger(this.triggerBoxUp, utils.NO_LAYERS, utils.ALL_LAYERS, 
         [{type: "box", position: this.triggerBoxUpPosition, scale: this.triggerBoxUpScale}],
         function(){
-          movePlayerTo(
-            { x: lobbyCenter.x + 5, y: 140, z: lobbyCenter.z - 10 },
-            { x: lobbyCenter.x, y: 80, z: lobbyCenter.z }
-          )
+          const playerTransform = Transform.getMutable(engine.PlayerEntity)
+          playerTransform.position = { x: lobbyCenter.x + 5, y: 140, z: lobbyCenter.z - 10 }
 
           if (!tutorialRunning) {
             let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
@@ -134,11 +132,9 @@ export class TeleportController {
       utils.triggers.addTrigger(this.triggerBoxDown, utils.NO_LAYERS, utils.ALL_LAYERS, 
         [{type: "box", position: this.triggerBoxDownPosition, scale: this.triggerBoxDownScale}],
         function(){
-          
-          movePlayerTo(
-            { x: lobbyCenter.x - 5, y: 0, z: lobbyCenter.z + 2 },
-            { x: lobbyCenter.x, y: 2, z: lobbyCenter.z - 12 }
-          )
+          const playerTransform = Transform.getMutable(engine.PlayerEntity)
+          playerTransform.position = { x: lobbyCenter.x - 5, y: 0, z: lobbyCenter.z + 2 }
+
           let ambienceMusic = AudioSource.getMutableOrNull(ambienceBox)
           if(ambienceMusic) ambienceMusic.playing = false
           let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
