@@ -109,10 +109,13 @@ export class TeleportController {
             { x: lobbyCenter.x + 5, y: 140, z: lobbyCenter.z - 10 },
             { x: lobbyCenter.x, y: 80, z: lobbyCenter.z }
           )
+
           if (!tutorialRunning) {
-            sfx.lobbyMusicSource.playing = true
+            let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
+            if(lobbyMusic) lobbyMusic.playing = true
           }
-          sfx.lobbyAmbienceSource.playing = true
+          let ambienceMusic = AudioSource.getMutableOrNull(ambienceBox)
+          if(ambienceMusic) ambienceMusic.playing = true
           //enable fall sound trigger
           this.triggerBoxFallCheck.active = true
         }
@@ -131,12 +134,15 @@ export class TeleportController {
       utils.triggers.addTrigger(this.triggerBoxDown, utils.NO_LAYERS, utils.ALL_LAYERS, 
         [{type: "box", position: this.triggerBoxDownPosition, scale: this.triggerBoxDownScale}],
         function(){
+          
           movePlayerTo(
             { x: lobbyCenter.x - 5, y: 0, z: lobbyCenter.z + 2 },
             { x: lobbyCenter.x, y: 2, z: lobbyCenter.z - 12 }
           )
-          sfx.lobbyMusicSource.playing = false
-          sfx.lobbyAmbienceSource.playing = false
+          let ambienceMusic = AudioSource.getMutableOrNull(ambienceBox)
+          if(ambienceMusic) ambienceMusic.playing = false
+          let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
+          if(lobbyMusic) lobbyMusic.playing = false
           this.impactSound.getComponent(AudioSource).playOnce()
         }
       )
@@ -149,8 +155,10 @@ export class TeleportController {
       utils.triggers.addTrigger(this.triggerBoxFallCheck, utils.NO_LAYERS, utils.ALL_LAYERS, 
         [{type: "box", position: this.triggerBoxFallCheckPosition, scale: this.triggerBoxFallCheckScale],
         function(){
-          sfx.lobbyMusicSource.playing = false
-          sfx.lobbyAmbienceSource.playing = false
+          let ambienceMusic = AudioSource.getMutableOrNull(ambienceBox)
+          if(ambienceMusic) ambienceMusic.playing = false
+          let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
+          if(lobbyMusic) lobbyMusic.playing = false
           this.beamFallSound.getComponent(AudioSource).playOnce()
 
           //disable after one fire
