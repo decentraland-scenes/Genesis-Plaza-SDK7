@@ -3,6 +3,7 @@ import { Vector3 } from '@dcl/sdk/math'
 import { lobbyCenter } from './resources/globals'
 import { lobbyHeight } from './resources/globals'
 import { isInBar, setBarMusicOn } from '../modules/bar/jukebox'
+import { tutorialEnableObservable } from '../modules/tutorialHandler'
 
 // AMBIENT SOUND, WATER + BIRDS
 let ambienceBox = engine.addEntity()
@@ -56,6 +57,9 @@ tutorialEnableObservable.add((tutorialEnabled) => {
 })
 
 export let tutorialRunning: boolean = false
+
+
+
 
 
 // BEAM MESH
