@@ -1,8 +1,64 @@
 import { Animator, AudioSource, AudioStream, Entity, GltfContainer, InputAction, Material, MeshRenderer, PBAudioStream, TextShape, Transform, VisibilityComponent, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
 import { Vector3 } from '@dcl/sdk/math'
 import { lobbyCenter } from './resources/globals'
+import { lobbyHeight } from './resources/globals'
+import { isInBar, setBarMusicOn } from '../modules/bar/jukebox'
+
+// AMBIENT SOUND, WATER + BIRDS
+let ambienceBox = engine.addEntity()
+AudioSource.create(ambienceBox,{
+  audioClipUrl: 'sounds/lobby_ambience.mp3',
+  volume: 1,
+  loop: true,
+  playing: true
+})
+Transform.create(ambienceBox, {
+  position: Vector3.create(lobbyCenter.x, lobbyHeight, lobbyCenter.z)
+})
+
+// LOBBY MUSIC
+let musicBox = engine.addEntity()
+Transform.create(musicBox, {
+  position: Vector3.create(0, 2, 0),
+  parent: Attachable.AVATAR
+})
+AudioSource.create(musicBox, {
+  audioClipUrl: 'sounds/lobby_music.mp3',
+  volume: 0.2,
+  loop: true,
+  playing: true
+})
 
 
+
+
+tutorialEnableObservable.add((tutorialEnabled) => {
+  let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
+
+  if (tutorialEnabled) {
+    lobbyMusic = AudioSource.getMutableOrNull(musicBox)
+    if(lobbyMusic) lobbyMusic.playing = false
+
+    tutorialRunning = true
+  } else {
+    // tutorial over
+    tutorialRunning = false
+    if (player.camera.position.y > 30) {
+      lobbyMusic = AudioSource.getMutableOrNull(musicBox)
+      if(lobbyMusic) lobbyMusic.playing = true
+    } else if (isInBar) {
+      setBarMusicOn()
+    }
+  }
+
+  
+  if(lobbyMusic) lobbyMusic.playing = tutorialEnabled ? false : true
+})
+
+export let tutorialRunning: boolean = false
+
+
+// BEAM MESH
 const beam = engine.addEntity()
 Transform.create(beam,{
     position: Vector3.create(lobbyCenter.x, lobbyCenter.y, lobbyCenter.z)
@@ -22,6 +78,8 @@ export class TeleportController {
     beamFireSound: Entity
     beamFallSound: Entity
     impactSound: Entity
+
+    
   
     constructor() {
       this.triggers = []
