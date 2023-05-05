@@ -32,7 +32,7 @@ export class EventMenu {
         this.itemRoots = []
         this.clickBoxes = []
         this.radius = 16
-        this.visibleItems = 8
+        this.visibleItems = 6
 
         this.menuRoot = engine.addEntity()
         Transform.create(this.menuRoot, {
@@ -150,7 +150,7 @@ export class EventMenu {
         
         let angle = this.angleSpacing
 
-
+        // SCROLL RIGHT
         if(!left){
           angle = -this.angleSpacing
 
@@ -163,14 +163,11 @@ export class EventMenu {
               this.hideItem(Math.floor(this.currentItem - this.visibleItems/2))
             }    
 
-            if(this.currentItem + this.visibleItems/2 -1 < this.items.length - 1){
+            if(this.currentItem + this.visibleItems/2 -1 < this.items.length){
               this.showItem(this.currentItem + this.visibleItems/2 -1)           
-            }
+            }            
 
-            
-            
-
-            let transform = Transform.getMutable(this.scrollerRoot)          
+            //let transform = Transform.getMutable(this.scrollerRoot)          
             this.scrollTarget = Quaternion.multiply(this.scrollTarget, Quaternion.fromEulerDegrees(0,angle,0))      
             
             SlerpItem.createOrReplace(this.scrollerRoot, {
@@ -185,23 +182,24 @@ export class EventMenu {
           }
           
         }
+        //SCROLL LEFT
         else{        
           if (this.currentItem > 0) {
             this.deselectAll()
             this.currentItem -= 1
             this.selectItem(this.currentItem, true)
 
-            for(let i=0; i <  this.visibleItems/2; i++){
-              if(this.currentItem - i > 1){
-                this.showItem(this.currentItem - i)           
-              }
-            }
+            // for(let i=0; i <  this.visibleItems/2; i++){
+            //   if(this.currentItem - i > 1){
+            //     this.showItem(this.currentItem - i)           
+            //   }
+            // }
 
             // if(this.currentItem + this.visibleItems/2 < this.items.length - 1){
             //   this.hideItem(this.currentItem + 2)           
             // }
 
-            if(Math.floor(this.currentItem - this.visibleItems/2 + 1) > 1){    
+            if(Math.floor(this.currentItem - this.visibleItems/2 + 1) >= 0){    
               this.showItem(Math.floor(this.currentItem - this.visibleItems/2 + 1 ))
             }    
 
@@ -209,7 +207,7 @@ export class EventMenu {
               this.hideItem(this.currentItem + this.visibleItems/2)           
             }
 
-            let transform = Transform.getMutable(this.scrollerRoot)          
+           // let transform = Transform.getMutable(this.scrollerRoot)          
             this.scrollTarget = Quaternion.multiply(this.scrollTarget, Quaternion.fromEulerDegrees(0,angle,0))      
             
             SlerpItem.createOrReplace(this.scrollerRoot, {

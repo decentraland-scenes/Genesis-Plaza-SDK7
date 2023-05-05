@@ -154,6 +154,8 @@ export class EventMenuItem extends MenuItem {
       text: monthToString(this.date.getMonth()).toUpperCase(),
       fontSize:3,
       textColor: resource.dateMonthColor,      
+      outlineColor: resource.dateMonthColor, 
+      outlineWidth: 0.2     
     })   
 
     
