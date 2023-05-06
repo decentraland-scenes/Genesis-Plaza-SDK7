@@ -1,8 +1,9 @@
 import { Transform, engine } from "@dcl/sdk/ecs";
-import { SKIP_ANALYTICS } from "./AnalyticsConfig";
+import { AnalyticsLogLabel, SKIP_ANALYTICS } from "./AnalyticsConfig";
 import { getUserData } from "~system/UserIdentity"
 import { getRealm } from "~system/Runtime"
 import { getWorldPosition } from "@dcl-sdk/utils";
+import { log } from "../../back-ports/backPorts";
 
 const sceneId: string = "genesis_plaza"
 const inSeconds: boolean = false
@@ -33,10 +34,12 @@ export async function sendTrack(trackEvent: string,
   event: string,
   selection: string,
   durationTime: number) {
-
-
+  
+  const realm = await getRealm({})
+  
   const doc: any = {
     sceneId: sceneId,
+    realm: realm,
     spanId: instance,
     elementType: elementType,
     elementId: elementId,
@@ -128,10 +131,16 @@ type SegemntTrack = {
 
 
 
-const realm = await getRealm({});
-const isPreview = realm.realmInfo?.isPreview
+//const realm = await getRealm({});
+//const isPreview = realm.realmInfo?.isPreview
     //
     // make sure users are matched together by the same "realm".
     //
 //options.realm = realm?.realmInfo?.realmName;
 //options.userData = await getUserData({});
+
+export async function debugGetRealm(){
+  const realm = await getRealm({})
+  console.log(AnalyticsLogLabel, realm.realmInfo.realmName)
+  console.log("AnalyticLogs")
+}

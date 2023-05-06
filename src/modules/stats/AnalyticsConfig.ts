@@ -1,4 +1,4 @@
-export const SKIP_ANALYTICS: boolean = false
+export const SKIP_ANALYTICS: boolean = true
 export const AnalyticsLogLabel: string = "AnalyticLogs"
 
 export const ANALYTICS_EVENT_KEYS = {
