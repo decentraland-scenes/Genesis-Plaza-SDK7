@@ -216,15 +216,17 @@ export class TeleportController {
       })
   
       //impact sound when landing
-      this.impactSound = new Entity()
-      this.impactSound.addComponent(
-        new Transform({
-          position: new Vector3(0, 1, 0),
-        })
-      )
-      this.impactSound.addComponent(sfx.impactHardSource)
-      engine.addEntity(this.impactSound)
-      this.impactSound.setParent(Attachable.AVATAR)
+      this.impactSound = engine.addEntity()
+      Transform.create(this.impactSound, {
+        position: Vector3.create(0, 1, 0),
+        parent: Attachable.AVATAR
+      })
+      AudioSource.create(this.beamFireSound, {
+        audioClipUrl: 'sounds/impact_hard.mp3',
+        volume: 0.3,
+        //loop: true,
+        playing: true
+      })
     }
   
     showTeleport() {
