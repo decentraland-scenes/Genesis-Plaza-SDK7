@@ -192,28 +192,28 @@ export class TeleportController {
       this.beamFireSound = engine.addEntity()
       Transform.create(this.beamFireSound,{
         position: Vector3.create(0, 1, 0),
+        parent: Attachable.AVATAR
       })
       AudioSource.create(this.beamFireSound, {
-        audioClipUrl: 'sounds/beam_charge.mp3',
+        audioClipUrl: 'sounds/beam_fire.mp3',
         volume: 0.5,
         //loop: true,
         playing: true
       })
       
-      this.beamFireSound.addComponent(sfx.beamFireSource)
-      engine.addEntity(this.beamFireSound)
-      this.beamFireSound.setParent(Attachable.AVATAR)
   
       //beam fall sound attached to player
-      this.beamFallSound = new Entity()
-      this.beamFallSound.addComponent(
-        new Transform({
-          position: new Vector3(0, 4, 0),
-        })
-      )
-      this.beamFallSound.addComponent(sfx.beamFallSource)
-      engine.addEntity(this.beamFallSound)
-      this.beamFallSound.setParent(Attachable.AVATAR)
+      this.beamFallSound = engine.addEntity()
+      Transform.create(this.beamFallSound,{
+        position: Vector3.create(0, 4, 0),
+        parent: Attachable.AVATAR
+      })
+      AudioSource.create(this.beamFireSound, {
+        audioClipUrl: 'sounds/beam_fall.mp3',
+        volume: 3,
+        //loop: true,
+        playing: true
+      })
   
       //impact sound when landing
       this.impactSound = new Entity()
