@@ -65,7 +65,7 @@ utils.addOneTimeTrigger(
 )
 */
 
-//utils.triggers.enableDebugDraw(true)
+utils.triggers.enableDebugDraw(true)
 
 // proper bar interior
 addRepeatTrigger(

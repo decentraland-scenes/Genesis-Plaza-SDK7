@@ -1,5 +1,5 @@
 import { Animator, AudioSource, AudioStream, Entity, GltfContainer, InputAction, Material, MeshRenderer, PBAudioStream, TextShape, Transform, VisibilityComponent, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
-import { Vector3 } from '@dcl/sdk/math'
+import { Color3, Vector3 } from '@dcl/sdk/math'
 import { lobbyCenter } from './resources/globals'
 import { lobbyHeight } from './resources/globals'
 import { isInBar, setBarMusicOn } from '../modules/bar/jukebox'
@@ -18,6 +18,7 @@ export class DelayedTriggerBox {
     this.delay = _delay
   }
 }
+
 // AMBIENT SOUND, WATER + BIRDS
 let ambienceBox = engine.addEntity()
 AudioSource.create(ambienceBox,{
@@ -85,17 +86,17 @@ GltfContainer.createOrReplace(beam, {
 })
 
 export class TeleportController {
-    triggerBoxUp: TriggerBox
+    triggerBoxUp: Entity
     triggerBoxUpPosition: Vector3
     triggerBoxUpScale: Vector3
-    triggerBoxDown: TriggerBox
+    triggerBoxDown: Entity
     triggerBoxDownPosition: Vector3
     triggerBoxDownScale: Vector3
-    triggerBoxFallCheck: TriggerBox
+    triggerBoxFallCheck: Entity
     triggerBoxFallCheckPosition: Vector3
     triggerBoxFallCheckScale: Vector3
-    triggers: TriggerBox[]
-    delayedTriggers: TriggerBox[]
+    triggers: Entity[]
+    delayedTriggers: Entity[]
     portalSys: PortalCheckSystem
     portalLiftSpiral: Entity
     beamFireSound: Entity
@@ -113,7 +114,7 @@ export class TeleportController {
       this.triggerBoxUpPosition = Vector3.create(lobbyCenter.x, lobbyCenter.y, lobbyCenter.z)
       this.triggerBoxUpScale = Vector3.create(6, 4.5, 6)
       
-      utils.triggers.addTrigger(this.triggerBoxUp, utils.NO_LAYERS, utils.ALL_LAYERS, 
+      utils.triggers.addTrigger(this.triggerBoxUp, utils.LAYER_1, utils.LAYER_1, 
         [{type: "box", position: this.triggerBoxUpPosition, scale: this.triggerBoxUpScale}],
         function(){
           const playerTransform = Transform.getMutable(engine.PlayerEntity)
@@ -126,9 +127,12 @@ export class TeleportController {
           let ambienceMusic = AudioSource.getMutableOrNull(ambienceBox)
           if(ambienceMusic) ambienceMusic.playing = true
           //enable fall sound trigger
-          this.triggerBoxFallCheck.active = true
-        }
+          utils.triggers.enableTrigger(this, true)
+        },
+        undefined,
+        Color3.Blue()
       )
+      
       this.triggerBoxUp.addComponent(new DelayedTriggerBox(3))
 
 
@@ -150,7 +154,8 @@ export class TeleportController {
           if(ambienceMusic) ambienceMusic.playing = false
           let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
           if(lobbyMusic) lobbyMusic.playing = false
-          this.impactSound.getComponent(AudioSource).playOnce()
+          let impactSounds = AudioSource.getMutable(this.impactSound)
+          
         }
       )
   
@@ -169,10 +174,10 @@ export class TeleportController {
           this.beamFallSound.getComponent(AudioSource).playOnce()
 
           //disable after one fire
-          this.triggerBoxFallCheck.active = false
+          utils.triggers.enableTrigger(this, false)
         }
       )
-  
+
       this.delayedTriggers.push(this.triggerBoxUp)
       this.triggers.push(this.triggerBoxDown)
       this.triggers.push(this.triggerBoxFallCheck)
@@ -241,12 +246,17 @@ export class TeleportController {
     }
   
     showTeleport() {
-      this.triggerBoxUp.getComponent(Transform).position.y = lobbyCenter.y
+      let triggerBoxUpYPosition = Transform.getMutable(this.triggerBoxUp).position.y
+      triggerBoxUpYPosition = lobbyCenter.y
+
       this.triggerBoxUp.updatePosition()
     }
     hideTeleport() {
-      this.triggerBoxUp.getComponent(Transform).position.y = lobbyCenter.y - 10
-      this.triggerBoxUp.updatePosition()
+      let triggerBoxUpYPosition = Transform.getMutable(this.triggerBoxUp).position.y
+      triggerBoxUpYPosition = lobbyCenter.y - 10
+
+      updatePosition(this.triggerBoxUp)
+      
     }
   
     collideSimple() {
@@ -314,4 +324,17 @@ class PortalCheckSystem {
     this.teleportControl.collideDelayed(dt)
     this.teleportControl.collideSimple()
   }
+}
+
+function updatePosition(triggerBoxUp: Entity) {
+  let triggerBoxUpTransform = Transform.getMutable(triggerBoxUp)
+  
+  let areaXMin = triggerBoxUpTransform.position.x - triggerBoxUpTransform.scale.x / 2
+  let areaXMax = triggerBoxUpTransform.position.x + triggerBoxUpTransform.scale.x / 2
+
+  let areaYMin = triggerBoxUpTransform.position.y 
+  let areaYMax = triggerBoxUpTransform.position.y + triggerBoxUpTransform.scale.y 
+
+  let areaZMin = triggerBoxUpTransform.position.z - triggerBoxUpTransform.scale.z / 2
+  let areaZMax = triggerBoxUpTransform.position.z + triggerBoxUpTransform.scale.z / 2
 }
