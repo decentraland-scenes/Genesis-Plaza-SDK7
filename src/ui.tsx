@@ -7,6 +7,13 @@ import ReactEcs, { Button, Label, ReactEcsRenderer, UiEntity } from '@dcl/sdk/re
 import { Cube } from './components'
 import { createCube } from './factory'
 
+export function showTeleportUI(_visible: boolean) {
+  teleportUIContainer.visible = _visible
+}
+export function setTeleportCountdown(_numberString: string) {
+  teleportCountdownText.value = _numberString
+}
+
 const uiComponent = () => (
   <UiEntity
     uiTransform={{

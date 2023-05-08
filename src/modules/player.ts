@@ -1,5 +1,5 @@
 //switch to engine.PlayerEntity
-/*
+
 import { engine } from "@dcl/sdk/ecs"
 
 
@@ -10,4 +10,4 @@ export class PlayerState {
   }
   
   export const player = new PlayerState()
-  */
+  

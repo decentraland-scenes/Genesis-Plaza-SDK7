@@ -6,7 +6,18 @@ import { isInBar, setBarMusicOn } from '../modules/bar/jukebox'
 import { tutorialEnableObservable } from '../modules/tutorialHandler'
 
 import * as utils from '@dcl-sdk/utils'
+import { player } from '../modules/player'
+import { setTeleportCountdown, showTeleportUI } from '../ui'
 
+@Component('DelayedTriggerBox')
+export class DelayedTriggerBox {
+  delay: number = 2
+  elapsed: number = 0
+
+  constructor(_delay: number) {
+    this.delay = _delay
+  }
+}
 // AMBIENT SOUND, WATER + BIRDS
 let ambienceBox = engine.addEntity()
 AudioSource.create(ambienceBox,{
@@ -244,41 +255,49 @@ export class TeleportController {
       }
     }
     collideDelayed(dt: number) {
-      const liftSpiralTransform = this.portalLiftSpiral.getComponent(Transform)
+      const liftSpiralTransform = Transform.getMutableOrNull(this.portalLiftSpiral)
   
       for (let i = 0; i < this.delayedTriggers.length; i++) {
         if (this.delayedTriggers[i].collide(player.feetPos, true)) {
-          const delayInfo =
-            this.delayedTriggers[i].getComponent(DelayedTriggerBox)
+          const delayInfo = this.delayedTriggers[i].getComponent(DelayedTriggerBox)
           delayInfo.elapsed += dt
           showTeleportUI(true)
           let countDownNum = delayInfo.delay - delayInfo.elapsed + 1
           if (countDownNum < 1) countDownNum = 1
           setTeleportCountdown(countDownNum.toFixed(0))
-          liftSpiralTransform.scale.y += dt / delayInfo.delay
-          liftSpiralTransform.position.y += 0.9 * dt
+          if(liftSpiralTransform){
+            liftSpiralTransform.scale.y += dt / delayInfo.delay
+            liftSpiralTransform.position.y += 0.9 * dt
+          }
   
-          if (!this.portalLiftSpiral.getComponent(AudioSource).playing) {
-            this.portalLiftSpiral.getComponent(AudioSource).playOnce()
+          let portalLyftSpyralSound = AudioSource.getMutable(this.portalLiftSpiral)
+          if (!portalLyftSpyralSound.playing) {
+            portalLyftSpyralSound.playing = true
           }
   
           if (delayInfo.elapsed > delayInfo.delay) {
             this.delayedTriggers[i].fire()
-            this.portalLiftSpiral.getComponent(AudioSource).playing = false
-            this.beamFireSound.getComponent(AudioSource).playOnce()
+            let portalLiftSpiralSound = AudioSource.getMutable(this.portalLiftSpiral)
+            portalLiftSpiralSound.playing = false
+            let beamFireSound = AudioSource.getMutable(this.beamFireSound)
+            beamFireSound.playing = true
             delayInfo.elapsed = 0
-            liftSpiralTransform.scale.y = 0
-            liftSpiralTransform.position.y = lobbyCenter.y
+            if(liftSpiralTransform){
+              liftSpiralTransform.scale.y = 0
+              liftSpiralTransform.position.y = lobbyCenter.y
+            }
           }
         } else {
           this.delayedTriggers[i].getComponent(DelayedTriggerBox).elapsed = 0
           showTeleportUI(false)
           setTeleportCountdown('0')
-          liftSpiralTransform.scale.y = 0
-          liftSpiralTransform.position.y = lobbyCenter.y
+          if(liftSpiralTransform){
+            liftSpiralTransform.scale.y = 0
+            liftSpiralTransform.position.y = lobbyCenter.y
+          }
   
-          this.portalLiftSpiral.getComponent(AudioSource).playing = false
-          // this.beamFireSound.getComponent(AudioSource).playing = false
+          let portalLisftSpyralSound = AudioSource.getMutable(this.portalLiftSpiral)
+          portalLisftSpyralSound.playing = false
         }
       }
     }
