@@ -166,29 +166,40 @@ export class TeleportController {
       this.triggers.push(this.triggerBoxDown)
       this.triggers.push(this.triggerBoxFallCheck)
   
-      this.portalLiftSpiral = new Entity()
-      this.portalLiftSpiral.addComponent(
-        new Transform({
-          position: new Vector3(lobbyCenter.x, lobbyCenter.y, lobbyCenter.z),
-          scale: new Vector3(1, 0, 1),
-        })
-      )
-      this.portalLiftSpiral.addComponent(resource.portalSpiralShape)
-      this.portalLiftSpiral.addComponent(sfx.beamChargeSource)
-  
-      engine.addEntity(this.portalLiftSpiral)
+
+
+      this.portalLiftSpiral = engine.addEntity()
+      Transform.create(this.portalLiftSpiral,{
+          position: Vector3.create(lobbyCenter.x, lobbyCenter.y, lobbyCenter.z),
+          scale: Vector3.create(1, 0, 1)
+      })
+      GltfContainer.create(this.portalLiftSpiral,{
+        src: "models/lobby/portal_lift_spiral.glb"
+      })
+      AudioSource.create(this.portalLiftSpiral, {
+        audioClipUrl: 'sounds/beam_charge.mp3',
+        volume: 0.5,
+        //loop: true,
+        playing: true
+      })
+      
+      
   
       this.portalSys = new PortalCheckSystem(this)
-      engine.addSystem(this.portalSys)
+      
   
       //beam teleport sound attached to player
-      this.beamFireSound = new Entity()
-      this.beamFireSound.addComponent(
-        new Transform({
-          //position: new Vector3(lobbyCenter.x, lobbyHeight+40, lobbyCenter.z-7)
-          position: new Vector3(0, 1, 0),
-        })
-      )
+      this.beamFireSound = engine.addEntity()
+      Transform.create(this.beamFireSound,{
+        position: Vector3.create(0, 1, 0),
+      })
+      AudioSource.create(this.beamFireSound, {
+        audioClipUrl: 'sounds/beam_charge.mp3',
+        volume: 0.5,
+        //loop: true,
+        playing: true
+      })
+      
       this.beamFireSound.addComponent(sfx.beamFireSource)
       engine.addEntity(this.beamFireSound)
       this.beamFireSound.setParent(Attachable.AVATAR)
@@ -269,4 +280,17 @@ export class TeleportController {
         }
       }
     }
+}
+
+class PortalCheckSystem {
+  teleportControl: TeleportController
+
+  constructor(_teleportController: TeleportController) {
+    this.teleportControl = _teleportController
   }
+
+  update(dt: number) {
+    this.teleportControl.collideDelayed(dt)
+    this.teleportControl.collideSimple()
+  }
+}
