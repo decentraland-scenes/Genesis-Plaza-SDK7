@@ -127,11 +127,11 @@ export class TeleportController {
       this.triggerBoxUpScale = Vector3.create(6, 4.5, 6)
       Transform.create(this.triggerBoxUp, {})
       
-      utils.triggers.addTrigger(this.triggerBoxUp, utils.LAYER_1, utils.LAYER_1, 
+      utils.triggers.addTrigger(this.triggerBoxUp, utils.NO_LAYERS, utils.LAYER_1,  
         [{type: "box", position: this.triggerBoxUpPosition, scale: this.triggerBoxUpScale}],
-        ()=>{
+        (entity:Entity)=>{ 
         
-          console.log("trigger.camera.enter", "triggerBoxUp", Transform.getOrNull(engine.PlayerEntity))
+          console.log("trigger.camera.enter", "triggerBoxUp", Transform.getOrNull(engine.PlayerEntity),"triggered by",entity,engine.PlayerEntity,engine.CameraEntity)
           showTeleportUI("flex")
           
           
@@ -159,10 +159,10 @@ export class TeleportController {
       this.triggerBoxDownPosition = Vector3.create(lobbyCenter.x, lobbyCenter.y + 8, lobbyCenter.z)
       this.triggerBoxDownScale = Vector3.create(6, 6, 6)
 
-      utils.triggers.addTrigger(this.triggerBoxDown, utils.LAYER_1, utils.LAYER_1, 
+      utils.triggers.addTrigger(this.triggerBoxDown, utils.NO_LAYERS, utils.LAYER_1,  
         [{type: "box", position: this.triggerBoxDownPosition, scale: this.triggerBoxDownScale}],
-        ()=>{
-          console.log("trigger.camera.enter", "triggerBoxDown")
+        (entity:Entity)=>{ 
+          console.log("trigger.camera.enter", "triggerBoxDown","triggered by",entity,"player",engine.PlayerEntity,engine.CameraEntity)
           const playerTransform = Transform.getMutable(engine.PlayerEntity)
           playerTransform.position = { x: lobbyCenter.x - 5, y: 0, z: lobbyCenter.z + 2 }
 
@@ -180,11 +180,11 @@ export class TeleportController {
       // Trigger to play fall SFX
       this.triggerBoxFallCheck = engine.addEntity()
       Transform.create(this.triggerBoxFallCheck, {})
-      this.triggerBoxFallCheckPosition = Vector3.create(lobbyCenter.x, lobbyCenter.y + 90, lobbyCenter.z)
+      this.triggerBoxFallCheckPosition = Vector3.create(lobbyCenter.x, lobbyCenter.y + 107, lobbyCenter.z)
       this.triggerBoxFallCheckScale = Vector3.create(6, 10, 6)
 
      
-      utils.triggers.addTrigger(this.triggerBoxFallCheck, utils.LAYER_1, utils.LAYER_1, 
+      utils.triggers.addTrigger(this.triggerBoxFallCheck, utils.NO_LAYERS, utils.LAYER_1, 
         [{type: "box", position: this.triggerBoxFallCheckPosition, scale: this.triggerBoxFallCheckScale}],
         ()=>{
 
