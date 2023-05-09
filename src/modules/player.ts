@@ -1,6 +1,6 @@
 //switch to engine.PlayerEntity
 
-import { engine } from "@dcl/sdk/ecs"
+/*import { engine } from "@dcl/sdk/ecs"
 
 
 export class PlayerState {
@@ -9,5 +9,5 @@ export class PlayerState {
     headPos: Vector3 = Camera.instance.position
   }
   
-  export const player = new PlayerState()
+  export const player = new PlayerState()*/
   

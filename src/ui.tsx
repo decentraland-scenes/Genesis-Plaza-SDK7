@@ -8,10 +8,10 @@ import { Cube } from './components'
 import { createCube } from './factory'
 
 export function showTeleportUI(_visible: boolean) {
-  teleportUIContainer.visible = _visible
+  //teleportUIContainer.visible = _visible
 }
 export function setTeleportCountdown(_numberString: string) {
-  teleportCountdownText.value = _numberString
+  //teleportCountdownText.value = _numberString
 }
 
 const uiComponent = () => (

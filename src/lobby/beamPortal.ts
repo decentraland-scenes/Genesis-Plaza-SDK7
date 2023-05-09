@@ -3,21 +3,17 @@ import { Color3, Vector3 } from '@dcl/sdk/math'
 import { lobbyCenter } from './resources/globals'
 import { lobbyHeight } from './resources/globals'
 import { isInBar, setBarMusicOn } from '../modules/bar/jukebox'
-import { tutorialEnableObservable } from '../modules/tutorialHandler'
+//import { tutorialEnableObservable } from '../modules/tutorialHandler'
+
+import { onEnterSceneObservable, onLeaveSceneObservable} from '@dcl/sdk/observables'
 
 import * as utils from '@dcl-sdk/utils'
-import { player } from '../modules/player'
-import { setTeleportCountdown, showTeleportUI } from '../ui'
 
-@Component('DelayedTriggerBox')
-export class DelayedTriggerBox {
-  delay: number = 2
-  elapsed: number = 0
+import { showTeleportUI } from '../ui'
+import { TimerId } from '@dcl-sdk/utils/dist/timer'
+import { CountDownUtil } from './countDown'
 
-  constructor(_delay: number) {
-    this.delay = _delay
-  }
-}
+const triggerCounter = new CountDownUtil()
 
 // AMBIENT SOUND, WATER + BIRDS
 let ambienceBox = engine.addEntity()
@@ -35,7 +31,7 @@ Transform.create(ambienceBox, {
 let musicBox = engine.addEntity()
 Transform.create(musicBox, {
   position: Vector3.create(0, 2, 0),
-  parent: Attachable.AVATAR
+  parent: engine.PlayerEntity
 })
 AudioSource.create(musicBox, {
   audioClipUrl: 'sounds/lobby_music.mp3',
@@ -46,8 +42,8 @@ AudioSource.create(musicBox, {
 
 
 
-
-tutorialEnableObservable.add((tutorialEnabled) => {
+/*
+tutorialEnableObservable.add((tutorialEnabled: boolean) => {
   let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
 
   if (tutorialEnabled) {
@@ -69,10 +65,10 @@ tutorialEnableObservable.add((tutorialEnabled) => {
   
   if(lobbyMusic) lobbyMusic.playing = tutorialEnabled ? false : true
 })
+*/
+
 
 export let tutorialRunning: boolean = false
-
-
 
 
 
@@ -97,7 +93,6 @@ export class TeleportController {
     triggerBoxFallCheckScale: Vector3
     triggers: Entity[]
     delayedTriggers: Entity[]
-    portalSys: PortalCheckSystem
     portalLiftSpiral: Entity
     beamFireSound: Entity
     beamFallSound: Entity
@@ -114,39 +109,56 @@ export class TeleportController {
       this.triggerBoxUpPosition = Vector3.create(lobbyCenter.x, lobbyCenter.y, lobbyCenter.z)
       this.triggerBoxUpScale = Vector3.create(6, 4.5, 6)
       
-      utils.triggers.addTrigger(this.triggerBoxUp, utils.LAYER_1, utils.LAYER_1, 
-        [{type: "box", position: this.triggerBoxUpPosition, scale: this.triggerBoxUpScale}],
-        function(){
-          const playerTransform = Transform.getMutable(engine.PlayerEntity)
+      const host = this
+
+      const triggerUpOnEnter = () => {
+        const playerTransform = Transform.getMutable(engine.PlayerEntity)
           playerTransform.position = { x: lobbyCenter.x + 5, y: 140, z: lobbyCenter.z - 10 }
 
-          if (!tutorialRunning) {
+          /*if (!tutorialRunning) {
             let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
             if(lobbyMusic) lobbyMusic.playing = true
-          }
+          }*/
           let ambienceMusic = AudioSource.getMutableOrNull(ambienceBox)
           if(ambienceMusic) ambienceMusic.playing = true
           //enable fall sound trigger
-          utils.triggers.enableTrigger(this, true)
+          utils.triggers.enableTrigger(host.triggerBoxUp, true)
+      }
+
+      let triggerUpOnEnterTimerId: TimerId
+      const COUNT_DOWN_TIMER_AMOUNT = 3000
+      utils.triggers.addTrigger(this.triggerBoxUp, utils.ALL_LAYERS, utils.ALL_LAYERS, 
+        [{type: "box", position: this.triggerBoxUpPosition, scale: this.triggerBoxUpScale}],
+        function(){
+          
+
+          showTeleportUI(true)
+          
+          triggerCounter.start(COUNT_DOWN_TIMER_AMOUNT)
+          
+          let portalLyftSpyralSound = AudioSource.getMutable(host.portalLiftSpiral)
+          if (!portalLyftSpyralSound.playing) {
+            portalLyftSpyralSound.playing = true
+          }
+
+          triggerUpOnEnterTimerId = utils.timers.setTimeout(triggerUpOnEnter, COUNT_DOWN_TIMER_AMOUNT)
         },
-        undefined,
+        function(){
+          if(triggerUpOnEnterTimerId !== undefined){
+            utils.timers.clearTimeout(triggerUpOnEnterTimerId)
+          }
+          triggerCounter.stop()
+          showTeleportUI(false)
+        },
         Color3.Blue()
       )
-      
-      utils.timers.setTimeout()
-
-      this.triggerBoxUp.addComponent(new DelayedTriggerBox(3))
-
-
-
-
   
       // Trigger that handles landing offset
       this.triggerBoxDown = engine.addEntity()
       this.triggerBoxDownPosition = Vector3.create(lobbyCenter.x, lobbyCenter.y + 8, lobbyCenter.z)
       this.triggerBoxDownScale = Vector3.create(6, 6, 6)
 
-      utils.triggers.addTrigger(this.triggerBoxDown, utils.NO_LAYERS, utils.ALL_LAYERS, 
+      utils.triggers.addTrigger(this.triggerBoxDown, utils.LAYER_1, utils.LAYER_1, 
         [{type: "box", position: this.triggerBoxDownPosition, scale: this.triggerBoxDownScale}],
         function(){
           const playerTransform = Transform.getMutable(engine.PlayerEntity)
@@ -156,7 +168,7 @@ export class TeleportController {
           if(ambienceMusic) ambienceMusic.playing = false
           let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
           if(lobbyMusic) lobbyMusic.playing = false
-          let impactSounds = AudioSource.getMutable(this.impactSound)
+          let impactSounds = AudioSource.getMutable(host.impactSound)
           impactSounds.playing = true
         }
       )
@@ -166,9 +178,9 @@ export class TeleportController {
       this.triggerBoxFallCheckPosition = Vector3.create(lobbyCenter.x, lobbyCenter.y + 90, lobbyCenter.z)
       this.triggerBoxFallCheckScale = Vector3.create(6, 10, 6)
 
-      const host = this
-      utils.triggers.addTrigger(this.triggerBoxFallCheck, utils.NO_LAYERS, utils.ALL_LAYERS, 
-        [{type: "box", position: this.triggerBoxFallCheckPosition, scale: this.triggerBoxFallCheckScale],
+     
+      utils.triggers.addTrigger(this.triggerBoxFallCheck, utils.LAYER_1, utils.LAYER_1, 
+        [{type: "box", position: this.triggerBoxFallCheckPosition, scale: this.triggerBoxFallCheckScale}],
         function(){
           let ambienceMusic = AudioSource.getMutableOrNull(ambienceBox)
           if(ambienceMusic) ambienceMusic.playing = false
@@ -203,16 +215,12 @@ export class TeleportController {
         playing: true
       })
       
-      
-  
-      this.portalSys = new PortalCheckSystem(this)
-      
   
       //beam teleport sound attached to player
       this.beamFireSound = engine.addEntity()
       Transform.create(this.beamFireSound,{
         position: Vector3.create(0, 1, 0),
-        parent: Attachable.AVATAR
+        parent: engine.PlayerEntity
       })
       AudioSource.create(this.beamFireSound, {
         audioClipUrl: 'sounds/beam_fire.mp3',
@@ -226,7 +234,7 @@ export class TeleportController {
       this.beamFallSound = engine.addEntity()
       Transform.create(this.beamFallSound,{
         position: Vector3.create(0, 4, 0),
-        parent: Attachable.AVATAR
+        parent: engine.PlayerEntity
       })
       AudioSource.create(this.beamFireSound, {
         audioClipUrl: 'sounds/beam_fall.mp3',
@@ -239,7 +247,7 @@ export class TeleportController {
       this.impactSound = engine.addEntity()
       Transform.create(this.impactSound, {
         position: Vector3.create(0, 1, 0),
-        parent: Attachable.AVATAR
+        parent: engine.PlayerEntity
       })
       AudioSource.create(this.beamFireSound, {
         audioClipUrl: 'sounds/impact_hard.mp3',
@@ -248,86 +256,5 @@ export class TeleportController {
         playing: true
       })
     }
-  
-    showTeleport() {
-      let triggerBoxUpYPosition = Transform.getMutable(this.triggerBoxUp).position.y
-      triggerBoxUpYPosition = lobbyCenter.y
-
-      this.triggerBoxUp.updatePosition()
-    }
-    hideTeleport() {
-      let triggerBoxUpYPosition = Transform.getMutable(this.triggerBoxUp).position.y
-      triggerBoxUpYPosition = lobbyCenter.y - 10
-
-      updatePosition(this.triggerBoxUp)
-      
-    }
-  
-    collideSimple() {
-      for (let i = 0; i < this.triggers.length; i++) {
-        this.triggers[i].collide(player.feetPos)
-      }
-    }
-
-    collideDelayed(dt: number) {
-      const liftSpiralTransform = Transform.getMutableOrNull(this.portalLiftSpiral)
-  
-      for (let i = 0; i < this.delayedTriggers.length; i++) {
-        if (this.delayedTriggers[i].collide(player.feetPos, true)) {
-          const delayInfo = this.delayedTriggers[i].getComponent(DelayedTriggerBox)
-          delayInfo.elapsed += dt
-          showTeleportUI(true)
-          let countDownNum = delayInfo.delay - delayInfo.elapsed + 1
-          if (countDownNum < 1) countDownNum = 1
-          setTeleportCountdown(countDownNum.toFixed(0))
-          if(liftSpiralTransform){
-            liftSpiralTransform.scale.y += dt / delayInfo.delay
-            liftSpiralTransform.position.y += 0.9 * dt
-          }
-  
-          let portalLyftSpyralSound = AudioSource.getMutable(this.portalLiftSpiral)
-          if (!portalLyftSpyralSound.playing) {
-            portalLyftSpyralSound.playing = true
-          }
-  
-          if (delayInfo.elapsed > delayInfo.delay) {
-            this.delayedTriggers[i].fire()
-            let portalLiftSpiralSound = AudioSource.getMutable(this.portalLiftSpiral)
-            portalLiftSpiralSound.playing = false
-            let beamFireSound = AudioSource.getMutable(this.beamFireSound)
-            beamFireSound.playing = true
-            delayInfo.elapsed = 0
-            if(liftSpiralTransform){
-              liftSpiralTransform.scale.y = 0
-              liftSpiralTransform.position.y = lobbyCenter.y
-            }
-          }
-        } else {
-          this.delayedTriggers[i].getComponent(DelayedTriggerBox).elapsed = 0
-          showTeleportUI(false)
-          setTeleportCountdown('0')
-          if(liftSpiralTransform){
-            liftSpiralTransform.scale.y = 0
-            liftSpiralTransform.position.y = lobbyCenter.y
-          }
-  
-          let portalLisftSpyralSound = AudioSource.getMutable(this.portalLiftSpiral)
-          portalLisftSpyralSound.playing = false
-        }
-      }
-    }
-}
-
-class PortalCheckSystem {
-  teleportControl: TeleportController
-
-  constructor(_teleportController: TeleportController) {
-    this.teleportControl = _teleportController
-  }
-
-  update(dt: number) {
-    this.teleportControl.collideDelayed(dt)
-    this.teleportControl.collideSimple()
-  }
 }
 

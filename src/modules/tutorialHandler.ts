@@ -1,4 +1,4 @@
-export const tutorialEnableObservable = new Observable<Readonly<boolean>>()
+/*export const tutorialEnableObservable = new Observable<Readonly<boolean>>()
 
 declare var dcl: any
 
@@ -22,4 +22,4 @@ function subscribeToExternalActions() {
     })
   }
 }
-subscribeToExternalActions()
+subscribeToExternalActions()*/
