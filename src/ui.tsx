@@ -6,12 +6,15 @@ import { Color4 } from '@dcl/sdk/math'
 import ReactEcs, { Button, DisplayType, Label, ReactEcsRenderer, UiEntity } from '@dcl/sdk/react-ecs'
 import { Cube } from './components'
 import { createCube } from './factory'
+import { triggerCounter } from './lobby/beamPortal'
 
-let visible: DisplayType = "none"
+let teleportUIVisibility: DisplayType = "none"
 let timeToBeamUp: number = 3
 
 export function showTeleportUI(isVisible: DisplayType) {
-  visible = isVisible
+  console.log("showTeleportUI" , isVisible ) 
+  //debugger
+  teleportUIVisibility = isVisible
 }
 export function setTeleportCountdown(_numberString: string) {
   //teleportCountdownText.value = _numberString
@@ -22,7 +25,7 @@ const uiBeamMeUp = () => (
     uiTransform={{
       width: 500,
       height: 250,
-      display: visible,
+      display: teleportUIVisibility,
       alignContent: 'center',
 
       position: { top: '30px', right: '-360px' },
@@ -35,7 +38,7 @@ const uiBeamMeUp = () => (
     }}
   >
     <Label
-      value = {timeToBeamUp.toString()}
+      value = {(triggerCounter.counter).toFixed(0)}
       color = {Color4.Black()}
       fontSize = {40}
       font = "serif"

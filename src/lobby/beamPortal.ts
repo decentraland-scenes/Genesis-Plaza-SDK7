@@ -13,7 +13,7 @@ import { showTeleportUI } from '../ui'
 import { TimerId } from '@dcl-sdk/utils/dist/timer'
 import { CountDownUtil } from './countDown'
 
-const triggerCounter = new CountDownUtil()
+export const triggerCounter = new CountDownUtil()
 
 // AMBIENT SOUND, WATER + BIRDS
 let ambienceBox = engine.addEntity()
@@ -127,14 +127,15 @@ export class TeleportController {
       this.triggerBoxUpScale = Vector3.create(6, 4.5, 6)
       Transform.create(this.triggerBoxUp, {})
       
-      utils.triggers.addTrigger(this.triggerBoxUp, utils.ALL_LAYERS, utils.ALL_LAYERS, 
+      utils.triggers.addTrigger(this.triggerBoxUp, utils.LAYER_1, utils.LAYER_1, 
         [{type: "box", position: this.triggerBoxUpPosition, scale: this.triggerBoxUpScale}],
         function(){
         
+          console.log("trigger.camera.enter", "triggerBoxUp", Transform.getOrNull(engine.PlayerEntity))
           showTeleportUI("flex")
           
           
-          triggerCounter.start(COUNT_DOWN_TIMER_AMOUNT)
+          triggerCounter.start(COUNT_DOWN_TIMER_AMOUNT / 1000)
           
           let portalLyftSpyralSound = AudioSource.getMutable(host.portalLiftSpiral)
 
@@ -161,6 +162,7 @@ export class TeleportController {
       utils.triggers.addTrigger(this.triggerBoxDown, utils.LAYER_1, utils.LAYER_1, 
         [{type: "box", position: this.triggerBoxDownPosition, scale: this.triggerBoxDownScale}],
         function(){
+          console.log("trigger.camera.enter", "triggerBoxDown")
           const playerTransform = Transform.getMutable(engine.PlayerEntity)
           playerTransform.position = { x: lobbyCenter.x - 5, y: 0, z: lobbyCenter.z + 2 }
 
@@ -185,6 +187,8 @@ export class TeleportController {
       utils.triggers.addTrigger(this.triggerBoxFallCheck, utils.LAYER_1, utils.LAYER_1, 
         [{type: "box", position: this.triggerBoxFallCheckPosition, scale: this.triggerBoxFallCheckScale}],
         function(){
+
+          console.log("trigger.camera.enter", "triggerBoxFallCheck")
           let ambienceMusic = AudioSource.getMutableOrNull(ambienceBox)
           if(ambienceMusic) ambienceMusic.playing = false
           let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
