@@ -2,14 +2,16 @@ import { ThumbnailPlane } from "./subItems/thumbnail"
 import { monthToString, wordWrap } from "./helperFunctions"
 import * as resource from "./resources/resources"
 import { Vector3 } from "@dcl/sdk/math"
+import { Entity, engine } from "@dcl/sdk/ecs"
 
 
 export class MenuItem {
+    entity:Entity
     selected:boolean = false
     defaultItemScale:Vector3
 
     constructor(){
-
+        this.entity = engine.addEntity()
         this.defaultItemScale = Vector3.create(2,2,2)
     }
     updateItemInfo(_info:any){

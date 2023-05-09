@@ -47,14 +47,16 @@ export function ItemAnimationSystem(dt: number) {
 
     // POSITION AND SCALE
     for (const [entity] of animatedItems) {
-        const info = AnimatedItem.getMutable(entity)
-        const transform = Transform.getMutable(entity)
+        const infoReadonly = AnimatedItem.get(entity)
+        
         let scaleDone = false
         let positionDone = false
         
-        if(info.isHighlighted){     
-            if(!info.done){         
-                    
+        if(infoReadonly.isHighlighted){     
+            if(!infoReadonly.done){         
+                const info = AnimatedItem.getMutable(entity)
+                const transform = Transform.getMutable(entity)
+
                 if(distance(info.highlightPosition, transform.position) > snapThreshold){
                     transform.position = LerpTowards(info.highlightPosition, transform.position, info.speed)  
                 }
@@ -77,7 +79,9 @@ export function ItemAnimationSystem(dt: number) {
             }                   
         }
         else{
-            if(!info.done){                    
+            if(!infoReadonly.done){                    
+                const info = AnimatedItem.getMutable(entity)
+                const transform = Transform.getMutable(entity)
 
                 if(distance(info.defaultPosition, transform.position) > snapThreshold){
                     transform.position = LerpTowards(info.defaultPosition, transform.position, info.speed) 
@@ -105,13 +109,15 @@ export function ItemAnimationSystem(dt: number) {
 
     //ROTATION
     for (const [entity] of slerpedItems) {
-        const info = SlerpItem.getMutable(entity)
-        const transform = Transform.getMutable(entity)
+        const info = SlerpItem.get(entity)
+        const transformReadonly = Transform.get(entity)
 
-        if(Quaternion.angle(transform.rotation, info.targetRotation) > 1){
+        if(Quaternion.angle(transformReadonly.rotation, info.targetRotation) > 1){
+            const transform = Transform.getMutable(entity)
             transform.rotation = Quaternion.slerp(transform.rotation, info.targetRotation, 0.5)
         }
         else{
+            const transform = Transform.getMutable(entity)
             transform.rotation = Quaternion.slerp(transform.rotation, info.targetRotation, 1)
         }
             

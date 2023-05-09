@@ -17,7 +17,7 @@ import * as resource from './resources/resources'
 import { GltfContainer, InputAction, Material, MeshRenderer, Transform, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
 import { _openExternalURL } from '../back-ports/backPorts'
 import { initClouds } from './clouds'
-import { EventMenu } from './horizontalScrollMenu'
+import { HorizontalMenu } from './horizontalScrollMenu'
 //import * as sfx from './resources/sounds'
 //import { insideBar } from 'src/game'
 
@@ -119,15 +119,18 @@ export function addCloudLobby(){
 
 
   //HORIZONTAL EVENT MENU
-  let menuHorizontalFrame = engine.addEntity()
-  GltfContainer.create(menuHorizontalFrame,{src:'models/lobby/menu_horizontal_bg.glb'})
-  Transform.create(menuHorizontalFrame,{
-      rotation: Quaternion.fromEulerDegrees(0, 180, 0),
-      position: Vector3.create(lobbyCenter.x,0.2,lobbyCenter.z)
-    })
+  // let menuHorizontalFrame = engine.addEntity()
+  // GltfContainer.create(menuHorizontalFrame,{src:'models/lobby/menu_horizontal_bg.glb'})
+  // Transform.create(menuHorizontalFrame,{
+  //     rotation: Quaternion.fromEulerDegrees(0, 180, 0),
+  //     position: Vector3.create(lobbyCenter.x,0.2,lobbyCenter.z)
+  //   })
 
-  let eventMenu = new EventMenu( Vector3.create(lobbyCenter.x, 2, lobbyCenter.z))
+  let eventMenu = new HorizontalMenu( Vector3.create(lobbyCenter.x, 2, lobbyCenter.z))
   eventMenu.updateEventsMenu(20)
+
+  let crowdsMenu = new HorizontalMenu( Vector3.create(lobbyCenter.x, 4, lobbyCenter.z))  
+  crowdsMenu.updateCrowdsMenu(10)
 
   /*
   //TODO TAG:PORT-REIMPLEMENT-ME

@@ -1,16 +1,17 @@
 import { EventMenuItem } from "./menuItemEvent";
-import { getEvents } from "./checkApi";
+import { getEvents, getTrendingScenes } from "./checkApi";
 import { MenuItem } from "./menuItem";
 import * as sfx from './resources/sounds'
 import { Quaternion, Vector3 } from "@dcl/sdk/math";
 import { AudioSource, ColliderLayer, Entity, GltfContainer, InputAction, MeshCollider, MeshRenderer, Transform, VisibilityComponent, engine, pointerEventsSystem } from "@dcl/sdk/ecs";
 import * as resource from "./resources/resources"
 import { AnimatedItem, SlerpItem } from "./simpleAnimator";
+import { CrowdMenuItem } from "./menuItemCrowd";
 
 
 
-export class EventMenu {
-    items:EventMenuItem[]
+export class HorizontalMenu {
+    items:MenuItem[]
     itemRoots:Entity[]
     clickBoxes:Entity[]
     currentItem: number = 0
@@ -226,12 +227,12 @@ export class EventMenu {
     }
     
     
-    addMenuItem(_item: EventMenuItem) {
+    addMenuItem(_item: MenuItem) {
 
         let menuCenter = Transform.get(this.menuRoot).position
         let angle = this.items.length * this.angleSpacing
         let rotatedPosVector =  Vector3.rotate(Vector3.scale(Vector3.Forward(), this.radius), Quaternion.fromEulerDegrees(0,angle,0))
-
+        
         //let pos = Vector3.add(menuCenter, rotatedPosVector)
         rotatedPosVector.y = 0
 
@@ -259,7 +260,7 @@ export class EventMenu {
         let transform = Transform.getMutable(_item.entity)
         transform.parent = itemRoot       
         this.items.push(_item)
-        let id= this.items.length -1
+        let id = this.items.length -1
         
         pointerEventsSystem.onPointerDown(clickBox,
             (e) => {
@@ -276,6 +277,7 @@ export class EventMenu {
             { hoverText: 'SELECT', button: InputAction.IA_POINTER }
         )   
         this.clickBoxes.push(clickBox)
+        
 
         
     }
@@ -321,6 +323,57 @@ export class EventMenu {
             this.selectItem(0, true)
       } 
     }
+
+    async updateCrowdsMenu(_count:number){
+
+      let scenes = await getTrendingScenes(10)
+      console.log("SCENES:    " + scenes)
+      if(scenes){
+        if (scenes.length <= 0) {
+          return
+        }
+      
+       
+       // console.log("scene:length: " + scenes.length)
+        console.log("items:length: " + this.items.length)   
+        for(let i=0; i < scenes.length; i++){
+          
+          if (i < this.items.length){        
+           
+            this.items[i].updateItemInfo(scenes[i])
+          }
+          else{
+           
+           // console.log(scenes[i])
+            
+            this.addMenuItem(new CrowdMenuItem({ 
+                position: Vector3.create(0,0,0),
+                rotation: Quaternion.Zero(),   
+                scale: Vector3.create(2,2,2)
+              },        
+              "images/rounded_alpha.png",
+              scenes[i]
+            ))
+            
+          }    
+        }
+
+        for(let i=0; i < this.items.length; i++){         
+          
+            if(i < this.visibleItems/2 ){
+              //this.items[i].show()
+              this.showItem(i)             
+            }
+            else{
+              this.hideItem(i)
+              //this.items[i].hide()
+            }
+              
+          } 
+          this.selectItem(0, true)
+     } 
+    
+  }
     playAudio(sourceUrl:string, volume:number){
       AudioSource.createOrReplace(this.audioRoot, {
         audioClipUrl: sourceUrl,
