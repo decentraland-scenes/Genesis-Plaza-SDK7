@@ -131,8 +131,6 @@ export class TeleportController {
         [{type: "box", position: this.triggerBoxUpPosition, scale: this.triggerBoxUpScale}],
         function(){
         
-          console.log("you entered the trigger")
-
           showTeleportUI("flex")
           
           
@@ -187,7 +185,6 @@ export class TeleportController {
       utils.triggers.addTrigger(this.triggerBoxFallCheck, utils.LAYER_1, utils.LAYER_1, 
         [{type: "box", position: this.triggerBoxFallCheckPosition, scale: this.triggerBoxFallCheckScale}],
         function(){
-          console.log("DIo")
           let ambienceMusic = AudioSource.getMutableOrNull(ambienceBox)
           if(ambienceMusic) ambienceMusic.playing = false
           let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
@@ -199,7 +196,7 @@ export class TeleportController {
           utils.triggers.enableTrigger(host.triggerBoxFallCheck, false)
         },
         undefined,
-        Color3.Yellow()
+        Color3.Red()
       )
 
   

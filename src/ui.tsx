@@ -8,9 +8,9 @@ import { Cube } from './components'
 import { createCube } from './factory'
 
 let visible: DisplayType = "none"
+let timeToBeamUp: number = 3
 
 export function showTeleportUI(isVisible: DisplayType) {
-  //teleportUIContainer.visible = _visible
   visible = isVisible
 }
 export function setTeleportCountdown(_numberString: string) {
@@ -19,19 +19,32 @@ export function setTeleportCountdown(_numberString: string) {
 
 const uiBeamMeUp = () => (
   <UiEntity
-            uiTransform={{ //This is the container, it's also the backround image that will contain the rest of the ui
-                width: 300,
-                height: 300,
-                display: 'flex',
-                positionType: 'absolute',
-                position: { top: '50px', right: '15px' } ,
-                flexDirection:'column',
-                flexWrap:'wrap',
-                alignSelf:'flex-end',
-                padding: '7'
-            }}
-            uiBackground={{ color: Color4.Blue()}}
-        ></UiEntity>
+    uiTransform={{
+      width: 500,
+      height: 250,
+      display: visible,
+      alignContent: 'center',
+
+      position: { top: '30px', right: '-360px' },
+
+    }}
+    uiBackground={{
+      texture: {
+        src: "images/ui_beam_up_bg.png"
+      }
+    }}
+  >
+    <Label
+      value = {timeToBeamUp.toString()}
+      color = {Color4.Black()}
+      fontSize = {40}
+      font = "serif"
+      textAlign = "middle-center"
+      uiTransform={{
+        position: { top: '55px', right: '-248px' } 
+    }}
+    />
+  </UiEntity>
 )
 
 
@@ -107,6 +120,8 @@ const uiComponent = () => [
   uiBeamMeUp(),
   //uiSpawnCube()
 ]
+
+setupUi()
 
 export function setupUi() {
   ReactEcsRenderer.setUiRenderer(uiBeamMeUp)

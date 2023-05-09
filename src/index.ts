@@ -9,7 +9,6 @@ import { lowerVolume, outOfBar, placeJukeBox, setBarMusicOff, setBarMusicOn } fr
 import { addRepeatTrigger } from './modules/Utils'
 import { log } from './back-ports/backPorts'
 import { lobbyCenter } from './lobby/resources/globals'
-import { showTeleportUI } from './ui'
 import { TeleportController } from './lobby/beamPortal'
 
 
