@@ -187,6 +187,7 @@ export class TeleportController {
       utils.triggers.addTrigger(this.triggerBoxFallCheck, utils.LAYER_1, utils.LAYER_1, 
         [{type: "box", position: this.triggerBoxFallCheckPosition, scale: this.triggerBoxFallCheckScale}],
         function(){
+          console.log("DIo")
           let ambienceMusic = AudioSource.getMutableOrNull(ambienceBox)
           if(ambienceMusic) ambienceMusic.playing = false
           let lobbyMusic = AudioSource.getMutableOrNull(musicBox)

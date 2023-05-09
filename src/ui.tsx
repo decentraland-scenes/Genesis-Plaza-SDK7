@@ -19,13 +19,19 @@ export function setTeleportCountdown(_numberString: string) {
 
 const uiBeamMeUp = () => (
   <UiEntity
-    uiTransform={{
-      width: 400,
-      height: 400,
-      display: visible
-    }}
-    uiBackground={{ color: Color4.Black() }}
-  ></UiEntity>
+            uiTransform={{ //This is the container, it's also the backround image that will contain the rest of the ui
+                width: 300,
+                height: 300,
+                display: 'flex',
+                positionType: 'absolute',
+                position: { top: '50px', right: '15px' } ,
+                flexDirection:'column',
+                flexWrap:'wrap',
+                alignSelf:'flex-end',
+                padding: '7'
+            }}
+            uiBackground={{ color: Color4.Blue()}}
+        ></UiEntity>
 )
 
 
@@ -99,9 +105,9 @@ function getPlayerPosition() {
 
 const uiComponent = () => [
   uiBeamMeUp(),
-  uiSpawnCube()
+  //uiSpawnCube()
 ]
 
 export function setupUi() {
-  ReactEcsRenderer.setUiRenderer(uiComponent)
+  ReactEcsRenderer.setUiRenderer(uiBeamMeUp)
 }
