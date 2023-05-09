@@ -129,7 +129,7 @@ export class TeleportController {
       
       utils.triggers.addTrigger(this.triggerBoxUp, utils.LAYER_1, utils.LAYER_1, 
         [{type: "box", position: this.triggerBoxUpPosition, scale: this.triggerBoxUpScale}],
-        function(){
+        ()=>{
         
           console.log("trigger.camera.enter", "triggerBoxUp", Transform.getOrNull(engine.PlayerEntity))
           showTeleportUI("flex")
@@ -143,7 +143,7 @@ export class TeleportController {
 
           triggerUpOnEnterTimerId = utils.timers.setTimeout(triggerUpOnEnter, COUNT_DOWN_TIMER_AMOUNT)
         },
-        function(){
+        ()=>{
           if(triggerUpOnEnterTimerId !== undefined){
             utils.timers.clearTimeout(triggerUpOnEnterTimerId)
           }
@@ -161,7 +161,7 @@ export class TeleportController {
 
       utils.triggers.addTrigger(this.triggerBoxDown, utils.LAYER_1, utils.LAYER_1, 
         [{type: "box", position: this.triggerBoxDownPosition, scale: this.triggerBoxDownScale}],
-        function(){
+        ()=>{
           console.log("trigger.camera.enter", "triggerBoxDown")
           const playerTransform = Transform.getMutable(engine.PlayerEntity)
           playerTransform.position = { x: lobbyCenter.x - 5, y: 0, z: lobbyCenter.z + 2 }
@@ -186,7 +186,7 @@ export class TeleportController {
      
       utils.triggers.addTrigger(this.triggerBoxFallCheck, utils.LAYER_1, utils.LAYER_1, 
         [{type: "box", position: this.triggerBoxFallCheckPosition, scale: this.triggerBoxFallCheckScale}],
-        function(){
+        ()=>{
 
           console.log("trigger.camera.enter", "triggerBoxFallCheck")
           let ambienceMusic = AudioSource.getMutableOrNull(ambienceBox)
@@ -195,9 +195,6 @@ export class TeleportController {
           if(lobbyMusic) lobbyMusic.playing = false
           let beamFallSound = AudioSource.getMutable(host.beamFallSound)
           beamFallSound.playing = true
-
-          //disable after one fire
-          utils.triggers.enableTrigger(host.triggerBoxFallCheck, false)
         },
         undefined,
         Color3.Red()
