@@ -29,15 +29,15 @@ Transform.create(ambienceBox, {
 
 // LOBBY MUSIC
 let musicBox = engine.addEntity()
-Transform.create(musicBox, {
-  position: Vector3.create(0, 2, 0),
-  parent: engine.PlayerEntity
-})
 AudioSource.create(musicBox, {
   audioClipUrl: 'sounds/lobby_music.mp3',
   volume: 0.2,
   loop: true,
   playing: true
+})
+Transform.create(musicBox, {
+  position: Vector3.create(0, 2, 0),
+  parent: engine.PlayerEntity
 })
 
 
@@ -99,13 +99,12 @@ export class TeleportController {
     
   
     constructor() {
-  
-      // Trigger to handle teleporting the player up to the cloud
-      this.triggerBoxUp = engine.addEntity()
-      this.triggerBoxUpPosition = Vector3.create(lobbyCenter.x, lobbyCenter.y, lobbyCenter.z)
-      this.triggerBoxUpScale = Vector3.create(6, 4.5, 6)
+      
+      console.log("TeleportControlle constructed")
+      
       
       const host = this
+
 
       const triggerUpOnEnter = () => {
         const playerTransform = Transform.getMutable(engine.PlayerEntity)
@@ -123,27 +122,38 @@ export class TeleportController {
 
       let triggerUpOnEnterTimerId: TimerId
       const COUNT_DOWN_TIMER_AMOUNT = 3000
+
+      // Trigger to handle teleporting the player up to the cloud
+      this.triggerBoxUp = engine.addEntity()
+
+      this.triggerBoxUpPosition = Vector3.create(lobbyCenter.x, lobbyCenter.y, lobbyCenter.z)
+      this.triggerBoxUpScale = Vector3.create(6, 4.5, 6)
+      Transform.create(this.triggerBoxUp, {
+        position: this.triggerBoxUpPosition,
+        scale: this.triggerBoxUpScale
+      })
+      
       utils.triggers.addTrigger(this.triggerBoxUp, utils.ALL_LAYERS, utils.ALL_LAYERS, 
         [{type: "box", position: this.triggerBoxUpPosition, scale: this.triggerBoxUpScale}],
         function(){
+        
+          console.log("you entered the trigger")
+          //showTeleportUI("flex")
           
-
-          showTeleportUI("flex")
-          
+          /*
           triggerCounter.start(COUNT_DOWN_TIMER_AMOUNT)
           
           let portalLyftSpyralSound = AudioSource.getMutable(host.portalLiftSpiral)
-          if (!portalLyftSpyralSound.playing) {
-            portalLyftSpyralSound.playing = true
-          }
 
-          triggerUpOnEnterTimerId = utils.timers.setTimeout(triggerUpOnEnter, COUNT_DOWN_TIMER_AMOUNT)
+          if (!portalLyftSpyralSound.playing) portalLyftSpyralSound.playing = true
+
+          triggerUpOnEnterTimerId = utils.timers.setTimeout(triggerUpOnEnter, COUNT_DOWN_TIMER_AMOUNT)*/
         },
         function(){
-          if(triggerUpOnEnterTimerId !== undefined){
+          /*if(triggerUpOnEnterTimerId !== undefined){
             utils.timers.clearTimeout(triggerUpOnEnterTimerId)
           }
-          triggerCounter.stop()
+          triggerCounter.stop()*/
           showTeleportUI("none")
         },
         Color3.Blue()
@@ -151,6 +161,9 @@ export class TeleportController {
   
       // Trigger that handles landing offset
       this.triggerBoxDown = engine.addEntity()
+      Transform.create(this.triggerBoxDown, { 
+        position: Vector3.create(0,0,0,)
+      })
       this.triggerBoxDownPosition = Vector3.create(lobbyCenter.x, lobbyCenter.y + 8, lobbyCenter.z)
       this.triggerBoxDownScale = Vector3.create(6, 6, 6)
 
@@ -171,6 +184,7 @@ export class TeleportController {
   
       // Trigger to play fall SFX
       this.triggerBoxFallCheck = engine.addEntity()
+      Transform.create(this.triggerBoxFallCheck)
       this.triggerBoxFallCheckPosition = Vector3.create(lobbyCenter.x, lobbyCenter.y + 90, lobbyCenter.z)
       this.triggerBoxFallCheckScale = Vector3.create(6, 10, 6)
 
@@ -194,6 +208,12 @@ export class TeleportController {
 
 
       this.portalLiftSpiral = engine.addEntity()
+      AudioSource.create(this.portalLiftSpiral, {
+        audioClipUrl: 'sounds/beam_charge.mp3',
+        volume: 0.5,
+        //loop: true,
+        playing: true
+      })
       Transform.create(this.portalLiftSpiral,{
           position: Vector3.create(lobbyCenter.x, lobbyCenter.y, lobbyCenter.z),
           scale: Vector3.create(1, 0, 1)
@@ -201,52 +221,46 @@ export class TeleportController {
       GltfContainer.create(this.portalLiftSpiral,{
         src: "models/lobby/portal_lift_spiral.glb"
       })
-      AudioSource.create(this.portalLiftSpiral, {
-        audioClipUrl: 'sounds/beam_charge.mp3',
-        volume: 0.5,
-        //loop: true,
-        playing: true
-      })
       
   
       //beam teleport sound attached to player
       this.beamFireSound = engine.addEntity()
-      Transform.create(this.beamFireSound,{
-        position: Vector3.create(0, 1, 0),
-        parent: engine.PlayerEntity
-      })
       AudioSource.create(this.beamFireSound, {
         audioClipUrl: 'sounds/beam_fire.mp3',
         volume: 0.5,
         //loop: true,
         playing: true
       })
+      Transform.create(this.beamFireSound,{
+        position: Vector3.create(0, 1, 0),
+        parent: engine.PlayerEntity
+      })
       
   
       //beam fall sound attached to player
       this.beamFallSound = engine.addEntity()
-      Transform.create(this.beamFallSound,{
-        position: Vector3.create(0, 4, 0),
-        parent: engine.PlayerEntity
-      })
-      AudioSource.create(this.beamFireSound, {
+      AudioSource.create(this.beamFallSound, {
         audioClipUrl: 'sounds/beam_fall.mp3',
         volume: 3,
         //loop: true,
         playing: true
       })
+      Transform.create(this.beamFallSound,{
+        position: Vector3.create(0, 4, 0),
+        parent: engine.PlayerEntity
+      })
   
       //impact sound when landing
       this.impactSound = engine.addEntity()
-      Transform.create(this.impactSound, {
-        position: Vector3.create(0, 1, 0),
-        parent: engine.PlayerEntity
-      })
-      AudioSource.create(this.beamFireSound, {
+      AudioSource.create(this.impactSound, {
         audioClipUrl: 'sounds/impact_hard.mp3',
         volume: 0.3,
         //loop: true,
         playing: true
+      })
+      Transform.create(this.impactSound, {
+        position: Vector3.create(0, 1, 0),
+        parent: engine.PlayerEntity
       })
     }
 }

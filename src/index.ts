@@ -1,6 +1,6 @@
-import { engine, executeTask, Material } from '@dcl/sdk/ecs'
+import { engine, executeTask, Material, Transform } from '@dcl/sdk/ecs'
 import * as utils from '@dcl-sdk/utils'
-import { Color4, Vector3 } from '@dcl/sdk/math'
+import { Color3, Color4, Vector3 } from '@dcl/sdk/math'
 import { addBuildings } from './modules/buildings'
 //import { placeDoors } from './modules/bar/doors'
 import { barPlatforms } from './modules/platforms'
@@ -8,6 +8,9 @@ import { addCloudLobby } from './lobby/cloudLobby'
 import { lowerVolume, outOfBar, placeJukeBox, setBarMusicOff, setBarMusicOn } from './modules/bar/jukebox'
 import { addRepeatTrigger } from './modules/Utils'
 import { log } from './back-ports/backPorts'
+import { lobbyCenter } from './lobby/resources/globals'
+import { showTeleportUI } from './ui'
+import { TeleportController } from './lobby/beamPortal'
 
 
 // export all the functions required to make the scene work
@@ -23,6 +26,8 @@ addCloudLobby()
 //// ADD BUILDINGS
 
 addBuildings()
+
+
 
 ///////// BAR STUFF
 
@@ -147,3 +152,20 @@ utils.addOneTimeTrigger(
 )
 */
 
+/*
+let trigger = engine.addEntity()
+Transform.create(trigger)
+      utils.triggers.addTrigger(trigger, utils.NO_LAYERS, utils.NO_LAYERS, 
+        [{type: "box", position: Vector3.create(6, 4.5, 6), scale:Vector3.create(6, 4.5, 6)}],
+        function(){
+        
+          
+          console.log("entered in trigger")
+          
+          
+        },
+        function(){
+          
+        },
+        Color3.Green()
+      )*/
