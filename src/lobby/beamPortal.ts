@@ -21,7 +21,7 @@ AudioSource.create(ambienceBox,{
   audioClipUrl: 'sounds/lobby_ambience.mp3',
   volume: 1,
   loop: true,
-  playing: true
+  playing: false
 })
 Transform.create(ambienceBox, {
   position: Vector3.create(lobbyCenter.x, lobbyHeight, lobbyCenter.z)
@@ -33,7 +33,7 @@ AudioSource.create(musicBox, {
   audioClipUrl: 'sounds/lobby_music.mp3',
   volume: 0.2,
   loop: true,
-  playing: true
+  playing: false
 })
 Transform.create(musicBox, {
   position: Vector3.create(0, 2, 0),
@@ -208,7 +208,7 @@ export class TeleportController {
         audioClipUrl: 'sounds/beam_charge.mp3',
         volume: 0.5,
         //loop: true,
-        playing: true
+        playing: false
       })
       Transform.create(this.portalLiftSpiral,{
           position: Vector3.create(lobbyCenter.x, lobbyCenter.y, lobbyCenter.z),
@@ -225,7 +225,7 @@ export class TeleportController {
         audioClipUrl: 'sounds/beam_fire.mp3',
         volume: 0.5,
         //loop: true,
-        playing: true
+        playing: false
       })
       Transform.create(this.beamFireSound,{
         position: Vector3.create(0, 1, 0),
@@ -239,7 +239,7 @@ export class TeleportController {
         audioClipUrl: 'sounds/beam_fall.mp3',
         volume: 3,
         //loop: true,
-        playing: true
+        playing: false
       })
       Transform.create(this.beamFallSound,{
         position: Vector3.create(0, 4, 0),
@@ -252,7 +252,7 @@ export class TeleportController {
         audioClipUrl: 'sounds/impact_hard.mp3',
         volume: 0.3,
         //loop: true,
-        playing: true
+        playing: false
       })
       Transform.create(this.impactSound, {
         position: Vector3.create(0, 1, 0),
