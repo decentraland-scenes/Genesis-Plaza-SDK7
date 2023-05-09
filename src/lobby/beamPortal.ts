@@ -132,22 +132,23 @@ export class TeleportController {
         function(){
         
           console.log("you entered the trigger")
-          //showTeleportUI("flex")
+
+          showTeleportUI("flex")
           
-          /*
+          
           triggerCounter.start(COUNT_DOWN_TIMER_AMOUNT)
           
           let portalLyftSpyralSound = AudioSource.getMutable(host.portalLiftSpiral)
 
           if (!portalLyftSpyralSound.playing) portalLyftSpyralSound.playing = true
 
-          triggerUpOnEnterTimerId = utils.timers.setTimeout(triggerUpOnEnter, COUNT_DOWN_TIMER_AMOUNT)*/
+          triggerUpOnEnterTimerId = utils.timers.setTimeout(triggerUpOnEnter, COUNT_DOWN_TIMER_AMOUNT)
         },
         function(){
-          /*if(triggerUpOnEnterTimerId !== undefined){
+          if(triggerUpOnEnterTimerId !== undefined){
             utils.timers.clearTimeout(triggerUpOnEnterTimerId)
           }
-          triggerCounter.stop()*/
+          triggerCounter.stop()
           showTeleportUI("none")
         },
         Color3.Blue()
@@ -190,8 +191,8 @@ export class TeleportController {
           if(ambienceMusic) ambienceMusic.playing = false
           let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
           if(lobbyMusic) lobbyMusic.playing = false
-          let beamFallSound = AudioSource.getMutable(host.beamFallSound).playing
-          beamFallSound = true
+          let beamFallSound = AudioSource.getMutable(host.beamFallSound)
+          beamFallSound.playing = true
 
           //disable after one fire
           utils.triggers.enableTrigger(host.triggerBoxFallCheck, false)
