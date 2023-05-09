@@ -133,6 +133,8 @@ export class TeleportController {
         Color3.Blue()
       )
       
+      utils.timers.setTimeout()
+
       this.triggerBoxUp.addComponent(new DelayedTriggerBox(3))
 
 
@@ -155,7 +157,7 @@ export class TeleportController {
           let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
           if(lobbyMusic) lobbyMusic.playing = false
           let impactSounds = AudioSource.getMutable(this.impactSound)
-          
+          impactSounds.playing = true
         }
       )
   
@@ -164,6 +166,7 @@ export class TeleportController {
       this.triggerBoxFallCheckPosition = Vector3.create(lobbyCenter.x, lobbyCenter.y + 90, lobbyCenter.z)
       this.triggerBoxFallCheckScale = Vector3.create(6, 10, 6)
 
+      const host = this
       utils.triggers.addTrigger(this.triggerBoxFallCheck, utils.NO_LAYERS, utils.ALL_LAYERS, 
         [{type: "box", position: this.triggerBoxFallCheckPosition, scale: this.triggerBoxFallCheckScale],
         function(){
@@ -171,10 +174,11 @@ export class TeleportController {
           if(ambienceMusic) ambienceMusic.playing = false
           let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
           if(lobbyMusic) lobbyMusic.playing = false
-          this.beamFallSound.getComponent(AudioSource).playOnce()
+          let beamFallSound = AudioSource.getMutable(host.beamFallSound).playing
+          beamFallSound = true
 
           //disable after one fire
-          utils.triggers.enableTrigger(this, false)
+          utils.triggers.enableTrigger(host.triggerBoxFallCheck, false)
         }
       )
 
@@ -264,6 +268,7 @@ export class TeleportController {
         this.triggers[i].collide(player.feetPos)
       }
     }
+
     collideDelayed(dt: number) {
       const liftSpiralTransform = Transform.getMutableOrNull(this.portalLiftSpiral)
   
@@ -326,15 +331,3 @@ class PortalCheckSystem {
   }
 }
 
-function updatePosition(triggerBoxUp: Entity) {
-  let triggerBoxUpTransform = Transform.getMutable(triggerBoxUp)
-  
-  let areaXMin = triggerBoxUpTransform.position.x - triggerBoxUpTransform.scale.x / 2
-  let areaXMax = triggerBoxUpTransform.position.x + triggerBoxUpTransform.scale.x / 2
-
-  let areaYMin = triggerBoxUpTransform.position.y 
-  let areaYMax = triggerBoxUpTransform.position.y + triggerBoxUpTransform.scale.y 
-
-  let areaZMin = triggerBoxUpTransform.position.z - triggerBoxUpTransform.scale.z / 2
-  let areaZMax = triggerBoxUpTransform.position.z + triggerBoxUpTransform.scale.z / 2
-}
