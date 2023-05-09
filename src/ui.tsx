@@ -3,18 +3,33 @@ import {
   Transform,
 } from '@dcl/sdk/ecs'
 import { Color4 } from '@dcl/sdk/math'
-import ReactEcs, { Button, Label, ReactEcsRenderer, UiEntity } from '@dcl/sdk/react-ecs'
+import ReactEcs, { Button, DisplayType, Label, ReactEcsRenderer, UiEntity } from '@dcl/sdk/react-ecs'
 import { Cube } from './components'
 import { createCube } from './factory'
 
-export function showTeleportUI(_visible: boolean) {
+let visible: DisplayType = "none"
+
+export function showTeleportUI(isVisible: DisplayType) {
   //teleportUIContainer.visible = _visible
+  visible = isVisible
 }
 export function setTeleportCountdown(_numberString: string) {
   //teleportCountdownText.value = _numberString
 }
 
-const uiComponent = () => (
+const uiBeamMeUp = () => (
+  <UiEntity
+    uiTransform={{
+      width: 400,
+      height: 400,
+      display: visible
+    }}
+    uiBackground={{ color: Color4.Black() }}
+  ></UiEntity>
+)
+
+
+const uiSpawnCube = () => (
   <UiEntity
     uiTransform={{
       width: 400,
@@ -81,6 +96,11 @@ function getPlayerPosition() {
   const { x, y, z } = playerPosition.position
   return `{X: ${x.toFixed(2)}, Y: ${y.toFixed(2)}, z: ${z.toFixed(2)} }`
 }
+
+const uiComponent = () => [
+  uiBeamMeUp(),
+  uiSpawnCube()
+]
 
 export function setupUi() {
   ReactEcsRenderer.setUiRenderer(uiComponent)

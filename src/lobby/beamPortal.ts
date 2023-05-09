@@ -91,8 +91,6 @@ export class TeleportController {
     triggerBoxFallCheck: Entity
     triggerBoxFallCheckPosition: Vector3
     triggerBoxFallCheckScale: Vector3
-    triggers: Entity[]
-    delayedTriggers: Entity[]
     portalLiftSpiral: Entity
     beamFireSound: Entity
     beamFallSound: Entity
@@ -101,8 +99,6 @@ export class TeleportController {
     
   
     constructor() {
-      this.triggers = []
-      this.delayedTriggers = []
   
       // Trigger to handle teleporting the player up to the cloud
       this.triggerBoxUp = engine.addEntity()
@@ -132,7 +128,7 @@ export class TeleportController {
         function(){
           
 
-          showTeleportUI(true)
+          showTeleportUI("flex")
           
           triggerCounter.start(COUNT_DOWN_TIMER_AMOUNT)
           
@@ -148,7 +144,7 @@ export class TeleportController {
             utils.timers.clearTimeout(triggerUpOnEnterTimerId)
           }
           triggerCounter.stop()
-          showTeleportUI(false)
+          showTeleportUI("none")
         },
         Color3.Blue()
       )
@@ -194,9 +190,6 @@ export class TeleportController {
         }
       )
 
-      this.delayedTriggers.push(this.triggerBoxUp)
-      this.triggers.push(this.triggerBoxDown)
-      this.triggers.push(this.triggerBoxFallCheck)
   
 
 
