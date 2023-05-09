@@ -21,7 +21,7 @@ AudioSource.create(ambienceBox,{
   audioClipUrl: 'sounds/lobby_ambience.mp3',
   volume: 1,
   loop: true,
-  playing: false
+  playing: true
 })
 Transform.create(ambienceBox, {
   position: Vector3.create(lobbyCenter.x, lobbyHeight, lobbyCenter.z)
@@ -33,7 +33,7 @@ AudioSource.create(musicBox, {
   audioClipUrl: 'sounds/lobby_music.mp3',
   volume: 0.2,
   loop: true,
-  playing: false
+  playing: true
 })
 Transform.create(musicBox, {
   position: Vector3.create(0, 2, 0),
