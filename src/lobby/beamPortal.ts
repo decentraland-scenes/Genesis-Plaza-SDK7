@@ -100,9 +100,6 @@ export class TeleportController {
   
     constructor() {
       
-      console.log("TeleportControlle constructed")
-      
-      
       const host = this
 
 
@@ -128,10 +125,7 @@ export class TeleportController {
 
       this.triggerBoxUpPosition = Vector3.create(lobbyCenter.x, lobbyCenter.y, lobbyCenter.z)
       this.triggerBoxUpScale = Vector3.create(6, 4.5, 6)
-      Transform.create(this.triggerBoxUp, {
-        position: this.triggerBoxUpPosition,
-        scale: this.triggerBoxUpScale
-      })
+      Transform.create(this.triggerBoxUp, {})
       
       utils.triggers.addTrigger(this.triggerBoxUp, utils.ALL_LAYERS, utils.ALL_LAYERS, 
         [{type: "box", position: this.triggerBoxUpPosition, scale: this.triggerBoxUpScale}],
@@ -161,9 +155,7 @@ export class TeleportController {
   
       // Trigger that handles landing offset
       this.triggerBoxDown = engine.addEntity()
-      Transform.create(this.triggerBoxDown, { 
-        position: Vector3.create(0,0,0,)
-      })
+      Transform.create(this.triggerBoxDown, {})
       this.triggerBoxDownPosition = Vector3.create(lobbyCenter.x, lobbyCenter.y + 8, lobbyCenter.z)
       this.triggerBoxDownScale = Vector3.create(6, 6, 6)
 
@@ -179,12 +171,14 @@ export class TeleportController {
           if(lobbyMusic) lobbyMusic.playing = false
           let impactSounds = AudioSource.getMutable(host.impactSound)
           impactSounds.playing = true
-        }
+        },
+        undefined,
+        Color3.Red()
       )
   
       // Trigger to play fall SFX
       this.triggerBoxFallCheck = engine.addEntity()
-      Transform.create(this.triggerBoxFallCheck)
+      Transform.create(this.triggerBoxFallCheck, {})
       this.triggerBoxFallCheckPosition = Vector3.create(lobbyCenter.x, lobbyCenter.y + 90, lobbyCenter.z)
       this.triggerBoxFallCheckScale = Vector3.create(6, 10, 6)
 
@@ -201,7 +195,9 @@ export class TeleportController {
 
           //disable after one fire
           utils.triggers.enableTrigger(host.triggerBoxFallCheck, false)
-        }
+        },
+        undefined,
+        Color3.Yellow()
       )
 
   
