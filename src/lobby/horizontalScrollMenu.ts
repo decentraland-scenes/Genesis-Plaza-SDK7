@@ -33,7 +33,7 @@ export class HorizontalMenu {
         this.itemRoots = []
         this.clickBoxes = []
         this.radius = 16
-        this.visibleItems = 8
+        this.visibleItems = 10
 
         this.menuRoot = engine.addEntity()
         Transform.create(this.menuRoot, {
@@ -48,9 +48,9 @@ export class HorizontalMenu {
         })
 
         let menuCenter = Transform.get(this.menuRoot).position
-        let angle = -this.angleSpacing *0.8
+        let angle = -this.visibleItems/2* this.angleSpacing + this.angleSpacing/4
         let rotatedPosVector =  Vector3.rotate(Vector3.scale(Vector3.Forward(), this.radius*0.99), Quaternion.fromEulerDegrees(0,angle,0))
-        rotatedPosVector.y = -1.1
+        rotatedPosVector.y = 0.35
         
         //scroll left
         this.scrollLeftButton = engine.addEntity()
@@ -68,12 +68,10 @@ export class HorizontalMenu {
           { hoverText: 'SCROLL LEFT', button: InputAction.IA_POINTER }
         )   
 
-
-
         //scroll right
-        angle = this.angleSpacing*0.8
+        angle = this.visibleItems/2* this.angleSpacing - this.angleSpacing/4
         rotatedPosVector =  Vector3.rotate(Vector3.scale(Vector3.Forward(), this.radius*0.99), Quaternion.fromEulerDegrees(0,angle,0))
-        rotatedPosVector.y = -1.1
+        rotatedPosVector.y = 0.35
         this.scrollRightButton = engine.addEntity()
         Transform.create(this.scrollRightButton, {
           position: rotatedPosVector,
@@ -155,10 +153,10 @@ export class HorizontalMenu {
         if(!left){
           angle = -this.angleSpacing
 
-          if (this.currentItem < this.items.length - 1) {
+          if (this.currentItem < this.items.length - this.visibleItems/2) {
             this.deselectAll()
             this.currentItem += 1
-            this.selectItem(this.currentItem, true)
+            //this.selectItem(this.currentItem, true)
 
             if(this.currentItem >= this.visibleItems/2){    
               this.hideItem(Math.floor(this.currentItem - this.visibleItems/2))
@@ -188,7 +186,7 @@ export class HorizontalMenu {
           if (this.currentItem > 0) {
             this.deselectAll()
             this.currentItem -= 1
-            this.selectItem(this.currentItem, true)
+           // this.selectItem(this.currentItem, true)
 
             // for(let i=0; i <  this.visibleItems/2; i++){
             //   if(this.currentItem - i > 1){
@@ -320,7 +318,7 @@ export class HorizontalMenu {
               }
                 
             } 
-            this.selectItem(0, true)
+            //this.selectItem(0, true)
       } 
     }
 
@@ -370,7 +368,7 @@ export class HorizontalMenu {
             }
               
           } 
-          this.selectItem(0, true)
+          //this.selectItem(0, true)
      } 
     
   }

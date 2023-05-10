@@ -1,6 +1,6 @@
 import { ThumbnailPlane } from './subItems/thumbnail'
 import { cleanString, monthToString, wordWrap } from './helperFunctions'
-import { AnimatedItem } from './simpleAnimator'
+import { AnimatedItem, ProximityScale } from './simpleAnimator'
 import * as resource from './resources/resources'
 import { MenuItem } from './menuItem'
 import * as sfx from './resources/sounds'
@@ -63,6 +63,7 @@ export class EventMenuItem extends MenuItem {
     super()
     this.entity = engine.addEntity()
     Transform.create(this.entity,_transform)
+    ProximityScale.create(this.entity, {activeRadius: 20})
 
    
     // event card root
@@ -74,7 +75,7 @@ export class EventMenuItem extends MenuItem {
     GltfContainer.createOrReplace(this.itemBox, resource.menuTitleBGShape )    
     VisibilityComponent.create(this.itemBox, {visible: true})
     Transform.getMutable(this.itemBox).parent = this.entity
-
+    
     this.defaultItemScale = Vector3.create(2, 2, 2)
     this.scale = Vector3.create(1, 0.5, 1)
     this.scaleMultiplier = 1.2
@@ -111,7 +112,7 @@ export class EventMenuItem extends MenuItem {
     })   
     VisibilityComponent.create(this.liveSign, {visible: true})
     GltfContainer.createOrReplace(this.liveSign, resource.liveSignShape )   
-
+    ProximityScale.create(this.liveSign, {activeRadius: 20})
     // TextShape.create(this.liveSign,{
     //   text:"",
     //   fontSize: 3})    
@@ -239,7 +240,7 @@ export class EventMenuItem extends MenuItem {
     let rawText: string = _event.name
     //  remove non-UTF-8 characters
     rawText = cleanString(rawText)
-    rawText = wordWrap(rawText, 36, 3)
+    rawText = wordWrap(rawText, 40, 3)
 
     TextShape.create(this.title, {
       text: rawText,
@@ -521,7 +522,7 @@ export class EventMenuItem extends MenuItem {
     let rawText: string = _event.name
     //  remove non-UTF-8 characters
     rawText = cleanString(rawText)
-    rawText = wordWrap(rawText, 36, 3)
+    rawText = wordWrap(rawText, 45, 3)
 
     TextShape.getMutable(this.title).text = rawText
     

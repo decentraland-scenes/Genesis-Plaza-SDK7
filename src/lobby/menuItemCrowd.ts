@@ -263,9 +263,7 @@ export class CrowdMenuItem extends MenuItem {
           _teleportTo(_scene.baseCoords[0] + ',' + _scene.baseCoords[1])      
         },
         { hoverText: 'JUMP IN', button: InputAction.IA_POINTER }
-      )    
-
-    
+      )       
 
    
     // highlights BG on selection
@@ -293,7 +291,7 @@ export class CrowdMenuItem extends MenuItem {
     Transform.create(this.highlightFrame, {
       parent: this.highlightRays
     })
-    GltfContainer.create(this.highlightFrame, resource.highlightFrameShape)    
+    GltfContainer.create(this.highlightFrame, resource.highlightFrameFullShape)    
     
   }
 

@@ -21,6 +21,10 @@ export const SlerpItem = engine.defineComponent('slerped-id', {
     done:Schemas.Boolean,    
 })
 
+export const ProximityScale = engine.defineComponent('proximity-id', {    
+    activeRadius: Schemas.Number   
+})
+
 const SPRING_CONSTANT = 50
 
 function LerpTowards(
@@ -127,3 +131,22 @@ export function ItemAnimationSystem(dt: number) {
 
 engine.addSystem(ItemAnimationSystem)
 
+  //simple animator handler
+  export function ProximitySystem(dt: number) {
+    const proximityItems = engine.getEntitiesWith(ProximityScale, Transform) 
+
+    for (const [entity] of proximityItems) {
+        const infoReadonly = ProximityScale.get(entity)
+        const playerTransform = Transform.get(engine.PlayerEntity)
+        const transform = Transform.get(entity)
+
+        console.log(playerTransform.position)
+        if(distance(transform.position, playerTransform.position) < infoReadonly.activeRadius){
+            let factor = distance(transform.position, playerTransform.position) / infoReadonly.activeRadius
+            const transformMutable = Transform.getMutable(entity)
+            transformMutable.scale = Vector3.lerp(Vector3.One(), Vector3.create(2,2,2), factor )
+        }
+    }
+}
+
+engine.addSystem(ProximitySystem)

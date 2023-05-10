@@ -31,6 +31,7 @@ export let shelfShape:PBGltfContainer =             {src:modelFolder + "shelf_cl
 export let jumpInButtonShape:PBGltfContainer =      {src:modelFolder + "jump_in_btn.glb"}
 export let detailsBGShape:PBGltfContainer =         {src:modelFolder + "details_bg.glb"}
 export let highlightFrameShape:PBGltfContainer =    {src:modelFolder + "highlight_frame.glb"}
+export let highlightFrameFullShape:PBGltfContainer ={src:modelFolder + "highlight_frame_full.glb"}
 export let highlightRaysShape:PBGltfContainer =     {src:modelFolder + "highlight_rays.glb"}
 export let readMoreBtnShape:PBGltfContainer =       {src:modelFolder + "read_more_btn.glb"}
 export let coordsPanelShape:PBGltfContainer =       {src:modelFolder + "coords_panel.glb"}

@@ -126,10 +126,10 @@ export function addCloudLobby(){
   //     position: Vector3.create(lobbyCenter.x,0.2,lobbyCenter.z)
   //   })
 
-  let eventMenu = new HorizontalMenu( Vector3.create(lobbyCenter.x, 2, lobbyCenter.z))
-  eventMenu.updateEventsMenu(20)
+  let eventMenu = new HorizontalMenu( Vector3.create(lobbyCenter.x, 1 , lobbyCenter.z))
+  eventMenu.updateEventsMenu(10)
 
-  let crowdsMenu = new HorizontalMenu( Vector3.create(lobbyCenter.x, 4, lobbyCenter.z))  
+  let crowdsMenu = new HorizontalMenu( Vector3.create(lobbyCenter.x, 3, lobbyCenter.z))  
   crowdsMenu.updateCrowdsMenu(10)
 
   /*
