@@ -54,6 +54,16 @@ export let vortex1Shape:PBGltfContainer=            {src:modelFolder + "vortex1.
 export let vortex2Shape:PBGltfContainer=            {src:modelFolder + "vortex2.glb"}
 export let divingSignShape:PBGltfContainer=         {src:modelFolder + "diving_sign.glb"}
 
+// BAR NPCs
+export const octopusModel = 'models/core_building/BobOctorossV46.glb'
+export const fashionistModel = 'models/core_building/WearableConnoisseurRotatedV08.glb'
+export const aritst1Model = 'models/core_building/ch1_crowdV5.glb'
+export const aritst2Model = 'models/core_building/ch2_crowdV5.glb'
+
+//Audio
+export const navigationForwardSfx = `sounds/navigationForward.mp3`
+
+
 
 export const dateBGColor:Color4 = Color4.fromHexString("#cdcdcd")
 export const dateMonthColor:Color4 = Color4.fromHexString("#ff3333")

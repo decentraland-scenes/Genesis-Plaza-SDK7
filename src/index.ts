@@ -8,6 +8,7 @@ import { addCloudLobby } from './lobby/cloudLobby'
 import { lowerVolume, outOfBar, placeJukeBox, setBarMusicOff, setBarMusicOn } from './modules/bar/jukebox'
 import { addRepeatTrigger } from './modules/Utils'
 import { log } from './back-ports/backPorts'
+import { initBarNpcs } from './modules/bar/npcs/barNpcs'
 
 
 // export all the functions required to make the scene work
@@ -33,6 +34,7 @@ addBuildings()
 placeDoors()
 */
 barPlatforms()
+initBarNpcs()
 
 
 //TODO TAG:PORT-REIMPLEMENT-ME

@@ -23,9 +23,11 @@
     "trailingComma": "none"
   },
   "dependencies": {
+    "@dcl-sdk/npc-utils": "^1.0.4",
     "@dcl-sdk/utils": "^1.0.2"
   },
   "bundleDependencies": [
+    "@dcl-sdk/npc-utils",
     "@dcl-sdk/utils"
   ]
 }
