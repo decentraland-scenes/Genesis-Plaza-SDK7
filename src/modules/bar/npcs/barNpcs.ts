@@ -1,9 +1,11 @@
 import * as npcLib from '@dcl-sdk/npc-utils'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { aritst1Model, aritst2Model, fashionistModel, navigationForwardSfx, octopusModel } from '../../../lobby/resources/resources'
-import { Entity } from '@dcl/sdk/ecs'
-import { artist2TalkToUser, artistConversation,  artistRecommendations,  fashionistCommonDialog, fashionistEpicDialog, fashionistMythicDialog, fashionistNoneDialog, getFashionistDialog, getOcotDialog } from './npcDialogs'
+import { Entity, Transform, engine } from '@dcl/sdk/ecs'
+import { artist1TalkToUser, artist2TalkToUser, artistConversation, artistRecommendations, fashionistCommonDialog, fashionistEpicDialog, fashionistMythicDialog, fashionistNoneDialog, getFashionistDialog, getOcotDialog } from './npcDialogs'
 import { rarestItem, rarityLevel } from './rarity'
+import { triggers } from '@dcl-sdk/utils'
+import * as utils from '@dcl-sdk/utils'
 
 const LogTag: string = 'barNpcs'
 
@@ -28,11 +30,16 @@ function createOctopusNpc(): Entity {
     octopusModel,
     navigationForwardSfx,
     () => {
-      console.log(LogTag, "Hi! Octopus!")
+      // console.log(LogTag, "Hi! Octopus!")
       npcLib.talk(octo, getOcotDialog(octo))
+
+      npcLib.changeIdleAnim(octo, 'TalkLoop')
+      npcLib.playAnimation(octo, 'TalkIntro', true, 0.63)
     },
     () => {
-      console.log(LogTag, "Bye! Octopus!")
+      // console.log(LogTag, "Bye! Octopus!")
+      npcLib.changeIdleAnim(octo, 'Idle')
+      npcLib.playAnimation(octo, 'TalkOutro', true, 0.63)
     },
     false,
   )
@@ -71,12 +78,15 @@ function createOctopusNpc(): Entity {
 }
 
 function createFashionistNpc(): Entity {
+
+  let position = Vector3.create(162.65, 0.23, 133.15)
+
   let fashionist = createNpc(
-    { position: Vector3.create(162.65, 0.23, 133.15) },
+    { position: position },
     fashionistModel,
     navigationForwardSfx,
     async () => {
-      console.log(LogTag, "Hi! Fashionist!")
+      // console.log(LogTag, "Hi! Fashionist!")
 
       let rareItem = await rarestItem(true)
 
@@ -103,12 +113,19 @@ function createFashionistNpc(): Entity {
       //  Quaternion.fromEulerDegrees(0, 0, 0),
       //  1 
       //)
-      npcLib.playAnimation(fashionist, 'TurnOut', false)
+
+      npcLib.playAnimation(fashionist, `Talk`, false)
       npcLib.talk(fashionist, getFashionistDialog(fashionist), dialogIndex)
+
+      let targetPosition = Vector3.clone(Transform.get(engine.PlayerEntity).position)
+      targetPosition.y = position.y
+
+      RotateFashionist(targetPosition)
     },
     () => {
-      console.log(LogTag, "Bye! Fashionist!")
+      // console.log(LogTag, "Bye! Fashionist!")
       npcLib.playAnimation(fashionist, `Idle`, false)
+      RotateFashionist(position)
     },
     false
   )
@@ -125,11 +142,12 @@ function createMainArtist(): Entity {
     aritst1Model,
     navigationForwardSfx,
     () => {
-      console.log(LogTag, "Hi! Artist1!")
-      npcLib.talk(artist1, artistConversation)
+      // console.log(LogTag, "Hi! Artist1!")
+      artist1TalkToUser()
+      npcLib.talk(artist1, artistRecommendations)
     },
     () => {
-      console.log(LogTag, "Bye! Artist1!")
+      // console.log(LogTag, "Bye! Artist1!")
       npcLib.playAnimation(mainArtist, 'Talk', false)
     },
     false,
@@ -148,12 +166,12 @@ function createSecondaryArtist(): Entity {
     aritst2Model,
     navigationForwardSfx,
     () => {
-      console.log(LogTag, "Hi! Artist2!")
+      // console.log(LogTag, "Hi! Artist2!")
       artist2TalkToUser()
       npcLib.talk(secondArtist, artistRecommendations)
     },
     () => {
-      console.log(LogTag, "Bye! Artist2!")
+      // console.log(LogTag, "Bye! Artist2!")
       npcLib.playAnimation(secondArtist, 'Talk', false)
     },
     false
@@ -185,6 +203,21 @@ function createNpc(transformData: any, modelPath: string, sfxPath: string,
       coolDownDuration: 3,
     }
   )
-  
+
   return npc
+}
+
+function RotateFashionist(targetPosition: Vector3){
+  let targetRotation = Quaternion.fromLookAt(
+    Transform.get(fashionist).position,
+    targetPosition,
+    Vector3.create(0, 1, 0)
+  )
+
+  utils.tweens.startRotation(fashionist,
+    Transform.get(fashionist).rotation,
+    targetRotation,
+    .5,
+    utils.InterpolationType.LINEAR
+  )
 }

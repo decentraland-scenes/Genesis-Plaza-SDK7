@@ -509,7 +509,7 @@ export const artistConversation: Dialog[] = [
   },
 ]
 
-function artist1TalkToUser() {
+export function artist1TalkToUser() {
   npcLib.playAnimation(artist1, 'TalkToUser', false)
   npcLib.playAnimation(artist2, 'Talk', false)
 }
