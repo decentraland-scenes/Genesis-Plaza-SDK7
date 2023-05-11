@@ -4,11 +4,12 @@ import { getUserData } from "~system/UserIdentity"
 import { getRealm } from "~system/Runtime"
 import { getWorldPosition } from "@dcl-sdk/utils";
 import { log } from "../../back-ports/backPorts";
+import { GenesisData } from "./genesis.data";
 
-const sceneId: string = "genesis_plaza"
-const inSeconds: boolean = false
+const SCENE_ID: string = "genesis_plaza"
+const IN_SECONDS: boolean = false
 
-var segment: Segment = null
+let segment: Segment = null
 
 export function getSegment() {
   if (segment) return segment;
@@ -19,8 +20,8 @@ export function getSegment() {
 
 export async function sendTrackOld(eventName: string,) {
   const doc: any = {
-    sceneId: sceneId,
-    playTime: Date.now(),
+    sceneId: SCENE_ID,
+    playTime: Date.now() - GenesisData.instance().startPlayTime,
     exactPosition: getWorldPosition(engine.PlayerEntity),
     position: Math.floor(getWorldPosition(engine.PlayerEntity).x / 16) + "," + Math.floor(getWorldPosition(engine.PlayerEntity).z / 16)
   }
@@ -34,20 +35,20 @@ export async function sendTrack(trackEvent: string,
   event: string,
   selection: string,
   durationTime: number) {
-  
+
   const realm = await getRealm({})
-  
+
   const doc: any = {
-    sceneId: sceneId,
+    sceneId: SCENE_ID,
     realm: realm,
     spanId: instance,
     elementType: elementType,
     elementId: elementId,
     event: event,
     selection: selection,
-    durationTime: inSeconds ? durationTime * 0.001 : durationTime,
+    durationTime: IN_SECONDS ? durationTime * 0.001 : durationTime,
 
-    playTime: Date.now(),
+    playTime: Date.now() - GenesisData.instance().startPlayTime,
     exactPosition: getWorldPosition(engine.PlayerEntity),
     position: Math.floor(getWorldPosition(engine.PlayerEntity).x / 16) + "," + Math.floor(getWorldPosition(engine.PlayerEntity).z / 16)
   }
@@ -133,13 +134,13 @@ type SegemntTrack = {
 
 //const realm = await getRealm({});
 //const isPreview = realm.realmInfo?.isPreview
-    //
-    // make sure users are matched together by the same "realm".
-    //
+//
+// make sure users are matched together by the same "realm".
+//
 //options.realm = realm?.realmInfo?.realmName;
 //options.userData = await getUserData({});
 
-export async function debugGetRealm(){
+export async function debugGetRealm() {
   const realm = await getRealm({})
   console.log(AnalyticsLogLabel, realm.realmInfo.realmName)
   console.log("AnalyticLogs")
