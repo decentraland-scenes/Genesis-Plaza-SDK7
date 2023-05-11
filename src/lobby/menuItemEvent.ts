@@ -63,7 +63,7 @@ export class EventMenuItem extends MenuItem {
     super()
     this.entity = engine.addEntity()
     Transform.create(this.entity,_transform)
-    ProximityScale.create(this.entity, {activeRadius: 20})
+   
 
    
     // event card root
@@ -108,11 +108,11 @@ export class EventMenuItem extends MenuItem {
 
     Transform.create(this.liveSign, {
       position: Vector3.create(-0.25, 0, 0),
-      scale: Vector3.create(0.4, 0.4, 0.4),
+      scale: Vector3.create(0.5, 0.5, 0.5),
     })   
     VisibilityComponent.create(this.liveSign, {visible: true})
     GltfContainer.createOrReplace(this.liveSign, resource.liveSignShape )   
-    ProximityScale.create(this.liveSign, {activeRadius: 20})
+    
     // TextShape.create(this.liveSign,{
     //   text:"",
     //   fontSize: 3})    
@@ -372,7 +372,7 @@ export class EventMenuItem extends MenuItem {
       wasClicked:false,
       isHighlighted:false,
       defaultPosition:  Vector3.create(0, 0, 0.02),
-      highlightPosition:  Vector3.create(0, -0.6, 0.02),
+      highlightPosition:  Vector3.create(0, -0.3, 0.02),
       defaultScale: Vector3.create(0.98, 0, 0),
       highlightScale:  Vector3.create(1, 1, 1),
       animFraction: 0,
@@ -403,12 +403,12 @@ export class EventMenuItem extends MenuItem {
  // EVENT DETAILS TEXT BODY
     this.detailText = engine.addEntity()
     Transform.create(this.detailText, {
-      position: Vector3.create(-0.70, 0.35, -0.02),
+      position: Vector3.create(-0.70, 0.10, -0.02),
         scale: Vector3.create(0.4, 0.4, 0.4),
         parent: this.detailTextPanel
     })
     TextShape.create(this.detailText, {
-      text:  '\n\n' + wordWrap(cleanString(_event.description), 70, 11) + '</cspace>',
+      text:  '\n\n' + wordWrap(cleanString(_event.description), 70, 7) + '</cspace>',
       fontSize: 1,
       height: 20,
       width: 2,

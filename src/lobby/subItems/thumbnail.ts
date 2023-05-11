@@ -1,5 +1,5 @@
 import { Entity, Material, MeshRenderer, PBMaterial, PBMeshRenderer_PlaneMesh, Transform, TransformType, TransformTypeWithOptionals, VisibilityComponent, engine } from "@dcl/sdk/ecs"
-import { Vector3 } from "@dcl/sdk/math"
+import { Color3, Vector3 } from "@dcl/sdk/math"
 
 export class ThumbnailPlane {
     public entity:Entity   
@@ -60,6 +60,11 @@ export class ThumbnailPlane {
             alphaTexture: Material.Texture.Common({
                 src: this.alphaImage
             }),
+            emissiveTexture: Material.Texture.Common({
+                src: _image
+            }),
+            emissiveIntensity: 2,
+            emissiveColor: Color3.Gray(),
             specularIntensity: 0,
             metallic: 0,
             roughness: 1

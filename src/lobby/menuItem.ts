@@ -20,10 +20,11 @@ export class MenuItem {
 
     }
            
-    select(_silent:boolean){    
+    select(_silent:boolean){   
+        this.selected = true 
     }
     deselect(_silent?:boolean){
-        // this.selected = false            
+         this.selected = false            
               
     }
     show(){

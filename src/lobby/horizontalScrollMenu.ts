@@ -5,8 +5,9 @@ import * as sfx from './resources/sounds'
 import { Quaternion, Vector3 } from "@dcl/sdk/math";
 import { AudioSource, ColliderLayer, Entity, GltfContainer, InputAction, MeshCollider, MeshRenderer, Transform, VisibilityComponent, engine, pointerEventsSystem } from "@dcl/sdk/ecs";
 import * as resource from "./resources/resources"
-import { AnimatedItem, SlerpItem } from "./simpleAnimator";
+import { AnimatedItem, ProximityScale, SlerpItem } from "./simpleAnimator";
 import { CrowdMenuItem } from "./menuItemCrowd";
+
 
 
 
@@ -25,8 +26,9 @@ export class HorizontalMenu {
     scrollRightButton:Entity
     scrollTarget:Quaternion
     visibleItems:number
+    topFrame:Entity
 
-    constructor(_position:Vector3){
+    constructor(_position:Vector3, _rotation:Quaternion){
         this.spacing = 3.3
         this.angleSpacing = 12
         this.items = []
@@ -38,6 +40,7 @@ export class HorizontalMenu {
         this.menuRoot = engine.addEntity()
         Transform.create(this.menuRoot, {
             position: Vector3.create(_position.x, _position.y, _position.z),
+            rotation: _rotation
           //parent: engine.PlayerEntity
         })
 
@@ -47,12 +50,21 @@ export class HorizontalMenu {
             parent:this.menuRoot
         })
 
+         //Framing lines
+        this.topFrame = engine.addEntity()
+        GltfContainer.create(this.topFrame,{src:'models/lobby/menu_horizontal_bg.glb'})
+        Transform.create(this.topFrame,{
+            rotation: Quaternion.fromEulerDegrees(0, -126, 0),
+            position: Vector3.create(0,1.25,0),
+            parent: this.menuRoot
+          })
+
         let menuCenter = Transform.get(this.menuRoot).position
-        let angle = -this.visibleItems/2* this.angleSpacing + this.angleSpacing/4
-        let rotatedPosVector =  Vector3.rotate(Vector3.scale(Vector3.Forward(), this.radius*0.99), Quaternion.fromEulerDegrees(0,angle,0))
+        let angle = -this.angleSpacing*0.75
+        let rotatedPosVector =  Vector3.rotate(Vector3.scale(Vector3.Forward(), this.radius), Quaternion.fromEulerDegrees(0,angle,0))
         rotatedPosVector.y = 0.35
         
-        //scroll left
+        //scroll left button
         this.scrollLeftButton = engine.addEntity()
         Transform.create(this.scrollLeftButton, {
           position: rotatedPosVector,
@@ -69,8 +81,8 @@ export class HorizontalMenu {
         )   
 
         //scroll right
-        angle = this.visibleItems/2* this.angleSpacing - this.angleSpacing/4
-        rotatedPosVector =  Vector3.rotate(Vector3.scale(Vector3.Forward(), this.radius*0.99), Quaternion.fromEulerDegrees(0,angle,0))
+        angle = this.visibleItems* this.angleSpacing - this.angleSpacing/4
+        rotatedPosVector =  Vector3.rotate(Vector3.scale(Vector3.Forward(), this.radius), Quaternion.fromEulerDegrees(0,angle,0))
         rotatedPosVector.y = 0.35
         this.scrollRightButton = engine.addEntity()
         Transform.create(this.scrollRightButton, {
@@ -153,28 +165,25 @@ export class HorizontalMenu {
         if(!left){
           angle = -this.angleSpacing
 
-          if (this.currentItem < this.items.length - this.visibleItems/2) {
+          if (this.currentItem < this.items.length - this.visibleItems) {
             this.deselectAll()
             this.currentItem += 1
             //this.selectItem(this.currentItem, true)
 
-            if(this.currentItem >= this.visibleItems/2){    
-              this.hideItem(Math.floor(this.currentItem - this.visibleItems/2))
+            //hide the firs item on the left side
+            if(this.currentItem >= 1){    
+              this.hideItem(Math.floor(this.currentItem - 1))
             }    
-
-            if(this.currentItem + this.visibleItems/2 -1 < this.items.length){
-              this.showItem(this.currentItem + this.visibleItems/2 -1)           
-            }            
-
-            //let transform = Transform.getMutable(this.scrollerRoot)          
-            this.scrollTarget = Quaternion.multiply(this.scrollTarget, Quaternion.fromEulerDegrees(0,angle,0))      
-            
+            //show the last item at the right end
+            if(this.currentItem + this.visibleItems -1 < this.items.length){
+              this.showItem(this.currentItem + this.visibleItems -1)           
+            }   
+            //start the smooth rotation of the parent with one unit
+            this.scrollTarget = Quaternion.multiply(this.scrollTarget, Quaternion.fromEulerDegrees(0,angle,0))                 
             SlerpItem.createOrReplace(this.scrollerRoot, {
               targetRotation:this.scrollTarget
             })    
-            this.playAudio(sfx.menuUpSource, sfx.menuUpSourceVolume)
-            
-          
+            this.playAudio(sfx.menuUpSource, sfx.menuUpSourceVolume)         
           }
           else{
             this.playAudio(sfx.menuScrollEndSource, sfx.menuDeselectSourceVolume)
@@ -186,42 +195,27 @@ export class HorizontalMenu {
           if (this.currentItem > 0) {
             this.deselectAll()
             this.currentItem -= 1
-           // this.selectItem(this.currentItem, true)
+           // this.selectItem(this.currentItem, true)            
 
-            // for(let i=0; i <  this.visibleItems/2; i++){
-            //   if(this.currentItem - i > 1){
-            //     this.showItem(this.currentItem - i)           
-            //   }
-            // }
-
-            // if(this.currentItem + this.visibleItems/2 < this.items.length - 1){
-            //   this.hideItem(this.currentItem + 2)           
-            // }
-
-            if(Math.floor(this.currentItem - this.visibleItems/2 + 1) >= 0){    
-              this.showItem(Math.floor(this.currentItem - this.visibleItems/2 + 1 ))
+           // show the first item on the left end
+            if(Math.floor(this.currentItem ) >= 0){    
+              this.showItem(this.currentItem  )
             }    
-
-            if(this.currentItem + this.visibleItems/2 < this.items.length){
-              this.hideItem(this.currentItem + this.visibleItems/2)           
+            // hide the last item on the right end
+            if(this.currentItem + this.visibleItems < this.items.length){
+              this.hideItem(this.currentItem + this.visibleItems)           
             }
-
-           // let transform = Transform.getMutable(this.scrollerRoot)          
+         
             this.scrollTarget = Quaternion.multiply(this.scrollTarget, Quaternion.fromEulerDegrees(0,angle,0))      
-            
             SlerpItem.createOrReplace(this.scrollerRoot, {
               targetRotation:this.scrollTarget
-            })                
-
+            })
             this.playAudio(sfx.menuDownSource, sfx.menuDownSourceVolume)
           }
           else{
             this.playAudio(sfx.menuScrollEndSource, sfx.menuDeselectSourceVolume)
           }
-        }
-
-        
-        
+        }        
     }
     
     
@@ -244,9 +238,10 @@ export class HorizontalMenu {
             parent: this.scrollerRoot
         }) 
         //VisibilityComponent.create(_item.entity, {visible: false})
+        
         this.itemRoots.push(itemRoot)        
           
-
+        //ProximityScale.create(_item.entity, {activeRadius: 10})
         // COLLIDER BOX FOR USER INPUT
         let clickBox = engine.addEntity()
         Transform.create(clickBox,{
@@ -262,24 +257,33 @@ export class HorizontalMenu {
         
         pointerEventsSystem.onPointerDown(clickBox,
             (e) => {
+              if(e.button == InputAction.IA_POINTER){
                 if (!_item.selected) {
-                    this.selectItem( id, false)
-                    //clickBox.getComponent(OnPointerDown).hoverText = 'DESELECT'
-                    //sfx.menuSelectSource.playOnce()
-                } else {
-                    this.deselectItem(id, false)
-                    //clickBox.getComponent(OnPointerDown).hoverText = 'SELECT'
-                    //sfx.menuDeselectSource.playOnce()
-                }   
+                  this.selectItem( id, false)
+                  //clickBox.getComponent(OnPointerDown).hoverText = 'DESELECT'
+                  //sfx.menuSelectSource.playOnce()
+              } else {
+                  this.deselectItem(id, false)
+                  //clickBox.getComponent(OnPointerDown).hoverText = 'SELECT'
+                  //sfx.menuDeselectSource.playOnce()
+              }   
+              }
+              if(e.button == InputAction.IA_PRIMARY){
+                this.scroll(true)
+              }
+              if(e.button == InputAction.IA_SECONDARY){
+                this.scroll(false)
+              }
+                
             },
-            { hoverText: 'SELECT', button: InputAction.IA_POINTER }
+            { hoverText: 'SELECT', button:InputAction.IA_ANY}
         )   
         this.clickBoxes.push(clickBox)
         
 
         
     }
-
+    
     async updateEventsMenu(_count:number){
 
         let events = await getEvents(_count)
@@ -308,7 +312,7 @@ export class HorizontalMenu {
 
           for(let i=0; i < this.items.length; i++){         
             
-              if(i < this.visibleItems/2 ){
+              if(i < this.visibleItems ){
                 //this.items[i].show()
                 this.showItem(i)             
               }
@@ -358,7 +362,7 @@ export class HorizontalMenu {
 
         for(let i=0; i < this.items.length; i++){         
           
-            if(i < this.visibleItems/2 ){
+            if(i < this.visibleItems ){
               //this.items[i].show()
               this.showItem(i)             
             }

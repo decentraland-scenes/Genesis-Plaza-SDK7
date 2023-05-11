@@ -118,19 +118,17 @@ export function addCloudLobby(){
 // })
 
 
-  //HORIZONTAL EVENT MENU
-  // let menuHorizontalFrame = engine.addEntity()
-  // GltfContainer.create(menuHorizontalFrame,{src:'models/lobby/menu_horizontal_bg.glb'})
-  // Transform.create(menuHorizontalFrame,{
-  //     rotation: Quaternion.fromEulerDegrees(0, 180, 0),
-  //     position: Vector3.create(lobbyCenter.x,0.2,lobbyCenter.z)
-  //   })
 
-  let eventMenu = new HorizontalMenu( Vector3.create(lobbyCenter.x, 1 , lobbyCenter.z))
-  eventMenu.updateEventsMenu(10)
+  let eventMenu = new HorizontalMenu( Vector3.create(lobbyCenter.x, 1.25  , lobbyCenter.z), Quaternion.fromEulerDegrees(0,-54,0))
+  eventMenu.updateEventsMenu(15)
 
-  let crowdsMenu = new HorizontalMenu( Vector3.create(lobbyCenter.x, 3, lobbyCenter.z))  
+  let crowdsMenu = new HorizontalMenu( Vector3.create(lobbyCenter.x, 3.5 , lobbyCenter.z), Quaternion.fromEulerDegrees(0,-54,0))  
   crowdsMenu.updateCrowdsMenu(10)
+
+
+
+
+
 
   /*
   //TODO TAG:PORT-REIMPLEMENT-ME

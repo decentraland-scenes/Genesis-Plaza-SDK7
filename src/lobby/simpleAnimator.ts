@@ -1,6 +1,8 @@
 import { Schemas, Transform, engine } from '@dcl/sdk/ecs'
 import { NoArgCallBack } from './resources/globals'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
+import * as utils from '@dcl-sdk/utils'
+
 
 export const AnimatedItem = engine.defineComponent('animated-id', {
     wasClicked: Schemas.Boolean,
@@ -140,13 +142,16 @@ engine.addSystem(ItemAnimationSystem)
         const playerTransform = Transform.get(engine.PlayerEntity)
         const transform = Transform.get(entity)
 
-        console.log(playerTransform.position)
-        if(distance(transform.position, playerTransform.position) < infoReadonly.activeRadius){
-            let factor = distance(transform.position, playerTransform.position) / infoReadonly.activeRadius
+        
+        const dist = distance(utils.getWorldPosition(entity), playerTransform.position) 
+        console.log("DISTAMCE: " + dist)
+        if(dist < infoReadonly.activeRadius){
+            let factor = (dist / infoReadonly.activeRadius)
             const transformMutable = Transform.getMutable(entity)
-            transformMutable.scale = Vector3.lerp(Vector3.One(), Vector3.create(2,2,2), factor )
+            transformMutable.scale = Vector3.lerp( Vector3.create(2,2,2), Vector3.create(0.5,0.5,0.5), factor )
+            transformMutable.position = Vector3.lerp(Vector3.Zero(), Vector3.create(0,0,-3), factor )
         }
     }
 }
 
-engine.addSystem(ProximitySystem)
+//engine.addSystem(ProximitySystem)
