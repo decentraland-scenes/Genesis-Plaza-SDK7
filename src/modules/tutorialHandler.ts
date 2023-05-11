@@ -1,4 +1,8 @@
-/*export const tutorialEnableObservable = new Observable<Readonly<boolean>>()
+/*
+//TODO TAG:PORT-REIMPLEMENT-ME
+//currently no tutorialEnableObservable in sdk7
+//https://decentralandteam.slack.com/archives/C03NH6S541G/p1683634448357079
+export const tutorialEnableObservable = new Observable<Readonly<boolean>>()
 
 declare var dcl: any
 
