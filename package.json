@@ -10,7 +10,7 @@
     "upgrade-sdk:next": "npm install --save-dev @dcl/sdk@next"
   },
   "devDependencies": {
-    "@dcl/sdk": "^7.1.9"
+    "@dcl/sdk": "latest"
   },
   "engines": {
     "node": ">=16.0.0",
@@ -23,7 +23,7 @@
     "trailingComma": "none"
   },
   "dependencies": {
-    "@dcl-sdk/utils": "^1.1.0"
+    "@dcl-sdk/utils": "^1.1.1"
   },
   "bundleDependencies": [
     "@dcl-sdk/utils"
