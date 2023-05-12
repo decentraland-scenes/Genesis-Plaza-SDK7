@@ -29,7 +29,7 @@ const portalControl = new TeleportController()
 export function addCloudLobby(){
 
   const menuScale = 1.2
-  const center = Vector3.create(lobbyCenter.x, lobbyHeight + 1.5, lobbyCenter.z)
+  const center = Vector3.create(lobbyCenter.x, lobbyHeight + 104, lobbyCenter.z)
 
   // SOCIAL LINKS
   let discordLink = engine.addEntity()
@@ -119,10 +119,10 @@ export function addCloudLobby(){
 
 
 
-  let eventMenu = new HorizontalMenu( Vector3.create(lobbyCenter.x, 1.25  , lobbyCenter.z), Quaternion.fromEulerDegrees(0,-54,0))
+  let eventMenu = new HorizontalMenu( Vector3.create(lobbyCenter.x, lobbyHeight + 1.25  , lobbyCenter.z), Quaternion.fromEulerDegrees(0,-54,0))
   eventMenu.updateEventsMenu(15)
 
-  let crowdsMenu = new HorizontalMenu( Vector3.create(lobbyCenter.x, 3.5 , lobbyCenter.z), Quaternion.fromEulerDegrees(0,-54,0))  
+  let crowdsMenu = new HorizontalMenu( Vector3.create(lobbyCenter.x, lobbyHeight + 3.5 , lobbyCenter.z), Quaternion.fromEulerDegrees(0,-54,0))  
   crowdsMenu.updateCrowdsMenu(10)
 
 
