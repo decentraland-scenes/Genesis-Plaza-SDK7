@@ -1,4 +1,4 @@
-import * as npcLib from '@dcl-sdk/npc-utils'
+import * as npcLib from 'dcl-npc-toolkit'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { aritst1Model, aritst2Model, fashionistModel, navigationForwardSfx, octopusModel } from '../../../lobby/resources/resources'
 import { Entity, Transform, engine } from '@dcl/sdk/ecs'
