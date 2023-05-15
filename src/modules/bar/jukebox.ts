@@ -3,7 +3,8 @@ import { Animator, AudioSource, AudioStream, Entity, GltfContainer, InputAction,
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import * as utils from '@dcl-sdk/utils'
 import { sceneMessageBus } from '../serverHandler'
-import { tutorialRunning } from '../../lobby/portalBeam'
+import { tutorialRunning } from '../../lobby/beamPortal'
+
 
 
 export enum Radios {

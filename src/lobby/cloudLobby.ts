@@ -17,13 +17,14 @@ import * as resource from './resources/resources'
 import { GltfContainer, InputAction, Transform, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
 import { _openExternalURL } from '../back-ports/backPorts'
 import { initClouds } from './clouds'
+import { TeleportController } from './beamPortal'
 //import * as sfx from './resources/sounds'
 //import { insideBar } from 'src/game'
 
-/*
+
 //TODO TAG:PORT-REIMPLEMENT-ME
 const portalControl = new TeleportController()
-*/
+
 
 export function addCloudLobby(){
 
