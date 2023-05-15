@@ -1,4 +1,4 @@
-import { engine, executeTask, Material } from '@dcl/sdk/ecs'
+import { engine, executeTask, GltfContainer, Material, MeshRenderer, Transform } from '@dcl/sdk/ecs'
 import * as utils from '@dcl-sdk/utils'
 import { Color4, Vector3 } from '@dcl/sdk/math'
 import { addBuildings } from './modules/buildings'
@@ -71,7 +71,7 @@ utils.addOneTimeTrigger(
 
 // proper bar interior
 addRepeatTrigger(
-  Vector3.create(160, 50, 155),
+  Vector3.create(48, 50, 59),
   Vector3.create(50, 102, 50),
   () => {
     setBarMusicOn()
@@ -91,7 +91,7 @@ addRepeatTrigger(
 
 //outer perimeter
 addRepeatTrigger(
-  Vector3.create(160, 30, 155),
+  Vector3.create(48, 30, 59),
   Vector3.create(75, 60, 75),
   () => {
     lowerVolume()
