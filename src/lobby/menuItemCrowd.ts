@@ -200,7 +200,7 @@ export class CrowdMenuItem extends MenuItem {
 
     pointerEventsSystem.onPointerDown(this.coordsPanel,
       (e) => {
-        _teleportTo(_scene.baseCoords[0] + ',' + _scene.baseCoords[1])      
+        _teleportTo(_scene.baseCoords[0], _scene.baseCoords[1])      
       },
       { hoverText: 'GO THERE', button: InputAction.IA_POINTER }
     )
@@ -261,7 +261,7 @@ export class CrowdMenuItem extends MenuItem {
       
       pointerEventsSystem.onPointerDown(this.jumpInButton,
         (e) => {
-          _teleportTo(_scene.baseCoords[0] + ',' + _scene.baseCoords[1])      
+          _teleportTo(_scene.baseCoords[0] , _scene.baseCoords[1])      
         },
         { hoverText: 'JUMP IN', button: InputAction.IA_POINTER }
       )       
@@ -328,7 +328,7 @@ export class CrowdMenuItem extends MenuItem {
     
     pointerEventsSystem.onPointerDown(this.coordsPanel,
       (e) => {
-        _teleportTo(_scene.baseCoords[0] + ',' + _scene.baseCoords[1])     
+        _teleportTo(_scene.baseCoords[0] , _scene.baseCoords[1])     
       },
       { hoverText: 'GO THERE', button: InputAction.IA_POINTER }
     )      

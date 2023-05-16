@@ -278,7 +278,7 @@ export class EventMenuItem extends MenuItem {
 
     pointerEventsSystem.onPointerDown(this.coordsPanel,
       (e) => {
-        _teleportTo(_event.coordinates[0] + ',' + _event.coordinates[1])      
+        _teleportTo(_event.coordinates[0] , _event.coordinates[1])      
       },
       { hoverText: 'GO THERE', button: InputAction.IA_POINTER }
     )
@@ -339,7 +339,7 @@ export class EventMenuItem extends MenuItem {
       
       pointerEventsSystem.onPointerDown(this.jumpInButton,
         (e) => {
-          _teleportTo(_event.coordinates[0] + ',' + _event.coordinates[1])      
+          _teleportTo(_event.coordinates[0] , _event.coordinates[1])      
         },
         { hoverText: 'JUMP IN', button: InputAction.IA_POINTER }
       )
@@ -348,7 +348,7 @@ export class EventMenuItem extends MenuItem {
       TextShape.getMutable(this.jumpButtonText).text = 'SIGN UP'
 
       pointerEventsSystem.onPointerDown(this.jumpInButton,
-        async (e) => {
+        (e) => {
           _openExternalURL(
             'https://events.decentraland.org/en/?event=' + _event.id
           )    
@@ -480,7 +480,7 @@ export class EventMenuItem extends MenuItem {
 
       pointerEventsSystem.onPointerDown(this.jumpInButton,
         (e) => {
-          _teleportTo(_event.coordinates[0] + ',' + _event.coordinates[1])      
+          _teleportTo(_event.coordinates[0] , _event.coordinates[1])      
         },
         { hoverText: 'JUMP IN', button: InputAction.IA_POINTER }
       )      
@@ -532,7 +532,7 @@ export class EventMenuItem extends MenuItem {
     
     pointerEventsSystem.onPointerDown(this.coordsPanel,
       (e) => {
-        _teleportTo(_event.coordinates[0] + ',' + _event.coordinates[1])     
+        _teleportTo(_event.coordinates[0] , _event.coordinates[1])     
       },
       { hoverText: 'GO THERE', button: InputAction.IA_POINTER }
     )      
@@ -546,7 +546,7 @@ export class EventMenuItem extends MenuItem {
     
     //details website button (read more)
     pointerEventsSystem.onPointerDown(this.readMoreButton,
-      (e) => {
+      async (e) => {
         _openExternalURL('https://events.decentraland.org/en/?event=' + _event.id)    
       },
       { hoverText: 'READ MORE', button: InputAction.IA_POINTER }
