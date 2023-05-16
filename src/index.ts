@@ -4,10 +4,14 @@ import { addBuildings } from './modules/buildings'
 //import { placeDoors } from './modules/bar/doors'
 import { barPlatforms } from './modules/platforms'
 import { addCloudLobby } from './lobby/cloudLobby'
+import * as allowedMediaHelper  from './utils/allowedMediaHelper'
 
 
 // export all the functions required to make the scene work
 export * from '@dcl/sdk'
+
+//load scene metadata
+allowedMediaHelper.getAndSetSceneMetaData()
 
 //// ADD CLOUD LOBBY
 

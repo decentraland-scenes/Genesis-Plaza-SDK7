@@ -1,4 +1,5 @@
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
+import { getSceneInfo,GetSceneResponse } from "~system/Scene"
 //import { TeleportController } from './portalBeam'
 /*
 import {
@@ -18,6 +19,7 @@ import { GltfContainer, InputAction, Material, MeshRenderer, Transform, engine, 
 import { _openExternalURL } from '../back-ports/backPorts'
 import { initClouds } from './clouds'
 import { HorizontalMenu } from './horizontalScrollMenu'
+import { whenAllowedMediaHelperReadyAddCallback } from '../utils/allowedMediaHelper'
 //import * as sfx from './resources/sounds'
 //import { insideBar } from 'src/game'
 
@@ -118,13 +120,14 @@ export function addCloudLobby(){
 // })
 
 
+whenAllowedMediaHelperReadyAddCallback(()=>{
+    let eventMenu = new HorizontalMenu( Vector3.create(lobbyCenter.x, lobbyHeight + 1.25  , lobbyCenter.z), Quaternion.fromEulerDegrees(0,-54,0))
+    eventMenu.updateEventsMenu(15)
 
-  let eventMenu = new HorizontalMenu( Vector3.create(lobbyCenter.x, lobbyHeight + 1.25  , lobbyCenter.z), Quaternion.fromEulerDegrees(0,-54,0))
-  eventMenu.updateEventsMenu(15)
-
-  let crowdsMenu = new HorizontalMenu( Vector3.create(lobbyCenter.x, lobbyHeight + 3.5 , lobbyCenter.z), Quaternion.fromEulerDegrees(0,-54,0))  
-  crowdsMenu.updateCrowdsMenu(10)
-
+    let crowdsMenu = new HorizontalMenu( Vector3.create(lobbyCenter.x, lobbyHeight + 3.5 , lobbyCenter.z), Quaternion.fromEulerDegrees(0,-54,0))  
+    crowdsMenu.updateCrowdsMenu(10)
+  }
+)
 
 
 

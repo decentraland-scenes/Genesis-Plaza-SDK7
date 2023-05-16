@@ -570,7 +570,7 @@
 	"allowedMediaHostnames": [
 		"decentraland.org",
 		"events-assets-099ac00.decentraland.org",
-		"peer-eu1.decentraland.org"		
+		"peer.decentraland.org"		
 	],
 	"featureToggles": {}
 }

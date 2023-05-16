@@ -9,8 +9,9 @@ import { getCurrentTime, getTimeStamp } from './checkApi'
 import { AudioSource, Entity, GltfContainer, InputAction, TextAlignMode, TextShape, Transform, TransformType, TransformTypeWithOptionals, VisibilityComponent, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { _openExternalURL, _teleportTo } from '../back-ports/backPorts'
+import { getImageOrFallback } from '../utils/allowedMediaHelper'
 
-
+ 
 
 export class CrowdMenuItem extends MenuItem {
   public thumbNail: ThumbnailPlane
@@ -61,7 +62,7 @@ export class CrowdMenuItem extends MenuItem {
 
     
     this.thumbNail = new ThumbnailPlane(
-      _scene.thumbnail,
+      getImageOrFallback(_scene.thumbnail,"images/fallback-scene-thumb.png"),
       {
         position: Vector3.create(0.25, 0.27, 0),
         rotation: Quaternion.Zero(),
