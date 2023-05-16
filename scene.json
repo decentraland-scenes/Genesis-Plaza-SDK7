@@ -570,7 +570,12 @@
 	"allowedMediaHostnames": [
 		"decentraland.org",
 		"events-assets-099ac00.decentraland.org",
-		"peer.decentraland.org"		
+		"peer.decentraland.org",
+		"icecast.ravepartyradio.org",
+		"cdn.instream.audio",
+		"n08.radiojar.com",
+		"edge.singsingmusic.net",
+		"live.vegascity.fm" 
 	],
 	"featureToggles": {}
 }

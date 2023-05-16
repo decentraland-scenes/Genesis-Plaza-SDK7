@@ -20,15 +20,18 @@ import { _openExternalURL } from '../back-ports/backPorts'
 import { initClouds } from './clouds'
 import { HorizontalMenu } from './horizontalScrollMenu'
 import { whenAllowedMediaHelperReadyAddCallback } from '../utils/allowedMediaHelper'
+import { TeleportController } from './beamPortal'
 //import * as sfx from './resources/sounds'
 //import { insideBar } from 'src/game'
 
-/*
+
 //TODO TAG:PORT-REIMPLEMENT-ME
 const portalControl = new TeleportController()
-*/
+
 
 export function addCloudLobby(){
+
+  console.log("cloudLobby.ts addCloudLobby has been called")
 
   const menuScale = 1.2
   const center = Vector3.create(lobbyCenter.x, lobbyHeight + 104, lobbyCenter.z)
