@@ -26,8 +26,31 @@
 	},
 	"spawnPoints": [
 		{
-			"name": "spawn1",
+			"name": "center",
 			"default": true,
+			"position": {
+				"x": [
+					156,
+					164
+				],
+				"y": [
+					105.1,
+					105.1
+				],
+				"z": [
+					138,
+					142
+				]
+			},
+			"cameraTarget": {
+				"x": 158,
+				"y": 106,
+				"z": 184
+			}
+		},
+		{
+			"name": "spawn1",
+			"default": false,
 			"position": {
 			  "x": 40,
 			  "y": 0,
