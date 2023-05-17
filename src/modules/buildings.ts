@@ -167,7 +167,7 @@ export function addBuildings() {
   let core_building = engine.addEntity()
   GltfContainer.create(core_building,{src:'models/core_building_cutoutVersion.glb'})
   Transform.create(core_building,{
-      position: Vector3.create(29,0,40),
+      position: Vector3.create(32,0,40),
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
   
