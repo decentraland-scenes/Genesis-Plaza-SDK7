@@ -52,7 +52,7 @@ export function placeJukeBox() {
   })
 
   Transform.createOrReplace(baseJukeBox, {
-    position: Vector3.create(179, 0, 144), 
+    position: Vector3.create(16, 0, 32), 
     rotation: Quaternion.fromEulerDegrees(0, -45, 0),
     scale: Vector3.create(0.75, 0.75, 0.75),
   })
