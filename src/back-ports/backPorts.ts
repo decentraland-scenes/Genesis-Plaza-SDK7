@@ -21,17 +21,12 @@ export type TranformConstructorArgs = TransformTypeWithOptionals  & {}
  * https://github.com/decentraland/sdk/issues/665
  */
 export async function _openExternalURL(url:string){
-  log("_openExternalURL IMPLEMENT ME!!!!",url)
-  log("_openExternalURL IMPLEMENT ME2!!!!")
-  log("_openExternalURL IMPLEMENT ME3!!!!")
   openExternalUrl({url:url})
 } 
 
 //TODO TAG:PORT-REIMPLEMENT-ME
 export function _teleportTo(parcelX:number,parcelZ:number){
-  log("_teleportTo IMPLEMENT ME!!!!",parcelX,parcelZ)
-  log("_teleportTo IMPLEMENT ME2!!!!")
-  log("_teleportTo IMPLEMENT ME3!!!!")
+  //sdk needs to prompt but this works
   //const split 
   teleportTo({
     worldPosition: Vector3.create(parcelX * 16,1,parcelZ*16)
