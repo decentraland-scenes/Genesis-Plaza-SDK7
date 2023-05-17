@@ -1,5 +1,5 @@
 import { engine, executeTask, GltfContainer, InputAction, Material, pointerEventsSystem, Transform } from '@dcl/sdk/ecs'
-import { Color4, Quaternion } from '@dcl/sdk/math'
+import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { _openExternalURL, log } from '../back-ports/backPorts'
 
 export function addBuildings() {
@@ -140,6 +140,7 @@ export function addBuildings() {
   engine.addEntity(Text_C)
   */
  
+  /*
   let ethLogos = engine.addEntity()
   GltfContainer.create(ethLogos,{src:'models/core_building/Eth_Details.glb'})
   Transform.create(ethLogos,{
@@ -158,14 +159,15 @@ export function addBuildings() {
   Transform.create(TheWhale_Action_Sculpture,{
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
-  
+  */
 
   //CORE BUILDING
 
   //add core_building
   let core_building = engine.addEntity()
-  GltfContainer.create(core_building,{src:'models/core_building.glb'})
+  GltfContainer.create(core_building,{src:'models/core_building_cutoutVersion.glb'})
   Transform.create(core_building,{
+      position: Vector3.create(29,0,40),
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
   
@@ -290,6 +292,7 @@ export function addBuildings() {
 
   //STREET MESH
 
+  /*
   //add street
   let street = engine.addEntity()
   GltfContainer.create(street,{src:'models/street.glb'})
@@ -297,9 +300,9 @@ export function addBuildings() {
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
   
+ */
 
-
-
+/*
  //add vogu_pod
  let vogu_pod = engine.addEntity()
  GltfContainer.create(vogu_pod,{src:'models/vogu_pod.glb'})
@@ -314,17 +317,17 @@ export function addBuildings() {
     },
     { hoverText: 'Visit VOGU site', button: InputAction.IA_POINTER }
   )
-
+ */
 
 }
-
+/*
 //add zepellin
 let zepellin = engine.addEntity()
 GltfContainer.create(zepellin,{src:'models/zepellin.glb'})
 Transform.create(zepellin,{
     rotation: Quaternion.fromEulerDegrees(0, 180, 0),
   })
-
+*/
 
 //add eth logos in bar
 let ethLogos = engine.addEntity()
