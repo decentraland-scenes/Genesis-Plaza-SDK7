@@ -234,7 +234,7 @@ export function placePlatforms() {
 export let upstairsLoaded: boolean = false
 
 export function barPlatforms() {
-  //ARTICHOKE ELEVATOR
+  //BAR PLATFORMS
 
   let barElevatorLeft = new Platform(
     {src:'models/core_building/Elevator_Left.glb'},
