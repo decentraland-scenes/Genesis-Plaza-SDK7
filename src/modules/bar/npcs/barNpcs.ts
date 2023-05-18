@@ -6,6 +6,7 @@ import { artist1TalkToUser, artist2TalkToUser, artistConversation, artistRecomme
 import { rarestItem, rarityLevel } from './rarity'
 import { triggers } from '@dcl-sdk/utils'
 import * as utils from '@dcl-sdk/utils'
+import { coreBuildingOffset } from '../../../constants'
 
 const LogTag: string = 'barNpcs'
 
@@ -24,7 +25,7 @@ export function initBarNpcs(): void {
 
 function createOctopusNpc(): Entity {
   let octo = createNpc({
-    position: Vector3.create(160, 0.2, 141.4),
+    position: Vector3.create(160 - coreBuildingOffset.x, 0.2, 141.4 - coreBuildingOffset.z),
     rotation: Quaternion.fromEulerDegrees(0, 0, 0)
   },
     octopusModel,
