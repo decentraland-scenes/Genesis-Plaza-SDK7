@@ -1,6 +1,7 @@
 import { engine, executeTask, GltfContainer, InputAction, Material, pointerEventsSystem, Transform } from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { _openExternalURL, log } from '../back-ports/backPorts'
+import { coreBuildingOffset } from '../constants'
 
 export function addBuildings() {
   log("addBuildings")
@@ -333,6 +334,7 @@ Transform.create(zepellin,{
 let ethLogos = engine.addEntity()
 GltfContainer.create(ethLogos,{src:'models/core_building/Eth_Details.glb'})
 Transform.create(ethLogos,{
+    position: Vector3.create(0 - coreBuildingOffset.x, 1, 0 - coreBuildingOffset.z),
     rotation: Quaternion.fromEulerDegrees(0, 180, 0),
   })
 
@@ -340,6 +342,7 @@ Transform.create(ethLogos,{
 let ethLogos_02 = engine.addEntity()
 GltfContainer.create(ethLogos_02,{src:'models/core_building/Eth_Details_02.glb'})
 Transform.create(ethLogos_02,{
+    position: Vector3.create(0 - coreBuildingOffset.x, 0, 0 - coreBuildingOffset.z),
     rotation: Quaternion.fromEulerDegrees(0, 180, 0),
   })
 
