@@ -338,7 +338,7 @@ Transform.create(zepellin,{
 let ethLogos = engine.addEntity()
 GltfContainer.create(ethLogos,{src:'models/core_building/Eth_Details.glb'})
 Transform.create(ethLogos,{
-    position: Vector3.create(0 - coreBuildingOffset.x, 1, 0 - coreBuildingOffset.z),
+    position: Vector3.create(0 - coreBuildingOffset.x, 0, 0 - coreBuildingOffset.z),
     rotation: Quaternion.fromEulerDegrees(0, 180, 0),
   })
 
