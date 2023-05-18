@@ -21,6 +21,7 @@ import { initClouds } from './clouds'
 //import * as sfx from './resources/sounds'
 //import { insideBar } from 'src/game'
 
+
 /*
 //TODO TAG:PORT-REIMPLEMENT-ME
 const portalControl = new TeleportController()
@@ -38,7 +39,7 @@ export function addCloudLobby(){
   Transform.create(discordLink,{
     position: Vector3.create(
       center.x - 1,
-      center.y + 1,
+      lobbyHeight + 1,
       center.z - 13.32
     ),
   })
@@ -77,9 +78,9 @@ export function addCloudLobby(){
   let divingSign = engine.addEntity()
   Transform.create(divingSign,{
     position: Vector3.create(
-      lobbyCenter.x - 1.2,
+      center.x - 1.2,
       lobbyHeight - 0.5,
-      lobbyCenter.z - 6.4
+      center.z - 6.4
     ),
   })
 
@@ -89,14 +90,14 @@ export function addCloudLobby(){
   // WATER VORTEXES
   let vortex1 = engine.addEntity()
   Transform.create(vortex1,{
-    position: Vector3.create(lobbyCenter.x, lobbyHeight, lobbyCenter.z),
+    position: Vector3.create(center.x, lobbyHeight, center.z),
   })
   GltfContainer.create(vortex1,resource.vortex1Shape)
 
 
   let vortex2 = engine.addEntity()
   Transform.create(vortex2,{
-      position: Vector3.create(lobbyCenter.x, lobbyHeight, lobbyCenter.z),
+      position: Vector3.create(center.x, lobbyHeight, center.z),
     })
 
   GltfContainer.create(vortex2,resource.vortex2Shape)
