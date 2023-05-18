@@ -1,7 +1,7 @@
 import * as utils from '@dcl-sdk/utils'
 import { Animator, Entity, GltfContainer, PBAnimator, PBGltfContainer, Transform, TransformTypeWithOptionals, engine } from '@dcl/sdk/ecs'
 import { sceneMessageBus } from './serverHandler'
-import { Quaternion, Vector3 } from '@dcl/sdk/math'
+import { Color3, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { log } from '../back-ports/backPorts'
 import { coreBuildingOffset } from '../lobby/resources/globals'
 /*import * as utils from '@dcl/ecs-scene-utils'
@@ -45,8 +45,25 @@ export class Platform  {
       ]
     })
    
-    /*
-    //TODO TAG:PORT-REIMPLEMENT-ME
+  
+
+    const triggerEntity = engine.addEntity()
+    Transform.create(triggerEntity, {})
+
+    utils.triggers.addTrigger(triggerEntity, utils.LAYER_1, utils.LAYER_1, 
+      [{type: "box",position: triggerPos.position , scale: triggerScale}],
+      ()=>{ 
+        sceneMessageBus.emit(messageBusHandle, {})
+        if (extraAction) {
+          extraAction()
+        }
+      },
+      ()=>{ 
+      },
+      Color3.Blue()
+    )
+
+ /*
     const triggerEntity = engine.addEntity()
     triggerEntity.addComponent(new Transform(triggerPos))
 

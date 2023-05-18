@@ -1,7 +1,7 @@
 import { engine, executeTask, GltfContainer, InputAction, Material, pointerEventsSystem, Transform } from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { _openExternalURL, log } from '../back-ports/backPorts'
-import { coreBuildingOffset } from '../lobby/resources/globals'
+import { coreBuildingOffset, lobbyHeight, lobbyHeightLegacy } from '../lobby/resources/globals'
 
 
 export function addBuildings() {
@@ -12,7 +12,7 @@ export function addBuildings() {
   let lobby = engine.addEntity()
   GltfContainer.create(lobby,{src:'models/lobby/lobby_platform.glb'})
   Transform.create(lobby,{
-      position: Vector3.create(0 - coreBuildingOffset.x, 0, 0 - coreBuildingOffset.z),
+      position: Vector3.create(0 - coreBuildingOffset.x, lobbyHeight - lobbyHeightLegacy, 0 - coreBuildingOffset.z),
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
   
