@@ -9,6 +9,7 @@ import { lowerVolume, outOfBar, placeJukeBox, setBarMusicOff, setBarMusicOn } fr
 import { addRepeatTrigger } from './modules/Utils'
 import { log } from './back-ports/backPorts'
 import { initBarNpcs } from './modules/bar/npcs/barNpcs'
+import { placeDoors } from './modules/bar/doors'
 
 
 // export all the functions required to make the scene work
@@ -29,10 +30,10 @@ addBuildings()
 
 // BAR DOORS
 
-/*
+
 //TODO TAG:PORT-REIMPLEMENT-ME
 placeDoors()
-*/
+
 barPlatforms()
 initBarNpcs()
 
