@@ -10,11 +10,14 @@ import { addRepeatTrigger } from './modules/Utils'
 import { log } from './back-ports/backPorts'
 import { lobbyCenter } from './lobby/resources/globals'
 import { TeleportController } from './lobby/beamPortal'
+import { placeDoors } from './modules/bar/doors'
+import { initBarNpcs } from './modules/bar/npcs/barNpcs'
 
 
 // export all the functions required to make the scene work
 export * from '@dcl/sdk'
 
+initBarNpcs()
 placeJukeBox()
 setBarMusicOn()
 
@@ -32,10 +35,10 @@ addBuildings()
 
 // BAR DOORS
 
-/*
+
 //TODO TAG:PORT-REIMPLEMENT-ME
 placeDoors()
-*/
+
 barPlatforms()
 
 
