@@ -1,7 +1,6 @@
-//import * as utils from '@dcl/ecs-scene-utils'
-
+import * as utils from '@dcl-sdk/utils'
 import { sceneMessageBus } from '../serverHandler'
-import { Quaternion, Vector3 } from '@dcl/sdk/math'
+import { Color3, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { Animator, AudioSource, Entity, GltfContainer, PBGltfContainer, Transform, TransformTypeWithOptionals, engine } from '@dcl/sdk/ecs'
 import { log } from '../../back-ports/backPorts'
 import { coreBuildingOffset } from '../../lobby/resources/globals'
@@ -82,35 +81,28 @@ export class Door  {
       loop: false,
       playing: false
     })
-    /*
-    //TODO TAG:PORT-REIMPLEMENT-ME
+    
+
     if (withTrigger) {
-      const triggerEntity = new Entity()
-      triggerEntity.addComponent(new Transform(triggerPos))
-
-      let triggerBox = new utils.TriggerBoxShape(triggerScale, Vector3.Zero())
-
-      triggerEntity.addComponent(
-        new utils.TriggerComponent(
-          triggerBox, //shape
-          {
-            onCameraEnter: () => {
-              log('open door')
-              this.isPlayerIn = true
-              sceneMessageBus.emit(messageBusHandle, { open: true })
-            },
-            onCameraExit: () => {
-              log('close door')
-              this.isPlayerIn = false
-              sceneMessageBus.emit(messageBusHandle, { open: false })
-            },
-            //enableDebug: true,
-          }
-        )
+      const triggerEntity = engine.addEntity()
+      Transform.create(triggerEntity, {})
+  
+      utils.triggers.addTrigger(triggerEntity, utils.LAYER_1, utils.LAYER_1, 
+        [{type: "box",position: triggerPos.position , scale: triggerScale}],
+        ()=>{ 
+            log('open door')
+            this.isPlayerIn = true
+            sceneMessageBus.emit(messageBusHandle, { open: true })
+        },
+        ()=>{ 
+            log('close door')
+            this.isPlayerIn = false
+            sceneMessageBus.emit(messageBusHandle, { open: false })
+        },
+        Color3.Blue()
       )
-      engine.addEntity(triggerEntity)
     }
-    */
+    
 
     Animator.getClip(this.entity,this.animationOpen).playing = false
     Animator.getClip(this.entity,this.animationClose).playing = false
@@ -150,7 +142,7 @@ export function placeDoors() {
     {src:'models/core_building/Door_Entrance_L.glb'},
     { position: Vector3.create(0 - coreBuildingOffset.x, 0, 0 - coreBuildingOffset.z),
       rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
-    { position: Vector3.create(160 , 2, 126 ) },
+    { position: Vector3.create(160 - coreBuildingOffset.x, 2, 126 - coreBuildingOffset.z) },
     Vector3.create(16, 8, 8),
     'DoorLeft_Open',
     'DoorLeft_Close',
@@ -161,7 +153,7 @@ export function placeDoors() {
     {src:'models/core_building/Door_Entrance_R.glb'},
     { position: Vector3.create(0 - coreBuildingOffset.x, 0, 0 - coreBuildingOffset.z),
       rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
-    { position: Vector3.create(160 , 2, 126  ) },
+    { position: Vector3.create(160 - coreBuildingOffset.x, 2, 126 - coreBuildingOffset.z ) },
     Vector3.create(16, 8, 8),
     'DoorRight_Open',
     'DoorRight_Close',

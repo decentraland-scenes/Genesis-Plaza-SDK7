@@ -25,7 +25,7 @@ const uiBeamMeUp = () => (
     uiTransform={{
       width: 500,
       height: 250,
-      display: teleportUIVisibility,
+      display: "flex",
       alignContent: 'center',
 
       position: { top: '30px', right: '-360px' },
