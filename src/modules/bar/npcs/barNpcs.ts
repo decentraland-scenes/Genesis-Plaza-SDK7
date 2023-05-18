@@ -137,7 +137,7 @@ function createFashionistNpc(): Entity {
 function createMainArtist(): Entity {
   let mainArtist = createNpc(
     {
-      position: Vector3.create(142.9, -0.2, 165.7),
+      position: Vector3.create(142.9 - coreBuildingOffset.x, -0.2, 165.7 - coreBuildingOffset.z),
       rotation: Quaternion.fromEulerDegrees(0, 180 + 90, 0)
     },
     aritst1Model,
