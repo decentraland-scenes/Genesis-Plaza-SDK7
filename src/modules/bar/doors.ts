@@ -76,7 +76,7 @@ export class Door  {
       playing: false
     })
 
-    AudioSource.create(this.soundOpen,{
+    AudioSource.create(this.soundClose,{
       audioClipUrl:openUrl,
       volume:1,
       loop: false,
@@ -146,7 +146,7 @@ export class Door  {
 }
 
 export function placeDoors() {
-  let main_door1 = new Door(
+  let main_door1 = new Door( 
     {src:'models/core_building/Door_Entrance_L.glb'},
     { position: Vector3.create(0 - coreBuildingOffset.x, 0, 0 - coreBuildingOffset.z),
       rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
