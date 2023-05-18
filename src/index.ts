@@ -8,7 +8,7 @@ import { addCloudLobby } from './lobby/cloudLobby'
 import { lowerVolume, outOfBar, placeJukeBox, setBarMusicOff, setBarMusicOn } from './modules/bar/jukebox'
 import { addRepeatTrigger } from './modules/Utils'
 import { log } from './back-ports/backPorts'
-import { lobbyCenter } from './lobby/resources/globals'
+import { coreBuildingOffset, lobbyCenter } from './lobby/resources/globals'
 import { TeleportController } from './lobby/beamPortal'
 import { placeDoors } from './modules/bar/doors'
 import { initBarNpcs } from './modules/bar/npcs/barNpcs'
@@ -76,7 +76,7 @@ utils.triggers.enableDebugDraw(true)
 
 // proper bar interior
 addRepeatTrigger(
-  Vector3.create(160, 50, 155),
+  Vector3.create(160 - coreBuildingOffset.x, 50, 155 - coreBuildingOffset.z),
   Vector3.create(50, 102, 50),
   () => {
     setBarMusicOn()
@@ -96,7 +96,7 @@ addRepeatTrigger(
 
 //outer perimeter
 addRepeatTrigger(
-  Vector3.create(160, 30, 155),
+  Vector3.create(160 - coreBuildingOffset.x, 30, 155 - coreBuildingOffset.z),
   Vector3.create(75, 60, 75),
   () => {
     lowerVolume()

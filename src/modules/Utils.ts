@@ -35,6 +35,6 @@ export function addRepeatTrigger(
     , utils.NO_LAYERS, utils.LAYER_1 
     ,[{position:Vector3.Zero(),scale:size,type:'box'}]
     ,onPlayerEnter
-    ,onExit,  Color3.Yellow()
+    ,onExit,  Color3.Blue()
   ) 
 }
