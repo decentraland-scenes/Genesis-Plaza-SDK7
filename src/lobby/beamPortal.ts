@@ -1,6 +1,6 @@
 import { Animator, AudioSource, AudioStream, Entity, GltfContainer, InputAction, Material, MeshRenderer, PBAudioStream, TextShape, Transform, VisibilityComponent, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
 import { Color3, Vector3 } from '@dcl/sdk/math'
-import { lobbyCenter } from './resources/globals'
+import { coreBuildingOffset, lobbyCenter } from './resources/globals'
 import { lobbyHeight } from './resources/globals'
 import { isInBar, setBarMusicOn } from '../modules/bar/jukebox'
 //import { tutorialEnableObservable } from '../modules/tutorialHandler'
@@ -24,7 +24,7 @@ AudioSource.create(ambienceBox,{
   playing: true
 })
 Transform.create(ambienceBox, {
-  position: Vector3.create(lobbyCenter.x, lobbyHeight, lobbyCenter.z)
+  position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyHeight, lobbyCenter.z - coreBuildingOffset.z)
 })
 
 // LOBBY MUSIC
@@ -75,7 +75,7 @@ export let tutorialRunning: boolean = false
 // BEAM MESH
 const beam = engine.addEntity()
 Transform.create(beam,{
-    position: Vector3.create(lobbyCenter.x, lobbyCenter.y, lobbyCenter.z)
+    position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y, lobbyCenter.z - coreBuildingOffset.z)
 })
 GltfContainer.createOrReplace(beam, {
     src: "models/lobby/beam.glb"
@@ -123,7 +123,7 @@ export class TeleportController {
       // Trigger to handle teleporting the player up to the cloud
       this.triggerBoxUp = engine.addEntity()
 
-      this.triggerBoxUpPosition = Vector3.create(lobbyCenter.x, lobbyCenter.y, lobbyCenter.z)
+      this.triggerBoxUpPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y, lobbyCenter.z - coreBuildingOffset.z)
       this.triggerBoxUpScale = Vector3.create(6, 4.5, 6)
       Transform.create(this.triggerBoxUp, {})
       
@@ -156,7 +156,7 @@ export class TeleportController {
       // Trigger that handles landing offset
       this.triggerBoxDown = engine.addEntity()
       Transform.create(this.triggerBoxDown, {})
-      this.triggerBoxDownPosition = Vector3.create(lobbyCenter.x, lobbyCenter.y + 8, lobbyCenter.z)
+      this.triggerBoxDownPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y + 8, lobbyCenter.z - coreBuildingOffset.z)
       this.triggerBoxDownScale = Vector3.create(6, 6, 6)
 
       utils.triggers.addTrigger(this.triggerBoxDown, utils.NO_LAYERS, utils.LAYER_1,  
@@ -180,7 +180,7 @@ export class TeleportController {
       // Trigger to play fall SFX
       this.triggerBoxFallCheck = engine.addEntity()
       Transform.create(this.triggerBoxFallCheck, {})
-      this.triggerBoxFallCheckPosition = Vector3.create(lobbyCenter.x, lobbyCenter.y + 95, lobbyCenter.z)
+      this.triggerBoxFallCheckPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y + 95, lobbyCenter.z - coreBuildingOffset.z)
       this.triggerBoxFallCheckScale = Vector3.create(6, 10, 6)
 
      
