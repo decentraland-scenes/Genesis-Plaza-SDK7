@@ -90,14 +90,14 @@ export function addCloudLobby(){
   // WATER VORTEXES
   let vortex1 = engine.addEntity()
   Transform.create(vortex1,{
-    position: Vector3.create(center.x, lobbyHeight, center.z),
+    position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyHeight, lobbyCenter.z - coreBuildingOffset.z),
   })
   GltfContainer.create(vortex1,resource.vortex1Shape)
 
 
   let vortex2 = engine.addEntity()
   Transform.create(vortex2,{
-      position: Vector3.create(center.x, lobbyHeight, center.z),
+      position: Vector3.create(32, lobbyHeight, 38.22),
     })
 
   GltfContainer.create(vortex2,resource.vortex2Shape)

@@ -1,9 +1,10 @@
 import * as utils from '@dcl-sdk/utils'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
-import {lobbyCenter, lobbyHeight, lobbyRadius} from './resources/globals'
+import {coreBuildingOffset, lobbyCenter, lobbyHeight, lobbyRadius} from './resources/globals'
 import * as resource from "./resources/resources"
 import { ComponentType, Entity, GltfContainer, Schemas, Transform, engine } from '@dcl/sdk/ecs'
 import { log } from '../back-ports/backPorts'
+
 
 function addClouds(_count:number, _radius:number, _center:Vector3){
   log("addClouds",_radius,_center) 
@@ -45,7 +46,7 @@ export function initClouds(){
   addClouds(
       16, 
       20, 
-      Vector3.create(lobbyCenter.x, lobbyHeight, lobbyCenter.z)
+      Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyHeight, lobbyCenter.z - coreBuildingOffset.z)
       )
 
 

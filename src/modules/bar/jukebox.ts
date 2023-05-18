@@ -4,7 +4,8 @@ import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import * as utils from '@dcl-sdk/utils'
 import { sceneMessageBus } from '../serverHandler'
 import { tutorialRunning } from '../../lobby/portalBeam'
-import { coreBuildingOffset } from '../../constants'
+import { coreBuildingOffset } from '../../lobby/resources/globals'
+
 
 
 export enum Radios {
