@@ -6,7 +6,8 @@ import { artist1TalkToUser, artist2TalkToUser, artistConversation, artistRecomme
 import { rarestItem, rarityLevel } from './rarity'
 import { triggers } from '@dcl-sdk/utils'
 import * as utils from '@dcl-sdk/utils'
-import { coreBuildingOffset } from '../../../constants'
+import { coreBuildingOffset } from '../../../lobby/resources/globals'
+
 
 const LogTag: string = 'barNpcs'
 
