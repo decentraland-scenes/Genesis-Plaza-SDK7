@@ -12,35 +12,34 @@ import {
   updateCrowdsMenu,
 } from './menuMainFunctions'*/
 
-import { coreBuildingOffset, lobbyCenter, lobbyHeight, lobbyRadius } from './resources/globals'
+import { lobbyCenter, lobbyHeight, lobbyRadius } from './resources/globals'
 import * as resource from './resources/resources'
 import { GltfContainer, InputAction, Transform, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
 import { _openExternalURL } from '../back-ports/backPorts'
 import { initClouds } from './clouds'
-
+import { TeleportController } from './beamPortal'
 //import * as sfx from './resources/sounds'
 //import { insideBar } from 'src/game'
 
 
-/*
 //TODO TAG:PORT-REIMPLEMENT-ME
 const portalControl = new TeleportController()
-*/
+
 
 export function addCloudLobby(){
 
   console.log("cloudLobby.ts addCloudLobby has been called")
 
   const menuScale = 1.2
-  const center = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyHeight + 1.5, lobbyCenter.z - coreBuildingOffset.z)
+  const center = Vector3.create(lobbyCenter.x, lobbyHeight + 1.5, lobbyCenter.z)
 
   // SOCIAL LINKS
   let discordLink = engine.addEntity()
   Transform.create(discordLink,{
     position: Vector3.create(
-      center.x - 1,
+      lobbyCenter.x - 1,
       lobbyHeight + 1,
-      center.z - 13.32
+      lobbyCenter.z - 13.32
     ),
   })
 
@@ -58,9 +57,9 @@ export function addCloudLobby(){
   let twitterLink = engine.addEntity()
   Transform.create(twitterLink,{
     position: Vector3.create(
-      center.x + 1.38,
+      lobbyCenter.x + 1.38,
       lobbyHeight + 1,
-      center.z - 13.3
+      lobbyCenter.z - 13.3
     )
   })
 
@@ -78,9 +77,9 @@ export function addCloudLobby(){
   let divingSign = engine.addEntity()
   Transform.create(divingSign,{
     position: Vector3.create(
-      center.x - 1.2,
+      lobbyCenter.x - 1.2,
       lobbyHeight - 0.5,
-      center.z - 6.4
+      lobbyCenter.z - 6.4
     ),
   })
 
@@ -90,14 +89,14 @@ export function addCloudLobby(){
   // WATER VORTEXES
   let vortex1 = engine.addEntity()
   Transform.create(vortex1,{
-    position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyHeight, lobbyCenter.z - coreBuildingOffset.z),
+    position: Vector3.create(lobbyCenter.x, lobbyHeight, lobbyCenter.z),
   })
   GltfContainer.create(vortex1,resource.vortex1Shape)
 
 
   let vortex2 = engine.addEntity()
   Transform.create(vortex2,{
-      position: Vector3.create(32, lobbyHeight, 38.22),
+      position: Vector3.create(lobbyCenter.x, lobbyHeight, lobbyCenter.z),
     })
 
   GltfContainer.create(vortex2,resource.vortex2Shape)

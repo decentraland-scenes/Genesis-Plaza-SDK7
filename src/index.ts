@@ -1,6 +1,6 @@
-import { engine, executeTask, GltfContainer, Material, MeshRenderer, Transform } from '@dcl/sdk/ecs'
+import { engine, executeTask, Material, Transform } from '@dcl/sdk/ecs'
 import * as utils from '@dcl-sdk/utils'
-import { Color4, Vector3 } from '@dcl/sdk/math'
+import { Color3, Color4, Vector3 } from '@dcl/sdk/math'
 import { addBuildings } from './modules/buildings'
 //import { placeDoors } from './modules/bar/doors'
 import { barPlatforms } from './modules/platforms'
@@ -8,8 +8,8 @@ import { addCloudLobby } from './lobby/cloudLobby'
 import { lowerVolume, outOfBar, placeJukeBox, setBarMusicOff, setBarMusicOn } from './modules/bar/jukebox'
 import { addRepeatTrigger } from './modules/Utils'
 import { log } from './back-ports/backPorts'
-import { initBarNpcs } from './modules/bar/npcs/barNpcs'
-import { placeDoors } from './modules/bar/doors'
+import { lobbyCenter } from './lobby/resources/globals'
+import { TeleportController } from './lobby/beamPortal'
 
 
 // export all the functions required to make the scene work
@@ -26,16 +26,17 @@ addCloudLobby()
 
 addBuildings()
 
+
+
 ///////// BAR STUFF
 
 // BAR DOORS
 
-
+/*
 //TODO TAG:PORT-REIMPLEMENT-ME
 placeDoors()
-
+*/
 barPlatforms()
-initBarNpcs()
 
 
 //TODO TAG:PORT-REIMPLEMENT-ME
@@ -68,11 +69,11 @@ utils.addOneTimeTrigger(
 )
 */
 
-//utils.triggers.enableDebugDraw(true)
+utils.triggers.enableDebugDraw(true)
 
 // proper bar interior
 addRepeatTrigger(
-  Vector3.create(48, 50, 59),
+  Vector3.create(160, 50, 155),
   Vector3.create(50, 102, 50),
   () => {
     setBarMusicOn()
@@ -92,7 +93,7 @@ addRepeatTrigger(
 
 //outer perimeter
 addRepeatTrigger(
-  Vector3.create(48, 30, 59),
+  Vector3.create(160, 30, 155),
   Vector3.create(75, 60, 75),
   () => {
     lowerVolume()
@@ -150,3 +151,20 @@ utils.addOneTimeTrigger(
 )
 */
 
+/*
+let trigger = engine.addEntity()
+Transform.create(trigger)
+      utils.triggers.addTrigger(trigger, utils.NO_LAYERS, utils.NO_LAYERS, 
+        [{type: "box", position: Vector3.create(6, 4.5, 6), scale:Vector3.create(6, 4.5, 6)}],
+        function(){
+        
+          
+          console.log("entered in trigger")
+          
+          
+        },
+        function(){
+          
+        },
+        Color3.Green()
+      )*/

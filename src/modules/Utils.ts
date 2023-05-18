@@ -29,10 +29,10 @@ export function addRepeatTrigger(
       position:position,
       parent:parent
     })
-
+ 
   utils.triggers.addTrigger(
     trigger
-    , 1, 1
+    , utils.NO_LAYERS, utils.LAYER_1 
     ,[{position:Vector3.Zero(),scale:size,type:'box'}]
     ,onPlayerEnter
     ,onExit,  Color3.Yellow()
