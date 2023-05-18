@@ -80,7 +80,7 @@ function createOctopusNpc(): Entity {
 
 function createFashionistNpc(): Entity {
 
-  let position = Vector3.create(162.65, 0.23, 133.15)
+  let position = Vector3.create(162.65 - coreBuildingOffset.x, 0.23, 133.15 - coreBuildingOffset.z)
 
   let fashionist = createNpc(
     { position: position },
