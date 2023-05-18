@@ -69,14 +69,14 @@ export class Door  {
     this.soundClose = engine.addEntity()
     Transform.create(this.soundClose,{parent:this.entity})
     
-    AudioSource.create(this.soundOpen,{
+    AudioSource.create(this.soundClose,{
       audioClipUrl:closeUrl,
       volume:1,
       loop: false,
       playing: false
     })
 
-    AudioSource.create(this.soundClose,{
+    AudioSource.create(this.soundOpen,{
       audioClipUrl:openUrl,
       volume:1,
       loop: false,
@@ -150,7 +150,7 @@ export function placeDoors() {
     {src:'models/core_building/Door_Entrance_L.glb'},
     { position: Vector3.create(0 - coreBuildingOffset.x, 0, 0 - coreBuildingOffset.z),
       rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
-    { position: Vector3.create(160  - coreBuildingOffset.x, 2, 126  - coreBuildingOffset.z) },
+    { position: Vector3.create(160 , 2, 126 ) },
     Vector3.create(16, 8, 8),
     'DoorLeft_Open',
     'DoorLeft_Close',
@@ -161,7 +161,7 @@ export function placeDoors() {
     {src:'models/core_building/Door_Entrance_R.glb'},
     { position: Vector3.create(0 - coreBuildingOffset.x, 0, 0 - coreBuildingOffset.z),
       rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
-    { position: Vector3.create(160  - coreBuildingOffset.x, 2, 126  - coreBuildingOffset.z) },
+    { position: Vector3.create(160 , 2, 126  ) },
     Vector3.create(16, 8, 8),
     'DoorRight_Open',
     'DoorRight_Close',
