@@ -3,6 +3,7 @@ import { Animator, Entity, GltfContainer, PBAnimator, PBGltfContainer, Transform
 import { sceneMessageBus } from './serverHandler'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { log } from '../back-ports/backPorts'
+import { coreBuildingOffset } from '../lobby/resources/globals'
 /*import * as utils from '@dcl/ecs-scene-utils'
 import { addArcades } from './arcades/arcades'
 
@@ -237,8 +238,9 @@ export function barPlatforms() {
 
   let barElevatorLeft = new Platform(
     {src:'models/core_building/Elevator_Left.glb'},
-    { rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
-    { position: Vector3.create(146, 2.5, 151) },
+    { position: Vector3.create(0 - coreBuildingOffset.x, 0, 0 - coreBuildingOffset.z),
+      rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
+    { position: Vector3.create(146 - coreBuildingOffset.x, 2.5, 151 - coreBuildingOffset.z) },
     Vector3.create(4, 4, 4),
     'Elevator_Left_Up',
     'elevatorLeft',
@@ -249,8 +251,9 @@ export function barPlatforms() {
 
   let barElevatorRight = new Platform(
     {src:'models/core_building/Elevator_Right.glb'},
-    { rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
-    { position: Vector3.create(173, 2.5, 151) },
+    { position: Vector3.create(0 - coreBuildingOffset.x, 0, 0 - coreBuildingOffset.z),
+      rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
+    { position: Vector3.create(173 - coreBuildingOffset.x, 2.5, 151- coreBuildingOffset.z) },
     Vector3.create(4, 4, 4),
     'Elevator_Right_Up',
     'elevatorRight',
