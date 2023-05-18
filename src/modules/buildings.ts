@@ -178,6 +178,7 @@ export function addBuildings() {
   let msg_welcome = engine.addEntity()
   GltfContainer.create(msg_welcome,{src:'models/msg_welcome.glb'})
   Transform.create(msg_welcome,{
+      position: Vector3.create(0 - coreBuildingOffset.x, 0, 0 - coreBuildingOffset.z),
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
   
