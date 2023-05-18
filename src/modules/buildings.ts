@@ -11,6 +11,7 @@ export function addBuildings() {
   let lobby = engine.addEntity()
   GltfContainer.create(lobby,{src:'models/lobby/lobby_platform.glb'})
   Transform.create(lobby,{
+      position: Vector3.create(0 - coreBuildingOffset.x, 0, 0 - coreBuildingOffset.z),
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
   
