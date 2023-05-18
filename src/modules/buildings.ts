@@ -1,7 +1,8 @@
 import { engine, executeTask, GltfContainer, InputAction, Material, pointerEventsSystem, Transform } from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { _openExternalURL, log } from '../back-ports/backPorts'
-import { coreBuildingOffset } from '../constants'
+import { coreBuildingOffset } from '../lobby/resources/globals'
+
 
 export function addBuildings() {
   log("addBuildings")

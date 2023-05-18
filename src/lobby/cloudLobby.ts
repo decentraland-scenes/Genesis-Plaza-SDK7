@@ -12,11 +12,12 @@ import {
   updateCrowdsMenu,
 } from './menuMainFunctions'*/
 
-import { lobbyCenter, lobbyHeight, lobbyRadius } from './resources/globals'
+import { coreBuildingOffset, lobbyCenter, lobbyHeight, lobbyRadius } from './resources/globals'
 import * as resource from './resources/resources'
 import { GltfContainer, InputAction, Transform, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
 import { _openExternalURL } from '../back-ports/backPorts'
 import { initClouds } from './clouds'
+
 //import * as sfx from './resources/sounds'
 //import { insideBar } from 'src/game'
 
@@ -30,15 +31,15 @@ export function addCloudLobby(){
   console.log("cloudLobby.ts addCloudLobby has been called")
 
   const menuScale = 1.2
-  const center = Vector3.create(lobbyCenter.x, lobbyHeight + 1.5, lobbyCenter.z)
+  const center = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyHeight + 1.5, lobbyCenter.z - coreBuildingOffset.z)
 
   // SOCIAL LINKS
   let discordLink = engine.addEntity()
   Transform.create(discordLink,{
     position: Vector3.create(
-      lobbyCenter.x - 1,
-      lobbyHeight + 1,
-      lobbyCenter.z - 13.32
+      center.x - 1,
+      center.y + 1,
+      center.z - 13.32
     ),
   })
 
@@ -56,9 +57,9 @@ export function addCloudLobby(){
   let twitterLink = engine.addEntity()
   Transform.create(twitterLink,{
     position: Vector3.create(
-      lobbyCenter.x + 1.38,
+      center.x + 1.38,
       lobbyHeight + 1,
-      lobbyCenter.z - 13.3
+      center.z - 13.3
     )
   })
 
