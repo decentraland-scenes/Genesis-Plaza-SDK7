@@ -104,8 +104,8 @@ export class TeleportController {
 
 
       const triggerUpOnEnter = () => {
-        const playerTransform = Transform.getMutable(engine.PlayerEntity)
-          playerTransform.position = { x: lobbyCenter.x + 5, y: 140, z: lobbyCenter.z - 10 }
+          const playerTransform = Transform.getMutable(engine.PlayerEntity)
+          playerTransform.position = { x: lobbyCenter.x - coreBuildingOffset.x + 5, y: 140, z: lobbyCenter.z - 10 - coreBuildingOffset.z}
 
           /*if (!tutorialRunning) {
             let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
@@ -133,7 +133,6 @@ export class TeleportController {
         
           console.log("trigger.camera.enter", "triggerBoxUp", Transform.getOrNull(engine.PlayerEntity),"triggered by",entity,engine.PlayerEntity,engine.CameraEntity)
           showTeleportUI("flex")
-          
           
           triggerCounter.start(COUNT_DOWN_TIMER_AMOUNT / 1000)
           
@@ -164,7 +163,7 @@ export class TeleportController {
         (entity:Entity)=>{ 
           console.log("trigger.camera.enter", "triggerBoxDown","triggered by",entity,"player",engine.PlayerEntity,engine.CameraEntity)
           const playerTransform = Transform.getMutable(engine.PlayerEntity)
-          playerTransform.position = { x: lobbyCenter.x - 5, y: 0, z: lobbyCenter.z + 2 }
+          playerTransform.position = { x: lobbyCenter.x - 5 - coreBuildingOffset.x, y: 0, z: lobbyCenter.z + 2 - coreBuildingOffset.z }
 
           let ambienceMusic = AudioSource.getMutableOrNull(ambienceBox)
           if(ambienceMusic) ambienceMusic.playing = false
