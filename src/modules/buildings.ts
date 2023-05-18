@@ -182,14 +182,15 @@ export function addBuildings() {
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
   
-
+ /*
   //add core_art
   let core_art = engine.addEntity()
   GltfContainer.create(core_art,{src:'models/core_art.glb'})
   Transform.create(core_art,{
+      position: Vector3.create(0 - coreBuildingOffset.x, 0, 0 - coreBuildingOffset.z),
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
-  
+  */
   
   //TODO TAG:PORT-REIMPLEMENT-ME
   //TODO TAG:OUTSIDE-AREA
