@@ -1,10 +1,9 @@
-import * as npcLib from '@dcl-sdk/npc-utils'
+import * as npcLib from 'dcl-npc-toolkit'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { aritst1Model, aritst2Model, fashionistModel, navigationForwardSfx, octopusModel } from '../../../lobby/resources/resources'
 import { Entity, Transform, engine } from '@dcl/sdk/ecs'
 import { artist1TalkToUser, artist2TalkToUser, artistConversation, artistRecommendations, fashionistCommonDialog, fashionistEpicDialog, fashionistMythicDialog, fashionistNoneDialog, getFashionistDialog, getOcotDialog } from './npcDialogs'
 import { rarestItem, rarityLevel } from './rarity'
-import { triggers } from '@dcl-sdk/utils'
 import * as utils from '@dcl-sdk/utils'
 import { coreBuildingOffset } from '../../../lobby/resources/globals'
 
@@ -18,6 +17,7 @@ export let artist2: Entity
 
 export function initBarNpcs(): void {
   octo = createOctopusNpc()
+
   fashionist = createFashionistNpc()
 
   artist1 = createMainArtist()
@@ -32,14 +32,17 @@ function createOctopusNpc(): Entity {
     octopusModel,
     navigationForwardSfx,
     () => {
-      // console.log(LogTag, "Hi! Octopus!")
-      npcLib.talk(octo, getOcotDialog(octo))
+      console.log(LogTag, "Hi! Octopus!")
 
       npcLib.changeIdleAnim(octo, 'TalkLoop')
       npcLib.playAnimation(octo, 'TalkIntro', true, 0.63)
+      //npcLib.playAnimation(octo, 'TalkLoop', false)
+ 
+      npcLib.talk(octo, getOcotDialog(octo))
+      //npcLib.talkBubble(octo, getOcotDialog(octo))
     },
     () => {
-      // console.log(LogTag, "Bye! Octopus!")
+      console.log(LogTag, "Bye! Octopus!")
       npcLib.changeIdleAnim(octo, 'Idle')
       npcLib.playAnimation(octo, 'TalkOutro', true, 0.63)
     },
@@ -203,6 +206,7 @@ function createNpc(transformData: any, modelPath: string, sfxPath: string,
       dialogSound: sfxPath,
       onlyETrigger: true,
       coolDownDuration: 3,
+      reactDistance: 5
     }
   )
 

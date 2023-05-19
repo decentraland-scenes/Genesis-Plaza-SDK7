@@ -1,6 +1,6 @@
 import { teleportTo } from "~system/RestrictedActions"
-import * as npcLib from '@dcl-sdk/npc-utils'
-import type { Dialog } from "@dcl-sdk/npc-utils"
+import * as npcLib from 'dcl-npc-toolkit'
+import type { Dialog } from 'dcl-npc-toolkit'
 import { Entity}  from "@dcl/sdk/ecs"
 import { Vector3 } from '@dcl/sdk/math';
 import { artist1, artist2 } from './barNpcs';
@@ -373,8 +373,8 @@ export let artistRecommendations: Dialog[] = [
   },
 ]
 
-async function teleportPlayer(xCoordinate: number, yCoordinate: number) {
-  await teleportTo({
+function teleportPlayer(xCoordinate: number, yCoordinate: number) {
+  teleportTo({
     worldPosition: Vector3.create(xCoordinate * 16 ,0 ,yCoordinate * 16 )
   })
 }
