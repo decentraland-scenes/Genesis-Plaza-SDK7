@@ -38,6 +38,8 @@ export async function sendTrack(trackEvent: string,
 
   const realm = await getRealm({})
 
+  const worldPos = getWorldPosition(engine.PlayerEntity)
+
   const doc: any = {
     sceneId: SCENE_ID,
     realm: realm,
@@ -49,8 +51,8 @@ export async function sendTrack(trackEvent: string,
     durationTime: IN_SECONDS ? durationTime * 0.001 : durationTime,
 
     playTime: Date.now() - GenesisData.instance().startPlayTime,
-    exactPosition: getWorldPosition(engine.PlayerEntity),
-    position: Math.floor(getWorldPosition(engine.PlayerEntity).x / 16) + "," + Math.floor(getWorldPosition(engine.PlayerEntity).z / 16)
+    exactPosition: worldPos,
+    position: Math.floor(worldPos.x / 16) + "," + Math.floor(worldPos.z / 16)
   }
   await getSegment().track(trackEvent, doc)
 }
