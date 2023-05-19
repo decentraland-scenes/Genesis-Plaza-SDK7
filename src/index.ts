@@ -5,6 +5,7 @@ import { addBuildings } from './modules/buildings'
 //import { placeDoors } from './modules/bar/doors'
 import { barPlatforms } from './modules/platforms'
 import { addCloudLobby } from './lobby/cloudLobby'
+import * as allowedMediaHelper  from './utils/allowedMediaHelper'
 import { lowerVolume, outOfBar, placeJukeBox, setBarMusicOff, setBarMusicOn } from './modules/bar/jukebox'
 import { addRepeatTrigger } from './modules/Utils'
 import { log } from './back-ports/backPorts'
@@ -14,6 +15,9 @@ import { TeleportController } from './lobby/beamPortal'
 
 // export all the functions required to make the scene work
 export * from '@dcl/sdk'
+
+//load scene metadata
+allowedMediaHelper.getAndSetSceneMetaData()
 
 placeJukeBox()
 setBarMusicOn()

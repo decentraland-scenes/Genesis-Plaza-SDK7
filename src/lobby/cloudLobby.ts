@@ -1,4 +1,5 @@
-import { Vector3 } from '@dcl/sdk/math'
+import { Quaternion, Vector3 } from '@dcl/sdk/math'
+import { getSceneInfo,GetSceneResponse } from "~system/Scene"
 //import { TeleportController } from './portalBeam'
 /*
 import {
@@ -14,9 +15,11 @@ import {
 
 import { lobbyCenter, lobbyHeight, lobbyRadius } from './resources/globals'
 import * as resource from './resources/resources'
-import { GltfContainer, InputAction, Transform, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
+import { GltfContainer, InputAction, Material, MeshRenderer, Transform, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
 import { _openExternalURL } from '../back-ports/backPorts'
 import { initClouds } from './clouds'
+import { HorizontalMenu } from './horizontalScrollMenu'
+import { whenAllowedMediaHelperReadyAddCallback } from '../utils/allowedMediaHelper'
 import { TeleportController } from './beamPortal'
 //import * as sfx from './resources/sounds'
 //import { insideBar } from 'src/game'
@@ -31,7 +34,7 @@ export function addCloudLobby(){
   console.log("cloudLobby.ts addCloudLobby has been called")
 
   const menuScale = 1.2
-  const center = Vector3.create(lobbyCenter.x, lobbyHeight + 1.5, lobbyCenter.z)
+  const center = Vector3.create(lobbyCenter.x, lobbyHeight + 104, lobbyCenter.z)
 
   // SOCIAL LINKS
   let discordLink = engine.addEntity()
@@ -103,6 +106,35 @@ export function addCloudLobby(){
 
 
   initClouds()
+
+//   let planeTest = engine.addEntity()
+//   Transform.create(planeTest,{
+//     position: Vector3.create(lobbyCenter.x, 1, lobbyCenter.z),
+//   })
+//   MeshRenderer.setPlane(planeTest)
+//   Material.setPbrMaterial(planeTest, {
+//     texture: Material.Texture.Common({
+//         src: "https://events-assets-099ac00.decentraland.org/poster/ed75e6cc6438b64a.png"           
+//     }),
+    
+//     specularIntensity: 0,
+//     metallic: 0,
+//     roughness: 1
+// })
+
+
+whenAllowedMediaHelperReadyAddCallback(()=>{
+    let eventMenu = new HorizontalMenu( Vector3.create(lobbyCenter.x, lobbyHeight + 1.25  , lobbyCenter.z), Quaternion.fromEulerDegrees(0,-54,0))
+    eventMenu.updateEventsMenu(15)
+
+    let crowdsMenu = new HorizontalMenu( Vector3.create(lobbyCenter.x, lobbyHeight + 3.5 , lobbyCenter.z), Quaternion.fromEulerDegrees(0,-54,0))  
+    crowdsMenu.updateCrowdsMenu(10)
+  }
+)
+
+
+
+
 
   /*
   //TODO TAG:PORT-REIMPLEMENT-ME
