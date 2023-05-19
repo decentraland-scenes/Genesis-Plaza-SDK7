@@ -11,6 +11,7 @@ import { addRepeatTrigger } from './modules/Utils'
 import { log } from './back-ports/backPorts'
 import { lobbyCenter } from './lobby/resources/globals'
 import { TeleportController } from './lobby/beamPortal'
+import { initBarNpcs } from './modules/bar/npcs/barNpcs'
 
 
 // export all the functions required to make the scene work
@@ -18,6 +19,8 @@ export * from '@dcl/sdk'
 
 //load scene metadata
 allowedMediaHelper.getAndSetSceneMetaData()
+
+initBarNpcs()
 
 placeJukeBox()
 setBarMusicOn()
