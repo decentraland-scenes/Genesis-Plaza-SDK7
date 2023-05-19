@@ -9,7 +9,7 @@ import { GenesisData } from "./genesis.data";
 const SCENE_ID: string = "genesis_plaza"
 const IN_SECONDS: boolean = false
 
-let segment: Segment = null
+let segment: Segment
 
 export function getSegment() {
   if (segment) return segment;
@@ -32,9 +32,9 @@ export async function sendTrack(trackEvent: string,
   elementType: string,
   elementId: string,
   instance: string,
-  event: string,
-  selection: string,
-  durationTime: number) {
+  event?: string,
+  selection?: string,
+  durationTime?: number) {
 
   const realm = await getRealm({})
 
@@ -48,7 +48,7 @@ export async function sendTrack(trackEvent: string,
     elementId: elementId,
     event: event,
     selection: selection,
-    durationTime: IN_SECONDS ? durationTime * 0.001 : durationTime,
+    durationTime: durationTime && IN_SECONDS ? durationTime * 0.001 : durationTime,
 
     playTime: Date.now() - GenesisData.instance().startPlayTime,
     exactPosition: worldPos,
@@ -66,10 +66,11 @@ class Segment {
   async track(event: string, properties?: Record<string, any>) {
     if (SKIP_ANALYTICS) return
     const userData = await getUserData({})
-    if (!userData) {
+    if (!userData || !userData.data) {
       console.log(`[ignored] track("${event}"${properties ? ', {...}' : ''}): missing userData`)
       return
     }
+    console.log(`Segment.track("${event}"${properties ? ', {...}' : ''}):`)
 
     const data: SegemntTrack = {
       messageId: messageId(),
@@ -144,6 +145,6 @@ type SegemntTrack = {
 
 export async function debugGetRealm() {
   const realm = await getRealm({})
-  console.log(AnalyticsLogLabel, realm.realmInfo.realmName)
+  console.log(AnalyticsLogLabel, realm.realmInfo?.realmName)
   console.log("AnalyticLogs")
 }

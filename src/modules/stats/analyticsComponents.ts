@@ -40,8 +40,8 @@ export function trackStart(entity: Entity, inTrackingKey?: string, event?: strin
     trackingElement.elementId,
     trackingElement.guid,
     eventKey,
-    null,
-    null
+    undefined,
+    undefined
   )
 }
 
@@ -58,7 +58,7 @@ export function trackAction(entity: Entity, eventKey: string, selection: string)
     trackingElement.guid,
     eventKey,
     selection,
-    null
+    undefined
   )
 }
 
@@ -70,7 +70,7 @@ export function trackEnd(entity: Entity, inTrackingKey?: string, event?: string)
   }
   trackingElement.isStarted = false
   trackingElement.startTime = Date.now() - trackingElement.startTime
-  let eventKey: string = event ? ANALYTICS_GENERIC_EVENTS.end : event
+  let eventKey: string|undefined = event ? ANALYTICS_GENERIC_EVENTS.end : event
   let trackingKey: string = inTrackingKey ? inTrackingKey : ANALYTICS_EVENT_KEYS.scene_element_visit
   sendTrack(
     trackingKey,
@@ -78,7 +78,7 @@ export function trackEnd(entity: Entity, inTrackingKey?: string, event?: string)
     trackingElement.elementId,
     trackingElement.guid,
     eventKey,
-    null,
+    undefined,
     trackingElement.startTime
   )
 }
