@@ -32,7 +32,7 @@ export async function sendTrack(trackEvent: string,
   elementType: string,
   elementId: string,
   instance: string,
-  event?: string,
+  event: string,
   selection?: string,
   durationTime?: number) {
 
@@ -67,10 +67,10 @@ class Segment {
     if (SKIP_ANALYTICS) return
     const userData = await getUserData({})
     if (!userData || !userData.data) {
-      console.log(`[ignored] track("${event}"${properties ? ', {...}' : ''}): missing userData`)
+      console.log(`[ignored] Segment.track("${event}`,properties,`): missing userData`)
       return
     }
-    console.log(`Segment.track("${event}"${properties ? ', {...}' : ''}):`)
+    console.log(`Segment.track("${event}`,properties,`)`)
 
     const data: SegemntTrack = {
       messageId: messageId(),
@@ -99,7 +99,7 @@ class Segment {
         body: JSON.stringify(data)
       })
     } catch (err) {
-      console.log(`[error] track("${event}"${properties ? ', {...}' : ''}): ${(err as Error)?.message || err}`)
+      console.log(`[error] Segment.track("${event}"`,properties,`): ${(err as Error)?.message || err}`)
     }
   }
 }
