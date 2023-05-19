@@ -57,8 +57,8 @@ export function trackAction(entity: Entity, eventKey: string, selection: string)
     trackingElement.elementId,
     trackingElement.guid,
     eventKey,
-    selection,
-    undefined
+    undefined,
+    selection
   )
 }
 
@@ -78,7 +78,7 @@ export function trackEnd(entity: Entity, inTrackingKey?: string, event?: string)
     trackingElement.elementId,
     trackingElement.guid,
     eventKey,
-    undefined,
-    trackingElement.startTime
+    trackingElement.startTime,
+    undefined
   )
 }
