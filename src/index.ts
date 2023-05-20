@@ -9,6 +9,7 @@ import { lowerVolume, outOfBar, placeJukeBox, setBarMusicOff, setBarMusicOn } fr
 import { addRepeatTrigger } from './modules/Utils'
 import { log } from './back-ports/backPorts'
 import { initBarNpcs } from './modules/bar/npcs/barNpcs'
+import { setupUi } from './ui'
 
 
 // export all the functions required to make the scene work
@@ -149,3 +150,4 @@ utils.addOneTimeTrigger(
 )
 */
 
+setupUi()
