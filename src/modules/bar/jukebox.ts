@@ -4,6 +4,9 @@ import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import * as utils from '@dcl-sdk/utils'
 import { sceneMessageBus } from '../serverHandler'
 import { tutorialRunning } from '../../lobby/portalBeam'
+import { TrackingElement } from '../stats/analyticsComponents'
+import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES, AnalyticsLogLabel } from '../stats/AnalyticsConfig'
+import { trackAction } from '../stats/analyticsComponents'
 
 
 export enum Radios {
@@ -38,6 +41,11 @@ const audioStreamEntity = engine.addEntity()
 let baseJukeBox = engine.addEntity()
 let baseJukeBoxLights1 = engine.addEntity()
 let baseJukeBoxLights2 = engine.addEntity()
+
+TrackingElement.create(baseJukeBox, {
+  elementType: ANALYTICS_ELEMENTS_TYPES.interactable,
+  elementId: ANALYTICS_ELEMENTS_IDS.jukeBox,
+})
 
 
 export function placeJukeBox() {
@@ -106,6 +114,10 @@ export function placeJukeBox() {
       sceneMessageBus.emit('BarRadioToggle', {
         state: !musicState
       })
+
+      console.log(AnalyticsLogLabel, "JukeBoxButton","Button_On")
+      let boxState = !musicState ? "ON" : "OFF"
+      trackAction(baseJukeBox, "button_on_off", boxState)
     },
     'On/Off'
   )
@@ -124,6 +136,9 @@ export function placeJukeBox() {
           index: barCurrentRadioIndex
         })        
       }
+
+      console.log(AnalyticsLogLabel, "JukeBoxButton","Button_Forward")
+      trackAction(baseJukeBox, "button_forward", "")
     },
     'Next'
   )
@@ -142,6 +157,9 @@ export function placeJukeBox() {
           index: barCurrentRadioIndex,
         }) 
       }
+
+      console.log(AnalyticsLogLabel, "JukeBoxButton","Button_Preview")
+      trackAction(baseJukeBox, "previous_button", "")
     },
     'Previous'
   )
