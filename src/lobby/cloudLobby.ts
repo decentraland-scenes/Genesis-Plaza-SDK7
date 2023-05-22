@@ -31,7 +31,7 @@ export function addCloudLobby(){
   console.log("cloudLobby.ts addCloudLobby has been called")
 
   const menuScale = 1.2
-  const center = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyHeight + 1.5 - lobbyHeightLegacy, lobbyCenter.z - coreBuildingOffset.z)
+  const center = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, (lobbyHeight + 1.5) - lobbyHeightLegacy, lobbyCenter.z - coreBuildingOffset.z)
 
   // SOCIAL LINKS
   let discordLink = engine.addEntity()
@@ -89,14 +89,14 @@ export function addCloudLobby(){
   // WATER VORTEXES
   let vortex1 = engine.addEntity()
   Transform.create(vortex1,{
-    position: Vector3.create(center.x, center.y, center.z),
+    position: Vector3.create(center.x, lobbyHeight, center.z),
   })
   GltfContainer.create(vortex1,resource.vortex1Shape)
 
 
   let vortex2 = engine.addEntity()
   Transform.create(vortex2,{
-      position: Vector3.create(center.x, center.y, center.z),
+      position: Vector3.create(center.x, lobbyHeight, center.z),
     })
 
   GltfContainer.create(vortex2,resource.vortex2Shape)
