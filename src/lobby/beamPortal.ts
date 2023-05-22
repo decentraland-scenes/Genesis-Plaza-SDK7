@@ -179,7 +179,7 @@ export class TeleportController {
       // Trigger to play fall SFX
       this.triggerBoxFallCheck = engine.addEntity()
       Transform.create(this.triggerBoxFallCheck, {})
-      this.triggerBoxFallCheckPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y + 95, lobbyCenter.z - coreBuildingOffset.z)
+      this.triggerBoxFallCheckPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y + lobbyHeight - 6, lobbyCenter.z - coreBuildingOffset.z)
       this.triggerBoxFallCheckScale = Vector3.create(6, 10, 6)
 
      
