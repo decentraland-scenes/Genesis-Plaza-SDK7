@@ -267,7 +267,7 @@ export class EventMenuItem extends MenuItem {
       wasClicked:false,
       isHighlighted:false,
       defaultPosition: Vector3.create(0, 0.5, 0.3),
-      highlightPosition: Vector3.create(-0.4, 0.88, 0),
+      highlightPosition: Vector3.create(-0.4, -0.75, 0),
       defaultScale:Vector3.create(0.0, 0.0, 0.0),
       highlightScale: Vector3.create(0.5, 0.5, 0.5),
       animFraction: 0,
@@ -311,7 +311,7 @@ export class EventMenuItem extends MenuItem {
       wasClicked:false,
       isHighlighted:false,
       defaultPosition: Vector3.create(0, 0.5, 0.5),
-      highlightPosition:  Vector3.create(0.4, 0.88, 0),
+      highlightPosition:  Vector3.create(0.4, -0.75, 0),
       defaultScale:Vector3.create(0.0, 0.0, 0.0),
       highlightScale: Vector3.create(0.5, 0.5, 0.5),
       animFraction: 0,
@@ -372,7 +372,7 @@ export class EventMenuItem extends MenuItem {
       wasClicked:false,
       isHighlighted:false,
       defaultPosition:  Vector3.create(0, 0, 0.02),
-      highlightPosition:  Vector3.create(0, -0.3, 0.02),
+      highlightPosition:  Vector3.create(0, -0.35, 0.02),
       defaultScale: Vector3.create(0.98, 0, 0),
       highlightScale:  Vector3.create(1, 1, 1),
       animFraction: 0,
@@ -403,7 +403,7 @@ export class EventMenuItem extends MenuItem {
  // EVENT DETAILS TEXT BODY
     this.detailText = engine.addEntity()
     Transform.create(this.detailText, {
-      position: Vector3.create(-0.70, 0.10, -0.02),
+      position: Vector3.create(-0.70, 0.15, -0.02),
         scale: Vector3.create(0.4, 0.4, 0.4),
         parent: this.detailTextPanel
     })
@@ -419,10 +419,10 @@ export class EventMenuItem extends MenuItem {
       outlineWidth: 0.3
     })   
 
-    //details website button
+    //READ MORE details website button
     this.readMoreButton = engine.addEntity()
     Transform.create(this.readMoreButton, {
-      position: Vector3.create(0.23, -0.2, 0),
+      position: Vector3.create(-0.58, -0.33, -0.025),
       parent: this.detailTextPanel
     })    
     GltfContainer.create(this.readMoreButton, resource.readMoreBtnShape) 
