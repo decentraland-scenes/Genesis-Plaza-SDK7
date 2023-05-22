@@ -31,6 +31,7 @@ export let shelfShape:PBGltfContainer =             {src:modelFolder + "shelf_cl
 export let jumpInButtonShape:PBGltfContainer =      {src:modelFolder + "jump_in_btn.glb"}
 export let detailsBGShape:PBGltfContainer =         {src:modelFolder + "details_bg.glb"}
 export let highlightFrameShape:PBGltfContainer =    {src:modelFolder + "highlight_frame.glb"}
+export let highlightFrameFullShape:PBGltfContainer ={src:modelFolder + "highlight_frame_full.glb"}
 export let highlightRaysShape:PBGltfContainer =     {src:modelFolder + "highlight_rays.glb"}
 export let readMoreBtnShape:PBGltfContainer =       {src:modelFolder + "read_more_btn.glb"}
 export let coordsPanelShape:PBGltfContainer =       {src:modelFolder + "coords_panel.glb"}
@@ -41,6 +42,7 @@ export let scrollInstructionShape:PBGltfContainer = {src:modelFolder + "scroll_i
 export let playerCounterBGShape:PBGltfContainer =   {src:modelFolder + "player_counter_bg.glb"}
 export let refreshShape:PBGltfContainer =           {src:modelFolder + "refresh_button.glb"}
 export let loadMoreShape:PBGltfContainer =          {src:modelFolder + "load_more_btn.glb"}
+export let menuArrowShape:PBGltfContainer =         {src:modelFolder + "menu_arrow.glb"}
 
 // CLOUDS
 export let cloudDissolveShape:PBGltfContainer=      {src:modelFolder + "cloud_dissolve.glb"}
@@ -65,9 +67,9 @@ export const navigationForwardSfx = `sounds/navigationForward.mp3`
 
 
 
-export const dateBGColor:Color4 = Color4.fromHexString("#cdcdcd")
-export const dateMonthColor:Color4 = Color4.fromHexString("#ff3333")
-export const dateDayColor:Color4 = Color4.fromHexString("#000000")
+export const dateBGColor:Color4 = Color4.fromHexString("#cdcdcdff")
+export const dateMonthColor:Color4 = Color4.fromHexString("#ff3333ff")
+export const dateDayColor:Color4 = Color4.fromHexString("#000000ff")
 
 export let dateUIBGMaterial:PBMaterial_PbrMaterial = {
     albedoColor : dateBGColor,
