@@ -35,6 +35,49 @@ export function addCloudLobby(){
   const menuScale = 1.2
   const center = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, (lobbyHeight + 1.5) - lobbyHeightLegacy, lobbyCenter.z - coreBuildingOffset.z)
 
+
+  //START find the max height, help with visualizing how high we can go
+  let findCeilingPlane = engine.addEntity()
+    //PUT PARCEL SIZE HERE 4X5 FOR EXAMPLE
+    const parcelMaxHeight = (Math.log((4*5)) * Math.LOG2E) * 20
+    Transform.create(findCeilingPlane,{
+      position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x, parcelMaxHeight-.1, lobbyCenter.z - coreBuildingOffset.z),
+      scale: Vector3.create(30,30,.1),
+      rotation: Quaternion.fromEulerDegrees(90,0,0)
+    })
+    //MeshCollider.setPlane(findCeilingPlane)
+    MeshRenderer.setPlane(findCeilingPlane)
+    Material.setPbrMaterial(findCeilingPlane, {
+      //texture: Material.Texture.,
+      albedoColor: Color4.fromHexString("#00000088"),
+      specularIntensity: 0,
+      metallic: 0,
+      roughness: 1
+  })
+  //END find the max height, help with visualizing how high we can go
+
+
+  //START temporary flooring for cloud
+   let cloudFloorTempPlane = engine.addEntity()
+    //PUT PARCEL SIZE HERE 4X5 FOR EXAMPLE
+    //const parcelMaxHeight = lobbyHeight//(Math.log((4*5) + 1) * Math.LOG2E) * 20
+    Transform.create(cloudFloorTempPlane,{
+      position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyHeight, lobbyCenter.z - coreBuildingOffset.z),
+      scale: Vector3.create(40,40,1),
+      rotation: Quaternion.fromEulerDegrees(90,0,0)
+    })
+    //MeshCollider.setPlane(cloudFloorTempPlane)
+    MeshRenderer.setPlane(cloudFloorTempPlane)
+    Material.setPbrMaterial(cloudFloorTempPlane, {
+      //texture: Material.Texture.,
+      albedoColor: Color4.fromHexString("#00000088"),
+      specularIntensity: 0,
+      metallic: 0,
+      roughness: 1
+  })
+  //END temporary flooring for cloud
+
+
   // SOCIAL LINKS
   let discordLink = engine.addEntity()
   Transform.create(discordLink,{
