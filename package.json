@@ -23,7 +23,8 @@
     "trailingComma": "none"
   },
   "dependencies": {
-    "@dcl-sdk/utils": "^1.1.1"
+    "@dcl-sdk/utils": "^1.1.1",
+    "dcl-npc-toolkit": "^1.0.9"
   },
   "bundleDependencies": [
     "@dcl-sdk/utils"
