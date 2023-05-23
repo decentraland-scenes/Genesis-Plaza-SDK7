@@ -18,7 +18,7 @@ export let twitterShape:PBGltfContainer =           {src:modelFolder + "icons/tw
 
 //BEAM
 export let portalSpiralShape:PBGltfContainer =      {src:modelFolder + "portal_lift_spiral.glb"}
-export let beamShape:PBGltfContainer =              {src:modelFolder + "beam.glb"}
+export let beamShape:PBGltfContainer =              {src:modelFolder + "beam_cutout.glb"}//{src:modelFolder + "beam.glb"}
 
 //MENU
 export let menuPillarsShape:PBGltfContainer =       {src:modelFolder + "menu_pillars.glb"}
@@ -49,12 +49,22 @@ export let cloudDissolveShape:PBGltfContainer=      {src:modelFolder + "cloud_di
 export let cloudPuffShape:PBGltfContainer=          {src:modelFolder + "cloud_puff.glb"}
 export let cloudSmallShape:PBGltfContainer=         {src:modelFolder + "clouds_small.glb"}
 export let cloudSmall2Shape:PBGltfContainer=        {src:modelFolder + "clouds_small2.glb"}
-export let cloudBigShape:PBGltfContainer=           {src:modelFolder + "clouds_big.glb"}
+export let cloudBigShape:PBGltfContainer=           {src:modelFolder + "clouds_big_cutout.glb"}//{src:modelFolder + "clouds_big.glb"}
 
 // PLATFORM
 export let vortex1Shape:PBGltfContainer=            {src:modelFolder + "vortex1.glb"}
 export let vortex2Shape:PBGltfContainer=            {src:modelFolder + "vortex2.glb"}
 export let divingSignShape:PBGltfContainer=         {src:modelFolder + "diving_sign.glb"}
+
+// BAR NPCs
+export const octopusModel = 'models/core_building/BobOctorossV46.glb'
+export const fashionistModel = 'models/core_building/WearableConnoisseurRotatedV08.glb'
+export const aritst1Model = 'models/core_building/ch1_crowdV5.glb'
+export const aritst2Model = 'models/core_building/ch2_crowdV5.glb'
+
+//Audio
+export const navigationForwardSfx = `sounds/navigationForward.mp3`
+
 
 
 export const dateBGColor:Color4 = Color4.fromHexString("#cdcdcdff")
