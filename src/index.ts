@@ -11,8 +11,11 @@ import { addRepeatTrigger } from './modules/Utils'
 import { log } from './back-ports/backPorts'
 import { lobbyCenter } from './lobby/resources/globals'
 import { TeleportController } from './lobby/beamPortal'
-import { AnalyticsLogLabel } from './modules/stats/AnalyticsConfig'
+import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES, AnalyticsLogLabel } from './modules/stats/AnalyticsConfig'
 import { trackAction } from './modules/stats/analyticsComponents'
+import { TrackingElement } from './modules/stats/analyticsComponents'
+import { trackStart } from './modules/stats/analyticsComponents'
+import { trackEnd } from './modules/stats/analyticsComponents'
 
 
 // export all the functions required to make the scene work
@@ -176,19 +179,26 @@ Transform.create(trigger)
       )
 */
 
-//TO ADD
 const analyticsTriggerSliderArea = engine.addEntity()
 const analyticsTriggerSliderAreaPosition = Vector3.create(161, 105, 159)
 const analyticsTriggerSliderAreaScale = Vector3.create(30, 3, 10)
 Transform.create(analyticsTriggerSliderArea, {})
 
+TrackingElement.create(analyticsTriggerSliderArea, {
+  elementType: ANALYTICS_ELEMENTS_TYPES.region,
+  elementId: ANALYTICS_ELEMENTS_IDS.eventsSlider,
+})
+
 utils.triggers.addTrigger(analyticsTriggerSliderArea, utils.NO_LAYERS, utils.LAYER_1,  
   [{type: "box", position: analyticsTriggerSliderAreaPosition, scale: analyticsTriggerSliderAreaScale}],
   ()=>{ 
-    console.log(AnalyticsLogLabel, "CloudLobby", "SliderArea_Region")
-    trackAction(analyticsTriggerSliderArea, "", "")
+    console.log(AnalyticsLogLabel, "index.ts", "SliderArea_Region", "onEnter")
+    trackStart(analyticsTriggerSliderArea)
   },
-  ()=>{},
+  ()=>{
+    console.log(AnalyticsLogLabel, "index.ts", "SliderArea_Region", "onExit")
+    trackEnd(analyticsTriggerSliderArea)
+  },
   Color3.Blue()
 )
 
@@ -197,13 +207,21 @@ const analyticsTriggerCloudLobbyPosition = Vector3.create(160, 105, 150)
 const analyticsTriggerCloudLobbyScale = Vector3.create(50, 6, 50)
 Transform.create(analyticsTriggerCloudLobby, {})
 
+TrackingElement.create(analyticsTriggerCloudLobby, {
+  elementType: ANALYTICS_ELEMENTS_TYPES.region,
+  elementId: ANALYTICS_ELEMENTS_IDS.cloud,
+})
+
 utils.triggers.addTrigger(analyticsTriggerCloudLobby, utils.NO_LAYERS, utils.LAYER_1,  
   [{type: "box", position: analyticsTriggerCloudLobbyPosition, scale: analyticsTriggerCloudLobbyScale}],
   ()=>{ 
-    console.log(AnalyticsLogLabel, "CloudLobby", "Region")
-    trackAction(analyticsTriggerCloudLobby, "", "")
+    console.log(AnalyticsLogLabel, "index.ts", "Cloud_Region", "onEnter")
+    trackStart(analyticsTriggerCloudLobby)
   },
-  ()=>{},
+  ()=>{
+    console.log(AnalyticsLogLabel, "index.ts", "Cloud_Region", "onExit")
+    trackEnd(analyticsTriggerCloudLobby)
+  },
   Color3.Yellow()
 )
 
@@ -212,12 +230,20 @@ const analyticsTriggerBarPosition = Vector3.create(160, 1, 150)
 const analyticsTriggerBarScale = Vector3.create(50, 30, 47)
 Transform.create(analyticsTriggerBar, {})
 
+TrackingElement.create(analyticsTriggerBar, {
+  elementType: ANALYTICS_ELEMENTS_TYPES.region,
+  elementId: ANALYTICS_ELEMENTS_IDS.bar,
+})
+
 utils.triggers.addTrigger(analyticsTriggerBar, utils.NO_LAYERS, utils.LAYER_1,  
   [{type: "box", position: analyticsTriggerBarPosition, scale: analyticsTriggerBarScale}],
   ()=>{ 
-    console.log(AnalyticsLogLabel, "Bar", "Region")
-    trackAction(analyticsTriggerBar, "", "")
+    console.log(AnalyticsLogLabel, "index.ts", "Bar_Region", "onEnter")
+    trackStart(analyticsTriggerBar)
   },
-  ()=>{},
+  ()=>{
+    console.log(AnalyticsLogLabel, "index.ts", "Bar_Region", "onExit")
+    trackEnd(analyticsTriggerBar)
+  },
   Color3.Red()
 )
