@@ -12,7 +12,7 @@ import {
   updateCrowdsMenu,
 } from './menuMainFunctions'*/
 
-import { coreBuildingOffset, lobbyCenter, lobbyHeight, lobbyHeightLegacy, lobbyRadius } from './resources/globals'
+import { ParcelCountX, ParcelCountZ, coreBuildingOffset, lobbyCenter, lobbyHeight, lobbyHeightLegacy, lobbyRadius } from './resources/globals'
 import * as resource from './resources/resources'
 import { GltfContainer, InputAction, Material, MeshCollider, MeshRenderer, Transform, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
 import { _openExternalURL } from '../back-ports/backPorts'
@@ -39,7 +39,7 @@ export function addCloudLobby(){
   //START find the max height, help with visualizing how high we can go
   let findCeilingPlane = engine.addEntity()
     //PUT PARCEL SIZE HERE 4X5 FOR EXAMPLE
-    const parcelMaxHeight = (Math.log((4*5)) * Math.LOG2E) * 20
+    const parcelMaxHeight = (Math.log((ParcelCountX*ParcelCountZ)) * Math.LOG2E) * 20
     Transform.create(findCeilingPlane,{
       position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x, parcelMaxHeight-.1, lobbyCenter.z - coreBuildingOffset.z),
       scale: Vector3.create(30,30,.1),
@@ -56,6 +56,26 @@ export function addCloudLobby(){
   })
   //END find the max height, help with visualizing how high we can go
 
+  //START temporary spawn area
+  let cloudSpawnTempPlane = engine.addEntity()
+  //PUT PARCEL SIZE HERE 4X5 FOR EXAMPLE 
+  //const parcelMaxHeight = lobbyHeight//(Math.log((4*5) + 1) * Math.LOG2E) * 20
+  Transform.create(cloudSpawnTempPlane,{
+    position: Vector3.create((36.5+26.5)/2, lobbyHeight, (30+26)/2),
+    scale: Vector3.create(30-26,36.5-26.5,1),
+    rotation: Quaternion.fromEulerDegrees(90,0,90)
+  })
+  MeshCollider.setPlane(cloudSpawnTempPlane)
+  MeshRenderer.setPlane(cloudSpawnTempPlane)
+  Material.setPbrMaterial(cloudSpawnTempPlane, {
+    //texture: Material.Texture.,
+    albedoColor: Color4.fromHexString("#00000088"),
+    specularIntensity: 0,
+    metallic: 0,
+    roughness: 1
+})
+//END temporary spawn
+
 
   //START temporary flooring for cloud
    let cloudFloorTempPlane = engine.addEntity()
@@ -66,7 +86,7 @@ export function addCloudLobby(){
       scale: Vector3.create(40,40,1),
       rotation: Quaternion.fromEulerDegrees(90,0,0)
     })
-    //MeshCollider.setPlane(cloudFloorTempPlane)
+    MeshCollider.setPlane(cloudFloorTempPlane)
     MeshRenderer.setPlane(cloudFloorTempPlane)
     Material.setPbrMaterial(cloudFloorTempPlane, {
       //texture: Material.Texture.,
