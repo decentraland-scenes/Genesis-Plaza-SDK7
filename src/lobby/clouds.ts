@@ -54,7 +54,7 @@ export function initClouds(){
       
       
       Transform.create(cloudsSmall,{
-          position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x,lobbyHeight-0.2 - lobbyHeightLegacy,lobbyCenter.z - coreBuildingOffset.z),
+          position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x,lobbyHeight -0.2 ,lobbyCenter.z - coreBuildingOffset.z),
           rotation: Quaternion.fromEulerDegrees(0, 0, 0),
           scale: Vector3.create(1.0,1.0,1.0)          
       })
@@ -66,7 +66,7 @@ export function initClouds(){
       let cloudsSmall2 = engine.addEntity()
       
       Transform.create(cloudsSmall2,{
-            position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x,lobbyHeight-0.2 - lobbyHeightLegacy,lobbyCenter.z - coreBuildingOffset.z),
+            position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x,lobbyHeight-0.2,lobbyCenter.z - coreBuildingOffset.z),
             rotation: Quaternion.fromEulerDegrees(0, 0, 0),          
         })
       
@@ -77,7 +77,7 @@ export function initClouds(){
       let cloudsBig = engine.addEntity()
       
       Transform.create(cloudsBig,{
-            position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x ,lobbyHeight - lobbyHeightLegacy,lobbyCenter.z - coreBuildingOffset.z),
+            position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x ,lobbyHeight,lobbyCenter.z - coreBuildingOffset.z),
             rotation: Quaternion.fromEulerDegrees(0, 0, 0),          
         })
       
