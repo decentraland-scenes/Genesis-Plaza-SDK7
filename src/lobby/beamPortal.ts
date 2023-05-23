@@ -156,7 +156,7 @@ export class TeleportController {
       // Trigger that handles landing offset
       this.triggerBoxDown = engine.addEntity()
       Transform.create(this.triggerBoxDown, {})
-      this.triggerBoxDownPosition = Vector3.create(lobbyCenter.x, lobbyCenter.y + 8, lobbyCenter.z)
+      this.triggerBoxDownPosition = Vector3.create(lobbyCenter.x, lobbyCenter.y + 15, lobbyCenter.z)
       this.triggerBoxDownScale = Vector3.create(6, 6, 6)
 
       utils.triggers.addTrigger(this.triggerBoxDown, utils.NO_LAYERS, utils.LAYER_1,  
