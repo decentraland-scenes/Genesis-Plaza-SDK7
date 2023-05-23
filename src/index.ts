@@ -11,6 +11,8 @@ import { addRepeatTrigger } from './modules/Utils'
 import { log } from './back-ports/backPorts'
 import { lobbyCenter } from './lobby/resources/globals'
 import { TeleportController } from './lobby/beamPortal'
+import { AnalyticsLogLabel } from './modules/stats/AnalyticsConfig'
+import { trackAction } from './modules/stats/analyticsComponents'
 
 
 // export all the functions required to make the scene work
@@ -171,4 +173,51 @@ Transform.create(trigger)
           
         },
         Color3.Green()
-      )*/
+      )
+*/
+
+//TO ADD
+const analyticsTriggerSliderArea = engine.addEntity()
+const analyticsTriggerSliderAreaPosition = Vector3.create(161, 105, 159)
+const analyticsTriggerSliderAreaScale = Vector3.create(30, 3, 10)
+Transform.create(analyticsTriggerSliderArea, {})
+
+utils.triggers.addTrigger(analyticsTriggerSliderArea, utils.NO_LAYERS, utils.LAYER_1,  
+  [{type: "box", position: analyticsTriggerSliderAreaPosition, scale: analyticsTriggerSliderAreaScale}],
+  ()=>{ 
+    console.log(AnalyticsLogLabel, "CloudLobby", "SliderArea_Region")
+    trackAction(analyticsTriggerSliderArea, "", "")
+  },
+  ()=>{},
+  Color3.Blue()
+)
+
+const analyticsTriggerCloudLobby = engine.addEntity()
+const analyticsTriggerCloudLobbyPosition = Vector3.create(160, 105, 150)
+const analyticsTriggerCloudLobbyScale = Vector3.create(50, 6, 50)
+Transform.create(analyticsTriggerCloudLobby, {})
+
+utils.triggers.addTrigger(analyticsTriggerCloudLobby, utils.NO_LAYERS, utils.LAYER_1,  
+  [{type: "box", position: analyticsTriggerCloudLobbyPosition, scale: analyticsTriggerCloudLobbyScale}],
+  ()=>{ 
+    console.log(AnalyticsLogLabel, "CloudLobby", "Region")
+    trackAction(analyticsTriggerCloudLobby, "", "")
+  },
+  ()=>{},
+  Color3.Yellow()
+)
+
+const analyticsTriggerBar = engine.addEntity()
+const analyticsTriggerBarPosition = Vector3.create(160, 1, 150)
+const analyticsTriggerBarScale = Vector3.create(50, 30, 47)
+Transform.create(analyticsTriggerBar, {})
+
+utils.triggers.addTrigger(analyticsTriggerBar, utils.NO_LAYERS, utils.LAYER_1,  
+  [{type: "box", position: analyticsTriggerBarPosition, scale: analyticsTriggerBarScale}],
+  ()=>{ 
+    console.log(AnalyticsLogLabel, "Bar", "Region")
+    trackAction(analyticsTriggerBar, "", "")
+  },
+  ()=>{},
+  Color3.Red()
+)
