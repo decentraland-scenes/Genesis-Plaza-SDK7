@@ -1,6 +1,6 @@
 import { Animator, AudioSource, AudioStream, Entity, GltfContainer, InputAction, Material, MeshRenderer, PBAudioStream, TextShape, Transform, VisibilityComponent, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
 import { Color3, Vector3 } from '@dcl/sdk/math'
-import { BEAM_SCALE_AMOUNT, ParcelCountMaxY, coreBuildingOffset, lobbyCenter } from './resources/globals'
+import { BEAM_SCALE_AMOUNT, ParcelCountMaxY, ParcelCountX, ParcelCountZ, coreBuildingOffset, lobbyCenter } from './resources/globals'
 import { lobbyHeight } from './resources/globals'
 import { isInBar, setBarMusicOn } from '../modules/bar/jukebox'
 //import { tutorialEnableObservable } from '../modules/tutorialHandler'
@@ -183,6 +183,8 @@ export class TeleportController {
       Transform.create(this.triggerBoxFallCheck, {})
       this.triggerBoxFallCheckPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y + lobbyHeight - 6, lobbyCenter.z - coreBuildingOffset.z)
       this.triggerBoxFallCheckScale = Vector3.create(6, 10, 6)
+      //make wide to catch jumping/falling from cloud directlydown
+      this.triggerBoxFallCheckScale = Vector3.create((ParcelCountX)*16-4, 10, (ParcelCountZ)*16-4)
 
      
       utils.triggers.addTrigger(this.triggerBoxFallCheck, utils.NO_LAYERS, utils.LAYER_1, 
