@@ -28,14 +28,14 @@ const uiBeamMeUp = () => (
       height: 250,
       display: teleportUIVisibility,
       alignContent: 'center',
-
-      position: { top: '30px', right: '-360px' },
-
+      position: { left: '40%',top: '5%'},
+      positionType: 'absolute'  
     }}
     uiBackground={{
       texture: {
         src: "images/ui_beam_up_bg.png"
       }
+      //,color: Color4.Black()
     }}
   >
     <Label
@@ -121,9 +121,9 @@ function getPlayerPosition() {
 }
 
 const uiComponent = () => [
-  uiBeamMeUp(),
+  NpcUtilsUi(),uiBeamMeUp()
   //uiSpawnCube()
-   NpcUtilsUi()
+   
 ]
 
 setupUi()
