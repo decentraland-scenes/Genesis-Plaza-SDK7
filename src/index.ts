@@ -12,6 +12,7 @@ import { log } from './back-ports/backPorts'
 import { coreBuildingOffset, lobbyCenter } from './lobby/resources/globals'
 import { TeleportController } from './lobby/beamPortal'
 import { initBarNpcs } from './modules/bar/npcs/barNpcs'
+import { setupUi } from './ui'
 
 
 // export all the functions required to make the scene work
@@ -175,3 +176,5 @@ Transform.create(trigger)
         },
         Color3.Green()
       )*/
+
+setupUi()

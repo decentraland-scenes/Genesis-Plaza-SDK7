@@ -122,10 +122,11 @@ function getPlayerPosition() {
 const uiComponent = () => [
   uiBeamMeUp(),
   //uiSpawnCube()
+   NpcUtilsUi()
 ]
 
 setupUi()
 
 export function setupUi() {
-  ReactEcsRenderer.setUiRenderer(uiBeamMeUp)
+  ReactEcsRenderer.setUiRenderer(uiComponent)
 }
