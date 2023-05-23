@@ -1,6 +1,6 @@
 import { Animator, AudioSource, AudioStream, Entity, GltfContainer, InputAction, Material, MeshRenderer, PBAudioStream, TextShape, Transform, VisibilityComponent, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
 import { Color3, Vector3 } from '@dcl/sdk/math'
-import { coreBuildingOffset, lobbyCenter } from './resources/globals'
+import { ParcelCountMaxY, coreBuildingOffset, lobbyCenter } from './resources/globals'
 import { lobbyHeight } from './resources/globals'
 import { isInBar, setBarMusicOn } from '../modules/bar/jukebox'
 //import { tutorialEnableObservable } from '../modules/tutorialHandler'
@@ -106,7 +106,7 @@ export class TeleportController {
 
       const triggerUpOnEnter = () => {
           const playerTransform = Transform.getMutable(engine.PlayerEntity)
-          playerTransform.position = { x: lobbyCenter.x - coreBuildingOffset.x + 5, y: 140, z: lobbyCenter.z - 10 - coreBuildingOffset.z}
+          playerTransform.position = { x: lobbyCenter.x - coreBuildingOffset.x + 5, y: Math.min(ParcelCountMaxY-2,140), z: lobbyCenter.z - 10 - coreBuildingOffset.z}
 
           /*if (!tutorialRunning) {
             let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
