@@ -7,6 +7,7 @@ import ReactEcs, { Button, DisplayType, Label, ReactEcsRenderer, UiEntity } from
 import { Cube } from './components'
 import { createCube } from './factory'
 import { triggerCounter } from './lobby/beamPortal'
+import { NpcUtilsUi } from 'dcl-npc-toolkit/dist/ui'
 
 let teleportUIVisibility: DisplayType = "none"
 let timeToBeamUp: number = 3
