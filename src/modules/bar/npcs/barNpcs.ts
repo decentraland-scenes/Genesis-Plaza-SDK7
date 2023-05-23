@@ -5,6 +5,8 @@ import { Entity, Transform, engine } from '@dcl/sdk/ecs'
 import { artistRecommendations, fashionistCommonDialog, fashionistEpicDialog, fashionistMythicDialog, fashionistNoneDialog, getFashionistDialog, getOcotDialog, girlArtistTalk } from './npcDialogs'
 import { rarestItem, rarityLevel } from './rarity'
 import * as utils from '@dcl-sdk/utils'
+import { TrackingElement, trackAction } from '../../stats/analyticsComponents'
+import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES, AnalyticsLogLabel } from '../../stats/AnalyticsConfig'
 
 const LogTag: string = 'barNpcs'
 
@@ -13,6 +15,7 @@ export let fashionist: Entity
 export let boyArtist: Entity
 export let girlArtist: Entity
 
+
 export function initBarNpcs(): void {
   createOctopusNpc()
 
@@ -20,6 +23,7 @@ export function initBarNpcs(): void {
 
   createArtistCouple()
 }
+
 
 function createOctopusNpc() {
   let position: Vector3 = Vector3.create(160, 0.2, 141.4)
@@ -37,6 +41,9 @@ function createOctopusNpc() {
       onActivate: () => {
         console.log(LogTag, "Hi! Octopus!")
 
+        console.log(AnalyticsLogLabel, "barNpcs.ts", "Octopus")
+        trackAction(octo, "Interact", "")
+
         npcLib.changeIdleAnim(octo, 'TalkLoop')
         npcLib.playAnimation(octo, 'TalkIntro', true, 0.63)
         //npcLib.playAnimation(octo, 'TalkLoop', false)
@@ -51,6 +58,11 @@ function createOctopusNpc() {
       },
     }
   )
+
+  TrackingElement.create(octo, {
+    elementType: ANALYTICS_ELEMENTS_TYPES.npc,
+    elementId: ANALYTICS_ELEMENTS_IDS.octopus,
+  })
 
   utils.triggers.addTrigger(octo,
     utils.LAYER_1,
@@ -102,6 +114,9 @@ function createFashionistNpc(): Entity {
       onlyETrigger: true,
       onActivate: async () => {
 
+        console.log(AnalyticsLogLabel, "barNpcs.ts", "Fashionist")
+        trackAction(fashionist, "Interact", "")
+
         let rareItem = await rarestItem(true)
 
         let dialogIndex = fashionistNoneDialog
@@ -137,6 +152,11 @@ function createFashionistNpc(): Entity {
     }
   )
 
+  TrackingElement.create(fashionist, {
+    elementType: ANALYTICS_ELEMENTS_TYPES.npc,
+    elementId: ANALYTICS_ELEMENTS_IDS.fashionist,
+  })
+
   return fashionist
 }
 
@@ -161,15 +181,23 @@ function createBoyArtist(): Entity {
       onlyETrigger: true,
       onActivate: () => {
         activateArtists()
+
+        console.log(AnalyticsLogLabel, "barNpcs.ts", "boyArtist")
+        trackAction(boy, "Interact", "")
       },
       onWalkAway: () => { },
       textBubble: true,
     }
   )
 
+  TrackingElement.create(boy, {
+    elementType: ANALYTICS_ELEMENTS_TYPES.npc,
+    elementId: ANALYTICS_ELEMENTS_IDS.boyArtist,
+  })
+
   npcLib.playAnimation(boy, 'Talk', false)
   return boy
-}
+} 
 
 function createGirlArtist(): Entity {
   let girl = npcLib.create(
@@ -184,6 +212,9 @@ function createGirlArtist(): Entity {
       onlyETrigger: true,
       onActivate: () => {
         activateArtists()
+
+        console.log(AnalyticsLogLabel, "barNpcs.ts", "girlArtist")
+        trackAction(girl, "Interact", "")
       },
       onWalkAway: () => {
         //artistTalkToEachOther(false)
@@ -191,6 +222,11 @@ function createGirlArtist(): Entity {
       textBubble: true,
     }
   )
+
+  TrackingElement.create(girl, {
+    elementType: ANALYTICS_ELEMENTS_TYPES.npc,
+    elementId: ANALYTICS_ELEMENTS_IDS.girlArtist,
+  })
 
   npcLib.playAnimation(girl, 'Talk', false)
   return girl

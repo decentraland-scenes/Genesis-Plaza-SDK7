@@ -16,6 +16,7 @@ import { trackAction } from './modules/stats/analyticsComponents'
 import { TrackingElement } from './modules/stats/analyticsComponents'
 import { trackStart } from './modules/stats/analyticsComponents'
 import { trackEnd } from './modules/stats/analyticsComponents'
+import { initBarNpcs } from './modules/bar/npcs/barNpcs'
 
 
 // export all the functions required to make the scene work
@@ -27,6 +28,8 @@ allowedMediaHelper.getAndSetSceneMetaData()
 placeJukeBox()
 setBarMusicOn()
 
+
+
 //// ADD CLOUD LOBBY
 
 addCloudLobby()
@@ -34,7 +37,7 @@ addCloudLobby()
 //// ADD BUILDINGS
 
 addBuildings()
-
+initBarNpcs()
 
 
 ///////// BAR STUFF
