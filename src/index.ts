@@ -179,71 +179,71 @@ Transform.create(trigger)
       )
 */
 
-const analyticsTriggerSliderArea = engine.addEntity()
-const analyticsTriggerSliderAreaPosition = Vector3.create(161, 105, 159)
-const analyticsTriggerSliderAreaScale = Vector3.create(30, 3, 10)
-Transform.create(analyticsTriggerSliderArea, {})
+const cloudAnalyticsTrigger = engine.addEntity()
+const cloudAnalyticsTriggerPosition = Vector3.create(160, 105, 150)
+const cloudAnalyticsTriggerScale = Vector3.create(50, 6, 50)
+Transform.create(cloudAnalyticsTrigger, {})
 
-TrackingElement.create(analyticsTriggerSliderArea, {
-  elementType: ANALYTICS_ELEMENTS_TYPES.region,
-  elementId: ANALYTICS_ELEMENTS_IDS.eventsSlider,
-})
-
-utils.triggers.addTrigger(analyticsTriggerSliderArea, utils.NO_LAYERS, utils.LAYER_1,  
-  [{type: "box", position: analyticsTriggerSliderAreaPosition, scale: analyticsTriggerSliderAreaScale}],
-  ()=>{ 
-    console.log(AnalyticsLogLabel, "index.ts", "SliderArea_Region", "onEnter")
-    trackStart(analyticsTriggerSliderArea)
-  },
-  ()=>{
-    console.log(AnalyticsLogLabel, "index.ts", "SliderArea_Region", "onExit")
-    trackEnd(analyticsTriggerSliderArea)
-  },
-  Color3.Blue()
-)
-
-const analyticsTriggerCloudLobby = engine.addEntity()
-const analyticsTriggerCloudLobbyPosition = Vector3.create(160, 105, 150)
-const analyticsTriggerCloudLobbyScale = Vector3.create(50, 6, 50)
-Transform.create(analyticsTriggerCloudLobby, {})
-
-TrackingElement.create(analyticsTriggerCloudLobby, {
+TrackingElement.create(cloudAnalyticsTrigger, {
   elementType: ANALYTICS_ELEMENTS_TYPES.region,
   elementId: ANALYTICS_ELEMENTS_IDS.cloud,
 })
 
-utils.triggers.addTrigger(analyticsTriggerCloudLobby, utils.NO_LAYERS, utils.LAYER_1,  
-  [{type: "box", position: analyticsTriggerCloudLobbyPosition, scale: analyticsTriggerCloudLobbyScale}],
+utils.triggers.addTrigger(cloudAnalyticsTrigger, utils.NO_LAYERS, utils.LAYER_1,  
+  [{type: "box", position: cloudAnalyticsTriggerPosition, scale: cloudAnalyticsTriggerScale}],
   ()=>{ 
     console.log(AnalyticsLogLabel, "index.ts", "Cloud_Region", "onEnter")
-    trackStart(analyticsTriggerCloudLobby)
+    trackStart(cloudAnalyticsTrigger)
   },
   ()=>{
     console.log(AnalyticsLogLabel, "index.ts", "Cloud_Region", "onExit")
-    trackEnd(analyticsTriggerCloudLobby)
+    trackEnd(cloudAnalyticsTrigger)
   },
   Color3.Yellow()
 )
 
-const analyticsTriggerBar = engine.addEntity()
-const analyticsTriggerBarPosition = Vector3.create(160, 1, 150)
-const analyticsTriggerBarScale = Vector3.create(50, 30, 47)
-Transform.create(analyticsTriggerBar, {})
+const sliderInCloudAnalyticsTrigger = engine.addEntity()
+const sliderInCloudAnalyticsTriggerPosition = Vector3.create(161, 105, 159)
+const sliderInCloudAnalyticsTriggerScale = Vector3.create(30, 3, 10)
+Transform.create(sliderInCloudAnalyticsTrigger, {})
 
-TrackingElement.create(analyticsTriggerBar, {
+TrackingElement.create(sliderInCloudAnalyticsTrigger, {
+  elementType: ANALYTICS_ELEMENTS_TYPES.region,
+  elementId: ANALYTICS_ELEMENTS_IDS.eventsSlider,
+})
+
+utils.triggers.addTrigger(sliderInCloudAnalyticsTrigger, utils.NO_LAYERS, utils.LAYER_1,  
+  [{type: "box", position: sliderInCloudAnalyticsTriggerPosition, scale: sliderInCloudAnalyticsTriggerScale}],
+  ()=>{ 
+    console.log(AnalyticsLogLabel, "index.ts", "SliderArea_Region", "onEnter")
+    trackStart(sliderInCloudAnalyticsTrigger)
+  },
+  ()=>{
+    console.log(AnalyticsLogLabel, "index.ts", "SliderArea_Region", "onExit")
+    trackEnd(sliderInCloudAnalyticsTrigger)
+  },
+  Color3.Blue()
+)
+
+const barAnalyticsTrigger = engine.addEntity()
+const barAnalyticsTriggerPosition = Vector3.create(160, 1, 150)
+const barAnalyticsTriggerScale = Vector3.create(50, 30, 47)
+Transform.create(barAnalyticsTrigger, {})
+
+TrackingElement.create(barAnalyticsTrigger, {
   elementType: ANALYTICS_ELEMENTS_TYPES.region,
   elementId: ANALYTICS_ELEMENTS_IDS.bar,
 })
 
-utils.triggers.addTrigger(analyticsTriggerBar, utils.NO_LAYERS, utils.LAYER_1,  
-  [{type: "box", position: analyticsTriggerBarPosition, scale: analyticsTriggerBarScale}],
+utils.triggers.addTrigger(barAnalyticsTrigger, utils.NO_LAYERS, utils.LAYER_1,  
+  [{type: "box", position: barAnalyticsTriggerPosition, scale: barAnalyticsTriggerScale}],
   ()=>{ 
     console.log(AnalyticsLogLabel, "index.ts", "Bar_Region", "onEnter")
-    trackStart(analyticsTriggerBar)
+    trackStart(barAnalyticsTrigger)
   },
   ()=>{
     console.log(AnalyticsLogLabel, "index.ts", "Bar_Region", "onExit")
-    trackEnd(analyticsTriggerBar)
+    trackEnd(barAnalyticsTrigger)
   },
   Color3.Red()
 )
