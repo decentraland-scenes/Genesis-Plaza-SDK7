@@ -12,6 +12,7 @@ import * as utils from '@dcl-sdk/utils'
 import { showTeleportUI } from '../ui'
 import { TimerId } from '@dcl-sdk/utils/dist/timer'
 import { CountDownUtil } from './countDown'
+import { beamShape } from './resources/resources'
 
 export const triggerCounter = new CountDownUtil()
 
@@ -80,9 +81,7 @@ Transform.create(beam,{
     position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y, lobbyCenter.z - coreBuildingOffset.z-beanOffsetZ),
     scale: Vector3.create(1,1 + BEAM_SCALE_AMOUNT,1)
 })
-GltfContainer.createOrReplace(beam, {
-    src: "models/lobby/beam_cutout.glb"
-})
+GltfContainer.createOrReplace(beam, beamShape)
 
 export class TeleportController {
     triggerBoxUp: Entity

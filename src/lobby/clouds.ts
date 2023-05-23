@@ -86,12 +86,12 @@ export function initClouds(){
       let cloudsBig = engine.addEntity()
       
       //have to lower because when scaled down gets in way of models
-      const bigCloudOffset = -2.5
+      const bigCloudOffset = 2.5
       Transform.create(cloudsBig,{
             position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x ,lobbyHeight + bigCloudOffset ,lobbyCenter.z - coreBuildingOffset.z),
-            rotation: Quaternion.fromEulerDegrees(0, 90, 0),          
-            scale: Vector3.create(.45,.45,.45)
-            //scale: Vector3.create(1,1,1)
+            rotation: Quaternion.fromEulerDegrees(0, 0, 0),          
+            //scale: Vector3.create(.45,.45,.45)
+            scale: Vector3.create(1,1,1)
         })
       
       GltfContainer.create(cloudsBig, resource.cloudBigShape)
