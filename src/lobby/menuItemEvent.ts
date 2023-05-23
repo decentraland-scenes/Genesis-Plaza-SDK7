@@ -160,14 +160,21 @@ export class EventMenuItem extends MenuItem {
     })   
 
     
+    Transform.getMutable( this.liveSign).parent = this.leftDetailsRoot
+    Transform.getMutable( this.dateBG).parent = this.leftDetailsRoot
 
     if (this.live) {
-      //add live badge
-      
-      Transform.getMutable(this.liveSign).parent = this.leftDetailsRoot
+      //show live badge      
+      VisibilityComponent.getMutable(this.liveSign).visible = true
+      VisibilityComponent.getMutable(this.dateBG).visible = false
+      VisibilityComponent.getMutable(this.dateMonthRoot).visible = false
+      VisibilityComponent.getMutable(this.dateRoot).visible = false
     } else {
-      // add calendar panel
-      Transform.getMutable( this.dateBG).parent = this.leftDetailsRoot
+      // show calendar panel
+      VisibilityComponent.getMutable(this.liveSign).visible = false
+      VisibilityComponent.getMutable(this.dateBG).visible = true
+      VisibilityComponent.getMutable(this.dateMonthRoot).visible = true
+      VisibilityComponent.getMutable(this.dateRoot).visible = true
       
     }
 
@@ -473,7 +480,11 @@ export class EventMenuItem extends MenuItem {
     this.live = _event.live
     if (this.live) {
       //add live badge
-      Transform.getMutable(this.liveSign).parent = this.leftDetailsRoot      
+     // Transform.getMutable(this.liveSign).parent = this.leftDetailsRoot     
+     VisibilityComponent.getMutable(this.liveSign).visible = true
+     VisibilityComponent.getMutable(this.dateBG).visible = false 
+     VisibilityComponent.getMutable(this.dateMonthRoot).visible = false 
+     VisibilityComponent.getMutable(this.dateRoot).visible = false 
 
       //update jump in button
       TextShape.getMutable(this.jumpButtonText).text = 'JUMP IN'
@@ -490,7 +501,11 @@ export class EventMenuItem extends MenuItem {
     } 
     else {
       // add calendar panel
-      Transform.getMutable(this.dateBG).parent = this.leftDetailsRoot
+      //  Transform.getMutable(this.dateBG).parent = this.leftDetailsRoot
+      VisibilityComponent.getMutable(this.liveSign).visible = false
+      VisibilityComponent.getMutable(this.dateBG).visible = true
+       VisibilityComponent.getMutable(this.dateMonthRoot).visible = true 
+     VisibilityComponent.getMutable(this.dateRoot).visible = true 
 
       //update jump in button to sign up button
       TextShape.getMutable(this.jumpButtonText).text = 'SIGN UP'
@@ -628,12 +643,18 @@ export class EventMenuItem extends MenuItem {
     //     sfx.menuDeselectSource.playOnce()
     // }
   }
+  
   show() {
     VisibilityComponent.getMutable(this.itemBox).visible = true
-    VisibilityComponent.getMutable(this.dateBG).visible = true
-    VisibilityComponent.getMutable(this.liveSign).visible = true
-    VisibilityComponent.getMutable(this.dateMonthRoot).visible = true
-    VisibilityComponent.getMutable(this.dateRoot).visible = true
+    
+    if(this.live){
+      VisibilityComponent.getMutable(this.liveSign).visible = true
+    }else{
+      VisibilityComponent.getMutable(this.dateBG).visible = true
+      VisibilityComponent.getMutable(this.dateMonthRoot).visible = true
+      VisibilityComponent.getMutable(this.dateRoot).visible = true
+    }   
+    
     VisibilityComponent.getMutable(this.title).visible = true
     VisibilityComponent.getMutable(this.detailTextPanel).visible = true
     this.thumbNail.show()
