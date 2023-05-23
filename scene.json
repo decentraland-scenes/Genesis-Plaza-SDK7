@@ -2,9 +2,9 @@
 	"ecs7": true,
 	"runtimeVersion": "7",
 	"display": {
-		"title": "SDK7 Decentraland - Cube Spawner Scene",
-		"description": "First scene with SDK7",
-		"navmapThumbnail": "images/scene-thumbnail.png",
+		"title": "Genesis Plaza",
+		"description": "Jump in to strike up a chat with other visitors, retake the commands tutorial with a cute floating robot, or dive into the swirling portal to get to Decentraland's visitor center.",
+		"navmapThumbnail": "images/genesis-plaza.png",
 		"favicon": "favicon_asset"
 	},
 	"owner": "",
@@ -26,54 +26,26 @@
 	},
 	"spawnPoints": [
 		{
-			"name": "center",
-			"default": false,
+			"name": "centerLobby",
+			"default": true,
 			"position": {
 				"x": [
-					156,
-					164
+					27.5,
+					36.5
 				],
 				"y": [
-					105.1,
-					105.1
+					86.1,
+					86.1
 				],
 				"z": [
-					138,
-					142
+					26,
+					30
 				]
 			},
 			"cameraTarget": {
-				"x": 158,
-				"y": 106,
-				"z": 184
-			}
-		},
-		{
-			"name": "spawn1",
-			"default": false,
-			"position": {
-			  "x": 40,
-			  "y": 0,
-			  "z": 56
-			},
-			"cameraTarget": {
-			  "x": 48,
-			  "y": 1,
-			  "z": 64
-			}
-		},
-		{
-			"name": "spawn2",
-			"default": true,
-			"position": {
-			  "x": 16,
-			  "y": 0,
-			  "z": 32
-			},
-			"cameraTarget": {
-			  "x": 8,
-			  "y": 1,
-			  "z": 24
+				"x": 32,
+				"y": 86,
+				"z": 40
 			}
 		}
 	],
