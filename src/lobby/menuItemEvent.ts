@@ -429,7 +429,7 @@ export class EventMenuItem extends MenuItem {
     //READ MORE details website button
     this.readMoreButton = engine.addEntity()
     Transform.create(this.readMoreButton, {
-      position: Vector3.create(-0.58, -0.33, -0.025),
+      position: Vector3.create(-0.58, -0.33, -0.05),
       parent: this.detailTextPanel
     })    
     GltfContainer.create(this.readMoreButton, resource.readMoreBtnShape) 
