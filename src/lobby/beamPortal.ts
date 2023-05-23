@@ -73,13 +73,15 @@ export let tutorialRunning: boolean = false
 
 
 // BEAM MESH
-const beam = engine.addEntity()
+
+const beanOffsetZ = 1.8
+const  beam = engine.addEntity()
 Transform.create(beam,{
-    position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y, lobbyCenter.z - coreBuildingOffset.z),
+    position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y, lobbyCenter.z - coreBuildingOffset.z-beanOffsetZ),
     scale: Vector3.create(1,1,1)
 })
 GltfContainer.createOrReplace(beam, {
-    src: "models/lobby/beam.glb"
+    src: "models/lobby/beam_cutout.glb"
 })
 
 export class TeleportController {
