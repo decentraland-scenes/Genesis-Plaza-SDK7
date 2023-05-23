@@ -1,5 +1,9 @@
 import { Vector3 } from "@dcl/sdk/math";
 
+//ideally 0
+export const BEAM_SCALE_AMOUNT = -.06
+//compensate welcome area too
+export const WELCOME_OFFSET_Y_AMOUNT = -.5
 
 export const coreBuildingOffset = Vector3.create(8*16, 0, 7*16)
 

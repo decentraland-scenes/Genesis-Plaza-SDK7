@@ -1,7 +1,7 @@
 import { engine, executeTask, GltfContainer, InputAction, Material, pointerEventsSystem, Transform } from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { _openExternalURL, log } from '../back-ports/backPorts'
-import { coreBuildingOffset, lobbyHeight, lobbyHeightLegacy } from '../lobby/resources/globals'
+import { barCenter, coreBuildingOffset, lobbyHeight, lobbyHeightLegacy, WELCOME_OFFSET_Y_AMOUNT } from '../lobby/resources/globals'
 
 
 export function addBuildings() {
@@ -170,16 +170,16 @@ export function addBuildings() {
   let core_building = engine.addEntity()
   GltfContainer.create(core_building,{src:'models/core_building_cutoutVersion.glb'})
   Transform.create(core_building,{
-      position: Vector3.create(32,0,40),
+      position: Vector3.create(barCenter.x,0,barCenter.z),
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
-    })
+    }) 
   
 
   //add msg_welcome
   let msg_welcome = engine.addEntity()
-  GltfContainer.create(msg_welcome,{src:'models/msg_welcome.glb'})
+  GltfContainer.create(msg_welcome,{src:'models/msg_welcome_cutout.glb'})
   Transform.create(msg_welcome,{
-      position: Vector3.create(0 - coreBuildingOffset.x, 0, 0 - coreBuildingOffset.z),
+      position: Vector3.create(barCenter.x,0 + WELCOME_OFFSET_Y_AMOUNT,barCenter.z),
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
   

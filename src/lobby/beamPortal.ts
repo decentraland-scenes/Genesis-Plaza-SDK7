@@ -1,6 +1,6 @@
 import { Animator, AudioSource, AudioStream, Entity, GltfContainer, InputAction, Material, MeshRenderer, PBAudioStream, TextShape, Transform, VisibilityComponent, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
 import { Color3, Vector3 } from '@dcl/sdk/math'
-import { ParcelCountMaxY, coreBuildingOffset, lobbyCenter } from './resources/globals'
+import { BEAM_SCALE_AMOUNT, ParcelCountMaxY, coreBuildingOffset, lobbyCenter } from './resources/globals'
 import { lobbyHeight } from './resources/globals'
 import { isInBar, setBarMusicOn } from '../modules/bar/jukebox'
 //import { tutorialEnableObservable } from '../modules/tutorialHandler'
@@ -78,7 +78,7 @@ const beanOffsetZ = 1.8
 const  beam = engine.addEntity()
 Transform.create(beam,{
     position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y, lobbyCenter.z - coreBuildingOffset.z-beanOffsetZ),
-    scale: Vector3.create(1,1,1)
+    scale: Vector3.create(1,1 + BEAM_SCALE_AMOUNT,1)
 })
 GltfContainer.createOrReplace(beam, {
     src: "models/lobby/beam_cutout.glb"

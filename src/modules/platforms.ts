@@ -259,13 +259,13 @@ export function barPlatforms() {
 
   let barElevatorLeft = new Platform(
     //{src:'models/core_building/Elevator_Left.glb'},
-    {src:'models/core_building/elevator_left cutout.glb'},
+    {src:'models/core_building/elevator_left_cutout.glb'},
     { 
       position: Vector3.create(barCenter.x,0,barCenter.z),
       rotation: Quaternion.fromEulerDegrees(0, 180, 0)
       ,scale: Vector3.create(1,1,1) },
-    { position: Vector3.create(147 - coreBuildingOffset.x, 2.5, 152 - coreBuildingOffset.z) },
-    Vector3.create(4, 4, 4),
+    { position: Vector3.create(147 - coreBuildingOffset.x, 2.5, 151.5 - coreBuildingOffset.z) },
+    Vector3.create(3.5, 4, 3.5),
     'Elevator_Left_Up',
     'elevatorLeft',
     () => {
@@ -278,10 +278,10 @@ export function barPlatforms() {
     {src:'models/core_building/elevator_right_cutout.glb'},
     { 
       //position: Vector3.create(0 - coreBuildingOffset.x, 0, 0 - coreBuildingOffset.z),
-      position: Vector3.create(barCenter.x,0,barCenter.z),
+      position: Vector3.create(barCenter.x,0,barCenter.z), 
       rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
-    { position: Vector3.create(173 - coreBuildingOffset.x, 2.5, 152- coreBuildingOffset.z) },
-    Vector3.create(4, 4, 4),
+    { position: Vector3.create(173 - coreBuildingOffset.x, 2.5, 151.5- coreBuildingOffset.z) },
+    Vector3.create(3.5, 4, 3.5),
     'Elevator_Right_Up',
     'elevatorRight',
     () => {
