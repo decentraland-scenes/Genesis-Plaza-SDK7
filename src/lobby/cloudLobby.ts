@@ -61,32 +61,33 @@ export function addCloudLobby(){
   //PUT PARCEL SIZE HERE 4X5 FOR EXAMPLE 
   //const parcelMaxHeight = lobbyHeight//(Math.log((4*5) + 1) * Math.LOG2E) * 20
   Transform.create(cloudSpawnTempPlane,{
+    //taken from scene.json spawn to make sure is good spot
     position: Vector3.create((36.5+26.5)/2, lobbyHeight, (30+26)/2),
-    scale: Vector3.create(30-26,36.5-26.5,1),
+    scale: Vector3.create(30-26,36.5-26.5,.1),
     rotation: Quaternion.fromEulerDegrees(90,0,90)
   })
-  MeshCollider.setPlane(cloudSpawnTempPlane)
+  //MeshCollider.setPlane(cloudSpawnTempPlane)
   MeshRenderer.setPlane(cloudSpawnTempPlane)
   Material.setPbrMaterial(cloudSpawnTempPlane, {
-    //texture: Material.Texture.,
-    albedoColor: Color4.fromHexString("#00000088"),
-    specularIntensity: 0,
-    metallic: 0,
-    roughness: 1
-})
-//END temporary spawn
+      //texture: Material.Texture.,
+      albedoColor: Color4.fromHexString("#00000088"),
+      specularIntensity: 0,
+      metallic: 0,
+      roughness: 1
+  })
+  //END temporary spawn
 
-
+  /*
   //START temporary flooring for cloud
    let cloudFloorTempPlane = engine.addEntity()
     //PUT PARCEL SIZE HERE 4X5 FOR EXAMPLE
     //const parcelMaxHeight = lobbyHeight//(Math.log((4*5) + 1) * Math.LOG2E) * 20
     Transform.create(cloudFloorTempPlane,{
       position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyHeight, lobbyCenter.z - coreBuildingOffset.z),
-      scale: Vector3.create(40,40,1),
+      scale: Vector3.create(40,40,.1),
       rotation: Quaternion.fromEulerDegrees(90,0,0)
     })
-    MeshCollider.setPlane(cloudFloorTempPlane)
+   // MeshCollider.setPlane(cloudFloorTempPlane)
     MeshRenderer.setPlane(cloudFloorTempPlane)
     Material.setPbrMaterial(cloudFloorTempPlane, {
       //texture: Material.Texture.,
@@ -96,7 +97,7 @@ export function addCloudLobby(){
       roughness: 1
   })
   //END temporary flooring for cloud
-
+  */
 
   // SOCIAL LINKS
   let discordLink = engine.addEntity()
