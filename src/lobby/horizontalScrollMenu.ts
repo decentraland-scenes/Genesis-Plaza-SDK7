@@ -127,8 +127,8 @@ export class HorizontalMenu {
         //   _item.select()
         // }
         const transformClickBox = Transform.getMutable(this.clickBoxes[_itemID])
-      transformClickBox.scale.y = 1.58
-      transformClickBox.position.y = -0.25
+        transformClickBox.scale.y = 1.58
+        transformClickBox.position.y = -0.25
     }
 
     deselectItem(_itemID: number, _silent: boolean) {
@@ -245,7 +245,7 @@ export class HorizontalMenu {
         // COLLIDER BOX FOR USER INPUT
         let clickBox = engine.addEntity()
         Transform.create(clickBox,{
-          scale: Vector3.create(1.6,0.8,0.1),
+          scale: Vector3.create(1.6,0.8,0.02),
             parent: _item.entity,
         })
         //GltfContainer.create(clickBox, resource.shelfShape)
