@@ -13,6 +13,7 @@ import { coreBuildingOffset, lobbyCenter } from './lobby/resources/globals'
 import { TeleportController } from './lobby/beamPortal'
 import { initBarNpcs } from './modules/bar/npcs/barNpcs'
 import { setupUi } from './ui'
+import { placeDoors } from './modules/bar/doors'
 
 
 // export all the functions required to make the scene work
@@ -34,7 +35,7 @@ addCloudLobby()
 
 addBuildings()
 
-
+placeDoors()
 
 ///////// BAR STUFF
 

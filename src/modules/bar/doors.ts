@@ -3,7 +3,7 @@ import { sceneMessageBus } from '../serverHandler'
 import { Color3, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { Animator, AudioSource, Entity, GltfContainer, PBGltfContainer, Transform, TransformTypeWithOptionals, engine } from '@dcl/sdk/ecs'
 import { log } from '../../back-ports/backPorts'
-import { coreBuildingOffset } from '../../lobby/resources/globals'
+import { barCenter, coreBuildingOffset } from '../../lobby/resources/globals'
 
 
 //TODO TAG:PORT-REIMPLEMENT-ME
@@ -18,7 +18,7 @@ export class Door  {
   entity:Entity
   animationOpen: string//AnimationState
   animationClose: string//AnimationState
-  isOpen: boolean = false
+  isOpen: boolean = true
   isPlayerIn: boolean = false
   soundOpen: Entity
   soundClose: Entity
@@ -139,8 +139,8 @@ export class Door  {
 
 export function placeDoors() {
   let main_door1 = new Door( 
-    {src:'models/core_building/Door_Entrance_L.glb'},
-    { position: Vector3.create(0 - coreBuildingOffset.x, 0, 0 - coreBuildingOffset.z),
+    {src:'models/core_building/door_entrace_front_L_cutOut.glb'},
+    { position: Vector3.create(barCenter.x, 0, barCenter.z), 
       rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
     { position: Vector3.create(160 - coreBuildingOffset.x, 2, 126 - coreBuildingOffset.z) },
     Vector3.create(16, 8, 8),
@@ -150,10 +150,10 @@ export function placeDoors() {
   )
 
   let main_door2 = new Door(
-    {src:'models/core_building/Door_Entrance_R.glb'},
-    { position: Vector3.create(0 - coreBuildingOffset.x, 0, 0 - coreBuildingOffset.z),
+    {src:'models/core_building/door_entrace_front_R_cutOut.glb'},
+    { position: Vector3.create(barCenter.x, 0, barCenter.z),
       rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
-    { position: Vector3.create(160 - coreBuildingOffset.x, 2, 126 - coreBuildingOffset.z ) },
+    { position: Vector3.create(160 - coreBuildingOffset.x, 2, 126 - coreBuildingOffset.z) },
     Vector3.create(16, 8, 8),
     'DoorRight_Open',
     'DoorRight_Close',
@@ -172,8 +172,8 @@ export function placeDoors() {
   })
 
   let right_door1 = new Door(
-    {src:'models/core_building/Door_Entrance_Right_L.glb'},
-    { position: Vector3.create(0 - coreBuildingOffset.x, 0, 0 - coreBuildingOffset.z),
+    {src:'models/core_building/door_entrace_right_L_cutOut.glb'},
+    { position: Vector3.create(barCenter.x, 0, barCenter.z),
       rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
     { position: Vector3.create(186  - coreBuildingOffset.x, 2, 153  - coreBuildingOffset.z) },
     Vector3.create(8, 8, 16),
@@ -183,8 +183,8 @@ export function placeDoors() {
   )
 
   let right_door2 = new Door(
-    {src:'models/core_building/Door_Entrance_Right_R.glb'},
-    { position: Vector3.create(0 - coreBuildingOffset.x, 0, 0 - coreBuildingOffset.z),
+    {src:'models/core_building/door_entrace_right_R_cutOut.glb'},
+    { position: Vector3.create(barCenter.x, 0, barCenter.z),
       rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
     { position: Vector3.create(186  - coreBuildingOffset.x, 2, 153  - coreBuildingOffset.z) },
     Vector3.create(8, 8, 16),
@@ -205,8 +205,8 @@ export function placeDoors() {
   })
 
   let left_door1 = new Door(
-    {src:'models/core_building/Door_Entrance_Left_L.glb'},
-    { position: Vector3.create(0 - coreBuildingOffset.x, 0, 0 - coreBuildingOffset.z),
+    {src:'models/core_building/door_entrace_left_L_cutOut.glb'},
+    { position: Vector3.create(barCenter.x, 0, barCenter.z),
       rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
     { position: Vector3.create(135  - coreBuildingOffset.x, 2, 153  - coreBuildingOffset.z) },
     Vector3.create(8, 8, 16),
@@ -216,8 +216,8 @@ export function placeDoors() {
   )
 
   let left_door2 = new Door(
-    {src:'models/core_building/Door_Entrance_Left_R.glb'},
-    { position: Vector3.create(0 - coreBuildingOffset.x, 0, 0 - coreBuildingOffset.z),
+    {src:'models/core_building/door_entrace_left_R_cutOut.glb'},
+    { position: Vector3.create(barCenter.x, 0, barCenter.z),
       rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
     { position: Vector3.create(135  - coreBuildingOffset.x, 2, 153  - coreBuildingOffset.z) },
     Vector3.create(8, 8, 16),
