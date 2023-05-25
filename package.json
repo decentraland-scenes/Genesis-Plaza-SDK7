@@ -4,6 +4,9 @@
   "description": "SDK7 Template scene",
   "scripts": {
     "start": "sdk-commands start",
+    "build:ci": "sdk-commands build",
+    "deploy:prod": "sdk-commands deploy",
+    "deploy:testing": "sdk-commands deploy --target peer-testing.decentraland.org",
     "deploy": "sdk-commands deploy",
     "build": "sdk-commands build",
     "upgrade-sdk": "npm install --save-dev @dcl/sdk@latest",
