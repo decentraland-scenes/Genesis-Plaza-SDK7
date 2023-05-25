@@ -7,6 +7,7 @@ import ReactEcs, { Button, DisplayType, Label, ReactEcsRenderer, UiEntity } from
 import { Cube } from './components'
 import { createCube } from './factory'
 import { triggerCounter } from './lobby/beamPortal'
+import { NpcUtilsUi } from 'dcl-npc-toolkit/dist/ui'
 
 let teleportUIVisibility: DisplayType = "none"
 let timeToBeamUp: number = 3
@@ -27,14 +28,14 @@ const uiBeamMeUp = () => (
       height: 250,
       display: teleportUIVisibility,
       alignContent: 'center',
-
-      position: { top: '30px', right: '-360px' },
-
+      position: { left: '40%',top: '5%'},
+      positionType: 'absolute'  
     }}
     uiBackground={{
       texture: {
         src: "images/ui_beam_up_bg.png"
       }
+      //,color: Color4.Black()
     }}
   >
     <Label
@@ -120,12 +121,13 @@ function getPlayerPosition() {
 }
 
 const uiComponent = () => [
-  uiBeamMeUp(),
+  NpcUtilsUi(),uiBeamMeUp()
   //uiSpawnCube()
+   
 ]
 
 setupUi()
 
 export function setupUi() {
-  ReactEcsRenderer.setUiRenderer(uiBeamMeUp)
+  ReactEcsRenderer.setUiRenderer(uiComponent)
 }

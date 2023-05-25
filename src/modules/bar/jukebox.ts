@@ -4,6 +4,7 @@ import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import * as utils from '@dcl-sdk/utils'
 import { sceneMessageBus } from '../serverHandler'
 import { tutorialRunning } from '../../lobby/beamPortal'
+import { coreBuildingOffset } from '../../lobby/resources/globals'
 import { TrackingElement, trackAction } from '../stats/analyticsComponents'
 import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES, AnalyticsLogLabel } from '../stats/AnalyticsConfig'
 
@@ -62,7 +63,7 @@ export function placeJukeBox() {
   })
 
   Transform.createOrReplace(baseJukeBox, {
-    position: Vector3.create(179, 0, 144), 
+    position: Vector3.create(179 - coreBuildingOffset.x, 0, 144 - coreBuildingOffset.z), 
     rotation: Quaternion.fromEulerDegrees(0, -45, 0),
     scale: Vector3.create(0.75, 0.75, 0.75),
   })

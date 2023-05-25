@@ -5,6 +5,8 @@ import { Entity, Transform, engine } from '@dcl/sdk/ecs'
 import { artistRecommendations, fashionistCommonDialog, fashionistEpicDialog, fashionistMythicDialog, fashionistNoneDialog, getFashionistDialog, getOcotDialog, girlArtistTalk } from './npcDialogs'
 import { rarestItem, rarityLevel } from './rarity'
 import * as utils from '@dcl-sdk/utils'
+import { coreBuildingOffset } from '../../../lobby/resources/globals'
+
 import { TrackingElement, trackAction } from '../../stats/analyticsComponents'
 import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES, AnalyticsLogLabel } from '../../stats/AnalyticsConfig'
 
@@ -26,7 +28,7 @@ export function initBarNpcs(): void {
 
 
 function createOctopusNpc() {
-  let position: Vector3 = Vector3.create(160, 0.2, 141.4)
+  let position: Vector3 = Vector3.create(160 - coreBuildingOffset.x, 0.2, 141.4 - coreBuildingOffset.z)
 
   octo = npcLib.create(
     {
@@ -103,7 +105,7 @@ function createOctopusNpc() {
 
 function createFashionistNpc(): Entity {
 
-  let position = Vector3.create(162.65, 0.23, 133.15)
+  let position = Vector3.create(162.65 - coreBuildingOffset.x, 0.23, 133.15 - coreBuildingOffset.z)
 
   let fashionist = npcLib.create(
     { position: position },
@@ -171,7 +173,7 @@ function createArtistCouple(): void {
 function createBoyArtist(): Entity {
   let boy = npcLib.create(
     {
-      position: Vector3.create(142.9, -0.2, 165.7),
+      position: Vector3.create(142.9 - coreBuildingOffset.x, -0.2, 165.7 - coreBuildingOffset.z),
       rotation: Quaternion.fromEulerDegrees(0, 180 + 90, 0)
     },
     {
