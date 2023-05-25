@@ -107,7 +107,7 @@ export class TeleportController {
 
       const triggerUpOnEnter = () => {
           const playerTransform = Transform.getMutable(engine.PlayerEntity)
-          playerTransform.position = { x: lobbyCenter.x - coreBuildingOffset.x + 5, y: Math.min(ParcelCountMaxY-2,140), z: lobbyCenter.z - 10 - coreBuildingOffset.z}
+          playerTransform.position = { x: lobbyCenter.x - coreBuildingOffset.x + 5, y: Math.min(ParcelCountMaxY-2.5,140), z: lobbyCenter.z - 10 - coreBuildingOffset.z}
 
           /*if (!tutorialRunning) {
             let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
@@ -179,12 +179,13 @@ export class TeleportController {
       )
   
       // Trigger to play fall SFX
+      const triggerBoxFallCheckScale = Vector3.create((ParcelCountX)*16-4, 10, (ParcelCountZ)*16-4)
       this.triggerBoxFallCheck = engine.addEntity()
       Transform.create(this.triggerBoxFallCheck, {})
-      this.triggerBoxFallCheckPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y + lobbyHeight - 6, lobbyCenter.z - coreBuildingOffset.z)
-      this.triggerBoxFallCheckScale = Vector3.create(6, 10, 6)
+      this.triggerBoxFallCheckPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y + lobbyHeight - triggerBoxFallCheckScale.y, lobbyCenter.z - coreBuildingOffset.z)
+      //this.triggerBoxFallCheckScale = Vector3.create(6, 10, 6)
       //make wide to catch jumping/falling from cloud directlydown
-      this.triggerBoxFallCheckScale = Vector3.create((ParcelCountX)*16-4, 10, (ParcelCountZ)*16-4)
+      this.triggerBoxFallCheckScale = triggerBoxFallCheckScale
 
      
       utils.triggers.addTrigger(this.triggerBoxFallCheck, utils.NO_LAYERS, utils.LAYER_1, 

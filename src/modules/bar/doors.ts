@@ -18,7 +18,7 @@ export class Door  {
   entity:Entity
   animationOpen: string//AnimationState
   animationClose: string//AnimationState
-  isOpen: boolean = true
+  isOpen: boolean = false
   isPlayerIn: boolean = false
   soundOpen: Entity
   soundClose: Entity
@@ -104,8 +104,8 @@ export class Door  {
     }
     
 
-    Animator.getClip(this.entity,this.animationOpen).playing = false
-    Animator.getClip(this.entity,this.animationClose).playing = false
+    Animator.getClip(this.entity,this.animationOpen).playing = this.isOpen
+    Animator.getClip(this.entity,this.animationClose).playing = !this.isOpen
   }
 
   public open(): void {
