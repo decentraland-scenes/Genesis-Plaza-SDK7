@@ -17,11 +17,11 @@ TrackingElement.create(cloudAnalyticsTrigger, {
 utils.triggers.addTrigger(cloudAnalyticsTrigger, utils.NO_LAYERS, utils.LAYER_1,  
   [{type: "box", position: cloudAnalyticsTriggerPosition, scale: cloudAnalyticsTriggerScale}],
   ()=>{ 
-    console.log(AnalyticsLogLabel, "index.ts", "Cloud_Region", "onEnter")
+    console.log(AnalyticsLogLabel, "analytics.ts", "Cloud_Region", "onEnter")
     trackStart(cloudAnalyticsTrigger)
   },
   ()=>{
-    console.log(AnalyticsLogLabel, "index.ts", "Cloud_Region", "onExit")
+    console.log(AnalyticsLogLabel, "analytics.ts", "Cloud_Region", "onExit")
     trackEnd(cloudAnalyticsTrigger)
   },
   Color3.Yellow()
@@ -40,11 +40,11 @@ TrackingElement.create(sliderInCloudAnalyticsTrigger, {
 utils.triggers.addTrigger(sliderInCloudAnalyticsTrigger, utils.NO_LAYERS, utils.LAYER_1,  
   [{type: "box", position: sliderInCloudAnalyticsTriggerPosition, scale: sliderInCloudAnalyticsTriggerScale}],
   ()=>{ 
-    console.log(AnalyticsLogLabel, "index.ts", "SliderArea_Region", "onEnter")
+    console.log(AnalyticsLogLabel, "analytics.ts", "SliderArea_Region", "onEnter")
     trackStart(sliderInCloudAnalyticsTrigger)
   },
   ()=>{
-    console.log(AnalyticsLogLabel, "index.ts", "SliderArea_Region", "onExit")
+    console.log(AnalyticsLogLabel, "analytics.ts", "SliderArea_Region", "onExit")
     trackEnd(sliderInCloudAnalyticsTrigger)
   },
   Color3.Blue()
@@ -63,17 +63,18 @@ TrackingElement.create(barAnalyticsTrigger, {
 utils.triggers.addTrigger(barAnalyticsTrigger, utils.NO_LAYERS, utils.LAYER_1,  
   [{type: "box", position: barAnalyticsTriggerPosition, scale: barAnalyticsTriggerScale}],
   ()=>{ 
-    console.log(AnalyticsLogLabel, "index.ts", "Bar_Region", "onEnter")
+    console.log(AnalyticsLogLabel, "analytics.ts", "Bar_Region", "onEnter")
     trackStart(barAnalyticsTrigger)
   },
   ()=>{
-    console.log(AnalyticsLogLabel, "index.ts", "Bar_Region", "onExit")
+    console.log(AnalyticsLogLabel, "analytics.ts", "Bar_Region", "onExit")
     trackEnd(barAnalyticsTrigger)
   },
   Color3.Red()
 )
 
-
+/*
+//TODO add this when they will be ported to sdk7
 const agoraAnalyticsTrigger = engine.addEntity()
 const agoraAnalyticsTriggerPosition = Vector3.create(50, 1, 250)
 const agoraAnalyticsTriggerScale = Vector3.create(50, 30, 47)
@@ -315,3 +316,4 @@ utils.triggers.addTrigger(tradingCenterAnalyticsTrigger, utils.NO_LAYERS, utils.
   },
   Color3.Red()
 )
+*/
