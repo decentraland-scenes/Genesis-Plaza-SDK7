@@ -42,7 +42,7 @@ function createOctopusNpc() {
         console.log(LogTag, "Hi! Octopus!")
 
         console.log(AnalyticsLogLabel, "barNpcs.ts", "Octopus")
-        trackAction(octo, "Interact", "")
+        trackAction(octo, "Interact", undefined)
 
         npcLib.changeIdleAnim(octo, 'TalkLoop')
         npcLib.playAnimation(octo, 'TalkIntro', true, 0.63)
@@ -115,7 +115,7 @@ function createFashionistNpc(): Entity {
       onActivate: async () => {
 
         console.log(AnalyticsLogLabel, "barNpcs.ts", "Fashionist")
-        trackAction(fashionist, "Interact", "")
+        trackAction(fashionist, "Interact", undefined)
 
         let rareItem = await rarestItem(true)
 
@@ -183,7 +183,7 @@ function createBoyArtist(): Entity {
         activateArtists()
 
         console.log(AnalyticsLogLabel, "barNpcs.ts", "boyArtist")
-        trackAction(boy, "Interact", "")
+        trackAction(boy, "Interact", undefined)
       },
       onWalkAway: () => { },
       textBubble: true,
@@ -214,7 +214,7 @@ function createGirlArtist(): Entity {
         activateArtists()
 
         console.log(AnalyticsLogLabel, "barNpcs.ts", "girlArtist")
-        trackAction(girl, "Interact", "")
+        trackAction(girl, "Interact", undefined)
       },
       onWalkAway: () => {
         //artistTalkToEachOther(false)

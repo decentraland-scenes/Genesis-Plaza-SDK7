@@ -140,7 +140,7 @@ export function placeJukeBox() {
       }
 
       console.log(AnalyticsLogLabel, "JukeBoxButton","Button_Forward")
-      trackAction(baseJukeBox, "button_forward", "")
+      trackAction(baseJukeBox, "button_forward", undefined)
     },
     'Next'
   )
@@ -161,7 +161,7 @@ export function placeJukeBox() {
       }
 
       console.log(AnalyticsLogLabel, "JukeBoxButton","Button_Preview")
-      trackAction(baseJukeBox, "previous_button", "")
+      trackAction(baseJukeBox, "previous_button", undefined)
     },
     'Previous'
   )
