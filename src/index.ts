@@ -14,7 +14,7 @@ import { TeleportController } from './lobby/beamPortal'
 import { initBarNpcs } from './modules/bar/npcs/barNpcs'
 import { setupUi } from './ui'
 import { placeDoors } from './modules/bar/doors'
-
+import { getRealm,GetRealmResponse } from "~system/Runtime"
 
 // export all the functions required to make the scene work
 export * from '@dcl/sdk'
@@ -77,8 +77,17 @@ utils.addOneTimeTrigger(
   }
 )
 */
+getRealm({}).then(
+  (value:GetRealmResponse) => {
+    if(value.realmInfo?.isPreview){
+      console.log("index.ts","utils.triggers.enableDebugDraw","getRealm is preview, activating debug draw")
+      utils.triggers.enableDebugDraw(true)
+    }else{
+      console.log("index.ts","utils.triggers.enableDebugDraw","getRealm is NOT preview, NO debug draw")
+    }
+  }
+)
 
-utils.triggers.enableDebugDraw(true)
 
 // proper bar interior
 addRepeatTrigger(
