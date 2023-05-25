@@ -7,7 +7,7 @@ import { rarestItem, rarityLevel } from './rarity'
 import * as utils from '@dcl-sdk/utils'
 import { coreBuildingOffset } from '../../../lobby/resources/globals'
 
-import { TrackingElement, trackAction } from '../../stats/analyticsComponents'
+import { TrackingElement, trackAction, trackEnd, trackStart } from '../../stats/analyticsComponents'
 import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES, AnalyticsLogLabel } from '../../stats/AnalyticsConfig'
 
 const LogTag: string = 'barNpcs'
@@ -45,6 +45,7 @@ function createOctopusNpc() {
 
         console.log(AnalyticsLogLabel, "barNpcs.ts", "Octopus")
         trackAction(octo, "Interact", undefined)
+        trackStart(octo)
 
         npcLib.changeIdleAnim(octo, 'TalkLoop')
         npcLib.playAnimation(octo, 'TalkIntro', true, 0.63)
@@ -57,6 +58,8 @@ function createOctopusNpc() {
         console.log(LogTag, "Bye! Octopus!")
         npcLib.changeIdleAnim(octo, 'Idle')
         npcLib.playAnimation(octo, 'TalkOutro', true, 0.63)
+
+        trackEnd(octo)
       },
     }
   )
@@ -118,6 +121,7 @@ function createFashionistNpc(): Entity {
 
         console.log(AnalyticsLogLabel, "barNpcs.ts", "Fashionist")
         trackAction(fashionist, "Interact", undefined)
+        trackStart(fashionist)
 
         let rareItem = await rarestItem(true)
 
@@ -150,6 +154,8 @@ function createFashionistNpc(): Entity {
       onWalkAway: () => {
         npcLib.playAnimation(fashionist, `Idle`, false)
         RotateFashionist(position)
+
+        trackEnd(fashionist)
       },
     }
   )
@@ -186,8 +192,11 @@ function createBoyArtist(): Entity {
 
         console.log(AnalyticsLogLabel, "barNpcs.ts", "boyArtist")
         trackAction(boy, "Interact", undefined)
+        trackStart(boy)
       },
-      onWalkAway: () => { },
+      onWalkAway: () => {
+        trackEnd(boy)
+       },
       textBubble: true,
     }
   )
@@ -217,9 +226,11 @@ function createGirlArtist(): Entity {
 
         console.log(AnalyticsLogLabel, "barNpcs.ts", "girlArtist")
         trackAction(girl, "Interact", undefined)
+        trackStart(girl)
       },
       onWalkAway: () => {
         //artistTalkToEachOther(false)
+        trackEnd(girl)
       },
       textBubble: true,
     }
