@@ -10,6 +10,8 @@ import { AudioSource, Entity, GltfContainer, InputAction, TextAlignMode, TextSha
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { liveSignShape } from './resources/resources'
 import { _openExternalURL, _teleportTo } from '../back-ports/backPorts'
+import { TrackingElement, trackAction } from '../modules/stats/analyticsComponents'
+import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES } from '../modules/stats/AnalyticsConfig'
 
 let dummyLiveBadge = engine.addEntity()
 Transform.create(dummyLiveBadge, {
@@ -53,8 +55,6 @@ export class EventMenuItem extends MenuItem {
   startTime: Entity  
 
 
-  
-
   constructor(
     _transform: TransformType,
     _alphaTexture: string,
@@ -65,7 +65,6 @@ export class EventMenuItem extends MenuItem {
     Transform.create(this.entity,_transform)
    
 
-   
     // event card root
     this.itemBox = engine.addEntity()
     Transform.create(this.itemBox, {
@@ -76,6 +75,13 @@ export class EventMenuItem extends MenuItem {
     VisibilityComponent.create(this.itemBox, {visible: true})
     Transform.getMutable(this.itemBox).parent = this.entity
     
+
+    TrackingElement.create(this.itemBox, 
+      {elementType: ANALYTICS_ELEMENTS_TYPES.interactable, 
+       elementId: ANALYTICS_ELEMENTS_IDS.menuEventSlider
+    })
+
+
     this.defaultItemScale = Vector3.create(2, 2, 2)
     this.scale = Vector3.create(1, 0.5, 1)
     this.scaleMultiplier = 1.2
@@ -285,6 +291,7 @@ export class EventMenuItem extends MenuItem {
 
     pointerEventsSystem.onPointerDown(this.coordsPanel,
       (e) => {
+        trackAction(this.itemBox, "button_go_there", _event.coordinates[0] + ',' + _event.coordinates[1],_event.name)
         _teleportTo(_event.coordinates[0] , _event.coordinates[1])      
       },
       { hoverText: 'GO THERE', button: InputAction.IA_POINTER }
@@ -346,6 +353,7 @@ export class EventMenuItem extends MenuItem {
       
       pointerEventsSystem.onPointerDown(this.jumpInButton,
         (e) => {
+          trackAction(this.itemBox, "button_jump_in", _event.coordinates[0] + ',' + _event.coordinates[1],_event.name)
           _teleportTo(_event.coordinates[0] , _event.coordinates[1])      
         },
         { hoverText: 'JUMP IN', button: InputAction.IA_POINTER }
@@ -491,6 +499,7 @@ export class EventMenuItem extends MenuItem {
 
       pointerEventsSystem.onPointerDown(this.jumpInButton,
         (e) => {
+          trackAction(this.itemBox, "button_jump_in", _event.id, (_event.coordinates[0] + ',' + _event.coordinates[1]+":"+_event.name))
           _teleportTo(_event.coordinates[0] , _event.coordinates[1])      
         },
         { hoverText: 'JUMP IN', button: InputAction.IA_POINTER }
@@ -547,6 +556,7 @@ export class EventMenuItem extends MenuItem {
     
     pointerEventsSystem.onPointerDown(this.coordsPanel,
       (e) => {
+        trackAction(this.itemBox, "button_go_there", _event.id, (_event.coordinates[0] + ',' + _event.coordinates[1]+":"+_event.name))
         _teleportTo(_event.coordinates[0] , _event.coordinates[1])     
       },
       { hoverText: 'GO THERE', button: InputAction.IA_POINTER }
