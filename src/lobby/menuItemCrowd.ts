@@ -10,6 +10,7 @@ import { AudioSource, Entity, GltfContainer, InputAction, TextAlignMode, TextSha
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { _openExternalURL, _teleportTo } from '../back-ports/backPorts'
 import { getImageOrFallback } from '../utils/allowedMediaHelper'
+import { trackAction } from '../modules/stats/analyticsComponents'
 
  
 
@@ -209,6 +210,7 @@ export class CrowdMenuItem extends MenuItem {
     else{
       pointerEventsSystem.onPointerDown(this.coordsPanel,
         (e) => {
+          trackAction(this.itemBox, "button_go_there", _scene.baseCoords[0] + ',' + _scene.baseCoords[1], _scene.name)
           _teleportTo(_scene.baseCoords[0], _scene.baseCoords[1])      
         },
         { hoverText: 'GO THERE', button: InputAction.IA_POINTER }
@@ -283,7 +285,7 @@ export class CrowdMenuItem extends MenuItem {
     
       pointerEventsSystem.onPointerDown(this.jumpInButton,
         (e) => {
-  
+          trackAction(this.itemBox, "button_jump_in", _scene.baseCoords[0] + ',' + _scene.baseCoords[1], _scene.name)
           _teleportTo(_scene.baseCoords[0] , _scene.baseCoords[1])      
         },
         { hoverText: 'JUMP IN', button: InputAction.IA_POINTER }
@@ -371,6 +373,7 @@ export class CrowdMenuItem extends MenuItem {
     else{
       pointerEventsSystem.onPointerDown(this.coordsPanel,
         (e) => {
+          trackAction(this.itemBox, "button_go_there", _scene.baseCoords[0] + ',' + _scene.baseCoords[1], _scene.name)
           _teleportTo(_scene.baseCoords[0], _scene.baseCoords[1])      
         },
         { hoverText: 'GO THERE', button: InputAction.IA_POINTER }
@@ -379,17 +382,14 @@ export class CrowdMenuItem extends MenuItem {
       TextShape.getMutable(this.jumpButtonText).text = "JUMP IN"
       pointerEventsSystem.onPointerDown(this.jumpInButton,
         (e) => {
+          trackAction(this.itemBox, "button_jump_in", _scene.baseCoords[0] + ',' + _scene.baseCoords[1], _scene.name)
           _teleportTo(_scene.baseCoords[0], _scene.baseCoords[1])      
         },
         { hoverText: 'JUMP IN', button: InputAction.IA_POINTER }
       )
     }
-    
-    
-
-    
-
   }
+
 
   select(_silent:boolean) {
 
