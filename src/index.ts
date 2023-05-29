@@ -5,16 +5,25 @@ import { addBuildings } from './modules/buildings'
 //import { placeDoors } from './modules/bar/doors'
 import { barPlatforms } from './modules/platforms'
 import { addCloudLobby } from './lobby/cloudLobby'
+import * as allowedMediaHelper  from './utils/allowedMediaHelper'
 import { lowerVolume, outOfBar, placeJukeBox, setBarMusicOff, setBarMusicOn } from './modules/bar/jukebox'
 import { addRepeatTrigger } from './modules/Utils'
 import { log } from './back-ports/backPorts'
-import { initBarNpcs } from './modules/bar/npcs/barNpcs'
-import { lobbyCenter } from './lobby/resources/globals'
+import { coreBuildingOffset, lobbyCenter } from './lobby/resources/globals'
 import { TeleportController } from './lobby/beamPortal'
-
+import { initBarNpcs } from './modules/bar/npcs/barNpcs'
+import { setupUi } from './ui'
+import { placeDoors } from './modules/bar/doors'
+import { getRealm,GetRealmResponse } from "~system/Runtime"
+import { addTVPanels } from './modules/bar/panels'
 
 // export all the functions required to make the scene work
 export * from '@dcl/sdk'
+
+//load scene metadata
+allowedMediaHelper.getAndSetSceneMetaData()
+
+initBarNpcs()
 
 placeJukeBox()
 setBarMusicOn()
@@ -27,7 +36,7 @@ addCloudLobby()
 
 addBuildings()
 
-
+placeDoors()
 
 ///////// BAR STUFF
 
@@ -38,7 +47,9 @@ addBuildings()
 placeDoors()
 */
 barPlatforms()
-initBarNpcs()
+
+// ADD EVENT CARDS TO BAR
+addTVPanels()
 
 
 //TODO TAG:PORT-REIMPLEMENT-ME
@@ -70,12 +81,21 @@ utils.addOneTimeTrigger(
   }
 )
 */
+getRealm({}).then(
+  (value:GetRealmResponse) => {
+    if(value.realmInfo?.isPreview){
+      console.log("index.ts","utils.triggers.enableDebugDraw","getRealm is preview, activating debug draw")
+      utils.triggers.enableDebugDraw(true)
+    }else{
+      console.log("index.ts","utils.triggers.enableDebugDraw","getRealm is NOT preview, NO debug draw")
+    }
+  }
+)
 
-utils.triggers.enableDebugDraw(true)
 
 // proper bar interior
 addRepeatTrigger(
-  Vector3.create(160, 50, 155),
+  Vector3.create(160 - coreBuildingOffset.x, 50, 155 - coreBuildingOffset.z),
   Vector3.create(50, 102, 50),
   () => {
     setBarMusicOn()
@@ -95,8 +115,8 @@ addRepeatTrigger(
 
 //outer perimeter
 addRepeatTrigger(
-  Vector3.create(160, 30, 155),
-  Vector3.create(75, 60, 75),
+  Vector3.create(160 - coreBuildingOffset.x, 30, 155 - coreBuildingOffset.z),
+  Vector3.create(60, 60, 70),
   () => {
     lowerVolume()
     log('got closer')
@@ -170,3 +190,5 @@ Transform.create(trigger)
         },
         Color3.Green()
       )*/
+
+setupUi()

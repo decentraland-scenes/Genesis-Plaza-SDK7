@@ -4,13 +4,16 @@
   "description": "SDK7 Template scene",
   "scripts": {
     "start": "sdk-commands start",
+    "build:ci": "sdk-commands build",
+    "deploy:prod": "sdk-commands deploy",
+    "deploy:testing": "sdk-commands deploy --target peer-testing.decentraland.org",
     "deploy": "sdk-commands deploy",
     "build": "sdk-commands build",
     "upgrade-sdk": "npm install --save-dev @dcl/sdk@latest",
     "upgrade-sdk:next": "npm install --save-dev @dcl/sdk@next"
   },
   "devDependencies": {
-    "@dcl/sdk": "^7.1.9"
+    "@dcl/sdk": "^7.1.16"
   },
   "engines": {
     "node": ">=16.0.0",
@@ -23,9 +26,8 @@
     "trailingComma": "none"
   },
   "dependencies": {
-    "@dcl-sdk/npc-utils": "^1.0.4",
     "@dcl-sdk/utils": "^1.1.1",
-    "dcl-npc-toolkit": "^1.0.5",
+    "dcl-npc-toolkit": "^1.1.0",
     "colyseus.js": "0.14.15-alpha.0"
   },
   "bundleDependencies": [

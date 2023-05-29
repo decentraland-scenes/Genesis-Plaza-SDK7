@@ -1,19 +1,11 @@
 import { teleportTo } from "~system/RestrictedActions"
 import * as npcLib from 'dcl-npc-toolkit'
 import type { Dialog } from 'dcl-npc-toolkit'
-import { Entity}  from "@dcl/sdk/ecs"
+import { Entity } from "@dcl/sdk/ecs"
 import { Vector3 } from '@dcl/sdk/math';
-import { artist1, artist2 } from './barNpcs';
-
-// Replace methods with export const and use exported NPCs
-
-function getDialogIndex(name: string, dialog: Dialog[]): number {
-  for (let i = 0; i < dialog.length; i++) {
-    const element = dialog[i];
-    if (element.name === name) return i
-  }
-  throw console.error("No Dialog found with such a Name!")
-}
+import { boyArtist, girlArtist } from './barNpcs';
+import * as utils from '@dcl-sdk/utils'
+import { _teleportTo, log } from "../../../back-ports/backPorts";
 
 const octopusYesDialog = 4
 const octopusEndDialog = 3
@@ -185,18 +177,18 @@ export function getFashionistDialog(npc: Entity): Dialog[] {
         console.log("barNpcs", "end dialog")
         npcLib.playAnimation(npc, `Idle`, false)
         /*
-        utils.tweens.startRotation(npc,
+        utils.timers.tweens.startRotation(npc,
           Transform.get(npc).rotation,
           Quaternion.fromEulerDegrees(0, 0, 0),
           3,
-          utils.InterpolationType.EASEINSINE
+          utils.timers.InterpolationType.EASEINSINE
         )
         */
         /*
         wearablesC.endInteraction()
         wearablesC.playAnimation('TurnOut', true, 1.47)
         wearablesC.addComponentOrReplace(
-          new utils.RotateTransformComponent(
+          new utils.timers.RotateTransformComponent(
             wearablesC.getComponent(Transform).rotation.clone(),
             Quaternion.Euler(0, 0, 0),
             1
@@ -220,6 +212,20 @@ const vegas: number = 8
 const skate: number = 9
 const end: number = 10
 
+const boyFirstDialog: number = 0
+const boySecondDialog: number = 1
+const boyThirdDialog: number = 2
+const boyFourthDialog: number = 3
+const boyFifthDialog: number = 4
+
+const girlFirstDialog: number = 0
+const girlSecondDialog: number = 2
+const girlThirdDialog: number = 3
+const girlFourthDialog: number = 5
+const girlFifthDialog: number = 6
+const girlSixthDialog: number = 7
+
+
 export let artistRecommendations: Dialog[] = [
   {
     text: 'Hey so you want to find out where you can find good art to admire?',
@@ -232,10 +238,10 @@ export let artistRecommendations: Dialog[] = [
   {
     name: 'no',
     text: 'Alright, I’ll be around if you want to hear more.',
-    triggeredByNext: () => {
-      artistsTalkToEachOther()
-    },
     isEndOfDialog: true,
+    triggeredByNext: () => {
+      turnOutAritsts(nextGirlDialog(girlFirstDialog))
+    },
   },
   {
     name: 'dummy',
@@ -368,56 +374,34 @@ export let artistRecommendations: Dialog[] = [
     isEndOfDialog: true,
     text: 'Hope you have fun exploring!',
     triggeredByNext: () => {
-      artistsTalkToEachOther()
+      turnOutAritsts(nextGirlDialog(girlFirstDialog))
     },
   },
 ]
 
-async function teleportPlayer(xCoordinate: number, yCoordinate: number) {
-  await teleportTo({
-    worldPosition: Vector3.create(xCoordinate * 16 ,0 ,yCoordinate * 16 )
-  })
-}
+// Artists Conversation
 
-export const artistConversation: Dialog[] = [
+
+export let girlArtistTalk: Dialog[] = [
   {
+    name: '1st',
     text: 'So there I was, questioning what my work really meant to me as an artist, after having spent <b>so much</b> time on it and put <b>so much</b> of myself into it.',
   },
   {
     text: 'Now locked up in a container where no one can see my work, where it would hopefully gain value with time or if I die in some <i>flamboyant scandalous way</i>.',
-    triggeredByNext() {
-      // TODO play npc2 animation
-    }
-    // triggeredByNext: () => {
-    //   //npcLib.handleWalkAway(artist1)
-    //   npcLib.activate(artist2)
-    //   npcLib.talk(artist2, artist2Dialog, first)
-    // },
-  },
-
-  {
-    text: 'And that was <i>such a good time</i> to get into ether, so cheap back then. Imagine if you sold those for eth then?',
+    isEndOfDialog: true,
     triggeredByNext: () => {
-      // TODO play artist 1 animation
-      // npcLib.talk(artist1, artist1Dialog, second)
+      log("DebugSession", "--")
+      nextBoyDialog(boyFirstDialog)
     },
   },
   {
     name: '2nd',
     text: 'Well yeah, but back then there wasn’t much of a market for NFTs, <i>or I didn’t know about it at least</i>. I was just trying to make a living by selling canvases, like everyone else.',
-    triggeredByNext: () => {
-      // TODO play npc2 animation
-      // npcLib.talk(artist2, artist2Dialog, second)
-    },
-  },
-  {
-    name: '2nd',
-    text: ' Just imagine if you sold a painting for 200 eth, it was <b>nothing</b> back then.',
-    isEndOfDialog: false,
+    isEndOfDialog: true,
 
     triggeredByNext: () => {
-      // TODO play artist 1 animation
-      // npcLib.talk(artist1, artist1Dialog, third)
+      nextBoyDialog(boySecondDialog)
     },
   },
   {
@@ -426,77 +410,30 @@ export const artistConversation: Dialog[] = [
   },
   {
     text: 'My audience suddenly got reduced to some rich guy and <i>maybe</i> his occasional dinner guests. That’s the part that upset me.',
-    isEndOfDialog: false,
+    isEndOfDialog: true,
 
     triggeredByNext: () => {
-      // TODO play artist 2 animation
-      // npcLib.talk(artist2, artist2Dialog, third)
-    },
-  },
-
-  {
-    name: '3rd',
-    text: 'But your NFTs also end up going to the wallet of some rich whale just the same.',
-
-    triggeredByNext: () => {
-      // TODO play artist 1 animation
-
-      // npcLib.talk(artist1, artist1Dialog, fourth)
+      nextBoyDialog(boyThirdDialog)
     },
   },
   {
     name: '4th',
     text: 'Kinda… <i>yes and no</i>. The owner of the work might be just one person, but it’s still available for any curious eyes out there.',
-    triggeredByNext: () => {
-      // TODO play artist 2 animation
-      // npcLib.talk(artist2, artist2Dialog, fourth)
-      /*
-      artist2.talkBubble(artist2Talk, '4th')
-      artist2.playAnimation('TurnIn', true, 0.57)
-
-      utils.setTimeout(570, () => {
-        artist2.playAnimation('TalkToUser')
-      })
-      */
-    },
-  },
-
-  {
-    name: '4th',
-    text: 'Speaking of audiences, looks like we have one here. Hey! I take it that you have an interest in art',
+    isEndOfDialog: true,
 
     triggeredByNext: () => {
-      /*
-      artist1.playAnimation('TurnIn', true, 0.57)
-      utils.setTimeout(570, () => {
-        artist1.playAnimation('TalkToUser')
-      })
-      */
-
-      // TODO play artist 1 animation
-      // npcLib.talk(artist1, artist1Dialog, fifth)
+      nextBoyDialog(boyFourthDialog)
+      turnInBoy()
     },
   },
-
   {
     name: '5th',
     text: 'Yeah, otherwise our rambling would have bored you to death by now. If all of this space is new to you, <i>you’re in for a treat!</i>',
+    isEndOfDialog: true,
 
     triggeredByNext: () => {
-      // TODO play artist 2 animation
-
-      // npcLib.talk(artist2, artist2Dialog, fifth)
-      //artist2.playAnimation('Talk')
-    },
-  },
-  {
-    name: '5th',
-    text: 'A ton of places you can check out. With <b>crazy expensive</b> virtual art on display. You can’t imagine what some of these cost!',
-    isEndOfDialog: false,
-
-    triggeredByNext: () => {
-      // TODO play artist 1 animation
-      // npcLib.talk(artist1, artist1Dialog, sixth)
+      nextBoyDialog(boyFifthDialog)
+      npcLib.playAnimation(boyArtist, 'Talk')
     },
   },
   {
@@ -505,21 +442,115 @@ export const artistConversation: Dialog[] = [
   },
   {
     text: 'Ask me and I’ll give you some hints.',
+    triggeredByNext: () => {
+      turnOutAritsts(nextGirlDialog(girlFirstDialog))
+    },
+
     isEndOfDialog: true,
   },
 ]
 
-export function artist1TalkToUser() {
-  npcLib.playAnimation(artist1, 'TalkToUser', false)
-  npcLib.playAnimation(artist2, 'Talk', false)
+export let boyArtistTalk: Dialog[] = [
+  {
+    name: '1st',
+    text: 'And that was <i>such a good time</i> to get into ether, so cheap back then. Imagine if you sold those for eth then?',
+    isEndOfDialog: true,
+
+    triggeredByNext: () => {
+      nextGirlDialog(girlSecondDialog)
+    },
+  },
+  {
+    name: '2nd',
+    text: ' Just imagine if you sold a painting for 200 eth, it was <b>nothing</b> back then.',
+    isEndOfDialog: true,
+
+    triggeredByNext: () => {
+      nextGirlDialog(girlThirdDialog)
+    },
+  },
+  {
+    name: '3rd',
+    text: 'But your NFTs also end up going to the wallet of some rich whale just the same.',
+    isEndOfDialog: true,
+
+    triggeredByNext: () => {
+      nextGirlDialog(girlFourthDialog)
+    },
+  },
+  {
+    name: '4th',
+    text: 'Speaking of audiences, looks like we have one here. Hey! I take it that you have an interest in art',
+    isEndOfDialog: true,
+
+    triggeredByNext: () => {
+      turnInGirl()
+      nextGirlDialog(girlFifthDialog)
+    },
+  },
+  {
+    name: '5th',
+    text: 'A ton of places you can check out. With <b>crazy expensive</b> virtual art on display. You can’t imagine what some of these cost!',
+    isEndOfDialog: true,
+
+    triggeredByNext: () => {
+      nextGirlDialog(girlSixthDialog)
+    },
+  },
+]
+
+// Helper Functions
+function teleportPlayer(xCoordinate: number, yCoordinate: number) {
+  teleportTo({
+    worldCoordinates: Vector3.create(xCoordinate * 16, 0, yCoordinate * 16)
+  })
 }
 
-export function artist2TalkToUser() {
-  npcLib.playAnimation(artist1, 'Talk', false)
-  npcLib.playAnimation(artist2, 'TalkToUser', false)
+export function girlArtistTalkToUser() {
+  npcLib.playAnimation(girlArtist, 'TalkToUser', true, 0.5)
+  npcLib.playAnimation(boyArtist, 'Talk', true, 0.5)
+}
+
+export function boyArtistTalkToUser() {
+  npcLib.playAnimation(girlArtist, 'Talk', true, 0.5)
+  npcLib.playAnimation(boyArtist, 'TalkToUser', true, 0.5)
 }
 
 function artistsTalkToEachOther() {
-  npcLib.playAnimation(artist1, 'Talk', false)
-  npcLib.playAnimation(artist2, 'Talk', false)
+  npcLib.playAnimation(boyArtist, 'Talk', false)
+  npcLib.playAnimation(girlArtist, 'Talk', false)
+}
+
+function nextBoyDialog(index: number) {
+  npcLib.talkBubble(boyArtist, boyArtistTalk, index)
+}
+
+function nextGirlDialog(index: number) {
+  npcLib.talkBubble(girlArtist, girlArtistTalk, index)
+}
+
+function turnInBoy() {
+  npcLib.playAnimation(boyArtist, 'TurnIn', true, 0.57)
+  utils.timers.setTimeout(() => {
+    npcLib.playAnimation(boyArtist, 'TalkToUser')
+  }, 570)
+}
+
+function turnInGirl() {
+  npcLib.playAnimation(girlArtist, 'TurnIn', true, 0.57)
+  utils.timers.setTimeout(() => {
+    npcLib.playAnimation(girlArtist, 'TalkToUser')
+  }, 570)
+}
+
+function turnOutAritsts(callback?: void) {
+  log("DebugSession", "Start Timer")
+  npcLib.playAnimation(boyArtist, 'TurnOut', true, 0.5)
+  npcLib.playAnimation(girlArtist, 'TurnOut', true, 0.5)
+
+  utils.timers.setTimeout(() => {
+    log("DebugSession", "Timer Reached")
+    artistsTalkToEachOther()
+    if (callback) callback
+  }, 500)
 }

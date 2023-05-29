@@ -11,6 +11,16 @@ code block to be revistied here
 */
 ```
 
+## How to deploy
+
+NOTE: This is deployed by a git action
+branches are configured to auto deploy.  Merge code ready to release into release branch
+
+* testing = peer-testing
+
+This folder contains all the necessary files to launch a Decentraland scene.
+
+
 _A few screenshots of Genesis Plaza._
 
 ![screenshots](https://github.com/decentraland-scenes/Genesis-Plaza/blob/master/screenshots/genesis-plaza-final.jpg)

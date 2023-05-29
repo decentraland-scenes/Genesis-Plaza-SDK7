@@ -1,8 +1,11 @@
 import * as utils from '@dcl-sdk/utils'
 import { Animator, Entity, GltfContainer, PBAnimator, PBGltfContainer, Transform, TransformTypeWithOptionals, engine } from '@dcl/sdk/ecs'
 import { sceneMessageBus } from './serverHandler'
-import { Quaternion, Vector3 } from '@dcl/sdk/math'
+import { Color3, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { log } from '../back-ports/backPorts'
+import { barCenter, coreBuildingOffset, lobbyCenter } from '../lobby/resources/globals'
+import { ParcelCountX } from '../lobby/resources/globals'
+import { ParcelCountZ } from '../lobby/resources/globals'
 /*import * as utils from '@dcl/ecs-scene-utils'
 import { addArcades } from './arcades/arcades'
 
@@ -44,8 +47,25 @@ export class Platform  {
       ]
     })
    
-    /*
-    //TODO TAG:PORT-REIMPLEMENT-ME
+  
+
+    const triggerEntity = engine.addEntity()
+    Transform.create(triggerEntity, {})
+
+    utils.triggers.addTrigger(triggerEntity, utils.LAYER_1, utils.LAYER_1, 
+      [{type: "box",position: triggerPos.position , scale: triggerScale}],
+      ()=>{ 
+        sceneMessageBus.emit(messageBusHandle, {})
+        if (extraAction) {
+          extraAction()
+        }
+      },
+      ()=>{ 
+      },
+      Color3.Blue()
+    )
+
+ /*
     const triggerEntity = engine.addEntity()
     triggerEntity.addComponent(new Transform(triggerPos))
 
@@ -74,7 +94,9 @@ export class Platform  {
   }
 }
 
-export function placePlatforms() {
+//not exporting as these are all outside models
+/*
+function placePlatforms() {
   //ARTICHOKE ELEVATOR
 
   let artichoke_Elevator = new Platform(
@@ -228,18 +250,22 @@ export function placePlatforms() {
 
   })
   
-}
+}*/
 
 export let upstairsLoaded: boolean = false
 
 export function barPlatforms() {
-  //ARTICHOKE ELEVATOR
+  //BAR PLATFORMS
 
   let barElevatorLeft = new Platform(
-    {src:'models/core_building/Elevator_Left.glb'},
-    { rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
-    { position: Vector3.create(146, 2.5, 151) },
-    Vector3.create(4, 4, 4),
+    //{src:'models/core_building/Elevator_Left.glb'},
+    {src:'models/core_building/elevator_left_cutout.glb'},
+    { 
+      position: Vector3.create(barCenter.x,0,barCenter.z),
+      rotation: Quaternion.fromEulerDegrees(0, 180, 0)
+      ,scale: Vector3.create(1,1,1) },
+    { position: Vector3.create(147 - coreBuildingOffset.x, 2.5, 151.5 - coreBuildingOffset.z) },
+    Vector3.create(3.5, 4, 3.5),
     'Elevator_Left_Up',
     'elevatorLeft',
     () => {
@@ -248,10 +274,14 @@ export function barPlatforms() {
   )
 
   let barElevatorRight = new Platform(
-    {src:'models/core_building/Elevator_Right.glb'},
-    { rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
-    { position: Vector3.create(173, 2.5, 151) },
-    Vector3.create(4, 4, 4),
+    //{src:'models/core_building/Elevator_Right.glb'},
+    {src:'models/core_building/elevator_right_cutout.glb'},
+    { 
+      //position: Vector3.create(0 - coreBuildingOffset.x, 0, 0 - coreBuildingOffset.z),
+      position: Vector3.create(barCenter.x,0,barCenter.z), 
+      rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
+    { position: Vector3.create(173 - coreBuildingOffset.x, 2.5, 151.5- coreBuildingOffset.z) },
+    Vector3.create(3.5, 4, 3.5),
     'Elevator_Right_Up',
     'elevatorRight',
     () => {
