@@ -52,7 +52,6 @@ export function placeJukeBox() {
   GltfContainer.createOrReplace(baseJukeBox, {
     src: 'models/core_building/jukebox/Jukebox_Base.glb' 
   })
-
   Transform.createOrReplace(baseJukeBox, {
     position: Vector3.create(179 - coreBuildingOffset.x, 0, 144 - coreBuildingOffset.z), 
     rotation: Quaternion.fromEulerDegrees(0, -45, 0),
@@ -66,14 +65,14 @@ export function placeJukeBox() {
 
   Transform.createOrReplace(baseJukeBoxLights1, {
     parent: baseJukeBox
-  })
+  }) 
 
   GltfContainer.createOrReplace(baseJukeBoxLights2,{
     src:'models/core_building/jukebox/Lights_02.glb',
   })
   VisibilityComponent.createOrReplace(baseJukeBoxLights2, {visible: false})
 
-  Transform.createOrReplace(baseJukeBoxLights1, {
+  Transform.createOrReplace(baseJukeBoxLights2, {
     parent: baseJukeBox
   })
 
@@ -81,15 +80,16 @@ export function placeJukeBox() {
   let JukeboxScreen = engine.addEntity()
   JukeBoxText = engine.addEntity()
 
-  Transform.createOrReplace(JukeBoxText, {
-    parent:JukeboxScreen
-  })
-  
   Transform.createOrReplace(JukeboxScreen, {
     position: Vector3.create(0, 2.55, 0.25),
     rotation: Quaternion.create(0, 180, 0),
     parent:baseJukeBox
   })
+
+  Transform.createOrReplace(JukeBoxText, {
+    parent:JukeboxScreen
+  })
+  
 
   TextShape.createOrReplace(JukeBoxText,{
     text: 'Radio:\nRave Party',
@@ -269,7 +269,9 @@ export class JukeboxButton {
     adioSource.playing = true
   }
 }
+
 let barRadioOnTimeoutId:number|undefined = undefined
+
 function barRadioOn(station?: Radios) {
   console.log("jukebox.ts","barRadioOn","ENTRY",station)
   if (tutorialRunning) return

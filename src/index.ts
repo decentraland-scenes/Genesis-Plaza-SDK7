@@ -80,6 +80,7 @@ utils.addOneTimeTrigger(
 utils.triggers.enableDebugDraw(true)
 
 // proper bar interior
+
 addRepeatTrigger(
   Vector3.create(160 - coreBuildingOffset.x, 50, 155 - coreBuildingOffset.z),
   Vector3.create(50, 102, 50),
