@@ -1,11 +1,20 @@
 {
   "compilerOptions": {
     "allowJs": true,
-    "strict": true
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "strictNullChecks": false,
+    "noLib": false,
+    "paths": {
+      "colyseus.js/decentraland": [
+        "./node_modules/colyseus.js/dist/colyseus.d.ts"
+      ]
+    }
   },
   "include": [
     "src/**/*.ts",
-    "src/**/*.tsx"
+    "src/**/*.tsx",
+    "index.d.ts"
   ],
   "extends": "@dcl/sdk/types/tsconfig.ecs7.json"
 }
