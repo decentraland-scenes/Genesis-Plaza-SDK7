@@ -15,6 +15,7 @@ import { initBarNpcs } from './modules/bar/npcs/barNpcs'
 import { setupUi } from './ui'
 import { placeDoors } from './modules/bar/doors'
 import { getRealm,GetRealmResponse } from "~system/Runtime"
+import { addTVPanels } from './modules/bar/panels'
 
 // export all the functions required to make the scene work
 export * from '@dcl/sdk'
@@ -46,6 +47,9 @@ placeDoors()
 placeDoors()
 */
 barPlatforms()
+
+// ADD EVENT CARDS TO BAR
+addTVPanels()
 
 
 //TODO TAG:PORT-REIMPLEMENT-ME
