@@ -391,7 +391,7 @@ export let girlArtistTalk: Dialog[] = [
     text: 'Now locked up in a container where no one can see my work, where it would hopefully gain value with time or if I die in some <i>flamboyant scandalous way</i>.',
     isEndOfDialog: true,
     triggeredByNext: () => {
-      log("DebugSession","--")
+      log("DebugSession", "--")
       nextBoyDialog(boyFirstDialog)
     },
   },
@@ -502,7 +502,7 @@ export let boyArtistTalk: Dialog[] = [
 // Helper Functions
 function teleportPlayer(xCoordinate: number, yCoordinate: number) {
   teleportTo({
-    worldPosition: Vector3.create(xCoordinate * 16, 0, yCoordinate * 16)
+    worldCoordinates: Vector3.create(xCoordinate * 16, 0, yCoordinate * 16)
   })
 }
 
