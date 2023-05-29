@@ -24,8 +24,7 @@ export class MenuItem {
         this.selected = true 
     }
     deselect(_silent?:boolean){
-         this.selected = false            
-              
+         this.selected = false                   
     }
     show(){
 

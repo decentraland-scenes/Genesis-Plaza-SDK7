@@ -404,6 +404,8 @@ export class CrowdMenuItem extends MenuItem {
       if(!_silent){
         this.playAudio(sfx.menuSelectSource, sfx.menuSelectSourceVolume)
       }
+
+      trackAction(this.itemBox, "itemBox_selected")
       
       this.selected = true
       rootInfo.isHighlighted = true

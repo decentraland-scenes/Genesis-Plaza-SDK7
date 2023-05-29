@@ -181,7 +181,6 @@ export class EventMenuItem extends MenuItem {
       VisibilityComponent.getMutable(this.dateBG).visible = true
       VisibilityComponent.getMutable(this.dateMonthRoot).visible = true
       VisibilityComponent.getMutable(this.dateRoot).visible = true
-      
     }
 
     AnimatedItem.create(this.entity, {
@@ -603,6 +602,8 @@ export class EventMenuItem extends MenuItem {
       if(!_silent){
         this.playAudio(sfx.menuSelectSource, sfx.menuSelectSourceVolume)
       }
+
+      trackAction(this.itemBox, "itemBox_selected")
       
       this.selected = true
       rootInfo.isHighlighted = true
@@ -622,7 +623,6 @@ export class EventMenuItem extends MenuItem {
 
       timePanelInfo.isHighlighted = true
       timePanelInfo.done = false      
-
     }
   }
 
