@@ -5,7 +5,7 @@ import { Entity } from "@dcl/sdk/ecs"
 import { Vector3 } from '@dcl/sdk/math';
 import { boyArtist, girlArtist } from './barNpcs';
 import * as utils from '@dcl-sdk/utils'
-import { log } from "../../../back-ports/backPorts";
+import { _teleportTo, log } from "../../../back-ports/backPorts";
 
 const octopusYesDialog = 4
 const octopusEndDialog = 3
