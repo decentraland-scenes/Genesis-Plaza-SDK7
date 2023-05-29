@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@dcl-sdk/utils": "^1.1.1",
-    "dcl-npc-toolkit": "^1.1.0"
+    "dcl-npc-toolkit": "^1.1.2-20230526213833.commit-88cdfca"
   },
   "bundleDependencies": [
     "@dcl-sdk/utils"
