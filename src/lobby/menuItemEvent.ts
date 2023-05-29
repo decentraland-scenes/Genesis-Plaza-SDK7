@@ -364,8 +364,10 @@ export class EventMenuItem extends MenuItem {
 
       pointerEventsSystem.onPointerDown(this.jumpInButton,
         (e) => {
+          const url = 'https://events.decentraland.org/en/?event='
+          trackAction(this.itemBox, "button_check_event_page", url, _event.name)
           _openExternalURL(
-            'https://events.decentraland.org/en/?event=' + _event.id
+             url + _event.id
           )    
         },
         { hoverText: 'CHECK EVENT PAGE', button: InputAction.IA_POINTER }
@@ -444,8 +446,10 @@ export class EventMenuItem extends MenuItem {
 
     pointerEventsSystem.onPointerDown(this.readMoreButton,
       async (e) => {
+        const url = 'https://events.decentraland.org/en/?event='
+        trackAction(this.itemBox, "button_read_more", url, _event.name)
         _openExternalURL(
-          'https://events.decentraland.org/en/?event=' + _event.id
+          url + _event.id
         )   
       },
       { hoverText: 'READ MORE', button: InputAction.IA_POINTER }
@@ -522,8 +526,10 @@ export class EventMenuItem extends MenuItem {
 
       pointerEventsSystem.onPointerDown(this.jumpInButton,
         (e) => {
+          const url = 'https://events.decentraland.org/en/?event='
+          trackAction(this.itemBox, "button_check_event_page", url, _event.name)
           _openExternalURL(
-            'https://events.decentraland.org/en/?event=' + _event.id
+            url + _event.id
           )     
         },
         { hoverText: 'CHECK EVENT PAGE', button: InputAction.IA_POINTER }
@@ -572,7 +578,11 @@ export class EventMenuItem extends MenuItem {
     //details website button (read more)
     pointerEventsSystem.onPointerDown(this.readMoreButton,
       async (e) => {
-        _openExternalURL('https://events.decentraland.org/en/?event=' + _event.id)    
+        const url = 'https://events.decentraland.org/en/?event='
+        trackAction(this.itemBox, "button_read_more", url, _event.name)
+        _openExternalURL(
+          url + _event.id
+        )    
       },
       { hoverText: 'READ MORE', button: InputAction.IA_POINTER }
     )  
