@@ -65,7 +65,7 @@ export class PhysicsManager {
   forceMultiplier:number
   
 
-  constructor(transform:TransformType){
+  constructor(ballCount:number){
 
     this.balls = []
     this.cannonBodies = []
@@ -84,12 +84,13 @@ export class PhysicsManager {
     this.world.gravity.set(0, -9.82, 0) // m/s²
 
     const groundMaterial = new CANNON.Material('groundMaterial')
-    const groundContactMaterial = new CANNON.ContactMaterial(
+    const groundContactMaterial = new CANNON.ContactMaterial(      
       groundMaterial,
       groundMaterial,
-      { friction: 0.1, restitution: 1}
+      { friction: 0.1, restitution: 0.5}
     )
     this.world.addContactMaterial(groundContactMaterial)
+
     this.playerCollider = new CANNON.Body({
       mass: 10, // kg
       position: new CANNON.Vec3(
@@ -101,11 +102,12 @@ export class PhysicsManager {
 
 
     const translocatorPhysicsMaterial: CANNON.Material = new CANNON.Material(
-      'translocatorMaterial'
+      'translocatorMaterial',
     )   
-
+    translocatorPhysicsMaterial.friction = 0.2
+    translocatorPhysicsMaterial.restitution = 0.5
     this.playerCollider.material = translocatorPhysicsMaterial // Add bouncy material to translocator body
-    this.playerCollider.linearDamping = 0.2 // Round bodies will keep translating even with friction so you need linearDamping
+    this.playerCollider.linearDamping = 0.24 // Round bodies will keep translating even with friction so you need linearDamping
     this.playerCollider.angularDamping = 0.4 // Round bodies will keep rotating even with friction so you need angularDamping
     
     //this.world.addBody(this.playerCollider) 
@@ -120,11 +122,12 @@ export class PhysicsManager {
       new CANNON.Vec3(1, 0, 0),
       -Math.PI / 2
     ) // Reorient ground plane to be in the y-axis
-    groundBody.position.y = 0.0 // Thickness of ground base model
+    groundBody.position.y = 0.2 // Thickness of ground base model
+    groundBody.material = translocatorPhysicsMaterial
     this.world.addBody(groundBody)
     
-    for(let i=0; i< 10; i++){
-      this.addObject(Vector3.create(12+Math.random()*8,10 + Math.random()*5,12+Math.random()*8))
+    for(let i=0; i< ballCount; i++){
+      this.addObject(Vector3.create(22+Math.random()*8,4 + Math.random()*4,35+Math.random()*8))
     }
 
     // START INCREASING THE STRENGTH OF THE THROW
@@ -150,9 +153,9 @@ export class PhysicsManager {
       anchorPointId: AvatarAnchorPointType.AAPT_RIGHT_HAND,
     })
 
-    this.hoops.push(new BasketballHoop(this.world, Vector3.create(8,3,8), Quaternion.fromEulerDegrees(0,90,0)))
-    this.hoops.push(new BasketballHoop(this.world, Vector3.create(15,6,8), Quaternion.fromEulerDegrees(0,0,0)))
-    this.hoops.push(new BasketballHoop(this.world, Vector3.create(8,5,16), Quaternion.fromEulerDegrees(0,45,0)))
+    this.hoops.push(new BasketballHoop(this.world, Vector3.create(32, 6, 30.4), Quaternion.fromEulerDegrees(0,0,0)))
+    this.hoops.push(new BasketballHoop(this.world, Vector3.create(41.6, 5.2, 40), Quaternion.fromEulerDegrees(0,-90,0)))
+    this.hoops.push(new BasketballHoop(this.world, Vector3.create(22.4, 5.2, 40), Quaternion.fromEulerDegrees(0,90,0)))
 
    
     // add imported static cannon colliders

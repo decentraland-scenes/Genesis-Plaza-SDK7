@@ -55,11 +55,7 @@ addTVPanels()
 
 // ADD BASKETBALL GAME
 
-let physicsManager = new PhysicsManager({
-  position: Vector3.create(8,10,8),
-  rotation: Quaternion.Zero(),
-  scale: Vector3.create(8,0,8),
-})
+let physicsManager = new PhysicsManager(5)
 
 
 
