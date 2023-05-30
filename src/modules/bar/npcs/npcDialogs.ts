@@ -240,7 +240,7 @@ export let artistRecommendations: Dialog[] = [
     text: 'Alright, I’ll be around if you want to hear more.',
     isEndOfDialog: true,
     triggeredByNext: () => {
-      turnOutAritsts(nextGirlDialog(girlFirstDialog))
+      turnOutAritsts(() => nextGirlDialog(girlFirstDialog))
     },
   },
   {
@@ -374,7 +374,7 @@ export let artistRecommendations: Dialog[] = [
     isEndOfDialog: true,
     text: 'Hope you have fun exploring!',
     triggeredByNext: () => {
-      turnOutAritsts(nextGirlDialog(girlFirstDialog))
+      turnOutAritsts(() => {nextGirlDialog(girlFirstDialog)})
     },
   },
 ]
@@ -442,8 +442,8 @@ export let girlArtistTalk: Dialog[] = [
   },
   {
     text: 'Ask me and I’ll give you some hints.',
-    triggeredByNext: () => {
-      turnOutAritsts(nextGirlDialog(girlFirstDialog))
+    triggeredByNext: async () => {
+      turnOutAritsts(() => nextGirlDialog(girlFirstDialog))
     },
 
     isEndOfDialog: true,
@@ -525,7 +525,7 @@ function nextBoyDialog(index: number) {
   npcLib.talkBubble(boyArtist, boyArtistTalk, index)
 }
 
-function nextGirlDialog(index: number) {
+function nextGirlDialog(index: number) : void{
   npcLib.talkBubble(girlArtist, girlArtistTalk, index)
 }
 
@@ -543,7 +543,7 @@ function turnInGirl() {
   }, 570)
 }
 
-function turnOutAritsts(callback?: void) {
+function turnOutAritsts(callback?: () => void) {
   log("DebugSession", "Start Timer")
   npcLib.playAnimation(boyArtist, 'TurnOut', true, 0.5)
   npcLib.playAnimation(girlArtist, 'TurnOut', true, 0.5)
@@ -551,6 +551,6 @@ function turnOutAritsts(callback?: void) {
   utils.timers.setTimeout(() => {
     log("DebugSession", "Timer Reached")
     artistsTalkToEachOther()
-    if (callback) callback
+    callback?.()
   }, 500)
 }

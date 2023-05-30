@@ -1,26 +1,52 @@
 import * as npcLib from 'dcl-npc-toolkit'
-import { Quaternion, Vector3 } from '@dcl/sdk/math'
+import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { aritst1Model, aritst2Model, fashionistModel, navigationForwardSfx, octopusModel } from '../../../lobby/resources/resources'
-import { Entity, Transform, engine } from '@dcl/sdk/ecs'
+import { Billboard, Entity, MeshRenderer, TextShape, Transform, engine } from '@dcl/sdk/ecs'
 import { artistRecommendations, fashionistCommonDialog, fashionistEpicDialog, fashionistMythicDialog, fashionistNoneDialog, getFashionistDialog, getOcotDialog, girlArtistTalk } from './npcDialogs'
 import { rarestItem, rarityLevel } from './rarity'
 import * as utils from '@dcl-sdk/utils'
-import { coreBuildingOffset } from '../../../lobby/resources/globals'
-
+import { barCenter, coreBuildingOffset } from '../../../lobby/resources/globals'
+import { RemoteNpc, hideThinking } from '../../RemoteNpcs/remoteNpc'
+import { FollowPathData } from 'dcl-npc-toolkit/dist/types'
+import { CONFIG } from '../../../config'
+import { closeCustomUI, openCustomUI } from '../../../utils/customNpcUi/customUi'
+import { NpcAnimationNameType, REGISTRY } from '../../../registry'
+import { connectNpcToLobby } from '../../../lobby-scene/lobbyScene'
 
 const LogTag: string = 'barNpcs'
 
+const ANIM_TIME_PADD = .2
+
+const DOGE_NPC_ANIMATIONS: NpcAnimationNameType = {
+  IDLE: { name: "Idle", duration: -1 },
+  WALK: { name: "Walk", duration: -1 },
+  TALK: { name: "Talk1", duration: 5 },
+  THINKING: { name: "Thinking", duration: 5 },
+  RUN: { name: "Run", duration: -1 },
+  WAVE: { name: "Wave", duration: 4 + ANIM_TIME_PADD },
+}
+
+const npcParent: Entity = createBarParentEntity()
 export let octo: Entity
 export let fashionist: Entity
 export let boyArtist: Entity
 export let girlArtist: Entity
+export let doge: RemoteNpc
 
 export function initBarNpcs(): void {
   createOctopusNpc()
-
-  fashionist = createFashionistNpc()
-
+  createFashionistNpc()
   createArtistCouple()
+  createDogeNpc()
+}
+
+function createBarParentEntity(): Entity {
+  let result = engine.addEntity()
+  Transform.create(result, {
+    position: Vector3.create(24, 0, 40)
+  })
+  MeshRenderer.setBox(result)
+  return result
 }
 
 function createOctopusNpc() {
@@ -91,11 +117,11 @@ function createOctopusNpc() {
 
 }
 
-function createFashionistNpc(): Entity {
+function createFashionistNpc(): void {
 
   let position = Vector3.create(162.65 - coreBuildingOffset.x, 0.23, 133.15 - coreBuildingOffset.z)
 
-  let fashionist = npcLib.create(
+  fashionist = npcLib.create(
     { position: position },
     {
       type: npcLib.NPCType.CUSTOM,
@@ -138,8 +164,6 @@ function createFashionistNpc(): Entity {
       },
     }
   )
-
-  return fashionist
 }
 
 
@@ -198,6 +222,114 @@ function createGirlArtist(): Entity {
   return girl
 }
 
+function createDogeNpc(): void {
+  let parentPosition = Transform.get(npcParent).position
+  // - coreBuildingOffset.z - parentPosition.z
+  let dogePathPoints = [
+    Vector3.create(166.7 - coreBuildingOffset.x - parentPosition.x, 0.24, 163. - coreBuildingOffset.z - parentPosition.z),
+    Vector3.create(161 - coreBuildingOffset.x - parentPosition.x, 0.24, 160 - coreBuildingOffset.z - parentPosition.z),
+    Vector3.create(157.5 - coreBuildingOffset.x - parentPosition.x, 0.24, 157.4 - coreBuildingOffset.z - parentPosition.z),
+    Vector3.create(153.7 - coreBuildingOffset.x - parentPosition.x, 0.24, 156.2 - coreBuildingOffset.z - parentPosition.z),
+    Vector3.create(148.1 - coreBuildingOffset.x - parentPosition.x, 0.24, 156.8 - coreBuildingOffset.z - parentPosition.z),
+    Vector3.create(146.4 - coreBuildingOffset.x - parentPosition.x, 0.24, 156 - coreBuildingOffset.z - parentPosition.z),
+    Vector3.create(143.1 - coreBuildingOffset.x - parentPosition.x, 0.24, 153.1 - coreBuildingOffset.z - parentPosition.z),
+    Vector3.create(143 - coreBuildingOffset.x - parentPosition.x, 0.24, 152.8 - coreBuildingOffset.z - parentPosition.z),
+    Vector3.create(143.2 - coreBuildingOffset.x - parentPosition.x, 0.24, 150.7 - coreBuildingOffset.z - parentPosition.z),
+    Vector3.create(143.26 - coreBuildingOffset.x - parentPosition.x, 0.24, 147.5 - coreBuildingOffset.z - parentPosition.z),
+    Vector3.create(148.1 - coreBuildingOffset.x - parentPosition.x, 0.24, 142.3 - coreBuildingOffset.z - parentPosition.z),
+    Vector3.create(151.9 - coreBuildingOffset.x - parentPosition.x, 0.24, 142.3 - coreBuildingOffset.z - parentPosition.z),
+    Vector3.create(153.8 - coreBuildingOffset.x - parentPosition.x, 0.24, 144.9 - coreBuildingOffset.z - parentPosition.z),
+    Vector3.create(154 - coreBuildingOffset.x - parentPosition.x, 0.24, 146.9 - coreBuildingOffset.z - parentPosition.z),
+    Vector3.create(154.6 - coreBuildingOffset.x - parentPosition.x, 0.24, 149.57 - coreBuildingOffset.z - parentPosition.z),
+    Vector3.create(156.65 - coreBuildingOffset.x - parentPosition.x, 0.24, 154.7 - coreBuildingOffset.z - parentPosition.z),
+    Vector3.create(162.3 - coreBuildingOffset.x - parentPosition.x, 0.24, 156.2 - coreBuildingOffset.z - parentPosition.z),
+    Vector3.create(166.4 - coreBuildingOffset.x - parentPosition.x, 0.24, 156.1 - coreBuildingOffset.z - parentPosition.z),
+    Vector3.create(169.7 - coreBuildingOffset.x - parentPosition.x, 0.24, 156.2 - coreBuildingOffset.z - parentPosition.z),
+    Vector3.create(171.9 - coreBuildingOffset.x - parentPosition.x, 0.24, 157.8 - coreBuildingOffset.z - parentPosition.z),
+    Vector3.create(173.8 - coreBuildingOffset.x - parentPosition.x, 0.24, 158.7 - coreBuildingOffset.z - parentPosition.z),
+    Vector3.create(173.8 - coreBuildingOffset.x - parentPosition.x, 0.24, 160.1 - coreBuildingOffset.z - parentPosition.z),
+    Vector3.create(173.15 - coreBuildingOffset.x - parentPosition.x, 0.24, 161.59 - coreBuildingOffset.z - parentPosition.z),
+    Vector3.create(171.3 - coreBuildingOffset.x - parentPosition.x, 0.24, 163.22 - coreBuildingOffset.z - parentPosition.z),
+  ]
+
+  for (let index = 0; index < dogePathPoints.length; index++) {
+    const element = dogePathPoints[index];
+    createDebugEntity("Position: " + index.toString(), Vector3.add(element, Vector3.create(0, 0.5, 0)))
+  }
+
+  let dogePath: FollowPathData = {
+    path: dogePathPoints,
+    loop: true,
+    totalDuration: dogePathPoints.length * 4
+    // curve: true,
+  }
+
+  doge = new RemoteNpc(
+    { resourceName: "workspaces/genesis_city/characters/doge" },
+    {
+      transformData: {
+        parent: npcParent,
+        position: dogePathPoints[0],
+        scale: Vector3.create(2, 2, 2)
+      },
+      npcData: {
+        type: npcLib.NPCType.CUSTOM,
+        model: 'models/core_building/dogeNPC_anim4.glb',
+        onActivate: () => {
+          console.log('doge.Ai_NPC activated!')
+          connectNpcToLobby(REGISTRY.lobbyScene, doge)
+        },
+        onWalkAway: () => {
+          console.log("NPC", doge.name, 'on walked away')
+          closeCustomUI()
+          hideThinking(doge)
+          if (REGISTRY.activeNPC === doge) REGISTRY.activeNPC = undefined
+          const LOOP = false
+
+          npcLib.followPath(doge.entity, dogePath)
+          // if (doge.npcAnimations.WALK) npcLib.playAnimation(doge.entity, doge.npcAnimations.WALK.name, LOOP, doge.npcAnimations.WALK.duration)
+        },
+        portrait:
+        {
+          path: 'images/portraits/doge.png', height: 300, width: 300
+          , offsetX: -10, offsetY: 0
+          , section: { sourceHeight: 256, sourceWidth: 256 }
+        },
+        idleAnim: DOGE_NPC_ANIMATIONS.IDLE.name,
+        faceUser: true,
+        darkUI: true,
+        coolDownDuration: 3,
+        pathData: dogePath,
+        walkingAnim: DOGE_NPC_ANIMATIONS.WALK.name,
+        hoverText: 'WOW',
+        onlyETrigger: true,
+        reactDistance: 5, 
+        continueOnWalkAway: false,
+      },
+    },
+    {
+      npcAnimations: DOGE_NPC_ANIMATIONS,
+      thinking: {
+        enabled: true,
+        modelPath: 'models/core_building/loading-icon.glb',
+        offsetX: 0,
+        offsetY: 2,
+        offsetZ: 0
+      }
+      , onEndOfRemoteInteractionStream: () => {
+        openCustomUI()
+      }
+      , onEndOfInteraction: () => {
+        // const LOOP = false
+        // if (doge.npcAnimations.WALK) npcLib.playAnimation(doge.entity, doge.npcAnimations.WALK.name, LOOP, doge.npcAnimations.WALK.duration)
+        // npcLib.followPath(doge.entity, dogePath)
+      }
+    }
+  )
+  npcLib.followPath(doge.entity)
+}
+
+
 function RotateFashionist(targetPosition: Vector3) {
   let targetRotation = Quaternion.fromLookAt(
     Transform.get(fashionist).position,
@@ -234,4 +366,19 @@ function artistTalkToEachOther(force: boolean): void {
       }
       , 500)
   }
+}
+
+function createDebugEntity(text: string, position: Vector3) {
+  if (!CONFIG.PATH_DEBUG) return
+  let test = engine.addEntity()
+  Transform.create(test, {
+    parent: npcParent,
+    position: position,
+    scale: Vector3.create(.25, .25, .25)
+  })
+  TextShape.create(test, {
+    text: text,
+    textColor: Color4.Black()
+  })
+  Billboard.create(test)
 }
