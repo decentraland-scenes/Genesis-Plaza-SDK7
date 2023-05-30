@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@dcl-sdk/utils": "^1.1.1",
+    "cannon": "github:schteppe/cannon.js",
     "dcl-npc-toolkit": "^1.0.9"
   },
   "bundleDependencies": [

@@ -1,6 +1,6 @@
 import { engine, executeTask, Material, Transform } from '@dcl/sdk/ecs'
 import * as utils from '@dcl-sdk/utils'
-import { Color3, Color4, Vector3 } from '@dcl/sdk/math'
+import { Color3, Color4, Vector3, Quaternion } from '@dcl/sdk/math'
 import { addBuildings } from './modules/buildings'
 //import { placeDoors } from './modules/bar/doors'
 import { barPlatforms } from './modules/platforms'
@@ -16,6 +16,8 @@ import { setupUi } from './ui'
 import { placeDoors } from './modules/bar/doors'
 import { getRealm,GetRealmResponse } from "~system/Runtime"
 import { addTVPanels } from './modules/bar/panels'
+import { PhysicsManager } from './modules/bar/basketball/ball'
+
 
 // export all the functions required to make the scene work
 export * from '@dcl/sdk'
@@ -50,6 +52,12 @@ barPlatforms()
 
 // ADD EVENT CARDS TO BAR
 addTVPanels()
+
+// ADD BASKETBALL GAME
+
+let physicsManager = new PhysicsManager(5)
+
+
 
 
 //TODO TAG:PORT-REIMPLEMENT-ME
