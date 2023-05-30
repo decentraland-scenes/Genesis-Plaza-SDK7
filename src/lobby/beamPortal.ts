@@ -198,7 +198,15 @@ export class TeleportController {
           let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
           if(lobbyMusic) lobbyMusic.playing = false
           let beamFallSound = AudioSource.getMutable(host.beamFallSound)
+          beamFallSound.volume = 3
+          console.log("ABC" + beamFallSound.volume)
           beamFallSound.playing = true
+          utils.timers.setTimeout(
+            function(){
+              beamFallSound.volume = 0 
+              console.log("ABC" + beamFallSound.volume)
+            }, 2000)
+          
         },
         undefined,
         Color3.Red()
@@ -236,19 +244,19 @@ export class TeleportController {
         parent: engine.PlayerEntity
       })
       
-  
+      
       //beam fall sound attached to player
       this.beamFallSound = engine.addEntity()
-      AudioSource.create(this.beamFallSound, {
+      AudioSource.createOrReplace(this.beamFallSound, {
         audioClipUrl: 'sounds/beam_fall.mp3',
-        volume: 3,
-        //loop: true,
+        volume: 0,
         playing: false
       })
-      Transform.create(this.beamFallSound,{
+      Transform.createOrReplace(this.beamFallSound,{
         position: Vector3.create(0, 4, 0),
         parent: engine.PlayerEntity
       })
+
   
       //impact sound when landing
       this.impactSound = engine.addEntity()
