@@ -1,5 +1,5 @@
 import * as utils from '@dcl-sdk/utils'
-import { Vector3 } from '@dcl/sdk/math'
+import { Color3, Color4, Vector3, Quaternion } from '@dcl/sdk/math'
 import { addBuildings } from './modules/buildings'
 //import { placeDoors } from './modules/bar/doors'
 import { barPlatforms } from './modules/platforms'
@@ -21,6 +21,8 @@ import { LobbyScene, disconnectHost } from './lobby-scene/lobbyScene'
 import { Room } from 'colyseus.js'
 import { onNpcRoomConnect } from './connection/onConnect'
 import "./polyfill/delcares";
+import { PhysicsManager } from './modules/bar/basketball/ball'
+
 
 // export all the functions required to make the scene work
 export * from '@dcl/sdk'
@@ -76,6 +78,12 @@ barPlatforms()
 
 // ADD EVENT CARDS TO BAR
 addTVPanels()
+
+// ADD BASKETBALL GAME
+
+let physicsManager = new PhysicsManager(5)
+
+
 
 
 //TODO TAG:PORT-REIMPLEMENT-ME
