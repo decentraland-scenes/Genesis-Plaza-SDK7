@@ -28,9 +28,13 @@
   "dependencies": {
     "@dcl-sdk/utils": "^1.1.1",
     "cannon": "github:schteppe/cannon.js",
-    "dcl-npc-toolkit": "^1.0.9"
+    "dcl-npc-toolkit": "^1.1.2-20230530192107.commit-e2a39a5",
+    "colyseus.js": "^0.14.15-alpha.0",
+    "dcl-ui-toolkit": "^0.9.1"
   },
   "bundleDependencies": [
-    "@dcl-sdk/utils"
+    "@dcl-sdk/npc-utils",
+    "@dcl-sdk/utils",
+    "colyseus.js"
   ]
 }
