@@ -10,7 +10,7 @@ import { RemoteNpc, hideThinking } from '../../RemoteNpcs/remoteNpc'
 import { FollowPathData } from 'dcl-npc-toolkit/dist/types'
 import { CONFIG } from '../../../config'
 import { closeCustomUI, openCustomUI } from '../../../utils/customNpcUi/customUi'
-import { NpcAnimationNameType, REGISTRY } from '../../../registry'
+import { NpcAnimationNameType, REGISTRY, trtDeactivateNPC } from '../../../registry'
 import { connectNpcToLobby } from '../../../lobby-scene/lobbyScene'
 import { genericPrefinedQuestions } from '../../../utils/customNpcUi/customUIFunctionality'
 
@@ -282,13 +282,10 @@ function createDogeNpc(): void {
         },
         onWalkAway: () => {
           console.log("NPC", doge.name, 'walk away')
-          closeCustomUI()
+          closeCustomUI(false)
           hideThinking(doge)
-          if (REGISTRY.activeNPC === doge) REGISTRY.activeNPC = undefined
-          const LOOP = false
-
+          trtDeactivateNPC(doge)
           npcLib.followPath(doge.entity, dogePath)
-          // if (doge.npcAnimations.WALK) npcLib.playAnimation(doge.entity, doge.npcAnimations.WALK.name, LOOP, doge.npcAnimations.WALK.duration)
         },
         portrait:
         {
@@ -321,9 +318,6 @@ function createDogeNpc(): void {
         openCustomUI()
       }
       , onEndOfInteraction: () => {
-        // const LOOP = false
-        // if (doge.npcAnimations.WALK) npcLib.playAnimation(doge.entity, doge.npcAnimations.WALK.name, LOOP, doge.npcAnimations.WALK.duration)
-        // npcLib.followPath(doge.entity, dogePath)
       }
     }
   )

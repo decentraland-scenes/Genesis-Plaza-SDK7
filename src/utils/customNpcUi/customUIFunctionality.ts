@@ -40,7 +40,7 @@ export function sendQuestion(questionData: NpcQuestionData | string) {
     return
   }
 
-  closeCustomUI()
+  closeCustomUI(false)
 
   resetInputField()//TODO: missing implementation
 }

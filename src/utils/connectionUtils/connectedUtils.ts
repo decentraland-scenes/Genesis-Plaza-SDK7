@@ -43,7 +43,7 @@ export function sendMsgToAI(msg: serverStateSpec.ChatMessage) {
   }
   console.log(FILE_NAME, METHOD_NAME, "Message to Send", msg)
   //hide input
-  closeCustomUI()
+  closeCustomUI(false)
   //mark waiting for reply
   startThinking(REGISTRY.activeNPC, [REGISTRY.askWaitingForResponse])
   //wrap it in object

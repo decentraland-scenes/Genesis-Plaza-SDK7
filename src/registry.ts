@@ -39,6 +39,11 @@ class Registry {
   onConnectActions?: (room: Room<any>, eventName: string) => void
 }
 
+export function trtDeactivateNPC(npc: RemoteNpc) {
+  if (npc === REGISTRY.activeNPC)
+    REGISTRY.activeNPC = null
+}
+
 export function deactivateNPC() {
   REGISTRY.activeNPC = null
 }

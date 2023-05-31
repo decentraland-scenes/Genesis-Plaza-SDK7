@@ -63,7 +63,7 @@ export const customNpcUI = () => {
               height: 45
             }}
             onMouseDown={() => {
-              closeCustomUI()
+              closeCustomUI(true)
             }}
             uiBackground={{
               color: Color4.White(),
@@ -254,7 +254,7 @@ export function openCustomUI() {
   bIndex = 1
 }
 
-export function closeCustomUI() {
+export function closeCustomUI(triggerWalkAway: boolean) {
   if (isVisible === false) return
   setVisibility(false)
   if (REGISTRY.activeNPC) {

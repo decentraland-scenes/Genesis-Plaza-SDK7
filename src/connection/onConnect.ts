@@ -158,7 +158,7 @@ function onLevelConnect(room: Room<clientState.NpcGameRoomState>) {
       goodBye(REGISTRY.activeNPC)
 
       closeAllInteractions()
-      closeCustomUI()
+      closeCustomUI(true)
     }
   }
   const doYouTakeCredit: ButtonData = {
@@ -193,7 +193,7 @@ function onLevelConnect(room: Room<clientState.NpcGameRoomState>) {
     }
     const dialog = chatPart.text.createNPCDialog()
 
-    closeCustomUI()
+    closeCustomUI(false)
 
     dialog.triggeredByNext = () => {
       const NO_LOOP = true
