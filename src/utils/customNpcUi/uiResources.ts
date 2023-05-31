@@ -1,6 +1,6 @@
 export enum AtlasTheme {
-  ATLAS_PATH_LIGHT = `images/light-atlas-v3.png`,
-  ATLAS_PATH_DARK = `images/dark-atlas-v3.png`,
+  ATLAS_PATH_LIGHT = "https://decentraland.org/images/ui/light-atlas-v3.png",
+  ATLAS_PATH_DARK = "https://decentraland.org/images/ui/dark-atlas-v3.png",
 }
 
 type ImageAtlasData = {

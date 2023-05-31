@@ -14,6 +14,7 @@ let typedQuestion: string = ''
 const placeHolderText: string = 'Type your question here then hit enter...'
 
 let portraitPath: string = ''
+let selectedTheme: string = AtlasTheme.ATLAS_PATH_DARK
 
 let aIndex = 0
 let bIndex = 1
@@ -41,7 +42,7 @@ export const customNpcUI = () => {
           flexDirection: 'row'
         }}
         uiBackground={{
-          texture: { src: AtlasTheme.ATLAS_PATH_DARK },
+          texture: { src: selectedTheme },
           uvs: getImageMapping({
             ...sourcesComponentsCoordinates.backgrounds['NPCDialog']
           }),
@@ -66,7 +67,7 @@ export const customNpcUI = () => {
             }}
             uiBackground={{
               color: Color4.White(),
-              texture: { src: AtlasTheme.ATLAS_PATH_DARK },
+              texture: { src: selectedTheme },
               textureMode: 'stretch',
               uvs: getImageMapping({ ...sourcesComponentsCoordinates.icons.closeWLarge })
             }}
@@ -113,7 +114,7 @@ export const customNpcUI = () => {
             }}
             uiBackground={{
               texture: {
-                src: AtlasTheme.ATLAS_PATH_DARK
+                src: selectedTheme
               },
               color: Color4.White(),
               textureMode: 'stretch',
@@ -137,14 +138,15 @@ export const customNpcUI = () => {
           }}
         >
           <Button
-            value={selectedPredefinedQuestion?.length >= 2 ? selectedPredefinedQuestion[aIndex].displayText : ''}
+            value={selectedPredefinedQuestion?.length >= 2 ? selectedPredefinedQuestion[aIndex].displayText : 'option1'}
             uiTransform={{
+              display: selectedPredefinedQuestion?.length > 0 ? 'flex' : 'none',
               width: '32%',
               height: '85%'
             }}
             uiBackground={{
               texture: {
-                src: AtlasTheme.ATLAS_PATH_DARK
+                src: selectedTheme
               },
               color: Color4.White(),
               textureMode: 'stretch',
@@ -159,7 +161,7 @@ export const customNpcUI = () => {
             value={
               selectedPredefinedQuestion?.length >= 2 && bIndex < selectedPredefinedQuestion?.length
                 ? selectedPredefinedQuestion[bIndex].displayText
-                : ''
+                : 'option2'
             }
             uiTransform={{
               display: bIndex >= selectedPredefinedQuestion?.length ? 'none' : 'flex',
@@ -168,7 +170,7 @@ export const customNpcUI = () => {
             }}
             uiBackground={{
               texture: {
-                src: AtlasTheme.ATLAS_PATH_DARK
+                src: selectedTheme
               },
               color: Color4.White(),
               textureMode: 'stretch',
@@ -182,6 +184,7 @@ export const customNpcUI = () => {
           <Button
             value="More Options"
             uiTransform={{
+              display: selectedPredefinedQuestion?.length > 0 ? 'flex' : 'none',
               width: '32%',
               height: '85%'
             }}

@@ -94,7 +94,7 @@ export function onConnectHost(host: LobbyScene, room: Room<NpcGameRoomState>) {
 }
 
 export function disconnectHost(host: LobbyScene) {
-  const METHOD_NAME = "endBattle"
+  const METHOD_NAME = "disconnectHost/endBattle"
   console.log(FILE_NAME, METHOD_NAME, "ENTRY")
   disconnect(true)
 }

@@ -12,6 +12,7 @@ import { CONFIG } from '../../../config'
 import { closeCustomUI, openCustomUI } from '../../../utils/customNpcUi/customUi'
 import { NpcAnimationNameType, REGISTRY } from '../../../registry'
 import { connectNpcToLobby } from '../../../lobby-scene/lobbyScene'
+import { genericPrefinedQuestions } from '../../../utils/customNpcUi/customUIFunctionality'
 
 const LogTag: string = 'barNpcs'
 
@@ -280,7 +281,7 @@ function createDogeNpc(): void {
           connectNpcToLobby(REGISTRY.lobbyScene, doge)
         },
         onWalkAway: () => {
-          console.log("NPC", doge.name, 'on walked away')
+          console.log("NPC", doge.name, 'walk away')
           closeCustomUI()
           hideThinking(doge)
           if (REGISTRY.activeNPC === doge) REGISTRY.activeNPC = undefined
@@ -303,7 +304,7 @@ function createDogeNpc(): void {
         walkingAnim: DOGE_NPC_ANIMATIONS.WALK.name,
         hoverText: 'WOW',
         onlyETrigger: true,
-        reactDistance: 5, 
+        reactDistance: 5,
         continueOnWalkAway: false,
       },
     },
@@ -326,6 +327,9 @@ function createDogeNpc(): void {
       }
     }
   )
+  doge.name = "npc.doge"
+  doge.predefinedQuestions = genericPrefinedQuestions
+  REGISTRY.allNPCs.push(doge)
   npcLib.followPath(doge.entity)
 }
 

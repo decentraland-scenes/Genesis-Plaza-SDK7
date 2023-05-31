@@ -17,7 +17,7 @@ import { addTVPanels } from './modules/bar/panels'
 import { initRegistery, REGISTRY } from './registry'
 import { initConfig } from './config'
 import { initDialogs } from './modules/RemoteNpcs/waitingDialog'
-import { LobbyScene } from './lobby-scene/lobbyScene'
+import { LobbyScene, disconnectHost } from './lobby-scene/lobbyScene'
 import { Room } from 'colyseus.js'
 import { onNpcRoomConnect } from './connection/onConnect'
 import "./polyfill/delcares";
@@ -38,6 +38,15 @@ REGISTRY.onConnectActions = (room: Room<any>, eventName: string) => {
   //npcConn.onNpcRoomConnect(room)
   onNpcRoomConnect(room)
 }
+
+//docs say will fire after 1 minute
+// onIdleStateChangedObservable.add(({ isIdle }) => {
+//   log("Idle State change: ", isIdle)
+//   if (isIdle) {
+//     //prevent too many connnections for AFKers, it will auto reconnect if u interact with something again
+//     disconnectHost(REGISTRY.lobbyScene)
+//   }
+// })
 
 
 initBarNpcs()
