@@ -29,6 +29,6 @@ export function _teleportTo(parcelX:number,parcelZ:number){
   //sdk needs to prompt but this works
   //const split 
   teleportTo({
-    worldCoordinates: {x:parcelX * 16,y:parcelZ*16}
+    worldCoordinates: {x:parcelX,y:parcelZ}
   })  
 }
