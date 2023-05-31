@@ -5,6 +5,7 @@
     "strictPropertyInitialization": false,
     "strictNullChecks": false,
     "noLib": false,
+    "skipLibCheck": true,
     "paths": {
       "colyseus.js/decentraland": [
         "./node_modules/colyseus.js/dist/colyseus.d.ts"

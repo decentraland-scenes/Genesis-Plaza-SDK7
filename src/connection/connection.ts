@@ -40,7 +40,8 @@ export async function connect(roomName: string, options: any = {}) {
   //realm?.displayName;
 
   options.realm = realm?.realmInfo?.realmName;
-  options.userData = await getUserData({});
+  const userData = await getUserData({});
+  if (userData && userData.data) options.userData = userData.data
 
   //use other playFabUserInfo
   options.playFabData = {}
@@ -133,7 +134,7 @@ export async function reconnect(roomId: string, sessionId: string, options: any 
 
 export function disconnect(_consent?: boolean) {
   const METHOD_NAME: string = "disconnect"
-  console.log(FILE_NAME, METHOD_NAME, "ENTRY",_consent, GAME_STATE.gameRoom)
+  console.log(FILE_NAME, METHOD_NAME, "ENTRY", _consent, GAME_STATE.gameRoom)
   const consent = _consent === undefined || _consent
   if (GAME_STATE.gameRoom !== null && GAME_STATE.gameRoom !== undefined) {
     onDisconnect(GAME_STATE.gameRoom)
