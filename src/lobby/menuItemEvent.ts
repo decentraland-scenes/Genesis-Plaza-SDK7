@@ -53,7 +53,7 @@ export class EventMenuItem extends MenuItem {
   coords: Entity  
   timePanel: Entity
   startTime: Entity  
-
+  event: any
 
   constructor(
     _transform: TransformType,
@@ -64,6 +64,7 @@ export class EventMenuItem extends MenuItem {
     this.entity = engine.addEntity()
     Transform.create(this.entity,_transform)
    
+    this.event = _event
 
     // event card root
     this.itemBox = engine.addEntity()
@@ -141,7 +142,7 @@ export class EventMenuItem extends MenuItem {
       position: Vector3.create(0, -0.15, -0.05),
       parent: this.dateBG
     })       
-    
+
     this.dateMonthRoot = engine.addEntity()
     Transform.create(this.dateMonthRoot, {
       position: Vector3.create(0, 0.25, -0.05),
@@ -603,7 +604,9 @@ export class EventMenuItem extends MenuItem {
         this.playAudio(sfx.menuSelectSource, sfx.menuSelectSourceVolume)
       }
 
-      trackAction(this.itemBox, "itemBox_selected")
+      
+      trackAction(this.itemBox, "select_card", this.event.id, (this.event.coordinates[0] + ',' + this.event.coordinates[1]+":"+ this.event.name))
+      
       
       this.selected = true
       rootInfo.isHighlighted = true
