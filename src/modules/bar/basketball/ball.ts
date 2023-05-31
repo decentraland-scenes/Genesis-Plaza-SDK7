@@ -1,15 +1,9 @@
-//import { Sound } from './sounds'maxStrength
-//import * as ui from '@dcl/ui-scene-utils'
-//import { createFloatingText } from './floatingText'
-//import { alteredUserName, dataType } from './wsConnection'
-//import { streakCounter } from './basketballMain'
-//import * as utils from '@dcl/ecs-scene-utils'
 import * as CANNON from 'cannon/build/cannon'
 import { AvatarAnchorPointType, AvatarAttach, CameraMode, CameraType, Entity, GltfContainer, InputAction, Material, MeshCollider, MeshRenderer, PBGltfContainer, PBMaterial_PbrMaterial, PointerEventType, PointerEvents, Schemas, Texture, TextureUnion, Transform, TransformType, TransformTypeWithOptionals, VisibilityComponent, engine, inputSystem, pointerEventsSystem } from "@dcl/sdk/ecs"
 import { Vector3, Quaternion, Color3 } from "@dcl/sdk/math"
 import { addPhysicsConstraints } from './physicsConstraints'
 import * as utils from "@dcl-sdk/utils"
-//import { scoreDisplay, setStrengthBar } from '../ui'
+import { displayBasketballUI, hideBasketballUI, hideStrenghtBar, scoreDisplay, setStrengthBar } from '../../../ui'
 import { BasketballHoop } from './hoop'
 import { PhysicsWorldStatic } from './physicsWorld'
 
@@ -224,7 +218,7 @@ export class PhysicsManager {
 
     Throwable.create(ball, {
       index: index,
-      strength:0.1, 
+      strength:0.2, 
       isFired:false, 
       maxStrength:1,
       holdScale: Vector3.create(0.5, 0.5, 0.5),
@@ -301,13 +295,14 @@ export class PhysicsManager {
     //     anchorPointId: AvatarAnchorPointType.AAPT_RIGHT_HAND,
     // })
       this.carriedIndex = index
+      displayBasketballUI()
     }
   }
 
   throw(){
 
     if(this.playerHolding){
-
+      hideStrenghtBar()
       //lock the bottom of each hoop
       for ( let i=0; i< this.hoops.length; i++){
         this.hoops[i].enableLock()
@@ -340,6 +335,7 @@ export class PhysicsManager {
 
         // add this offset vector to the original drop position
         dropPos = Vector3.add(dropPos, rightDir)
+        
       }
 
 
@@ -354,11 +350,11 @@ export class PhysicsManager {
           dropPos.y, 
           dropPos.z))
       this.playerHolding = false
-      throwableInfo.strength = 0.1
+      throwableInfo.strength = 0.2
 
       //ball only triggers the score zone once it is thrown
       utils.triggers.enableTrigger(ball,true)
-      //setStrengthBar(0)
+      setStrengthBar(0.2)
     }
     
   }
@@ -382,18 +378,16 @@ export class PhysicsManager {
 
         if(throwable.strength + dt   < throwable.maxStrength ){
           Throwable.getMutable(this.balls[i]).strength += dt * 0.5
-          //setStrengthBar(throwable.strength)
+          setStrengthBar(throwable.strength)
         }
         else{
           Throwable.getMutable(this.balls[i]).strength  = throwable.maxStrength
-          //setStrengthBar(throwable.strength)
+          setStrengthBar(throwable.strength)
         }
       }
        //const transformBall = Transform.getMutable(this.balls[i])
       // const cameraDir =  Vector3.rotate(Vector3.Forward(), Transform.get(engine.CameraEntity).rotation)
-      // const playerPos = Transform.get(engine.PlayerEntity).position
-       
-      
+      // const playerPos = Transform.get(engine.PlayerEntity).position      
       
       
     }    
@@ -403,242 +397,6 @@ export class PhysicsManager {
    this.playerCollider.position.z = Transform.get(engine.PlayerEntity).position.z
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-// export class Ball {
-//   entity:Entity
-//   isFired: boolean = false
-//   //   blueGlow = new Entity()
-//   //   orangeGlow = new Entity()
-//   body: CANNON.Body
-//   holding: boolean = false
-//   otherHolding: boolean = false
-//   lastHolder: boolean = false
-//   world: CANNON.World
-//   socket: WebSocket
-//   constructor(transform: TransformType, world: CANNON.World, socket: WebSocket) {
-//     this.entity = engine.addEntity()
-
-//     Transform.create(this.entity, transform)
-//     GltfContainer.create(this.entity, idleBall)
-//     VisibilityComponent.create(this.entity, {visible:true})
-
-//     this.world = world
-//     this.socket = socket
-
-//     pointerEventsSystem.onPointerDown(this.entity,
-//         (e) => {
-//             if (this.holding || this.otherHolding) return 
-//             this.playerPickUp(Transform.get(this.entity).position)
-//         },
-//         { hoverText: 'Pick up', button: InputAction.IA_PRIMARY }
-//       )    
-
-//     this.body = new CANNON.Body({
-//       mass: 3, // kg
-//       position: new CANNON.Vec3(
-//         transform.position.x,
-//         transform.position.y,
-//         transform.position.z
-//       ), // m
-//       shape: new CANNON.Sphere(0.25), // m (Create sphere shaped body with a radius of 0.2)
-//     })
-
-//     const translocatorPhysicsMaterial: CANNON.Material = new CANNON.Material(
-//       'translocatorMaterial'
-//     )
-
-//     this.body.material = translocatorPhysicsMaterial // Add bouncy material to translocator body
-//     this.body.linearDamping = 0.4 // Round bodies will keep translating even with friction so you need linearDamping
-//     this.body.angularDamping = 0.4 // Round bodies will keep rotating even with friction so you need angularDamping
-//     world.addBody(this.body) // Add body to the world
-
-//     //this.body.addEventListener('collide', (e) => {
-//      // log('Collided with body:', e.body)
-//       // sparks
-//       // randomly play voice
-//     //})
-
-
-
-// //     this.addComponent(
-// //       new utils.TriggerComponent(
-// //         new utils.TriggerSphereShape(0.25, new Vector3(0, 0, 0)),
-// //         {
-// //           onTriggerEnter: () => {
-// //             ui.displayAnnouncement('SCORE!')
-// //           },
-// //           layer: 2,
-// //           triggeredByLayer: 1,
-// //         }
-// //       )
-// //     )
-
-//    }
-
-//   setPos(pos: Vector3, rot: Quaternion, holding?: boolean) {
-
-//     const transfromMutable = Transform.getMutable(this.entity)
-
-//     transfromMutable.position =  pos
-//     transfromMutable.rotation =  rot    
-
-//     this.body.position = new CANNON.Vec3(pos.x, pos.y, pos.z)
-//     this.body.quaternion = new CANNON.Quaternion(rot.x, rot.y, rot.z, rot.w)
-
-//     this.lastHolder = false
-//     this.holding = false
-//     if (holding) {
-//       this.otherHolding = true
-//     } else {
-//       this.otherHolding = false
-//     }
-//   }
-
-//   playerPickUp(pos: Vector3) {
-//     this.holding = true
-//     this.lastHolder = true
-//     this.otherHolding = false
-//     this.isFired = false
-//     //recallSound.getComponent(AudioSource).playOnce()
-
-    
-
-//     this.body.velocity.setZero()
-//     this.body.angularVelocity.setZero()
-
-//     Transform.getMutable(this.entity).parent = engine.PlayerEntity
-
-//     //this.setParent(Attachable.FIRST_PERSON_CAMERA) //  FIRST_PERSON_CAMERA)
-//     const transfromMutable = Transform.getMutable(this.entity)
-
-//     transfromMutable.position = Vector3.create(X_OFFSET, Y_OFFSET, Z_OFFSET)
-//     transfromMutable.rotation = Quaternion.fromEulerDegrees(0, 180, 0)
-//     this.body.position = new CANNON.Vec3(X_OFFSET, Y_OFFSET, Z_OFFSET)
-//     //this.body.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 0, 0), 0)
-
-//     if (pos.y > 0.5) {
-//      // ui.displayAnnouncement('Good catch!')
-//       //streakCounter.increase()
-//     } else {
-//       //streakCounter.set(0)
-//     }
-
-//     // TODO SEND 
-//     // this.socket.send(
-//     //   JSON.stringify({
-//     //     type: dataType.PICK,
-//     //     data: {
-//     //       user: alteredUserName,
-//     //       pos: pos,
-//     //       streak: streakCounter.read(),
-//     //       timeStamp: Date.now(),
-//     //     },
-//     //   })
-//     // )
-
-//     // if y > 0 -> Show UI "Caught!"
-
-//     // maybe if currently moving / longer distance, more score
-//   }
-//   otherPickUp(user: string, pos: Vector3, streak: number) {
-//     this.holding = false
-//     this.lastHolder = false
-//     this.otherHolding = true
-//     this.isFired = false
-
-//     this.body.velocity.setZero()
-//     this.body.angularVelocity.setZero()
-
-//     if (pos.y > 1.5) {
-//       //createFloatingText('Wow!', pos, 0.5, 2, Color3.Red())
-//     } else if (pos.y > 0.5) {
-//     //  createFloatingText('Good Catch!', pos, 0.5, 2, Color3.Red())
-//     } else {
-//      // createFloatingText('Picked frisbee up', pos, 0.5, 2)
-//     }
-//    // streakCounter.set(streak)
-
-//     // if y > 0 -> Show in-world UI "Caught!"
-//   }
-//   // playerThrow(shootDirection: Vector3, shootStrength: number) {
-//   //   if (this.isFired || !this.holding) return
-//   //   this.isFired = true
-
-   
-//   //   this.addComponentOrReplace(confusedBall)
-
-//   //   shootSound.getComponent(AudioSource).playOnce()
-//   //   this.holding = false
-
-//   //   this.switchState(BallState.Confused)
-
-//   //   //this.setGlow(true)
-//   //   this.setParent(null)
-
-//   //   this.body.position.set(
-//   //     Camera.instance.feetPosition.x + shootDirection.x,
-//   //     shootDirection.y + Camera.instance.position.y,
-//   //     Camera.instance.feetPosition.z + shootDirection.z
-//   //   )
-
-//   //   // Shoot
-//   //   this.body.applyImpulse(
-//   //     new CANNON.Vec3(
-//   //       shootDirection.x * shootStrength,
-//   //       shootDirection.y * shootStrength,
-//   //       shootDirection.z * shootStrength
-//   //     ),
-//   //     new CANNON.Vec3(
-//   //       this.body.position.x,
-//   //       this.body.position.y,
-//   //       this.body.position.z
-//   //     )
-//   //   )
-//   // }
-//   // otherThrow(
-//   //   pos: Vector3,
-//   //   rot: Quaternion,
-//   //   shootDirection: Vector3,
-//   //   shootStrength: number
-//   // ) {
-//   //   this.holding = false
-//   //   this.lastHolder = false
-//   //   this.otherHolding = false
-//   //   this.isFired = true    
-//   //   //shootSound.getComponent(AudioSource).playOnce()
-
-//   //   this.getComponent(GLTFShape).visible = true
-//   //   this.setParent(null)
-
-//   //   engine.addSystem(new shootBallSystem(this))
-
-//   //   this.getComponent(Transform).position.copyFrom(pos)
-//   //   this.getComponent(Transform).rotation.copyFrom(rot)
-
-//   //   this.body.position = new CANNON.Vec3(pos.x, pos.y, pos.z)
-//   //   this.body.quaternion = new CANNON.Quaternion(rot.x, rot.y, rot.z, rot.w)
-
-//   //   this.body.applyImpulse(
-//   //     new CANNON.Vec3(
-//   //       shootDirection.x * shootStrength,
-//   //       shootDirection.y * shootStrength,
-//   //       shootDirection.z * shootStrength
-//   //     ),
-//   //     new CANNON.Vec3(pos.x, pos.y, pos.z)
-//   //   )
-//   // }  
-// }
 
 
 
