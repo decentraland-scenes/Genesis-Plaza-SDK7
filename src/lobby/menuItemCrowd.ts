@@ -138,8 +138,8 @@ export class CrowdMenuItem extends MenuItem {
         text: 'PLAYERS:',
         fontSize: 2,
         textAlign: TextAlignMode.TAM_MIDDLE_CENTER,
-        textColor: Color4.Black(),
-        outlineColor: Color4.Black(),
+        textColor: Color4.White(),
+        outlineColor: Color4.White(),
         outlineWidth: 0.1
     }) 
     VisibilityComponent.create(this.usersTitleRoot, {visible: true})  
@@ -169,8 +169,8 @@ export class CrowdMenuItem extends MenuItem {
       height: 20,
       width: 2,
       fontSize: 2,      
-      textColor: Color4.Black(),
-      outlineColor: Color4.Black(),
+      textColor: Color4.White(),
+      outlineColor: Color4.White(),
       outlineWidth: 0.2,
       textAlign: TextAlignMode.TAM_MIDDLE_CENTER,
     })
