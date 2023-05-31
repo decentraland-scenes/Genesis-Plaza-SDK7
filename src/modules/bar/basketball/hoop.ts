@@ -2,7 +2,7 @@ import { Entity, GltfContainer, MeshRenderer, PBGltfContainer, Transform, Visibi
 import * as utils from "@dcl-sdk/utils"
 import { Color3, Vector3, Quaternion } from "@dcl/sdk/math";
 import * as CANNON from 'cannon/build/cannon'
-//import { scoreDisplay } from "../ui";
+import { scoreDisplay } from "../../../ui";
 import { ToRadian } from "./utilFunctions";
 
 
@@ -128,7 +128,7 @@ export class BasketballHoop {
         ()=>{     
           console.log("SCORE!!!!")
          this.disableLock()
-         //scoreDisplay("SCORE!")
+         scoreDisplay()
          this.startCelebration()
 
         },
