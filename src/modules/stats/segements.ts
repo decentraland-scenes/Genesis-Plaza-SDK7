@@ -37,6 +37,7 @@ export async function sendTrack(trackEvent: string,
   selection?: string,
   selectionDetails?: string) {
 
+  console.log(AnalyticsLogLabel, "sendTrack", elementType,elementId,instance,event,durationTime,selection,selectionDetails)
   const realm = await getRealm({})
 
   const worldPos = getWorldPosition(engine.PlayerEntity)
