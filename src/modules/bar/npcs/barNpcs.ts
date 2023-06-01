@@ -46,7 +46,7 @@ function createBarParentEntity(): Entity {
   Transform.create(result, {
     position: Vector3.create(24, 0, 40)
   })
-  MeshRenderer.setBox(result)
+  // MeshRenderer.setBox(result)
   return result
 }
 
