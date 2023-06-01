@@ -198,8 +198,8 @@ export function startThinking(npc: RemoteNpc, dialog: npcLib.Dialog[]): void {
   console.log("THOUGHTS", FILE_NAME, METHOD_NAME, "Entry", npc.name, dialog);
   showThinking(npc)
 
-  if (npc.npcAnimations.THINKING) npcLib.playAnimation(npc.entity, npc.npcAnimations.THINKING.name, true, npc.npcAnimations.THINKING.duration)
   npcLib.talk(npc.entity, dialog)
+  if (npc.npcAnimations.THINKING) npcLib.playAnimation(npc.entity, npc.npcAnimations.THINKING.name, true, npc.npcAnimations.THINKING.duration)
 }
 
 export function endInteraction(npc: RemoteNpc) {
