@@ -50,8 +50,6 @@ addCloudLobby()
 addBuildings()
 
 placeDoors()
-initBarNpcs()
-
 
 ///////// BAR STUFF
 
