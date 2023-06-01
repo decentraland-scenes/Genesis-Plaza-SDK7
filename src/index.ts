@@ -16,43 +16,26 @@ import { getRealm, GetRealmResponse } from "~system/Runtime"
 import { addTVPanels } from './modules/bar/panels'
 import { initRegistery, REGISTRY } from './registry'
 import { initConfig } from './config'
-import { initDialogs } from './modules/RemoteNpcs/waitingDialog'
+import { initDialogs as initWaitingDialog } from './modules/RemoteNpcs/waitingDialog'
 import { LobbyScene, disconnectHost } from './lobby-scene/lobbyScene'
 import { Room } from 'colyseus.js'
 import { onNpcRoomConnect } from './connection/onConnect'
 import "./polyfill/delcares";
 import { PhysicsManager } from './modules/bar/basketball/ball'
 import { initIdleStateChangedObservable, onIdleStateChangedObservableAdd } from './back-ports/onIdleStateChangedObservable'
+import { Transform, engine } from '@dcl/ecs'
 
 
 // export all the functions required to make the scene work
 export * from '@dcl/sdk'
+const FILE_NAME = 'game'
 
 //load scene metadata
 allowedMediaHelper.getAndSetSceneMetaData()
 
 initRegistery()
 initConfig()
-initDialogs()
 
-REGISTRY.lobbyScene = new LobbyScene()
-
-REGISTRY.onConnectActions = (room: Room<any>, eventName: string) => {
-  //npcConn.onNpcRoomConnect(room)
-  onNpcRoomConnect(room)
-}
-
-//docs say will fire after 1 minute
-// onIdleStateChangedObservable.add(({ isIdle }) => {
-//   log("Idle State change: ", isIdle)
-//   if (isIdle) {
-//     //prevent too many connnections for AFKers, it will auto reconnect if u interact with something again
-//     disconnectHost(REGISTRY.lobbyScene)
-//   }
-// })
-
-
-initBarNpcs()
 
 placeJukeBox()
 setBarMusicOn()
@@ -127,16 +110,37 @@ getRealm({}).then(
   }
 )
 
-initIdleStateChangedObservable() 
-onIdleStateChangedObservableAdd((isIdle:boolean)=>{
-  if(isIdle){ 
-    console.log("index.ts","onIdleStateChangedObservableAdd","player is idle")
-  }else{
-    console.log("index.ts","onIdleStateChangedObservableAdd","player is active")
+initIdleStateChangedObservable()
+onIdleStateChangedObservableAdd((isIdle: boolean) => {
+  if (isIdle) {
+    console.log("index.ts", "onIdleStateChangedObservableAdd", "player is idle")
+  } else {
+    console.log("index.ts", "onIdleStateChangedObservableAdd", "player is active")
   }
 })
 
-
+let barCenter = engine.addEntity()
+Transform.create(barCenter, {
+  position: Vector3.create(32, 0, 40)
+})
+utils.triggers.addTrigger(
+  barCenter,
+  utils.NO_LAYERS,
+  utils.LAYER_1,
+  [
+    {
+      type: 'sphere',
+      radius: 52
+    }
+  ],
+  () => {//onEnter
+    insideBar()
+  },
+  () => {//onExit
+    exitBar()
+  },
+  Color3.Red()
+)
 
 // proper bar interior
 addRepeatTrigger(
@@ -221,19 +225,46 @@ utils.addOneTimeTrigger(
 /*
 let trigger = engine.addEntity()
 Transform.create(trigger)
-      utils.triggers.addTrigger(trigger, utils.NO_LAYERS, utils.NO_LAYERS, 
-        [{type: "box", position: Vector3.create(6, 4.5, 6), scale:Vector3.create(6, 4.5, 6)}],
-        function(){
-        
-          
-          console.log("entered in trigger")
-          
-          
-        },
-        function(){
-          
-        },
-        Color3.Green()
-      )*/
+utils.triggers.addTrigger(trigger, utils.NO_LAYERS, utils.NO_LAYERS, 
+  [{type: "box", position: Vector3.create(6, 4.5, 6), scale:Vector3.create(6, 4.5, 6)}],
+  function(){
+  
+    
+    console.log("entered in trigger")
+    
+    
+  },
+  function(){
+    
+  },
+  Color3.Green()
+)*/
+
+
+let areNpcsAdded: boolean = false
+function insideBar() {
+  const METHOD_NAME = 'insideBar'
+  log(FILE_NAME, METHOD_NAME, "Player Enter")
+
+  if (!areNpcsAdded) {
+    //Quests
+    initWaitingDialog()
+
+    REGISTRY.lobbyScene = new LobbyScene()
+    REGISTRY.onConnectActions = (room: Room<any>, eventName: string) => {
+      //npcConn.onNpcRoomConnect(room)
+      onNpcRoomConnect(room)
+    }
+
+    initBarNpcs()
+
+    areNpcsAdded = true
+  }
+}
+
+function exitBar() {
+  const METHOD_NAME = 'exitBar'
+  log(FILE_NAME, METHOD_NAME, "Player Exit")
+}
 
 setupUi()
