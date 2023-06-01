@@ -87,6 +87,11 @@ function createOctopusNpc() {
 
         trackEnd(octo)
       },
+      portrait: {
+        path: `images/portraits/bartender.png`,
+        height: 300, width: 300,
+        offsetX: -80, offsetY: 25
+      },
     }
   )
 
@@ -183,6 +188,10 @@ function createFashionistNpc(): Entity {
 
         trackEnd(fashionist)
       },
+      portrait: {
+        path: `images/portraits/WearableConnoisseur.png`,
+        offsetX: -70, offsetY: 10
+      }
     }
   )
 
@@ -214,9 +223,7 @@ function createBoyArtist(): Entity {
       dialogSound: navigationForwardSfx,
       onlyETrigger: true,
       onActivate: () => {
-        activateArtists()
-
-        console.log(AnalyticsLogLabel, "barNpcs.ts", "boyArtist")
+        npcLib.activate(girlArtist)  		console.log(AnalyticsLogLabel, "barNpcs.ts", "boyArtist")
         trackAction(boy, "Interact", undefined)
         trackStart(boy)
       },
@@ -224,7 +231,10 @@ function createBoyArtist(): Entity {
         trackEnd(boy)
        },
       textBubble: true,
-    }
+      portrait: {
+        path: `images/portraits/ACch2.png`,
+      }
+    },
   )
 
   TrackingElement.create(boy, {
@@ -255,10 +265,13 @@ function createGirlArtist(): Entity {
         trackStart(girl)
       },
       onWalkAway: () => {
-        //artistTalkToEachOther(false)
-        trackEnd(girl)
+        artistTalkToEachOther(false) 	    trackEnd(girl)
       },
       textBubble: true,
+      portrait: {
+        path: `images/portraits/ACch2.png`,
+        offsetX: -80, offsetY: 10
+      }
     }
   )
 
@@ -338,7 +351,7 @@ function createDogeNpc(): void {
         portrait:
         {
           path: 'images/portraits/doge.png', height: 300, width: 300
-          , offsetX: -10, offsetY: 0
+          , offsetX: -100, offsetY: 0
           , section: { sourceHeight: 256, sourceWidth: 256 }
         },
         idleAnim: DOGE_NPC_ANIMATIONS.IDLE.name,

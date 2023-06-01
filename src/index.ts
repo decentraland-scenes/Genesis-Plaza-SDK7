@@ -23,6 +23,7 @@ import { LobbyScene } from './lobby-scene/lobbyScene'
 import { onNpcRoomConnect } from './connection/onConnect'
 import { addTVPanels } from './modules/bar/panels'
 import { PhysicsManager } from './modules/bar/basketball/ball'
+import { initIdleStateChangedObservable, onIdleStateChangedObservableAdd } from './back-ports/onIdleStateChangedObservable'
 
 // export all the functions required to make the scene work
 export * from '@dcl/sdk'
@@ -129,6 +130,16 @@ getRealm({}).then(
     }
   }
 )
+
+initIdleStateChangedObservable() 
+onIdleStateChangedObservableAdd((isIdle:boolean)=>{
+  if(isIdle){ 
+    console.log("index.ts","onIdleStateChangedObservableAdd","player is idle")
+  }else{
+    console.log("index.ts","onIdleStateChangedObservableAdd","player is active")
+  }
+})
+
 
 
 // proper bar interior

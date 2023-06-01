@@ -3,6 +3,7 @@ import { Color3, Vector3 } from '@dcl/sdk/math'
 import { BEAM_SCALE_AMOUNT, ParcelCountMaxY, ParcelCountX, ParcelCountZ, coreBuildingOffset, lobbyCenter } from './resources/globals'
 import { lobbyHeight } from './resources/globals'
 import { isInBar, setBarMusicOn } from '../modules/bar/jukebox'
+import { movePlayerTo } from "~system/RestrictedActions"
 //import { tutorialEnableObservable } from '../modules/tutorialHandler'
 
 import { onEnterSceneObservable, onLeaveSceneObservable} from '@dcl/sdk/observables'
@@ -107,11 +108,12 @@ export class TeleportController {
 
 
       const triggerUpOnEnter = () => {
-          const playerTransform = Transform.getMutable(engine.PlayerEntity)
+         
+        const movePlayerPosition = { x: lobbyCenter.x - coreBuildingOffset.x + 5, y: Math.min(ParcelCountMaxY-2.5,140), z: lobbyCenter.z - 10 - coreBuildingOffset.z}
 
-          const movePlayerPosition = { x: lobbyCenter.x - coreBuildingOffset.x + 5, y: Math.min(ParcelCountMaxY-2.5,140), z: lobbyCenter.z - 10 - coreBuildingOffset.z}
-          console.log(CLASSNAME,"trigger.camera.enter","triggerUpOnEnter",movePlayerPosition)
-          playerTransform.position = movePlayerPosition
+        movePlayerTo({  newRelativePosition: movePlayerPosition})
+        //const playerTransform = Transform.getMutable(engine.PlayerEntity)
+        //playerTransform.position = { x: lobbyCenter.x + 5, y: 140, z: lobbyCenter.z - 10 }
 
           /*if (!tutorialRunning) {
             let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
@@ -167,9 +169,10 @@ export class TeleportController {
       utils.triggers.addTrigger(this.triggerBoxDown, utils.NO_LAYERS, utils.LAYER_1,  
         [{type: "box", position: this.triggerBoxDownPosition, scale: this.triggerBoxDownScale}],
         (entity:Entity)=>{ 
-          console.log(CLASSNAME,"trigger.camera.enter", "triggerBoxDown","triggered by",entity,"player",engine.PlayerEntity,engine.CameraEntity)
-          const playerTransform = Transform.getMutable(engine.PlayerEntity)
-          playerTransform.position = { x: lobbyCenter.x - 5 - coreBuildingOffset.x, y: 0, z: lobbyCenter.z + 2 - coreBuildingOffset.z }
+          console.log("trigger.camera.enter", "triggerBoxDown","triggered by",entity,"player",engine.PlayerEntity,engine.CameraEntity)
+          //const playerTransform = Transform.getMutable(engine.PlayerEntity)
+          //playerTransform.position = { x: lobbyCenter.x - 5, y: 0, z: lobbyCenter.z + 2 }
+          movePlayerTo({  newRelativePosition: Vector3.create(lobbyCenter.x - coreBuildingOffset.x - 5, 0, lobbyCenter.z - coreBuildingOffset.z + 2), cameraTarget: Vector3.create(lobbyCenter.x, 2, lobbyCenter.z - 12)})
 
           let ambienceMusic = AudioSource.getMutableOrNull(ambienceBox)
           if(ambienceMusic) ambienceMusic.playing = false
