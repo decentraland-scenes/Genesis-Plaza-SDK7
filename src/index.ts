@@ -21,6 +21,7 @@ import { initConfig } from './config'
 import { initDialogs } from './modules/RemoteNpcs/waitingDialog'
 import { LobbyScene } from './lobby-scene/lobbyScene'
 import { onNpcRoomConnect } from './connection/onConnect'
+import "./polyfill/delcares";
 import { addTVPanels } from './modules/bar/panels'
 import { PhysicsManager } from './modules/bar/basketball/ball'
 import { initIdleStateChangedObservable, onIdleStateChangedObservableAdd } from './back-ports/onIdleStateChangedObservable'
