@@ -7,6 +7,7 @@ import { displayBasketballUI, hideBasketballUI, hideStrenghtBar, scoreDisplay, s
 import { BasketballHoop } from './hoop'
 import { PhysicsWorldStatic } from './physicsWorld'
 import { bounceSource, bounceVolume, pickupSource, pickupVolume, throwBallSource, throwBallVolume } from './sounds'
+import { realDistance } from './utilFunctions'
 
 export const Throwable = engine.defineComponent('throwable-id', {
     index: Schemas.Number,
@@ -69,6 +70,7 @@ export class PhysicsManager {
   forceMultiplier:number
   trailBalls:Entity[]
   trailCount:number
+  ballZoneCenter:Vector3
   
 
   constructor(ballCount:number){
@@ -85,6 +87,7 @@ export class PhysicsManager {
     this.strengthHold = false
     this.forceMultiplier = 20
     
+    this.ballZoneCenter = Vector3.create(32,0,38)
    
     this.world = new CANNON.World()
     this.world.quatNormalizeSkip = 0
@@ -238,11 +241,11 @@ export class PhysicsManager {
     cannonBody.angularDamping = 0.4 // Round bodies will keep rotating even with friction so you need angularDamping
     
     // ball collision event (bounce)
-    cannonBody.addEventListener('collide', ()=>{
-
+    cannonBody.addEventListener('collide', ()=>{    
       
+      const velocity = Vector3.length(Vector3.create(cannonBody.velocity.x, cannonBody.velocity.y, cannonBody.velocity.z ))
 
-      if(Vector3.length(Vector3.create(cannonBody.velocity.x, cannonBody.velocity.y, cannonBody.velocity.z )) > 2){
+      if(velocity > 2){
         AudioSource.createOrReplace(ball, {
           audioClipUrl: bounceSource,
           playing: true,
@@ -349,6 +352,29 @@ export class PhysicsManager {
     // })
       this.carriedIndex = index
       displayBasketballUI()
+    }
+  }
+
+  resetBall(index:number){
+    if(this.playerHolding){
+      let ball = this.balls[this.carriedIndex]
+      hideStrenghtBar()
+      hideBasketballUI()
+      Carried.deleteFrom(ball)
+      const ballTransform = Transform.getMutable(ball)
+      const throwableInfo = Throwable.getMutable(ball)
+      ballTransform.parent = engine.RootEntity
+      ballTransform.scale = throwableInfo.originalScale
+
+      this.cannonBodies[this.carriedIndex].position.set(22+ Math.random(), 5, 34 + Math.random())
+      
+      this.playerHolding = false
+      throwableInfo.strength = 0.2
+
+      //ball only triggers the score zone once it is thrown
+      utils.triggers.enableTrigger(ball,true)
+      setStrengthBar(0.2)
+
     }
   }
 
@@ -489,9 +515,15 @@ export class PhysicsManager {
       
     }    
    }
-   this.playerCollider.position.x = Transform.get(engine.PlayerEntity).position.x
-   this.playerCollider.position.y = Transform.get(engine.PlayerEntity).position.y-1
-   this.playerCollider.position.z = Transform.get(engine.PlayerEntity).position.z
+  //  this.playerCollider.position.x = Transform.get(engine.PlayerEntity).position.x
+  //  this.playerCollider.position.y = Transform.get(engine.PlayerEntity).position.y-1
+  //  this.playerCollider.position.z = Transform.get(engine.PlayerEntity).position.z
+
+  // ball cannot leave the bar area within a distance from the center beam 
+  if(realDistance( Transform.get(engine.PlayerEntity).position, this.ballZoneCenter) > 19){
+    this.resetBall(this.carriedIndex)
+  }
+
   }
 }
 
