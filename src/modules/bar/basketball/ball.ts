@@ -241,13 +241,17 @@ export class PhysicsManager {
     cannonBody.addEventListener('collide', ()=>{
 
       
-      AudioSource.createOrReplace(ball, {
-        audioClipUrl: bounceSource,
-        playing: true,
-        loop:false,
-        volume: bounceVolume
-      })
-      })
+
+      if(Vector3.length(Vector3.create(cannonBody.velocity.x, cannonBody.velocity.y, cannonBody.velocity.z )) > 2){
+        AudioSource.createOrReplace(ball, {
+          audioClipUrl: bounceSource,
+          playing: true,
+          loop:false,
+          volume: bounceVolume
+        })
+      }
+        
+    })
 
     translocatorPhysicsMaterial.restitution = 1
     this.world.addBody(cannonBody) 
