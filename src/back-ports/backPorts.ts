@@ -7,7 +7,7 @@ import { openExternalUrl, teleportTo } from "~system/RestrictedActions"
  * @param msg 
  */
 export function log(...msg: any[]) {
-  console.log(msg)
+  console.log(...msg)
 }
 
 export type TranformConstructorArgs = TransformTypeWithOptionals & {}
@@ -28,6 +28,7 @@ export async function _openExternalURL(url: string) {
 export function _teleportTo(parcelX: number, parcelZ: number) {
   //sdk needs to prompt but this works
   //const split 
+  log("_teleportTo", parcelX, parcelZ)
   teleportTo({
     worldCoordinates: { x: parcelX, y: parcelZ }
   })

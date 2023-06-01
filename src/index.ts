@@ -22,6 +22,7 @@ import { Room } from 'colyseus.js'
 import { onNpcRoomConnect } from './connection/onConnect'
 import "./polyfill/delcares";
 import { PhysicsManager } from './modules/bar/basketball/ball'
+import { initIdleStateChangedObservable, onIdleStateChangedObservableAdd } from './back-ports/onIdleStateChangedObservable'
 
 
 // export all the functions required to make the scene work
@@ -125,6 +126,16 @@ getRealm({}).then(
     }
   }
 )
+
+initIdleStateChangedObservable() 
+onIdleStateChangedObservableAdd((isIdle:boolean)=>{
+  if(isIdle){ 
+    console.log("index.ts","onIdleStateChangedObservableAdd","player is idle")
+  }else{
+    console.log("index.ts","onIdleStateChangedObservableAdd","player is active")
+  }
+})
+
 
 
 // proper bar interior
