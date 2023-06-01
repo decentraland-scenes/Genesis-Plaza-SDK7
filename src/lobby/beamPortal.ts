@@ -124,7 +124,7 @@ export class TeleportController {
           if(ambienceMusic) ambienceMusic.playing = true
           let music = AudioSource.getMutableOrNull(musicBox)
           if(music) music.playing = true
-          
+
           //enable fall sound trigger
           utils.triggers.enableTrigger(host.triggerBoxUp, true)
       }
@@ -149,7 +149,6 @@ export class TeleportController {
           triggerCounter.start(COUNT_DOWN_TIMER_AMOUNT / 1000)
           
           let portalLyftSpyralSound = AudioSource.getMutable(host.portalLiftSpiral)
-
           if (!portalLyftSpyralSound.playing) portalLyftSpyralSound.playing = true
 
           triggerUpOnEnterTimerId = utils.timers.setTimeout(triggerUpOnEnter, COUNT_DOWN_TIMER_AMOUNT)
@@ -178,10 +177,6 @@ export class TeleportController {
           //playerTransform.position = { x: lobbyCenter.x - 5, y: 0, z: lobbyCenter.z + 2 }
           movePlayerTo({  newRelativePosition: Vector3.create(lobbyCenter.x - coreBuildingOffset.x - 5, 0, lobbyCenter.z - coreBuildingOffset.z + 2), cameraTarget: Vector3.create(lobbyCenter.x, 2, lobbyCenter.z - 12)})
 
-          let ambienceMusic = AudioSource.getMutableOrNull(ambienceBox)
-          if(ambienceMusic) ambienceMusic.playing = false
-          let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
-          if(lobbyMusic) lobbyMusic.playing = false
           let impactSounds = AudioSource.getMutable(host.impactSound)
           impactSounds.playing = true
         },
