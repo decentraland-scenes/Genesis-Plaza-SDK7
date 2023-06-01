@@ -1,9 +1,10 @@
-import { Entity, GltfContainer, MeshRenderer, PBGltfContainer, Transform, VisibilityComponent, engine } from "@dcl/sdk/ecs";
+import { AudioSource, Entity, GltfContainer, MeshRenderer, PBGltfContainer, Transform, VisibilityComponent, engine } from "@dcl/sdk/ecs";
 import * as utils from "@dcl-sdk/utils"
 import { Color3, Vector3, Quaternion } from "@dcl/sdk/math";
 import * as CANNON from 'cannon/build/cannon'
 import { scoreDisplay } from "../../../ui";
 import { ToRadian } from "./utilFunctions";
+import { scoreSource, scoreVolume } from "./sounds";
 
 
 const hoopShape:PBGltfContainer =  {src:"models/basketball/basketball_hoop.glb"}
@@ -163,7 +164,14 @@ export class BasketballHoop {
     }
     startCelebration(){
       const transform = Transform.getMutable(this.sparks)
-      transform.scale = Vector3.One()      
+      transform.scale = Vector3.One()    
+
+      AudioSource.createOrReplace(this.hoopEntity, {
+        audioClipUrl: scoreSource,
+        playing: true,
+        loop:false,
+        volume: scoreVolume
+      })
       utils.tweens.startScaling(this.glowRings, Vector3.Zero(), Vector3.One(),0.5, utils.InterpolationType.EASEINSINE)
       utils.timers.setTimeout(()=>{        
         utils.tweens.stopScaling(this.glowRings)

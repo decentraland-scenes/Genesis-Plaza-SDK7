@@ -13,7 +13,7 @@
     "upgrade-sdk:next": "npm install --save-dev @dcl/sdk@next"
   },
   "devDependencies": {
-    "@dcl/sdk": "^7.1.16"
+    "@dcl/sdk": "^7.1.17"
   },
   "engines": {
     "node": ">=16.0.0",
@@ -28,8 +28,8 @@
   "dependencies": {
     "@dcl-sdk/utils": "^1.1.1",
     "cannon": "github:schteppe/cannon.js",
-    "dcl-npc-toolkit": "^1.1.2-20230530192107.commit-e2a39a5",
     "colyseus.js": "^0.14.15-alpha.0",
+    "dcl-npc-toolkit": "^1.1.2-20230530192107.commit-e2a39a5",
     "dcl-ui-toolkit": "^0.9.1"
   },
   "bundleDependencies": [
