@@ -60,6 +60,7 @@ export class Config {
 
   DEBUG_SHOW_NPC_PATH = DEBUG_FLAGS[ENV] //if npc path is lit up
   PATH_DEBUG: boolean = false
+  USE_ANY_INPUT: boolean = false
 
 
   center!: Vector3
