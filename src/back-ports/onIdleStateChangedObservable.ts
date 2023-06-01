@@ -19,9 +19,9 @@ function notifyIdleStateChanged(isIdle:boolean){
 function globalButtonSystem(dt:number){
   //fix me   IA_ANY not working
   const triggered = 
-  inputSystem.isTriggered(InputAction.IA_ANY,PointerEventType.PET_DOWN)
+    inputSystem.isTriggered(InputAction.IA_ANY,PointerEventType.PET_DOWN)
     //workaround, remove if when IA_ANY is fixed
-    inputSystem.isTriggered(InputAction.IA_FORWARD,PointerEventType.PET_DOWN) ||
+    || inputSystem.isTriggered(InputAction.IA_FORWARD,PointerEventType.PET_DOWN) ||
     inputSystem.isTriggered(InputAction.IA_BACKWARD,PointerEventType.PET_DOWN) ||
     inputSystem.isTriggered(InputAction.IA_JUMP,PointerEventType.PET_DOWN) ||
     inputSystem.isTriggered(InputAction.IA_LEFT,PointerEventType.PET_DOWN) ||
@@ -30,6 +30,7 @@ function globalButtonSystem(dt:number){
     inputSystem.isTriggered(InputAction.IA_PRIMARY,PointerEventType.PET_DOWN) ||
     inputSystem.isTriggered(InputAction.IA_POINTER,PointerEventType.PET_DOWN) ||
     inputSystem.isTriggered(InputAction.IA_WALK,PointerEventType.PET_DOWN) 
+    
   const now = Date.now()
   const delta = (now  - lastTriggered)
   if(triggered){
