@@ -23,7 +23,7 @@ AudioSource.create(ambienceBox,{
   audioClipUrl: 'sounds/lobby_ambience.mp3',
   volume: 1,
   loop: true,
-  playing: true
+  playing: true 
 })
 Transform.create(ambienceBox, {
   position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyHeight, lobbyCenter.z - coreBuildingOffset.z)
@@ -35,7 +35,7 @@ AudioSource.create(musicBox, {
   audioClipUrl: 'sounds/lobby_music.mp3',
   volume: 0.2,
   loop: true,
-  playing: false
+  playing: true
 })
 Transform.create(musicBox, {
   position: Vector3.create(0, 2, 0),
@@ -122,8 +122,8 @@ export class TeleportController {
 
           let ambienceMusic = AudioSource.getMutableOrNull(ambienceBox)
           if(ambienceMusic) ambienceMusic.playing = true
-          let music = AudioSource.getMutableOrNull(musicBox)
-          if(music) music.playing = true
+          let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
+          if(lobbyMusic) lobbyMusic.playing = true
 
           //enable fall sound trigger
           utils.triggers.enableTrigger(host.triggerBoxUp, true)
