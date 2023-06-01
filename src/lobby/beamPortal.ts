@@ -3,6 +3,7 @@ import { Color3, Vector3 } from '@dcl/sdk/math'
 import { lobbyCenter } from './resources/globals'
 import { lobbyHeight } from './resources/globals'
 import { isInBar, setBarMusicOn } from '../modules/bar/jukebox'
+import { movePlayerTo } from "~system/RestrictedActions"
 //import { tutorialEnableObservable } from '../modules/tutorialHandler'
 
 import { onEnterSceneObservable, onLeaveSceneObservable} from '@dcl/sdk/observables'
@@ -104,8 +105,10 @@ export class TeleportController {
 
 
       const triggerUpOnEnter = () => {
-        const playerTransform = Transform.getMutable(engine.PlayerEntity)
-          playerTransform.position = { x: lobbyCenter.x + 5, y: 140, z: lobbyCenter.z - 10 }
+        
+        movePlayerTo({  newRelativePosition: Vector3.create(lobbyCenter.x + 5, 140, lobbyCenter.z - 10), cameraTarget: Vector3.create(lobbyCenter.x, 80, lobbyCenter.z)})
+        //const playerTransform = Transform.getMutable(engine.PlayerEntity)
+        //playerTransform.position = { x: lobbyCenter.x + 5, y: 140, z: lobbyCenter.z - 10 }
 
           /*if (!tutorialRunning) {
             let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
@@ -163,8 +166,9 @@ export class TeleportController {
         [{type: "box", position: this.triggerBoxDownPosition, scale: this.triggerBoxDownScale}],
         (entity:Entity)=>{ 
           console.log("trigger.camera.enter", "triggerBoxDown","triggered by",entity,"player",engine.PlayerEntity,engine.CameraEntity)
-          const playerTransform = Transform.getMutable(engine.PlayerEntity)
-          playerTransform.position = { x: lobbyCenter.x - 5, y: 0, z: lobbyCenter.z + 2 }
+          //const playerTransform = Transform.getMutable(engine.PlayerEntity)
+          //playerTransform.position = { x: lobbyCenter.x - 5, y: 0, z: lobbyCenter.z + 2 }
+          movePlayerTo({  newRelativePosition: Vector3.create(lobbyCenter.x - 5, 0, lobbyCenter.z + 2), cameraTarget: Vector3.create(lobbyCenter.x, 2, lobbyCenter.z - 12)})
 
           let ambienceMusic = AudioSource.getMutableOrNull(ambienceBox)
           if(ambienceMusic) ambienceMusic.playing = false
