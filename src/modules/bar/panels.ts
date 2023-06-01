@@ -1,85 +1,104 @@
-import { Vector3 } from "@dcl/sdk/math"
-/*
-export function addPanels(
-  _tex1:Texture, 
-  _tex2:Texture, 
-  _tex3:Texture, 
-  _tex4:Texture) {
+import { InputAction, Material, MaterialTransparencyMode, MeshCollider, MeshRenderer, Transform, TransformType, engine, pointerEventsSystem } from "@dcl/ecs"
+import { Color3, Quaternion, Vector3 } from "@dcl/sdk/math"
+import { getEvents } from "../../lobby/checkApi"
+import { _teleportTo } from "../../back-ports/backPorts"
 
-  let boardMaterial1 = new Material()
-  boardMaterial1.albedoTexture = _tex1
-  boardMaterial1.roughness = 1
-  
-  let boardMaterial2 = new Material()
-  boardMaterial2.albedoTexture = _tex2
-  boardMaterial2.roughness = 1
 
-  let boardMaterial3 = new Material()
-  boardMaterial3.albedoTexture = _tex3
-  boardMaterial3.roughness = 1
+function addPanel(textureUrl:string, alphaTextureUrl:string, _transform:TransformType,_coordX:number, _coordY:number ){
 
-  let boardMaterial4 = new Material()
-  boardMaterial4.albedoTexture = _tex4
-  boardMaterial4.roughness = 1
-
-  //board 1
-  let board1 = new Entity()
-  board1.addComponent(new PlaneShape())
-  board1.addComponent(
-    new Transform({
-      position: Vector3.create(160, 4.65, 140.4),
-      rotation: Quaternion.fromEulerDegrees(180, 0, 0),
-      scale: Vector3.create(2.8, 1.55, 1.55),
-    })
+  let panel = engine.addEntity()
+  MeshRenderer.setPlane(panel)
+  MeshCollider.setPlane(panel)
+  Transform.create(panel,{
+    position: _transform.position,
+    rotation: _transform.rotation,
+    scale: Vector3.create(_transform.scale.x , _transform.scale.y, _transform.scale.z)
+  })
+  Material.setPbrMaterial(panel, {
+    texture: Material.Texture.Common({
+        src: textureUrl       
+    }),
+    alphaTexture: Material.Texture.Common({
+        src: alphaTextureUrl
+    }),
+    emissiveTexture: Material.Texture.Common({
+        src: textureUrl
+    }),
+    transparencyMode:MaterialTransparencyMode.MTM_ALPHA_TEST,
+    emissiveIntensity: 2,
+    emissiveColor: Color3.Gray(),
+    specularIntensity: 0,
+    metallic: 0,
+    roughness: 1
+  })
+  pointerEventsSystem.onPointerDown(panel,
+    (e) => {
+      _teleportTo( _coordX , _coordY)      
+    },
+    { hoverText: 'VISIT SCENE', button: InputAction.IA_POINTER }
   )
-  board1.addComponent(boardMaterial1)
-
-  engine.addEntity(board1)
-  board1.getComponent(Transform).rotate(Vector3.create(1, 0, 0), 33)
-
-  //board 2
-  let board2 = new Entity()
-  board2.addComponent(new PlaneShape())
-  board2.addComponent(
-    new Transform({
-      position: Vector3.create(157.4, 4.65, 137.8),
-      rotation: Quaternion.fromEulerDegrees(0, 90, 180),
-      scale: Vector3.create(2.8, 1.55, 1.55),
-    })
-  )
-  board2.addComponent(boardMaterial2)
-
-  engine.addEntity(board2)
-  board2.getComponent(Transform).rotate(Vector3.create(1, 0, 0), 33)
-
-  //board 3
-  let board3 = new Entity()
-  board3.addComponent(new PlaneShape())
-  board3.addComponent(
-    new Transform({
-      position: Vector3.create(160, 4.65, 135.25),
-      rotation: Quaternion.fromEulerDegrees(180, 180, 0),
-      scale: Vector3.create(2.8, 1.55, 1.55),
-    })
-  )
-  board3.addComponent(boardMaterial3)
-
-  engine.addEntity(board3)
-  board3.getComponent(Transform).rotate(Vector3.create(1, 0, 0), 33)
-
-  //board 4
-  let board4 = new Entity()
-  board4.addComponent(new PlaneShape())
-  board4.addComponent(
-    new Transform({
-      position: Vector3.create(162.6, 4.65, 137.8),
-      rotation: Quaternion.fromEulerDegrees(0, 270, 180),
-      scale: Vector3.create(2.8, 1.55, 1.55),
-    })
-  )
-  board4.addComponent(boardMaterial4)
-
-  engine.addEntity(board4)
-  board4.getComponent(Transform).rotate(Vector3.create(1, 0, 0), 33)
 }
-*/
+
+export async function addTVPanels() {
+
+    let events = await getEvents(4)
+
+    if(events){
+
+      if(events.length > 0){
+        addPanel(
+          events[0].image, 
+          "images/rounded_alpha.png", 
+          {
+            position: Vector3.create(160 - 128, 4.65, 140.4 - 112),
+            rotation: Quaternion.fromEulerDegrees(-33, 180, 0),
+            scale: Vector3.create(2.8, 1.55, 1.55)
+          },
+          events[0].coordinates[0],
+          events[0].coordinates[1],
+        ) 
+      }
+       
+    if(events.length > 1){
+      addPanel(
+        events[1].image, 
+        "images/rounded_alpha.png", 
+        {
+          position: Vector3.create(157.4-128, 4.65, 137.8-112),
+          rotation: Quaternion.fromEulerDegrees(-33, 90, 0),
+          scale: Vector3.create(2.8, 1.55, 1.55),
+        },
+        events[1].coordinates[0],
+        events[1].coordinates[1],
+      )  
+    }
+
+    if(events.length > 2){  
+      addPanel(
+        events[2].image, 
+        "images/rounded_alpha.png", 
+        {
+          position: Vector3.create(160 -128, 4.65, 135.25 - 112),
+          rotation: Quaternion.fromEulerDegrees(-33, 0, 0),
+          scale: Vector3.create(2.8, 1.55, 1.55),
+        },
+        events[2].coordinates[0],
+        events[2].coordinates[1],
+      )  
+    }
+
+    if(events.length > 3){
+      addPanel(
+        events[3].image, 
+        "images/rounded_alpha.png", 
+        {
+          position: Vector3.create(162.6 - 128, 4.65, 137.8 - 112),
+          rotation: Quaternion.fromEulerDegrees(-33, 270, 0),
+          scale: Vector3.create(2.8, 1.55, 1.55),
+        },
+        events[3].coordinates[0],
+        events[3].coordinates[1],
+      )  
+    }
+    }  
+  }

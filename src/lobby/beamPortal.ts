@@ -1,6 +1,6 @@
 import { Animator, AudioSource, AudioStream, Entity, GltfContainer, InputAction, Material, MeshRenderer, PBAudioStream, TextShape, Transform, VisibilityComponent, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
 import { Color3, Vector3 } from '@dcl/sdk/math'
-import { lobbyCenter } from './resources/globals'
+import { BEAM_SCALE_AMOUNT, ParcelCountMaxY, ParcelCountX, ParcelCountZ, coreBuildingOffset, lobbyCenter } from './resources/globals'
 import { lobbyHeight } from './resources/globals'
 import { isInBar, setBarMusicOn } from '../modules/bar/jukebox'
 import { movePlayerTo } from "~system/RestrictedActions"
@@ -13,6 +13,7 @@ import * as utils from '@dcl-sdk/utils'
 import { showTeleportUI } from '../ui'
 import { TimerId } from '@dcl-sdk/utils/dist/timer'
 import { CountDownUtil } from './countDown'
+import { beamShape } from './resources/resources'
 
 export const triggerCounter = new CountDownUtil()
 
@@ -25,7 +26,7 @@ AudioSource.create(ambienceBox,{
   playing: true
 })
 Transform.create(ambienceBox, {
-  position: Vector3.create(lobbyCenter.x, lobbyHeight, lobbyCenter.z)
+  position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyHeight, lobbyCenter.z - coreBuildingOffset.z)
 })
 
 // LOBBY MUSIC
@@ -74,14 +75,16 @@ export let tutorialRunning: boolean = false
 
 
 // BEAM MESH
-const beam = engine.addEntity()
-Transform.create(beam,{
-    position: Vector3.create(lobbyCenter.x, lobbyCenter.y, lobbyCenter.z)
-})
-GltfContainer.createOrReplace(beam, {
-    src: "models/lobby/beam.glb"
-})
 
+const beanOffsetZ = 1.8
+const  beam = engine.addEntity()
+Transform.create(beam,{
+    position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y, lobbyCenter.z - coreBuildingOffset.z-beanOffsetZ),
+    scale: Vector3.create(1,1 + BEAM_SCALE_AMOUNT,1)
+})
+GltfContainer.createOrReplace(beam, beamShape)
+
+const CLASSNAME = "TeleportController"
 export class TeleportController {
     triggerBoxUp: Entity
     triggerBoxUpPosition: Vector3
@@ -126,7 +129,7 @@ export class TeleportController {
       // Trigger to handle teleporting the player up to the cloud
       this.triggerBoxUp = engine.addEntity()
 
-      this.triggerBoxUpPosition = Vector3.create(lobbyCenter.x, lobbyCenter.y, lobbyCenter.z)
+      this.triggerBoxUpPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y, lobbyCenter.z - coreBuildingOffset.z)
       this.triggerBoxUpScale = Vector3.create(6, 4.5, 6)
       Transform.create(this.triggerBoxUp, {})
       
@@ -134,9 +137,8 @@ export class TeleportController {
         [{type: "box", position: this.triggerBoxUpPosition, scale: this.triggerBoxUpScale}],
         (entity:Entity)=>{ 
         
-          console.log("trigger.camera.enter", "triggerBoxUp", Transform.getOrNull(engine.PlayerEntity),"triggered by",entity,engine.PlayerEntity,engine.CameraEntity)
+          console.log(CLASSNAME,"trigger.camera.enter", "triggerBoxUp", Transform.getOrNull(engine.PlayerEntity),"triggered by",entity,engine.PlayerEntity,engine.CameraEntity)
           showTeleportUI("flex")
-          
           
           triggerCounter.start(COUNT_DOWN_TIMER_AMOUNT / 1000)
           
@@ -159,7 +161,7 @@ export class TeleportController {
       // Trigger that handles landing offset
       this.triggerBoxDown = engine.addEntity()
       Transform.create(this.triggerBoxDown, {})
-      this.triggerBoxDownPosition = Vector3.create(lobbyCenter.x, lobbyCenter.y + 15, lobbyCenter.z)
+      this.triggerBoxDownPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y + 8, lobbyCenter.z - coreBuildingOffset.z)
       this.triggerBoxDownScale = Vector3.create(6, 6, 6)
 
       utils.triggers.addTrigger(this.triggerBoxDown, utils.NO_LAYERS, utils.LAYER_1,  
@@ -182,17 +184,20 @@ export class TeleportController {
       )
   
       // Trigger to play fall SFX
+      const triggerBoxFallCheckScale = Vector3.create((ParcelCountX)*16-4, 10, (ParcelCountZ)*16-4)
       this.triggerBoxFallCheck = engine.addEntity()
       Transform.create(this.triggerBoxFallCheck, {})
-      this.triggerBoxFallCheckPosition = Vector3.create(lobbyCenter.x, lobbyCenter.y + 95, lobbyCenter.z)
-      this.triggerBoxFallCheckScale = Vector3.create(6, 10, 6)
+      this.triggerBoxFallCheckPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y + lobbyHeight - triggerBoxFallCheckScale.y, lobbyCenter.z - coreBuildingOffset.z)
+      //this.triggerBoxFallCheckScale = Vector3.create(6, 10, 6)
+      //make wide to catch jumping/falling from cloud directlydown
+      this.triggerBoxFallCheckScale = triggerBoxFallCheckScale
 
      
       utils.triggers.addTrigger(this.triggerBoxFallCheck, utils.NO_LAYERS, utils.LAYER_1, 
         [{type: "box", position: this.triggerBoxFallCheckPosition, scale: this.triggerBoxFallCheckScale}],
         ()=>{
 
-          console.log("trigger.camera.enter", "triggerBoxFallCheck")
+          console.log(CLASSNAME,"trigger.camera.enter", "triggerBoxFallCheck")
           let ambienceMusic = AudioSource.getMutableOrNull(ambienceBox)
           if(ambienceMusic) ambienceMusic.playing = false
           let lobbyMusic = AudioSource.getMutableOrNull(musicBox)

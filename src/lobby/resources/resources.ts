@@ -18,7 +18,7 @@ export let twitterShape:PBGltfContainer =           {src:modelFolder + "icons/tw
 
 //BEAM
 export let portalSpiralShape:PBGltfContainer =      {src:modelFolder + "portal_lift_spiral.glb"}
-export let beamShape:PBGltfContainer =              {src:modelFolder + "beam.glb"}
+export let beamShape:PBGltfContainer =              {src:modelFolder + "beam_cutout.glb"}//{src:modelFolder + "beam.glb"}
 
 //MENU
 export let menuPillarsShape:PBGltfContainer =       {src:modelFolder + "menu_pillars.glb"}
@@ -31,6 +31,7 @@ export let shelfShape:PBGltfContainer =             {src:modelFolder + "shelf_cl
 export let jumpInButtonShape:PBGltfContainer =      {src:modelFolder + "jump_in_btn.glb"}
 export let detailsBGShape:PBGltfContainer =         {src:modelFolder + "details_bg.glb"}
 export let highlightFrameShape:PBGltfContainer =    {src:modelFolder + "highlight_frame.glb"}
+export let highlightFrameFullShape:PBGltfContainer ={src:modelFolder + "highlight_frame_full.glb"}
 export let highlightRaysShape:PBGltfContainer =     {src:modelFolder + "highlight_rays.glb"}
 export let readMoreBtnShape:PBGltfContainer =       {src:modelFolder + "read_more_btn.glb"}
 export let coordsPanelShape:PBGltfContainer =       {src:modelFolder + "coords_panel.glb"}
@@ -41,23 +42,35 @@ export let scrollInstructionShape:PBGltfContainer = {src:modelFolder + "scroll_i
 export let playerCounterBGShape:PBGltfContainer =   {src:modelFolder + "player_counter_bg.glb"}
 export let refreshShape:PBGltfContainer =           {src:modelFolder + "refresh_button.glb"}
 export let loadMoreShape:PBGltfContainer =          {src:modelFolder + "load_more_btn.glb"}
+export let menuArrowShape:PBGltfContainer =         {src:modelFolder + "menu_arrow.glb"}
 
 // CLOUDS
 export let cloudDissolveShape:PBGltfContainer=      {src:modelFolder + "cloud_dissolve.glb"}
 export let cloudPuffShape:PBGltfContainer=          {src:modelFolder + "cloud_puff.glb"}
 export let cloudSmallShape:PBGltfContainer=         {src:modelFolder + "clouds_small.glb"}
 export let cloudSmall2Shape:PBGltfContainer=        {src:modelFolder + "clouds_small2.glb"}
-export let cloudBigShape:PBGltfContainer=           {src:modelFolder + "clouds_big.glb"}
+export let cloudBigShape:PBGltfContainer=           {src:modelFolder + "clouds_big_cutout.glb"}//{src:modelFolder + "clouds_big.glb"}
+
 
 // PLATFORM
 export let vortex1Shape:PBGltfContainer=            {src:modelFolder + "vortex1.glb"}
 export let vortex2Shape:PBGltfContainer=            {src:modelFolder + "vortex2.glb"}
 export let divingSignShape:PBGltfContainer=         {src:modelFolder + "diving_sign.glb"}
 
+// BAR NPCs
+export const octopusModel = 'models/core_building/BobOctorossV46.glb'
+export const fashionistModel = 'models/core_building/WearableConnoisseurRotatedV08.glb'
+export const aritst1Model = 'models/core_building/ch1_crowdV5.glb'
+export const aritst2Model = 'models/core_building/ch2_crowdV5.glb'
 
-export const dateBGColor:Color4 = Color4.fromHexString("#cdcdcd")
-export const dateMonthColor:Color4 = Color4.fromHexString("#ff3333")
-export const dateDayColor:Color4 = Color4.fromHexString("#000000")
+//Audio
+export const navigationForwardSfx = `sounds/navigationForward.mp3`
+
+
+
+export const dateBGColor:Color4 = Color4.fromHexString("#cdcdcdff")
+export const dateMonthColor:Color4 = Color4.fromHexString("#ff3333ff")
+export const dateDayColor:Color4 = Color4.fromHexString("#000000ff")
 
 export let dateUIBGMaterial:PBMaterial_PbrMaterial = {
     albedoColor : dateBGColor,

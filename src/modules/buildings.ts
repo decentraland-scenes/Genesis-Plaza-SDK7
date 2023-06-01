@@ -1,6 +1,8 @@
 import { engine, executeTask, GltfContainer, InputAction, Material, pointerEventsSystem, Transform } from '@dcl/sdk/ecs'
-import { Color4, Quaternion } from '@dcl/sdk/math'
+import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { _openExternalURL, log } from '../back-ports/backPorts'
+import { barCenter, coreBuildingOffset, lobbyHeight, lobbyHeightLegacy, WELCOME_OFFSET_Y_AMOUNT } from '../lobby/resources/globals'
+
 
 export function addBuildings() {
   log("addBuildings")
@@ -8,8 +10,10 @@ export function addBuildings() {
 
   // add lobby platform + teleport beam
   let lobby = engine.addEntity()
-  GltfContainer.create(lobby,{src:'models/lobby/lobby_platform.glb'})
+  GltfContainer.create(lobby,{src:'models/lobby/lobby_platform_cutout.glb'})
   Transform.create(lobby,{
+      //position: Vector3.create(0 - coreBuildingOffset.x, lobbyHeight - lobbyHeightLegacy, 0 - coreBuildingOffset.z),
+      position: Vector3.create(barCenter.x,0-2.3,barCenter.z),
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
   
@@ -140,6 +144,7 @@ export function addBuildings() {
   engine.addEntity(Text_C)
   */
  
+  /*
   let ethLogos = engine.addEntity()
   GltfContainer.create(ethLogos,{src:'models/core_building/Eth_Details.glb'})
   Transform.create(ethLogos,{
@@ -158,33 +163,45 @@ export function addBuildings() {
   Transform.create(TheWhale_Action_Sculpture,{
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
-  
+  */
 
   //CORE BUILDING
 
   //add core_building
   let core_building = engine.addEntity()
-  GltfContainer.create(core_building,{src:'models/core_building.glb'})
+  GltfContainer.create(core_building,{src:'models/core_building_cutoutVersion.glb'})
   Transform.create(core_building,{
+      position: Vector3.create(barCenter.x,0,barCenter.z),
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
-    })
+    }) 
   
 
   //add msg_welcome
   let msg_welcome = engine.addEntity()
-  GltfContainer.create(msg_welcome,{src:'models/msg_welcome.glb'})
+  GltfContainer.create(msg_welcome,{src:'models/msg_welcome_cutout.glb'})
   Transform.create(msg_welcome,{
+      position: Vector3.create(barCenter.x,0 + WELCOME_OFFSET_Y_AMOUNT,barCenter.z),
+      rotation: Quaternion.fromEulerDegrees(0, 180, 0),
+    })
+
+     //add arrow_bar
+  let arrow_bar = engine.addEntity()
+  GltfContainer.create(arrow_bar,{src:'models/lobby/arrow_bar.glb'})
+  Transform.create(arrow_bar,{
+      position: Vector3.create(barCenter.x,0 + WELCOME_OFFSET_Y_AMOUNT,barCenter.z),
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
   
-
+  
+ /*
   //add core_art
   let core_art = engine.addEntity()
   GltfContainer.create(core_art,{src:'models/core_art.glb'})
   Transform.create(core_art,{
+      position: Vector3.create(0 - coreBuildingOffset.x, 0, 0 - coreBuildingOffset.z),
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
-  
+  */
   
   //TODO TAG:PORT-REIMPLEMENT-ME
   //TODO TAG:OUTSIDE-AREA
@@ -290,6 +307,7 @@ export function addBuildings() {
 
   //STREET MESH
 
+  /*
   //add street
   let street = engine.addEntity()
   GltfContainer.create(street,{src:'models/street.glb'})
@@ -297,9 +315,9 @@ export function addBuildings() {
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
   
+ */
 
-
-
+/*
  //add vogu_pod
  let vogu_pod = engine.addEntity()
  GltfContainer.create(vogu_pod,{src:'models/vogu_pod.glb'})
@@ -314,22 +332,23 @@ export function addBuildings() {
     },
     { hoverText: 'Visit VOGU site', button: InputAction.IA_POINTER }
   )
-
+ */
 
 }
-
+/*
 //add zepellin
 let zepellin = engine.addEntity()
 GltfContainer.create(zepellin,{src:'models/zepellin.glb'})
 Transform.create(zepellin,{
     rotation: Quaternion.fromEulerDegrees(0, 180, 0),
   })
-
+*/
 
 //add eth logos in bar
 let ethLogos = engine.addEntity()
 GltfContainer.create(ethLogos,{src:'models/core_building/Eth_Details.glb'})
 Transform.create(ethLogos,{
+    position: Vector3.create(0 - coreBuildingOffset.x, 0, 0 - coreBuildingOffset.z),
     rotation: Quaternion.fromEulerDegrees(0, 180, 0),
   })
 
@@ -337,6 +356,7 @@ Transform.create(ethLogos,{
 let ethLogos_02 = engine.addEntity()
 GltfContainer.create(ethLogos_02,{src:'models/core_building/Eth_Details_02.glb'})
 Transform.create(ethLogos_02,{
+    position: Vector3.create(0 - coreBuildingOffset.x, 0, 0 - coreBuildingOffset.z),
     rotation: Quaternion.fromEulerDegrees(0, 180, 0),
   })
 

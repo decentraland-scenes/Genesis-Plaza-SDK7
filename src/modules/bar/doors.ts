@@ -1,9 +1,10 @@
-//import * as utils from '@dcl/ecs-scene-utils'
-
+import * as utils from '@dcl-sdk/utils'
 import { sceneMessageBus } from '../serverHandler'
-import { Quaternion, Vector3 } from '@dcl/sdk/math'
+import { Color3, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { Animator, AudioSource, Entity, GltfContainer, PBGltfContainer, Transform, TransformTypeWithOptionals, engine } from '@dcl/sdk/ecs'
 import { log } from '../../back-ports/backPorts'
+import { barCenter, coreBuildingOffset } from '../../lobby/resources/globals'
+
 
 //TODO TAG:PORT-REIMPLEMENT-ME
 
@@ -67,7 +68,7 @@ export class Door  {
     this.soundClose = engine.addEntity()
     Transform.create(this.soundClose,{parent:this.entity})
     
-    AudioSource.create(this.soundOpen,{
+    AudioSource.create(this.soundClose,{
       audioClipUrl:closeUrl,
       volume:1,
       loop: false,
@@ -80,38 +81,31 @@ export class Door  {
       loop: false,
       playing: false
     })
-    /*
-    //TODO TAG:PORT-REIMPLEMENT-ME
+    
+
     if (withTrigger) {
-      const triggerEntity = new Entity()
-      triggerEntity.addComponent(new Transform(triggerPos))
-
-      let triggerBox = new utils.TriggerBoxShape(triggerScale, Vector3.Zero())
-
-      triggerEntity.addComponent(
-        new utils.TriggerComponent(
-          triggerBox, //shape
-          {
-            onCameraEnter: () => {
-              log('open door')
-              this.isPlayerIn = true
-              sceneMessageBus.emit(messageBusHandle, { open: true })
-            },
-            onCameraExit: () => {
-              log('close door')
-              this.isPlayerIn = false
-              sceneMessageBus.emit(messageBusHandle, { open: false })
-            },
-            //enableDebug: true,
-          }
-        )
+      const triggerEntity = engine.addEntity()
+      Transform.create(triggerEntity, {})
+  
+      utils.triggers.addTrigger(triggerEntity, utils.LAYER_1, utils.LAYER_1, 
+        [{type: "box",position: triggerPos.position , scale: triggerScale}],
+        ()=>{ 
+            log('open door')
+            this.isPlayerIn = true
+            sceneMessageBus.emit(messageBusHandle, { open: true })
+        },
+        ()=>{ 
+            log('close door')
+            this.isPlayerIn = false
+            sceneMessageBus.emit(messageBusHandle, { open: false })
+        },
+        Color3.Blue()
       )
-      engine.addEntity(triggerEntity)
     }
-    */
+    
 
-    Animator.getClip(this.entity,this.animationOpen).playing = false
-    Animator.getClip(this.entity,this.animationClose).playing = false
+    Animator.getClip(this.entity,this.animationOpen).playing = this.isOpen
+    Animator.getClip(this.entity,this.animationClose).playing = !this.isOpen
   }
 
   public open(): void {
@@ -144,10 +138,11 @@ export class Door  {
 }
 
 export function placeDoors() {
-  let main_door1 = new Door(
-    {src:'models/core_building/Door_Entrance_L.glb'},
-    { rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
-    { position: Vector3.create(160, 2, 126) },
+  let main_door1 = new Door( 
+    {src:'models/core_building/door_entrace_front_L_cutOut.glb'},
+    { position: Vector3.create(barCenter.x, 0, barCenter.z), 
+      rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
+    { position: Vector3.create(160 - coreBuildingOffset.x, 2, 126 - coreBuildingOffset.z) },
     Vector3.create(16, 8, 8),
     'DoorLeft_Open',
     'DoorLeft_Close',
@@ -155,9 +150,10 @@ export function placeDoors() {
   )
 
   let main_door2 = new Door(
-    {src:'models/core_building/Door_Entrance_R.glb'},
-    { rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
-    { position: Vector3.create(160, 2, 126) },
+    {src:'models/core_building/door_entrace_front_R_cutOut.glb'},
+    { position: Vector3.create(barCenter.x, 0, barCenter.z),
+      rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
+    { position: Vector3.create(160 - coreBuildingOffset.x, 2, 126 - coreBuildingOffset.z) },
     Vector3.create(16, 8, 8),
     'DoorRight_Open',
     'DoorRight_Close',
@@ -176,9 +172,10 @@ export function placeDoors() {
   })
 
   let right_door1 = new Door(
-    {src:'models/core_building/Door_Entrance_Right_L.glb'},
-    { rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
-    { position: Vector3.create(186, 2, 153) },
+    {src:'models/core_building/door_entrace_right_L_cutOut.glb'},
+    { position: Vector3.create(barCenter.x, 0, barCenter.z),
+      rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
+    { position: Vector3.create(186  - coreBuildingOffset.x, 2, 153  - coreBuildingOffset.z) },
     Vector3.create(8, 8, 16),
     'EntranceRight_DoorLeft_Open',
     'EntranceRight_DoorLeft_Close',
@@ -186,9 +183,10 @@ export function placeDoors() {
   )
 
   let right_door2 = new Door(
-    {src:'models/core_building/Door_Entrance_Right_R.glb'},
-    { rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
-    { position: Vector3.create(186, 2, 153) },
+    {src:'models/core_building/door_entrace_right_R_cutOut.glb'},
+    { position: Vector3.create(barCenter.x, 0, barCenter.z),
+      rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
+    { position: Vector3.create(186  - coreBuildingOffset.x, 2, 153  - coreBuildingOffset.z) },
     Vector3.create(8, 8, 16),
     'EntranceRight_DoorRight_Open',
     'EntranceRight_DoorRight_Close',
@@ -207,9 +205,10 @@ export function placeDoors() {
   })
 
   let left_door1 = new Door(
-    {src:'models/core_building/Door_Entrance_Left_L.glb'},
-    { rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
-    { position: Vector3.create(135, 2, 153) },
+    {src:'models/core_building/door_entrace_left_L_cutOut.glb'},
+    { position: Vector3.create(barCenter.x, 0, barCenter.z),
+      rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
+    { position: Vector3.create(135  - coreBuildingOffset.x, 2, 153  - coreBuildingOffset.z) },
     Vector3.create(8, 8, 16),
     'EntranceLeft_DoorLeft_Open',
     'EntranceLeft_DoorLeft_Close',
@@ -217,9 +216,10 @@ export function placeDoors() {
   )
 
   let left_door2 = new Door(
-    {src:'models/core_building/Door_Entrance_Left_R.glb'},
-    { rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
-    { position: Vector3.create(135, 2, 153) },
+    {src:'models/core_building/door_entrace_left_R_cutOut.glb'},
+    { position: Vector3.create(barCenter.x, 0, barCenter.z),
+      rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
+    { position: Vector3.create(135  - coreBuildingOffset.x, 2, 153  - coreBuildingOffset.z) },
     Vector3.create(8, 8, 16),
     'EntranceLeft_DoorRight_Open',
     'EntranceLeft_DoorRight_Close',

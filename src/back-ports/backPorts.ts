@@ -1,15 +1,16 @@
+import { Vector3 } from "@dcl/ecs-math"
 import { TransformTypeWithOptionals } from "@dcl/sdk/ecs"
-import {openExternalUrl} from "~system/RestrictedActions"
+import { openExternalUrl, teleportTo } from "~system/RestrictedActions"
 
 /**
  * back port logging
  * @param msg 
  */
-export function log(...msg:any[]){
-  console.log(msg)
+export function log(...msg: any[]) {
+  console.log(...msg)
 }
 
-export type TranformConstructorArgs = TransformTypeWithOptionals  & {}
+export type TranformConstructorArgs = TransformTypeWithOptionals & {}
 
 //export type GLTFShape = PBGltfContainer & {}
 
@@ -19,9 +20,16 @@ export type TranformConstructorArgs = TransformTypeWithOptionals  & {}
  * not working
  * https://github.com/decentraland/sdk/issues/665
  */
-export function  _openExternalURL(url:string){
-  log("_openExternalURL IMPLEMENT ME!!!!",url)
-  log("_openExternalURL IMPLEMENT ME2!!!!")
-  log("_openExternalURL IMPLEMENT ME3!!!!")
-  openExternalUrl({url:url})
-} 
+export async function _openExternalURL(url: string) {
+  openExternalUrl({ url: url })
+}
+
+//TODO TAG:PORT-REIMPLEMENT-ME
+export function _teleportTo(parcelX: number, parcelZ: number) {
+  //sdk needs to prompt but this works
+  //const split 
+  log("_teleportTo", parcelX, parcelZ)
+  teleportTo({
+    worldCoordinates: { x: parcelX, y: parcelZ }
+  })
+}
