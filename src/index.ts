@@ -125,7 +125,7 @@ Transform.create(barCenter, {
 })
 utils.triggers.addTrigger(
   barCenter,
-  utils.LAYER_2,
+  utils.NO_LAYERS,
   utils.LAYER_1,
   [
     {
@@ -139,7 +139,7 @@ utils.triggers.addTrigger(
   () => {//onExit
     exitBar()
   },
-  Color3.Green()
+  Color3.Red()
 )
 
 // proper bar interior
