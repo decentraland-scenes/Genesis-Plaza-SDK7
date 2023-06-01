@@ -23,7 +23,7 @@ import { onNpcRoomConnect } from './connection/onConnect'
 import "./polyfill/delcares";
 import { PhysicsManager } from './modules/bar/basketball/ball'
 import { initIdleStateChangedObservable, onIdleStateChangedObservableAdd } from './back-ports/onIdleStateChangedObservable'
-import { Transform, engine } from '@dcl/ecs'
+import { Transform, engine,Entity } from '@dcl/ecs'
 
 // export all the functions required to make the scene work
 export * from '@dcl/sdk'
@@ -125,16 +125,17 @@ Transform.create(barCenter, {
   position: Vector3.create(32, 0, 40)
 })
 utils.triggers.addTrigger(
-  barCenter,
+  barCenter, 
   utils.NO_LAYERS,
   utils.LAYER_1,
-  [
+  [ 
     {
       type: 'sphere',
       radius: 52
     }
   ],
-  () => {//onEnter
+  (entity: Entity) => {//onEnter 
+    console.log("index.ts", "trigger.bar", entity)
     insideBar()
   },
   () => {//onExit
