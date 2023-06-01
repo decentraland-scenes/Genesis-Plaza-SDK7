@@ -83,6 +83,7 @@ Transform.create(beam,{
 })
 GltfContainer.createOrReplace(beam, beamShape)
 
+const CLASSNAME = "TeleportController"
 export class TeleportController {
     triggerBoxUp: Entity
     triggerBoxUpPosition: Vector3
@@ -107,7 +108,10 @@ export class TeleportController {
 
       const triggerUpOnEnter = () => {
           const playerTransform = Transform.getMutable(engine.PlayerEntity)
-          playerTransform.position = { x: lobbyCenter.x - coreBuildingOffset.x + 5, y: Math.min(ParcelCountMaxY-2.5,140), z: lobbyCenter.z - 10 - coreBuildingOffset.z}
+
+          const movePlayerPosition = { x: lobbyCenter.x - coreBuildingOffset.x + 5, y: Math.min(ParcelCountMaxY-2.5,140), z: lobbyCenter.z - 10 - coreBuildingOffset.z}
+          console.log(CLASSNAME,"trigger.camera.enter","triggerUpOnEnter",movePlayerPosition)
+          playerTransform.position = movePlayerPosition
 
           /*if (!tutorialRunning) {
             let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
@@ -133,7 +137,7 @@ export class TeleportController {
         [{type: "box", position: this.triggerBoxUpPosition, scale: this.triggerBoxUpScale}],
         (entity:Entity)=>{ 
         
-          console.log("trigger.camera.enter", "triggerBoxUp", Transform.getOrNull(engine.PlayerEntity),"triggered by",entity,engine.PlayerEntity,engine.CameraEntity)
+          console.log(CLASSNAME,"trigger.camera.enter", "triggerBoxUp", Transform.getOrNull(engine.PlayerEntity),"triggered by",entity,engine.PlayerEntity,engine.CameraEntity)
           showTeleportUI("flex")
           
           triggerCounter.start(COUNT_DOWN_TIMER_AMOUNT / 1000)
@@ -163,7 +167,7 @@ export class TeleportController {
       utils.triggers.addTrigger(this.triggerBoxDown, utils.NO_LAYERS, utils.LAYER_1,  
         [{type: "box", position: this.triggerBoxDownPosition, scale: this.triggerBoxDownScale}],
         (entity:Entity)=>{ 
-          console.log("trigger.camera.enter", "triggerBoxDown","triggered by",entity,"player",engine.PlayerEntity,engine.CameraEntity)
+          console.log(CLASSNAME,"trigger.camera.enter", "triggerBoxDown","triggered by",entity,"player",engine.PlayerEntity,engine.CameraEntity)
           const playerTransform = Transform.getMutable(engine.PlayerEntity)
           playerTransform.position = { x: lobbyCenter.x - 5 - coreBuildingOffset.x, y: 0, z: lobbyCenter.z + 2 - coreBuildingOffset.z }
 
@@ -192,7 +196,7 @@ export class TeleportController {
         [{type: "box", position: this.triggerBoxFallCheckPosition, scale: this.triggerBoxFallCheckScale}],
         ()=>{
 
-          console.log("trigger.camera.enter", "triggerBoxFallCheck")
+          console.log(CLASSNAME,"trigger.camera.enter", "triggerBoxFallCheck")
           let ambienceMusic = AudioSource.getMutableOrNull(ambienceBox)
           if(ambienceMusic) ambienceMusic.playing = false
           let lobbyMusic = AudioSource.getMutableOrNull(musicBox)

@@ -1,11 +1,10 @@
-import { engine, executeTask, Material, Transform } from '@dcl/sdk/ecs'
 import * as utils from '@dcl-sdk/utils'
-import {  Vector3 } from '@dcl/sdk/math'
+import { Color3, Color4, Vector3, Quaternion } from '@dcl/sdk/math'
 import { addBuildings } from './modules/buildings'
 //import { placeDoors } from './modules/bar/doors'
 import { barPlatforms } from './modules/platforms'
 import { addCloudLobby } from './lobby/cloudLobby'
-import * as allowedMediaHelper  from './utils/allowedMediaHelper'
+import * as allowedMediaHelper from './utils/allowedMediaHelper'
 import { lowerVolume, outOfBar, placeJukeBox, setBarMusicOff, setBarMusicOn } from './modules/bar/jukebox'
 import { addRepeatTrigger } from './modules/Utils'
 import { log } from './back-ports/backPorts'
@@ -22,6 +21,27 @@ export * from '@dcl/sdk'
 
 //load scene metadata
 allowedMediaHelper.getAndSetSceneMetaData()
+
+initRegistery()
+initConfig()
+initDialogs()
+
+REGISTRY.lobbyScene = new LobbyScene()
+
+REGISTRY.onConnectActions = (room: Room<any>, eventName: string) => {
+  //npcConn.onNpcRoomConnect(room)
+  onNpcRoomConnect(room)
+}
+
+//docs say will fire after 1 minute
+// onIdleStateChangedObservable.add(({ isIdle }) => {
+//   log("Idle State change: ", isIdle)
+//   if (isIdle) {
+//     //prevent too many connnections for AFKers, it will auto reconnect if u interact with something again
+//     disconnectHost(REGISTRY.lobbyScene)
+//   }
+// })
+
 
 initBarNpcs()
 
@@ -51,6 +71,15 @@ initBarNpcs()
 placeDoors()
 */
 barPlatforms()
+
+// ADD EVENT CARDS TO BAR
+addTVPanels()
+
+// ADD BASKETBALL GAME
+
+let physicsManager = new PhysicsManager(5)
+
+
 
 
 //TODO TAG:PORT-REIMPLEMENT-ME
@@ -83,12 +112,12 @@ utils.addOneTimeTrigger(
 )
 */
 getRealm({}).then(
-  (value:GetRealmResponse) => {
-    if(value.realmInfo?.isPreview){
-      console.log("index.ts","utils.triggers.enableDebugDraw","getRealm is preview, activating debug draw")
+  (value: GetRealmResponse) => {
+    if (value.realmInfo?.isPreview) {
+      console.log("index.ts", "utils.triggers.enableDebugDraw", "getRealm is preview, activating debug draw")
       utils.triggers.enableDebugDraw(true)
-    }else{
-      console.log("index.ts","utils.triggers.enableDebugDraw","getRealm is NOT preview, NO debug draw")
+    } else {
+      console.log("index.ts", "utils.triggers.enableDebugDraw", "getRealm is NOT preview, NO debug draw")
     }
   }
 )
