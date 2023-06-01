@@ -108,8 +108,10 @@ export class TeleportController {
 
 
       const triggerUpOnEnter = () => {
-        
-        movePlayerTo({  newRelativePosition: Vector3.create(lobbyCenter.x + 5, 140, lobbyCenter.z - 10), cameraTarget: Vector3.create(lobbyCenter.x, 80, lobbyCenter.z)})
+         
+        const movePlayerPosition = { x: lobbyCenter.x - coreBuildingOffset.x + 5, y: Math.min(ParcelCountMaxY-2.5,140), z: lobbyCenter.z - 10 - coreBuildingOffset.z}
+
+        movePlayerTo({  newRelativePosition: movePlayerPosition})
         //const playerTransform = Transform.getMutable(engine.PlayerEntity)
         //playerTransform.position = { x: lobbyCenter.x + 5, y: 140, z: lobbyCenter.z - 10 }
 
