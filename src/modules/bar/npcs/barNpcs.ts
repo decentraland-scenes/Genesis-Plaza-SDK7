@@ -223,7 +223,8 @@ function createBoyArtist(): Entity {
       dialogSound: navigationForwardSfx,
       onlyETrigger: true,
       onActivate: () => {
-        npcLib.activate(girlArtist)  		console.log(AnalyticsLogLabel, "barNpcs.ts", "boyArtist")
+        npcLib.activate(girlArtist)		
+        console.log(AnalyticsLogLabel, "barNpcs.ts", "boyArtist")
         trackAction(boy, "Interact", undefined)
         trackStart(boy)
       },
@@ -265,7 +266,8 @@ function createGirlArtist(): Entity {
         trackStart(girl)
       },
       onWalkAway: () => {
-        artistTalkToEachOther(false) 	    trackEnd(girl)
+        artistTalkToEachOther(false)	    
+        trackEnd(girl)
       },
       textBubble: true,
       portrait: {
