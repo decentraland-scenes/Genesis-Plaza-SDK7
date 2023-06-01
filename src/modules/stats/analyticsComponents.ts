@@ -23,11 +23,11 @@ export const TrackingElement = engine.defineComponent(
 export function trackStart(entity: Entity, inTrackingKey?: string, event?: string) {
   const trackingElement = TrackingElement.getMutableOrNull(entity)
   if (trackingElement === null) {
-    console.log(AnalyticsLogLabel, "Tracking Element can't be Null")
+    console.log(AnalyticsLogLabel, inTrackingKey, "Tracking Element can't be Null")
     return
   }
   if (trackingElement.isStarted) {
-    console.log(AnalyticsLogLabel, "Event Already Started")
+    console.log(AnalyticsLogLabel, inTrackingKey, "Event Already Started", trackingElement.elementId, trackingElement.elementType)
     return
   }
   trackingElement.isStarted = true
@@ -45,10 +45,10 @@ export function trackStart(entity: Entity, inTrackingKey?: string, event?: strin
   )
 }
 
-export function trackAction(entity: Entity, eventKey: string, selection: string,selectionDesc?:string) {
+export function trackAction(entity: Entity, eventKey: string, selection?: string,selectionDesc?:string) {
   const trackingElement = TrackingElement.getMutableOrNull(entity)
   if (trackingElement === null || trackingElement === undefined) {
-    console.log(AnalyticsLogLabel, "Tracking Element can't be Null Or Undefined")
+    console.log(AnalyticsLogLabel, eventKey, "Tracking Element can't be Null Or Undefined")
     return
   }
   sendTrack(
@@ -66,7 +66,7 @@ export function trackAction(entity: Entity, eventKey: string, selection: string,
 export function trackEnd(entity: Entity, inTrackingKey?: string, event?: string) {
   const trackingElement = TrackingElement.getMutableOrNull(entity)
   if (trackingElement === null || trackingElement === undefined) {
-    console.log(AnalyticsLogLabel, "Tracking Element can't be Null Or Undefined")
+    console.log(AnalyticsLogLabel, inTrackingKey, "Tracking Element can't be Null Or Undefined")
     return
   }
   trackingElement.isStarted = false

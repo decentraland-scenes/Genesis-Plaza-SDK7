@@ -25,7 +25,6 @@ import { PhysicsManager } from './modules/bar/basketball/ball'
 import { initIdleStateChangedObservable, onIdleStateChangedObservableAdd } from './back-ports/onIdleStateChangedObservable'
 import { Transform, engine } from '@dcl/ecs'
 
-
 // export all the functions required to make the scene work
 export * from '@dcl/sdk'
 const FILE_NAME = 'game'
@@ -39,6 +38,8 @@ initConfig()
 
 placeJukeBox()
 setBarMusicOn()
+
+
 
 //// ADD CLOUD LOBBY
 
