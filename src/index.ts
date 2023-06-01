@@ -13,8 +13,16 @@ import { setupUi } from './ui'
 import { placeDoors } from './modules/bar/doors'
 import { lobbyCenter } from './lobby/resources/globals'
 import { TeleportController } from './lobby/beamPortal'
+import { Room } from 'colyseus.js'
 import { initBarNpcs } from './modules/bar/npcs/barNpcs'
 import { getRealm,GetRealmResponse } from "~system/Runtime"
+import { REGISTRY, initRegistery } from './registry'
+import { initConfig } from './config'
+import { initDialogs } from './modules/RemoteNpcs/waitingDialog'
+import { LobbyScene } from './lobby-scene/lobbyScene'
+import { onNpcRoomConnect } from './connection/onConnect'
+import { addTVPanels } from './modules/bar/panels'
+import { PhysicsManager } from './modules/bar/basketball/ball'
 
 // export all the functions required to make the scene work
 export * from '@dcl/sdk'
