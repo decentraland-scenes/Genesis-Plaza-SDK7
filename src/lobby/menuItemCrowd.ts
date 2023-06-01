@@ -10,6 +10,7 @@ import { AudioSource, Entity, GltfContainer, InputAction, TextAlignMode, TextSha
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { _openExternalURL, _teleportTo } from '../back-ports/backPorts'
 import { getImageOrFallback } from '../utils/allowedMediaHelper'
+import { trackAction } from '../modules/stats/analyticsComponents'
 
  
 
@@ -33,7 +34,7 @@ export class CrowdMenuItem extends MenuItem {
   usersTitleRoot: Entity
   playerCounterBG: Entity
   userCount: number
-
+  scene: any
   
 
   constructor(
@@ -45,7 +46,8 @@ export class CrowdMenuItem extends MenuItem {
     this.entity = engine.addEntity()
     Transform.create(this.entity,_transform)
 
-   
+    this.scene = _scene
+
     // event card root
     this.itemBox = engine.addEntity()
     Transform.create(this.itemBox, {
@@ -209,6 +211,7 @@ export class CrowdMenuItem extends MenuItem {
     else{
       pointerEventsSystem.onPointerDown(this.coordsPanel,
         (e) => {
+          trackAction(this.itemBox, "button_go_there", _scene.baseCoords[0] + ',' + _scene.baseCoords[1], _scene.name)
           _teleportTo(_scene.baseCoords[0], _scene.baseCoords[1])      
         },
         { hoverText: 'GO THERE', button: InputAction.IA_POINTER }
@@ -283,7 +286,7 @@ export class CrowdMenuItem extends MenuItem {
     
       pointerEventsSystem.onPointerDown(this.jumpInButton,
         (e) => {
-  
+          trackAction(this.itemBox, "button_jump_in", _scene.baseCoords[0] + ',' + _scene.baseCoords[1], _scene.name)
           _teleportTo(_scene.baseCoords[0] , _scene.baseCoords[1])      
         },
         { hoverText: 'JUMP IN', button: InputAction.IA_POINTER }
@@ -371,6 +374,7 @@ export class CrowdMenuItem extends MenuItem {
     else{
       pointerEventsSystem.onPointerDown(this.coordsPanel,
         (e) => {
+          trackAction(this.itemBox, "button_go_there", _scene.baseCoords[0] + ',' + _scene.baseCoords[1], _scene.name)
           _teleportTo(_scene.baseCoords[0], _scene.baseCoords[1])      
         },
         { hoverText: 'GO THERE', button: InputAction.IA_POINTER }
@@ -379,17 +383,14 @@ export class CrowdMenuItem extends MenuItem {
       TextShape.getMutable(this.jumpButtonText).text = "JUMP IN"
       pointerEventsSystem.onPointerDown(this.jumpInButton,
         (e) => {
+          trackAction(this.itemBox, "button_jump_in", _scene.baseCoords[0] + ',' + _scene.baseCoords[1], _scene.name)
           _teleportTo(_scene.baseCoords[0], _scene.baseCoords[1])      
         },
         { hoverText: 'JUMP IN', button: InputAction.IA_POINTER }
       )
     }
-    
-    
-
-    
-
   }
+
 
   select(_silent:boolean) {
 
@@ -404,6 +405,8 @@ export class CrowdMenuItem extends MenuItem {
       if(!_silent){
         this.playAudio(sfx.menuSelectSource, sfx.menuSelectSourceVolume)
       }
+
+      trackAction(this.itemBox, "select_card", this.scene.baseCoords[0] + ',' + this.scene.baseCoords[1],this.scene.name)
       
       this.selected = true
       rootInfo.isHighlighted = true

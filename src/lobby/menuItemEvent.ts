@@ -10,6 +10,8 @@ import { AudioSource, Entity, GltfContainer, InputAction, TextAlignMode, TextSha
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { liveSignShape } from './resources/resources'
 import { _openExternalURL, _teleportTo } from '../back-ports/backPorts'
+import { TrackingElement, trackAction } from '../modules/stats/analyticsComponents'
+import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES } from '../modules/stats/AnalyticsConfig'
 
 let dummyLiveBadge = engine.addEntity()
 Transform.create(dummyLiveBadge, {
@@ -51,9 +53,7 @@ export class EventMenuItem extends MenuItem {
   coords: Entity  
   timePanel: Entity
   startTime: Entity  
-
-
-  
+  event: any
 
   constructor(
     _transform: TransformType,
@@ -64,8 +64,8 @@ export class EventMenuItem extends MenuItem {
     this.entity = engine.addEntity()
     Transform.create(this.entity,_transform)
    
+    this.event = _event
 
-   
     // event card root
     this.itemBox = engine.addEntity()
     Transform.create(this.itemBox, {
@@ -76,6 +76,13 @@ export class EventMenuItem extends MenuItem {
     VisibilityComponent.create(this.itemBox, {visible: true})
     Transform.getMutable(this.itemBox).parent = this.entity
     
+
+    TrackingElement.create(this.itemBox, 
+      {elementType: ANALYTICS_ELEMENTS_TYPES.interactable, 
+       elementId: ANALYTICS_ELEMENTS_IDS.menuEventSlider
+    })
+
+
     this.defaultItemScale = Vector3.create(2, 2, 2)
     this.scale = Vector3.create(1, 0.5, 1)
     this.scaleMultiplier = 1.2
@@ -135,7 +142,7 @@ export class EventMenuItem extends MenuItem {
       position: Vector3.create(0, -0.15, -0.05),
       parent: this.dateBG
     })       
-    
+
     this.dateMonthRoot = engine.addEntity()
     Transform.create(this.dateMonthRoot, {
       position: Vector3.create(0, 0.25, -0.05),
@@ -175,7 +182,6 @@ export class EventMenuItem extends MenuItem {
       VisibilityComponent.getMutable(this.dateBG).visible = true
       VisibilityComponent.getMutable(this.dateMonthRoot).visible = true
       VisibilityComponent.getMutable(this.dateRoot).visible = true
-      
     }
 
     AnimatedItem.create(this.entity, {
@@ -285,6 +291,7 @@ export class EventMenuItem extends MenuItem {
 
     pointerEventsSystem.onPointerDown(this.coordsPanel,
       (e) => {
+        trackAction(this.itemBox, "button_go_there", _event.coordinates[0] + ',' + _event.coordinates[1],_event.name)
         _teleportTo(_event.coordinates[0] , _event.coordinates[1])      
       },
       { hoverText: 'GO THERE', button: InputAction.IA_POINTER }
@@ -346,6 +353,7 @@ export class EventMenuItem extends MenuItem {
       
       pointerEventsSystem.onPointerDown(this.jumpInButton,
         (e) => {
+          trackAction(this.itemBox, "button_jump_in", _event.coordinates[0] + ',' + _event.coordinates[1],_event.name)
           _teleportTo(_event.coordinates[0] , _event.coordinates[1])      
         },
         { hoverText: 'JUMP IN', button: InputAction.IA_POINTER }
@@ -356,8 +364,10 @@ export class EventMenuItem extends MenuItem {
 
       pointerEventsSystem.onPointerDown(this.jumpInButton,
         (e) => {
+          const url = 'https://events.decentraland.org/en/?event='
+          trackAction(this.itemBox, "button_check_event_page", url, _event.name)
           _openExternalURL(
-            'https://events.decentraland.org/en/?event=' + _event.id
+             url + _event.id
           )    
         },
         { hoverText: 'CHECK EVENT PAGE', button: InputAction.IA_POINTER }
@@ -436,8 +446,10 @@ export class EventMenuItem extends MenuItem {
 
     pointerEventsSystem.onPointerDown(this.readMoreButton,
       async (e) => {
+        const url = 'https://events.decentraland.org/en/?event='
+        trackAction(this.itemBox, "button_read_more", url, _event.name)
         _openExternalURL(
-          'https://events.decentraland.org/en/?event=' + _event.id
+          url + _event.id
         )   
       },
       { hoverText: 'READ MORE', button: InputAction.IA_POINTER }
@@ -491,6 +503,7 @@ export class EventMenuItem extends MenuItem {
 
       pointerEventsSystem.onPointerDown(this.jumpInButton,
         (e) => {
+          trackAction(this.itemBox, "button_jump_in", _event.id, (_event.coordinates[0] + ',' + _event.coordinates[1]+":"+_event.name))
           _teleportTo(_event.coordinates[0] , _event.coordinates[1])      
         },
         { hoverText: 'JUMP IN', button: InputAction.IA_POINTER }
@@ -513,8 +526,10 @@ export class EventMenuItem extends MenuItem {
 
       pointerEventsSystem.onPointerDown(this.jumpInButton,
         (e) => {
+          const url = 'https://events.decentraland.org/en/?event='
+          trackAction(this.itemBox, "button_check_event_page", url, _event.name)
           _openExternalURL(
-            'https://events.decentraland.org/en/?event=' + _event.id
+            url + _event.id
           )     
         },
         { hoverText: 'CHECK EVENT PAGE', button: InputAction.IA_POINTER }
@@ -547,6 +562,7 @@ export class EventMenuItem extends MenuItem {
     
     pointerEventsSystem.onPointerDown(this.coordsPanel,
       (e) => {
+        trackAction(this.itemBox, "button_go_there", _event.id, (_event.coordinates[0] + ',' + _event.coordinates[1]+":"+_event.name))
         _teleportTo(_event.coordinates[0] , _event.coordinates[1])     
       },
       { hoverText: 'GO THERE', button: InputAction.IA_POINTER }
@@ -562,7 +578,11 @@ export class EventMenuItem extends MenuItem {
     //details website button (read more)
     pointerEventsSystem.onPointerDown(this.readMoreButton,
       async (e) => {
-        _openExternalURL('https://events.decentraland.org/en/?event=' + _event.id)    
+        const url = 'https://events.decentraland.org/en/?event='
+        trackAction(this.itemBox, "button_read_more", url, _event.name)
+        _openExternalURL(
+          url + _event.id
+        )    
       },
       { hoverText: 'READ MORE', button: InputAction.IA_POINTER }
     )  
@@ -583,6 +603,10 @@ export class EventMenuItem extends MenuItem {
       if(!_silent){
         this.playAudio(sfx.menuSelectSource, sfx.menuSelectSourceVolume)
       }
+
+      
+      trackAction(this.itemBox, "select_card", this.event.id, (this.event.coordinates[0] + ',' + this.event.coordinates[1]+":"+ this.event.name))
+      
       
       this.selected = true
       rootInfo.isHighlighted = true
@@ -602,7 +626,6 @@ export class EventMenuItem extends MenuItem {
 
       timePanelInfo.isHighlighted = true
       timePanelInfo.done = false      
-
     }
   }
 
