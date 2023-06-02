@@ -21,7 +21,7 @@ export function addAnalytics() {
     elementId: ANALYTICS_ELEMENTS_IDS.cloud,
   })
 
-  utils.triggers.addTrigger(cloudAnalyticsTrigger, utils.NO_LAYERS, utils.LAYER_1,  
+  utils.triggers.addTrigger(cloudAnalyticsTrigger, INTERACT_WITH_NOTHING_LAYER, utils.LAYER_1,  
     [{type: "box", position: cloudAnalyticsTriggerPosition, scale: cloudAnalyticsTriggerScale}],
     (entity:Entity)=>{  
       console.log("analytics.ts", "trigger.cloud.cloudAnalyticsTrigger.enter","triggerParent",cloudAnalyticsTrigger,"entityInteracting", entity)
