@@ -1,7 +1,7 @@
 import * as utils from '@dcl-sdk/utils'
 import { Entity, Transform, engine } from '@dcl/sdk/ecs';
 import { Color3, Vector3 } from '@dcl/sdk/math';
-import { INTERACT_WITH_NOTHING_LAYER } from '../lobby/resources/globals';
+import { TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS } from '../lobby/resources/globals';
 
 export function shuffleArray<T>(array: T[]): T[] {
   for (let i = array.length - 1; i > 0; i--) {
@@ -23,6 +23,7 @@ export function addRepeatTrigger(
   onExit: (entity: Entity) => void 
 ) {
   
+  //if(!parent) parent = engine.RootEntity
 
   const trigger = engine.addEntity()
   Transform.create(trigger,
@@ -33,7 +34,7 @@ export function addRepeatTrigger(
  
   utils.triggers.addTrigger(
     trigger
-    , INTERACT_WITH_NOTHING_LAYER, utils.LAYER_1 
+    , TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, utils.LAYER_1 
     ,[{position:Vector3.Zero(),scale:size,type:'box'}]
     ,onPlayerEnter
     ,onExit,  Color3.Yellow()
