@@ -153,6 +153,7 @@ utils.triggers.addTrigger(
 )
 
 // proper bar interior
+console.log("index.ts", "trigger.bar2???.created","triggerParent",undefined)
 addRepeatTrigger(
   Vector3.create(160 - coreBuildingOffset.x, 50, 152 - coreBuildingOffset.z),
   Vector3.create(50, 102, 50),
@@ -173,6 +174,7 @@ addRepeatTrigger(
 )
 
 //outer perimeter
+console.log("index.ts", "trigger.bar2???.created","triggerParent",undefined)
 addRepeatTrigger(
   Vector3.create(160 - coreBuildingOffset.x, 30, 155 - coreBuildingOffset.z),
   Vector3.create(60, 60, 70),
