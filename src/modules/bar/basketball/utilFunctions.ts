@@ -31,7 +31,7 @@ export function moveLineBetween(line:Entity, A:Vector3, B:Vector3){
 
    transform.position = Vector3.lerp(A,B,0.5)
 //    transform.position.y += 0.02
-   transform.scale =  Vector3.create(0.1,dist,1)
+   transform.scale =  Vector3.create(0.05,dist,0.05)
    transform.rotation = rotAngle
    //transform.rotation *= Quaternion. (Vector3.Right(),90)        
 }

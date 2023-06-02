@@ -53,9 +53,10 @@ const SHOOT_VELOCITY = 45
 
 const ballShape:PBGltfContainer =  {
   src:"models/basketball/ball.glb",
-  visibleMeshesCollisionMask: ColliderLayer.CL_NONE,
-  invisibleMeshesCollisionMask: ColliderLayer.CL_POINTER
+  invisibleMeshesCollisionMask: ColliderLayer.CL_NONE,
+  visibleMeshesCollisionMask: ColliderLayer.CL_POINTER
 }
+
 const ballHighlightShape:PBGltfContainer =  {src:"models/basketball/ball_outline.glb"}
 
 
@@ -194,7 +195,7 @@ export class PhysicsManager {
     for(let i=0; i< this.trailCount; i++){
       let trailLine = engine.addEntity()
       Transform.create(trailLine, {scale: Vector3.create(0, 0, 0)})
-      MeshRenderer.setPlane(trailLine)
+      MeshRenderer.setCylinder(trailLine, 0.9, 1)
 
       Material.setPbrMaterial(trailLine, {
         albedoColor: Color4.fromHexString("#FFFFFF44"),
@@ -229,8 +230,6 @@ export class PhysicsManager {
     let ball = engine.addEntity()
     Transform.create(ball, {})
     GltfContainer.create(ball, ballShape)
-    
-    
     VisibilityComponent.create(ball, {visible:true})
    
 
@@ -490,18 +489,19 @@ export class PhysicsManager {
     const trailTransform = Transform.getMutable( this.trails[j])
     const trailInfo = TrailObject.getMutable( this.trails[j])
     
-     trailTransform.scale.x -= dt * 0.1
-    // trailTransform.scale.y -= dt * 0.4
+     trailTransform.scale.x -= dt * 0.05
+     trailTransform.scale.z -= dt * 0.05
     // trailTransform.scale.z -= dt * 0.4
     trailInfo.fadeFactor += dt
     if(trailInfo.fadeFactor > 1) trailInfo.fadeFactor = 1
     if(trailTransform.scale.x < 0) trailTransform.scale.x = 0
+    if(trailTransform.scale.z < 0) trailTransform.scale.z = 0
 
     Material.setPbrMaterial(this.trails[j], {
-      albedoColor: Color4.fromInts(255,255 *(1-trailInfo.fadeFactor) * 2, 255 *(1-trailInfo.fadeFactor) * 0.1, 255 * (1-trailInfo.fadeFactor) *5 ),
+      albedoColor: Color4.fromInts(255,255 *(1-trailInfo.fadeFactor) * 2, 255 *(1-trailInfo.fadeFactor) * 0.1, 255 * (1-trailInfo.fadeFactor) *0.5 ),
       transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND,
-      emissiveColor: Color3.fromInts(255,255 *(1-trailInfo.fadeFactor) * 2, 255 *(1-trailInfo.fadeFactor) * 0.1),
-      emissiveIntensity: trailTransform.scale.x *20
+      emissiveColor: Color3.fromInts(255,255 *(1-trailInfo.fadeFactor) * 2, 255 *(1-trailInfo.fadeFactor) * 0.4),
+      emissiveIntensity: (1-trailInfo.fadeFactor) *2
       
       
     })
@@ -538,7 +538,7 @@ export class PhysicsManager {
           albedoColor: Color4.fromInts(255,255 *(1-fadeFactor) * 2, 255 *(1-fadeFactor) * 0.1, 255 * (1-fadeFactor) *5 ),
           transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND,
           emissiveColor: Color3.fromInts(255,255 *(1-fadeFactor) * 2, 255 *(1-fadeFactor) * 0.1),
-          emissiveIntensity: 2
+          emissiveIntensity: (1-fadeFactor) *1
           
           
         })
