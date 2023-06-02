@@ -1,5 +1,5 @@
 import * as CANNON from 'cannon/build/cannon'
-import { AudioSource, AvatarAnchorPointType, AvatarAttach, CameraMode, CameraType, ColliderLayer, Entity, GltfContainer, InputAction, Material, MaterialTransparencyMode, MeshCollider, MeshRenderer, PBGltfContainer, PBMaterial_PbrMaterial, PointerEventType, PointerEvents, Schemas, Texture, TextureUnion, Transform, TransformType, TransformTypeWithOptionals, VisibilityComponent, engine, inputSystem, pointerEventsSystem } from "@dcl/sdk/ecs"
+import { AudioSource, AvatarAnchorPointType, AvatarAttach, CameraMode, CameraType, ColliderLayer, Entity, EntityMappingMode, GltfContainer, InputAction, Material, MaterialTransparencyMode, MeshCollider, MeshRenderer, PBGltfContainer, PBMaterial_PbrMaterial, PointerEventType, PointerEvents, Schemas, Texture, TextureUnion, Transform, TransformType, TransformTypeWithOptionals, VisibilityComponent, engine, inputSystem, pointerEventsSystem } from "@dcl/sdk/ecs"
 import { Vector3, Quaternion, Color3, Color4 } from "@dcl/sdk/math"
 import { addPhysicsConstraints } from './physicsConstraints'
 import * as utils from "@dcl-sdk/utils"
@@ -45,6 +45,7 @@ const Z_OFFSET = 1.5
 
 const FIXED_TIME_STEPS = 1.0/60 // seconds
 const MAX_TIME_STEPS = 3
+const PHYSICS_RADIUS = 19
 //const RECALL_SPEED = 10
 const SHOOT_VELOCITY = 45
 
@@ -58,6 +59,7 @@ const ballShape:PBGltfContainer =  {
 }
 
 const ballHighlightShape:PBGltfContainer =  {src:"models/basketball/ball_outline.glb"}
+const perimeterShape:PBGltfContainer =  {src:"models/basketball/perimeter.glb"}
 
 
 
@@ -78,6 +80,7 @@ export class PhysicsManager {
   trails:Entity[]
   trailCount:number
   ballZoneCenter:Vector3
+  perimeter:Entity
   
 
   constructor(ballCount:number){
@@ -172,6 +175,7 @@ export class PhysicsManager {
       anchorPointId: AvatarAnchorPointType.AAPT_RIGHT_HAND,
     })
 
+    //set up the hoops
     this.hoops.push(new BasketballHoop(this.world, Vector3.create(32, 6, 30.4), Quaternion.fromEulerDegrees(0,0,0)))
     this.hoops.push(new BasketballHoop(this.world, Vector3.create(41.6, 5.2, 40), Quaternion.fromEulerDegrees(0,-90,0)))
     this.hoops.push(new BasketballHoop(this.world, Vector3.create(22.4, 5.2, 40), Quaternion.fromEulerDegrees(0,90,0)))
@@ -208,6 +212,17 @@ export class PhysicsManager {
 
       this.trails.push(trailLine)
     }
+
+    //perimeter visualizer ring
+    this.perimeter = engine.addEntity()
+    Transform.create(this.perimeter, {
+      position: Vector3.create(this.ballZoneCenter.x, 0.22, this.ballZoneCenter.z ),
+      scale: Vector3.create(PHYSICS_RADIUS,3,PHYSICS_RADIUS)
+    })
+    GltfContainer.create(this.perimeter, perimeterShape)
+    VisibilityComponent.create(this.perimeter, {visible: false})
+
+    
     
 
 
@@ -341,6 +356,13 @@ export class PhysicsManager {
 
   }
 
+  showPerimeter(){
+    VisibilityComponent.getMutable(this.perimeter).visible = true
+  }
+  hidePerimeter(){
+    VisibilityComponent.getMutable(this.perimeter).visible = false
+  }
+
   pickUpBall(index:number){
    
     if(!this.playerHolding){
@@ -366,21 +388,24 @@ export class PhysicsManager {
     // })
       this.carriedIndex = index
       displayBasketballUI()
+      this.showPerimeter()
     }
   }
 
   resetBall(index:number){
+    this.hidePerimeter()
     if(this.playerHolding){
       let ball = this.balls[this.carriedIndex]
       hideStrenghtBar()
       hideBasketballUI()
       Carried.deleteFrom(ball)
       const ballTransform = Transform.getMutable(ball)
+      const playerTransform = Transform.get(engine.PlayerEntity)
       const throwableInfo = Throwable.getMutable(ball)
       ballTransform.parent = engine.RootEntity
       ballTransform.scale = throwableInfo.originalScale
 
-      this.cannonBodies[this.carriedIndex].position.set(22+ Math.random(), 5, 34 + Math.random())
+      this.cannonBodies[this.carriedIndex].position.set(playerTransform.position.x, playerTransform.position.y, playerTransform.position.z)
       
       this.playerHolding = false
       throwableInfo.strength = 0.2
@@ -395,6 +420,7 @@ export class PhysicsManager {
   throw(){
 
     if(this.playerHolding){
+      this.hidePerimeter()
       hideStrenghtBar()
       //lock the bottom of each hoop
       for ( let i=0; i< this.hoops.length; i++){
@@ -583,9 +609,24 @@ export class PhysicsManager {
   //  this.playerCollider.position.z = Transform.get(engine.PlayerEntity).position.z
 
   // ball cannot leave the bar area within a distance from the center beam 
-  if(realDistance( Transform.get(engine.PlayerEntity).position, this.ballZoneCenter) > 19){
+
+  let playerDist = realDistance( Transform.get(engine.PlayerEntity).position, this.ballZoneCenter)
+
+  if( playerDist > PHYSICS_RADIUS-1){
     this.resetBall(this.carriedIndex)
   }
+  else{
+
+    const pTransform = Transform.getMutable(this.perimeter)
+    pTransform.scale.y = 2
+    pTransform.rotation = Quaternion.multiply(pTransform.rotation, Quaternion.fromEulerDegrees(0,2*dt,0))
+
+    if(playerDist > PHYSICS_RADIUS/2){
+      pTransform.scale.y = (playerDist-PHYSICS_RADIUS/2)/PHYSICS_RADIUS *40
+    }
+    
+  }
+  
 
   }
 }
