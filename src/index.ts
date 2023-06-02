@@ -149,12 +149,10 @@ addRepeatTrigger(
   undefined,
   false,
   () => {
-    outOfBar()
     //endArtistTalk() //TODO TAG:PORT-REIMPLEMENT-ME
+    outOfBar()
     lowerVolume()
     log('mid distance')
-
-    //setBarMusicOff()
   }
 )
 
@@ -162,10 +160,7 @@ addRepeatTrigger(
 addRepeatTrigger(
   Vector3.create(160 - coreBuildingOffset.x, 30, 155 - coreBuildingOffset.z),
   Vector3.create(60, 60, 70),
-  () => {
-    //lowerVolume()
-    log('got closer')
-  },
+  () => {},
   undefined,
   false,
   () => {
