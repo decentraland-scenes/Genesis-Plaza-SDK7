@@ -1,5 +1,5 @@
 import * as CANNON from 'cannon/build/cannon'
-import { AudioSource, AvatarAnchorPointType, AvatarAttach, CameraMode, CameraType, Entity, GltfContainer, InputAction, Material, MeshCollider, MeshRenderer, PBGltfContainer, PBMaterial_PbrMaterial, PointerEventType, PointerEvents, Schemas, Texture, TextureUnion, Transform, TransformType, TransformTypeWithOptionals, VisibilityComponent, engine, inputSystem, pointerEventsSystem } from "@dcl/sdk/ecs"
+import { AudioSource, AvatarAnchorPointType, AvatarAttach, CameraMode, CameraType, ColliderLayer, Entity, GltfContainer, InputAction, Material, MaterialTransparencyMode, MeshCollider, MeshRenderer, PBGltfContainer, PBMaterial_PbrMaterial, PointerEventType, PointerEvents, Schemas, Texture, TextureUnion, Transform, TransformType, TransformTypeWithOptionals, VisibilityComponent, engine, inputSystem, pointerEventsSystem } from "@dcl/sdk/ecs"
 import { Vector3, Quaternion, Color3, Color4 } from "@dcl/sdk/math"
 import { addPhysicsConstraints } from './physicsConstraints'
 import * as utils from "@dcl-sdk/utils"
@@ -7,7 +7,7 @@ import { displayBasketballUI, hideBasketballUI, hideStrenghtBar, scoreDisplay, s
 import { BasketballHoop } from './hoop'
 import { PhysicsWorldStatic } from './physicsWorld'
 import { bounceSource, bounceVolume, pickupSource, pickupVolume, throwBallSource, throwBallVolume } from './sounds'
-import { realDistance } from './utilFunctions'
+import { moveLineBetween, realDistance } from './utilFunctions'
 
 export const Throwable = engine.defineComponent('throwable-id', {
     index: Schemas.Number,
@@ -18,20 +18,22 @@ export const Throwable = engine.defineComponent('throwable-id', {
     originalScale:Schemas.Vector3,
     anchorOffset: Schemas.Vector3,
     lastPos: Schemas.Vector3,
-    lastDir: Schemas.Vector3,
+    lastDir: Schemas.Vector3,    
     
-    
-    
-})
-export const Carried = engine.defineComponent('carried-id', {     
-    
-})
-export const HasTrail = engine.defineComponent('trail-id', {     
-  
-  saveTimer:Schemas.Number,
-  saveFreq: Schemas.Number
 })
 
+export const Carried = engine.defineComponent('carried-id', {          
+})
+
+export const HasTrail = engine.defineComponent('hastrail-id', {     
+  lastPos: Schemas.Vector3,
+  saveTimer:Schemas.Number,
+  saveFreq: Schemas.Number  
+})
+
+export const TrailObject = engine.defineComponent('trail-id', {    
+  fadeFactor: Schemas.Number      
+})
 //utils.triggers.enableDebugDraw(true)
 
 const X_OFFSET = 0
@@ -49,7 +51,12 @@ const SHOOT_VELOCITY = 45
 // const shootSound = new Sound(new AudioClip('sounds/shoot.mp3'))
 // const recallSound = new Sound(new AudioClip('sounds/recall.mp3'))
 
-const ballShape:PBGltfContainer =  {src:"models/basketball/ball.glb"}
+const ballShape:PBGltfContainer =  {
+  src:"models/basketball/ball.glb",
+  invisibleMeshesCollisionMask: ColliderLayer.CL_NONE,
+  visibleMeshesCollisionMask: ColliderLayer.CL_POINTER
+}
+
 const ballHighlightShape:PBGltfContainer =  {src:"models/basketball/ball_outline.glb"}
 
 
@@ -68,7 +75,7 @@ export class PhysicsManager {
   staticWorld:PhysicsWorldStatic
   ballHighlight:Entity
   forceMultiplier:number
-  trailBalls:Entity[]
+  trails:Entity[]
   trailCount:number
   ballZoneCenter:Vector3
   
@@ -78,7 +85,7 @@ export class PhysicsManager {
     this.balls = []
     this.cannonBodies = []
     this.hoops = []
-    this.trailBalls = []
+    this.trails = []
     this.trailCount = 16
 
     
@@ -184,16 +191,22 @@ export class PhysicsManager {
       this.update(dt)
     })
 
+    // create pool of trail lines
     for(let i=0; i< this.trailCount; i++){
-      let trailBall = engine.addEntity()
-      Transform.create(trailBall, {scale: Vector3.create(0, 0, 0)})
-      MeshRenderer.setSphere(trailBall)
+      let trailLine = engine.addEntity()
+      Transform.create(trailLine, {scale: Vector3.create(0, 0, 0)})
+      MeshRenderer.setCylinder(trailLine, 0.9, 1)
 
-      Material.setBasicMaterial(trailBall, {
-        diffuseColor: Color4.White()
+      Material.setPbrMaterial(trailLine, {
+        albedoColor: Color4.fromHexString("#FFFFFF44"),
+        transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND,
+        emissiveColor: Color4.fromHexString("#FFFFFF44")
+        
+        
       })
+      TrailObject.create(trailLine, {fadeFactor:0})
 
-      this.trailBalls.push(trailBall)
+      this.trails.push(trailLine)
     }
     
 
@@ -217,7 +230,6 @@ export class PhysicsManager {
     let ball = engine.addEntity()
     Transform.create(ball, {})
     GltfContainer.create(ball, ballShape)
-    
     VisibilityComponent.create(ball, {visible:true})
    
 
@@ -272,6 +284,8 @@ export class PhysicsManager {
       anchorOffset: Vector3.create(-0.0,0.2,0),
      
     } )
+
+
 
     
 
@@ -391,14 +405,7 @@ export class PhysicsManager {
       const ball = this.balls[this.carriedIndex]
       const throwableInfo = Throwable.getMutable(ball)      
 
-      HasTrail.create(ball,{
-        saveFreq: 0.05,
-        saveTimer: 0
-      })
-      utils.timers.setTimeout(()=>{
-        HasTrail.deleteFrom(ball)
-      }, 4000)
-      Carried.deleteFrom(ball)
+     
 
       AudioSource.createOrReplace(ball, {
         audioClipUrl: throwBallSource,
@@ -430,6 +437,28 @@ export class PhysicsManager {
         dropPos = Vector3.add(dropPos, rightDir)
         
       }
+      
+
+      
+      // ADD TRAIL to the thrown ball for 4 seconds
+      // HasTrail.createOrReplace(ball,{
+      //   lastPos: Vector3.create(dropPos.x, dropPos.y, dropPos.z),
+      //   saveFreq: 0.05,
+      //   saveTimer: 0        
+      // })
+
+      utils.timers.setTimeout(()=>{
+        HasTrail.createOrReplace(ball,{
+          lastPos: Vector3.create(dropPos.x, dropPos.y, dropPos.z),
+          saveFreq: 0.05,
+          saveTimer: 0        
+        })
+      }, 50)
+      utils.timers.setTimeout(()=>{
+        HasTrail.deleteFrom(ball)
+      }, 4000)
+      
+      Carried.deleteFrom(ball)
 
 
       this.cannonBodies[this.carriedIndex].position.set(dropPos.x, dropPos.y, dropPos.z)
@@ -455,37 +484,70 @@ export class PhysicsManager {
   update(dt:number){
    this.world.step(FIXED_TIME_STEPS, dt, MAX_TIME_STEPS)
 
-   for(let j = 0; j < this.trailBalls.length; j++){  
-    const trailTransform = Transform.getMutable( this.trailBalls[j])
+   // UPDATE THE TRAILS ON EVERY FRAME (FADE + SIZE DECREASE)
+   for(let j = 0; j < this.trails.length; j++){  
+    const trailTransform = Transform.getMutable( this.trails[j])
+    const trailInfo = TrailObject.getMutable( this.trails[j])
     
-    trailTransform.scale.x -= dt * 0.4
-    trailTransform.scale.y -= dt * 0.4
-    trailTransform.scale.z -= dt * 0.4
-
+     trailTransform.scale.x -= dt * 0.05
+     trailTransform.scale.z -= dt * 0.05
+    // trailTransform.scale.z -= dt * 0.4
+    trailInfo.fadeFactor += dt
+    if(trailInfo.fadeFactor > 1) trailInfo.fadeFactor = 1
     if(trailTransform.scale.x < 0) trailTransform.scale.x = 0
-    if(trailTransform.scale.y < 0) trailTransform.scale.y = 0
     if(trailTransform.scale.z < 0) trailTransform.scale.z = 0
-  }
 
+    Material.setPbrMaterial(this.trails[j], {
+      albedoColor: Color4.fromInts(255,255 *(1-trailInfo.fadeFactor) * 2, 255 *(1-trailInfo.fadeFactor) * 0.1, 255 * (1-trailInfo.fadeFactor) *0.5 ),
+      transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND,
+      emissiveColor: Color3.fromInts(255,255 *(1-trailInfo.fadeFactor) * 2, 255 *(1-trailInfo.fadeFactor) * 0.4),
+      emissiveIntensity: (1-trailInfo.fadeFactor) *2
+      
+      
+    })
+
+    
+    
+    // if(trailTransform.scale.y < 0) trailTransform.scale.y = 0
+    // if(trailTransform.scale.z < 0) trailTransform.scale.z = 0
+  }
+  
+  // ONLY ADD NEW TRAIL LINES AT A GIVEN FREQUENCY
    for(let i = 0; i < this.balls.length; i++){    
 
-    if(HasTrail.has(this.balls[i])){
+    if(HasTrail.getOrNull(this.balls[i]) != null){
       const transformBall = Transform.getMutable(this.balls[i])
-      let trail = HasTrail.getMutable(this.balls[i])
+      let trailInfo = HasTrail.getMutable(this.balls[i])
 
-      trail.saveTimer += dt
+      trailInfo.saveTimer += dt
 
-      if(trail.saveTimer > trail.saveFreq){
-        trail.saveTimer = 0    
+      if(trailInfo.saveTimer > trailInfo.saveFreq){
+        trailInfo.saveTimer = 0    
+            
 
-        let trailBall = this.trailBalls.shift()
-        const trailTransform = Transform.getMutable(trailBall)        
-        trailTransform.position = Vector3.create( transformBall.position.x,  transformBall.position.y,  transformBall.position.z)
-        trailTransform.scale = Vector3.create(0.35,0.35,0.35),
-        this.trailBalls.push(trailBall)
+        let trailLine = this.trails.shift()
+        //const trailTransform = Transform.getMutable(trailLine)        
+        //trailTransform.position = Vector3.create( transformBall.position.x,  transformBall.position.y,  transformBall.position.z)
+        //trailTransform.scale = Vector3.create(0.35,0.35,0.35),
+
+        moveLineBetween(trailLine, transformBall.position, trailInfo.lastPos  )
+        Vector3.copyFrom( transformBall.position, trailInfo.lastPos)
+        let fadeFactor = TrailObject.getMutable(trailLine).fadeFactor = 0
+
+        Material.setPbrMaterial(trailLine, {
+          albedoColor: Color4.fromInts(255,255 *(1-fadeFactor) * 2, 255 *(1-fadeFactor) * 0.1, 255 * (1-fadeFactor) *5 ),
+          transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND,
+          emissiveColor: Color3.fromInts(255,255 *(1-fadeFactor) * 2, 255 *(1-fadeFactor) * 0.1),
+          emissiveIntensity: (1-fadeFactor) *1
+          
+          
+        })
+       
+        this.trails.push(trailLine)
       }
     }
 
+    // ALL NON-CARRIED BALLS FOLLOW THE CANNON PHYSICS
     if(Carried.getOrNull(this.balls[i]) == null){
       const transformBall = Transform.getMutable(this.balls[i])
       
@@ -494,7 +556,8 @@ export class PhysicsManager {
       transformBall.position.z = this.cannonBodies[i].position.z 
       transformBall.rotation = this.cannonBodies[i].quaternion
 
-    }    
+    }   
+    // IF A BALL IS CARRIED THEN UPDATE THE THROW STRENGTH 
     else{
       if(this.strengthHold){
         const throwable = Throwable.get(this.balls[i])
