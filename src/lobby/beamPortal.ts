@@ -1,6 +1,6 @@
 import { Animator, AudioSource, AudioStream, Entity, GltfContainer, InputAction, Material, MeshRenderer, PBAudioStream, TextShape, Transform, VisibilityComponent, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
 import { Color3, Vector3 } from '@dcl/sdk/math'
-import { BEAM_SCALE_AMOUNT, INTERACT_WITH_NOTHING_LAYER, ParcelCountMaxY, ParcelCountX, ParcelCountZ, coreBuildingOffset, lobbyCenter } from './resources/globals'
+import { BEAM_SCALE_AMOUNT, TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, ParcelCountMaxY, ParcelCountX, ParcelCountZ, coreBuildingOffset, lobbyCenter } from './resources/globals'
 import { lobbyHeight } from './resources/globals'
 import { setBarMusicOff, setBarMusicOn } from '../modules/bar/jukebox'
 import { movePlayerTo } from "~system/RestrictedActions"
@@ -145,7 +145,7 @@ export class TeleportController {
       this.triggerBoxUpScale = Vector3.create(5, 4.5, 5)
       
 
-      utils.triggers.addTrigger(this.triggerBoxUp, INTERACT_WITH_NOTHING_LAYER, utils.LAYER_1,  
+      utils.triggers.addTrigger(this.triggerBoxUp, TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, utils.LAYER_1,  
         [{type: "box", position: this.triggerBoxUpPosition, scale: this.triggerBoxUpScale}],
         (entity:Entity)=>{ 
           console.log(CLASSNAME,"trigger.camera.enter", "triggerBoxUp", Transform.getOrNull(engine.PlayerEntity),"triggered by",entity,engine.PlayerEntity,engine.CameraEntity)
@@ -173,7 +173,7 @@ export class TeleportController {
       this.triggerBoxDownPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y + 8, lobbyCenter.z - coreBuildingOffset.z)
       this.triggerBoxDownScale = Vector3.create(6, 6, 6)
 
-      utils.triggers.addTrigger(this.triggerBoxDown, INTERACT_WITH_NOTHING_LAYER, utils.LAYER_1,  
+      utils.triggers.addTrigger(this.triggerBoxDown, TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, utils.LAYER_1,  
         [{type: "box", position: this.triggerBoxDownPosition, scale: this.triggerBoxDownScale}],
         (entity:Entity)=>{ 
           console.log("trigger.camera.enter", "triggerBoxDown","triggered by",entity,"player",engine.PlayerEntity,engine.CameraEntity)

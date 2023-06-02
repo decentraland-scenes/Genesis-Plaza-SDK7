@@ -8,7 +8,7 @@ import * as allowedMediaHelper from './utils/allowedMediaHelper'
 import { lowerVolume, outOfBar, placeJukeBox, setBarMusicOff, setBarMusicOn } from './modules/bar/jukebox'
 import { addRepeatTrigger } from './modules/Utils'
 import { log } from './back-ports/backPorts'
-import { INTERACT_WITH_NOTHING_LAYER, coreBuildingOffset } from './lobby/resources/globals'
+import { TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, coreBuildingOffset } from './lobby/resources/globals'
 import { initBarNpcs } from './modules/bar/npcs/barNpcs'
 import { setupUi } from './ui'
 import { placeDoors } from './modules/bar/doors'
@@ -128,7 +128,7 @@ Transform.create(barCenter, {
 })
 utils.triggers.addTrigger(
   barCenter, 
-  INTERACT_WITH_NOTHING_LAYER,
+  TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS,
   utils.LAYER_1,
   [ 
     {

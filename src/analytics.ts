@@ -3,7 +3,7 @@ import { Entity, Transform, engine } from "@dcl/sdk/ecs"
 import { Color3, Vector3 } from "@dcl/sdk/math"
 import { TrackingElement, trackEnd, trackStart } from "./modules/stats/analyticsComponents"
 import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES, AnalyticsLogLabel } from "./modules/stats/AnalyticsConfig"
-import { INTERACT_WITH_NOTHING_LAYER, coreBuildingOffset, lobbyCenter, lobbyHeight } from './lobby/resources/globals'
+import { TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, coreBuildingOffset, lobbyCenter, lobbyHeight } from './lobby/resources/globals'
 
 let addAnalyticsAdded = false
 export function addAnalytics() {
@@ -21,7 +21,7 @@ export function addAnalytics() {
     elementId: ANALYTICS_ELEMENTS_IDS.cloud,
   })
 
-  utils.triggers.addTrigger(cloudAnalyticsTrigger, INTERACT_WITH_NOTHING_LAYER, utils.LAYER_1,  
+  utils.triggers.addTrigger(cloudAnalyticsTrigger, TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, utils.LAYER_1,  
     [{type: "box", position: cloudAnalyticsTriggerPosition, scale: cloudAnalyticsTriggerScale}],
     (entity:Entity)=>{  
       console.log("analytics.ts", "trigger.cloud.cloudAnalyticsTrigger.enter","triggerParent",cloudAnalyticsTrigger,"entityInteracting", entity)
@@ -46,7 +46,7 @@ export function addAnalytics() {
     elementId: ANALYTICS_ELEMENTS_IDS.eventsSlider,
   })
 
-  utils.triggers.addTrigger(sliderInCloudAnalyticsTrigger, INTERACT_WITH_NOTHING_LAYER, utils.LAYER_1,  
+  utils.triggers.addTrigger(sliderInCloudAnalyticsTrigger, TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, utils.LAYER_1,  
     [{type: "box", position: sliderInCloudAnalyticsTriggerPosition, scale: sliderInCloudAnalyticsTriggerScale}],
     (entity:Entity)=>{ 
       console.log("analytics.ts", "trigger.cloud.sliderInCloudAnalyticsTrigger.enter","triggerParent",sliderInCloudAnalyticsTrigger,"entityInteracting", entity)
@@ -71,7 +71,7 @@ export function addAnalytics() {
     elementId: ANALYTICS_ELEMENTS_IDS.bar,
   })
 
-  utils.triggers.addTrigger(barAnalyticsTrigger, INTERACT_WITH_NOTHING_LAYER, utils.LAYER_1,  
+  utils.triggers.addTrigger(barAnalyticsTrigger, TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, utils.LAYER_1,  
     [{type: "box", position: barAnalyticsTriggerPosition, scale: barAnalyticsTriggerScale}],
     (entity:Entity)=>{ 
       console.log("analytics.ts", "trigger.bar.barAnalyticsTrigger.enter","triggerParent",barAnalyticsTrigger,"entityInteracting", entity)

@@ -10,7 +10,7 @@ export const coreBuildingOffset = Vector3.create(8*16, 0, 7*16)
 
 
 //utils.NO_LAYERS should work but it doesn't so using constant and layer8 as our dont interact with things layer
-export const INTERACT_WITH_NOTHING_LAYER = utils.LAYER_8 //utils.NO_LAYERS 
+export const TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS = utils.NO_LAYERS //utils.NO_LAYERS 
 
 export const ParcelCountX = 4
 export const ParcelCountZ = 5
