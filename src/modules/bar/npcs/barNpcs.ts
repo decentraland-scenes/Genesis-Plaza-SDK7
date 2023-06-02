@@ -13,6 +13,8 @@ import { closeCustomUI, openCustomUI } from '../../../utils/customNpcUi/customUi
 import { NpcAnimationNameType, REGISTRY, trtDeactivateNPC } from '../../../registry'
 import { connectNpcToLobby } from '../../../lobby-scene/lobbyScene'
 import { genericPrefinedQuestions } from '../../../utils/customNpcUi/customUIFunctionality'
+import { TrackingElement, trackAction, trackEnd, trackStart } from '../../stats/analyticsComponents'
+import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES, AnalyticsLogLabel } from '../../stats/AnalyticsConfig'
 
 const LogTag: string = 'barNpcs'
 
@@ -46,9 +48,10 @@ function createBarParentEntity(): Entity {
   Transform.create(result, {
     position: Vector3.create(24, 0, 40)
   })
-  MeshRenderer.setBox(result)
+  // MeshRenderer.setBox(result)
   return result
 }
+
 
 function createOctopusNpc() {
   let position: Vector3 = Vector3.create(160 - coreBuildingOffset.x, 0.2, 141.4 - coreBuildingOffset.z)
@@ -66,6 +69,10 @@ function createOctopusNpc() {
       onActivate: () => {
         console.log(LogTag, "Hi! Octopus!")
 
+        console.log(AnalyticsLogLabel, "barNpcs.ts", "Octopus")
+        trackAction(octo, "Interact", undefined)
+        trackStart(octo)
+
         npcLib.changeIdleAnim(octo, 'TalkLoop')
         npcLib.playAnimation(octo, 'TalkIntro', true, 0.63)
         //npcLib.playAnimation(octo, 'TalkLoop', false)
@@ -77,6 +84,8 @@ function createOctopusNpc() {
         console.log(LogTag, "Bye! Octopus!")
         npcLib.changeIdleAnim(octo, 'Idle')
         npcLib.playAnimation(octo, 'TalkOutro', true, 0.63)
+
+        trackEnd(octo)
       },
       portrait: {
         path: `images/portraits/bartender.png`,
@@ -85,6 +94,11 @@ function createOctopusNpc() {
       },
     }
   )
+
+  TrackingElement.create(octo, {
+    elementType: ANALYTICS_ELEMENTS_TYPES.npc,
+    elementId: ANALYTICS_ELEMENTS_IDS.octopus,
+  })
 
   utils.triggers.addTrigger(octo,
     utils.LAYER_1,
@@ -123,7 +137,7 @@ function createOctopusNpc() {
 
 }
 
-function createFashionistNpc(): void {
+function createFashionistNpc(): Entity {
 
   let position = Vector3.create(162.65 - coreBuildingOffset.x, 0.23, 133.15 - coreBuildingOffset.z)
 
@@ -135,6 +149,10 @@ function createFashionistNpc(): void {
       dialogSound: navigationForwardSfx,
       onlyETrigger: true,
       onActivate: async () => {
+
+        console.log(AnalyticsLogLabel, "barNpcs.ts", "Fashionist")
+        trackAction(fashionist, "Interact", undefined)
+        trackStart(fashionist)
 
         let rareItem = await rarestItem(true)
 
@@ -167,6 +185,8 @@ function createFashionistNpc(): void {
       onWalkAway: () => {
         npcLib.playAnimation(fashionist, `Idle`, false)
         RotateFashionist(position)
+
+        trackEnd(fashionist)
       },
       portrait: {
         path: `images/portraits/WearableConnoisseur.png`,
@@ -174,6 +194,13 @@ function createFashionistNpc(): void {
       }
     }
   )
+
+  TrackingElement.create(fashionist, {
+    elementType: ANALYTICS_ELEMENTS_TYPES.npc,
+    elementId: ANALYTICS_ELEMENTS_IDS.fashionist,
+  })
+
+  return fashionist
 }
 
 
@@ -196,9 +223,14 @@ function createBoyArtist(): Entity {
       dialogSound: navigationForwardSfx,
       onlyETrigger: true,
       onActivate: () => {
-        npcLib.activate(girlArtist)
+        npcLib.activate(girlArtist)		
+        console.log(AnalyticsLogLabel, "barNpcs.ts", "boyArtist")
+        trackAction(boy, "Interact", undefined)
+        trackStart(boy)
       },
-      onWalkAway: () => { },
+      onWalkAway: () => {
+        trackEnd(boy)
+       },
       textBubble: true,
       portrait: {
         path: `images/portraits/ACch2.png`,
@@ -206,9 +238,14 @@ function createBoyArtist(): Entity {
     },
   )
 
+  TrackingElement.create(boy, {
+    elementType: ANALYTICS_ELEMENTS_TYPES.npc,
+    elementId: ANALYTICS_ELEMENTS_IDS.boyArtist,
+  })
+
   npcLib.playAnimation(boy, 'Talk', false)
   return boy
-}
+} 
 
 function createGirlArtist(): Entity {
   let girl = npcLib.create(
@@ -223,9 +260,14 @@ function createGirlArtist(): Entity {
       onlyETrigger: true,
       onActivate: () => {
         activateArtists()
+
+        console.log(AnalyticsLogLabel, "barNpcs.ts", "girlArtist")
+        trackAction(girl, "Interact", undefined)
+        trackStart(girl)
       },
       onWalkAway: () => {
-        artistTalkToEachOther(false)
+        artistTalkToEachOther(false)	    
+        trackEnd(girl)
       },
       textBubble: true,
       portrait: {
@@ -234,6 +276,11 @@ function createGirlArtist(): Entity {
       }
     }
   )
+
+  TrackingElement.create(girl, {
+    elementType: ANALYTICS_ELEMENTS_TYPES.npc,
+    elementId: ANALYTICS_ELEMENTS_IDS.girlArtist,
+  })
 
   npcLib.playAnimation(girl, 'Talk', false)
   return girl

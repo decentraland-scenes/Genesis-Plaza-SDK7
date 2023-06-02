@@ -1,11 +1,13 @@
 import * as CANNON from 'cannon/build/cannon'
-import { AvatarAnchorPointType, AvatarAttach, CameraMode, CameraType, Entity, GltfContainer, InputAction, Material, MeshCollider, MeshRenderer, PBGltfContainer, PBMaterial_PbrMaterial, PointerEventType, PointerEvents, Schemas, Texture, TextureUnion, Transform, TransformType, TransformTypeWithOptionals, VisibilityComponent, engine, inputSystem, pointerEventsSystem } from "@dcl/sdk/ecs"
-import { Vector3, Quaternion, Color3 } from "@dcl/sdk/math"
+import { AudioSource, AvatarAnchorPointType, AvatarAttach, CameraMode, CameraType, ColliderLayer, Entity, GltfContainer, InputAction, Material, MaterialTransparencyMode, MeshCollider, MeshRenderer, PBGltfContainer, PBMaterial_PbrMaterial, PointerEventType, PointerEvents, Schemas, Texture, TextureUnion, Transform, TransformType, TransformTypeWithOptionals, VisibilityComponent, engine, inputSystem, pointerEventsSystem } from "@dcl/sdk/ecs"
+import { Vector3, Quaternion, Color3, Color4 } from "@dcl/sdk/math"
 import { addPhysicsConstraints } from './physicsConstraints'
 import * as utils from "@dcl-sdk/utils"
 import { displayBasketballUI, hideBasketballUI, hideStrenghtBar, scoreDisplay, setStrengthBar } from '../../../ui'
 import { BasketballHoop } from './hoop'
 import { PhysicsWorldStatic } from './physicsWorld'
+import { bounceSource, bounceVolume, pickupSource, pickupVolume, throwBallSource, throwBallVolume } from './sounds'
+import { moveLineBetween, realDistance } from './utilFunctions'
 
 export const Throwable = engine.defineComponent('throwable-id', {
     index: Schemas.Number,
@@ -14,13 +16,24 @@ export const Throwable = engine.defineComponent('throwable-id', {
     maxStrength: Schemas.Number,
     holdScale: Schemas.Vector3,
     originalScale:Schemas.Vector3,
-    anchorOffset: Schemas.Vector3
-    
-})
-export const Carried = engine.defineComponent('carried-id', {     
+    anchorOffset: Schemas.Vector3,
+    lastPos: Schemas.Vector3,
+    lastDir: Schemas.Vector3,    
     
 })
 
+export const Carried = engine.defineComponent('carried-id', {          
+})
+
+export const HasTrail = engine.defineComponent('hastrail-id', {     
+  lastPos: Schemas.Vector3,
+  saveTimer:Schemas.Number,
+  saveFreq: Schemas.Number  
+})
+
+export const TrailObject = engine.defineComponent('trail-id', {    
+  fadeFactor: Schemas.Number      
+})
 //utils.triggers.enableDebugDraw(true)
 
 const X_OFFSET = 0
@@ -38,7 +51,12 @@ const SHOOT_VELOCITY = 45
 // const shootSound = new Sound(new AudioClip('sounds/shoot.mp3'))
 // const recallSound = new Sound(new AudioClip('sounds/recall.mp3'))
 
-const ballShape:PBGltfContainer =  {src:"models/basketball/ball.glb"}
+const ballShape:PBGltfContainer =  {
+  src:"models/basketball/ball.glb",
+  invisibleMeshesCollisionMask: ColliderLayer.CL_NONE,
+  visibleMeshesCollisionMask: ColliderLayer.CL_POINTER
+}
+
 const ballHighlightShape:PBGltfContainer =  {src:"models/basketball/ball_outline.glb"}
 
 
@@ -57,6 +75,9 @@ export class PhysicsManager {
   staticWorld:PhysicsWorldStatic
   ballHighlight:Entity
   forceMultiplier:number
+  trails:Entity[]
+  trailCount:number
+  ballZoneCenter:Vector3
   
 
   constructor(ballCount:number){
@@ -64,6 +85,8 @@ export class PhysicsManager {
     this.balls = []
     this.cannonBodies = []
     this.hoops = []
+    this.trails = []
+    this.trailCount = 16
 
     
     this.playerHolding = false
@@ -71,17 +94,18 @@ export class PhysicsManager {
     this.strengthHold = false
     this.forceMultiplier = 20
     
+    this.ballZoneCenter = Vector3.create(32,0,38)
    
     this.world = new CANNON.World()
     this.world.quatNormalizeSkip = 0
     this.world.quatNormalizeFast = false
-    this.world.gravity.set(0, -9.82, 0) // m/s²
+    this.world.gravity.set(0, -9.82 *2, 0) // m/s²
 
     const groundMaterial = new CANNON.Material('groundMaterial')
     const groundContactMaterial = new CANNON.ContactMaterial(      
       groundMaterial,
       groundMaterial,
-      { friction: 0.1, restitution: 0.5}
+      { friction: 0.1, restitution: 0.8}
     )
     this.world.addContactMaterial(groundContactMaterial)
 
@@ -120,8 +144,9 @@ export class PhysicsManager {
     groundBody.material = translocatorPhysicsMaterial
     this.world.addBody(groundBody)
     
+    //add initial balls
     for(let i=0; i< ballCount; i++){
-      this.addObject(Vector3.create(22+Math.random()*8,4 + Math.random()*4,35+Math.random()*8))
+      this.addObject(Vector3.create(24+Math.random()*2,4 + Math.random()*4,35+Math.random()*8))
     }
 
     // START INCREASING THE STRENGTH OF THE THROW
@@ -166,6 +191,24 @@ export class PhysicsManager {
       this.update(dt)
     })
 
+    // create pool of trail lines
+    for(let i=0; i< this.trailCount; i++){
+      let trailLine = engine.addEntity()
+      Transform.create(trailLine, {scale: Vector3.create(0, 0, 0)})
+      MeshRenderer.setCylinder(trailLine, 0.9, 1)
+
+      Material.setPbrMaterial(trailLine, {
+        albedoColor: Color4.fromHexString("#FFFFFF44"),
+        transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND,
+        emissiveColor: Color4.fromHexString("#FFFFFF44")
+        
+        
+      })
+      TrailObject.create(trailLine, {fadeFactor:0})
+
+      this.trails.push(trailLine)
+    }
+    
 
 
     //this.addObject(Vector3.create(32,10,32))
@@ -173,7 +216,7 @@ export class PhysicsManager {
   addObject(pos:Vector3){
 
     let cannonBody = new CANNON.Body({
-      mass: 1, // kg
+      mass: 0.8, // kg
       position: new CANNON.Vec3(
         pos.x,
         pos.y,
@@ -187,7 +230,6 @@ export class PhysicsManager {
     let ball = engine.addEntity()
     Transform.create(ball, {})
     GltfContainer.create(ball, ballShape)
-    
     VisibilityComponent.create(ball, {visible:true})
    
 
@@ -210,6 +252,22 @@ export class PhysicsManager {
     cannonBody.linearDamping = 0.1 // Round bodies will keep translating even with friction so you need linearDamping
     cannonBody.angularDamping = 0.4 // Round bodies will keep rotating even with friction so you need angularDamping
     
+    // ball collision event (bounce)
+    cannonBody.addEventListener('collide', ()=>{    
+      
+      const velocity = Vector3.length(Vector3.create(cannonBody.velocity.x, cannonBody.velocity.y, cannonBody.velocity.z ))
+
+      if(velocity > 2){
+        AudioSource.createOrReplace(ball, {
+          audioClipUrl: bounceSource,
+          playing: true,
+          loop:false,
+          volume: bounceVolume
+        })
+      }
+        
+    })
+
     translocatorPhysicsMaterial.restitution = 1
     this.world.addBody(cannonBody) 
     this.balls.push(ball)
@@ -223,8 +281,13 @@ export class PhysicsManager {
       maxStrength:1,
       holdScale: Vector3.create(0.5, 0.5, 0.5),
       originalScale: Vector3.One(),
-      anchorOffset: Vector3.create(-0.0,0.2,0)
+      anchorOffset: Vector3.create(-0.0,0.2,0),
+     
     } )
+
+
+
+    
 
 
     // pointerEventsSystem.onPointerDown(ball,
@@ -289,13 +352,43 @@ export class PhysicsManager {
         scale: throwableInfo.holdScale,
         parent: this.avatarHandRoot
       })
+      HasTrail.deleteFrom(this.balls[index])
       this.playerHolding = true
+      AudioSource.createOrReplace(this.balls[index], {
+        audioClipUrl: pickupSource,
+        playing: true,
+        loop:false,
+        volume: pickupVolume
+      })
 
     //   AvatarAttach.create(this.balls[index],{
     //     anchorPointId: AvatarAnchorPointType.AAPT_RIGHT_HAND,
     // })
       this.carriedIndex = index
       displayBasketballUI()
+    }
+  }
+
+  resetBall(index:number){
+    if(this.playerHolding){
+      let ball = this.balls[this.carriedIndex]
+      hideStrenghtBar()
+      hideBasketballUI()
+      Carried.deleteFrom(ball)
+      const ballTransform = Transform.getMutable(ball)
+      const throwableInfo = Throwable.getMutable(ball)
+      ballTransform.parent = engine.RootEntity
+      ballTransform.scale = throwableInfo.originalScale
+
+      this.cannonBodies[this.carriedIndex].position.set(22+ Math.random(), 5, 34 + Math.random())
+      
+      this.playerHolding = false
+      throwableInfo.strength = 0.2
+
+      //ball only triggers the score zone once it is thrown
+      utils.triggers.enableTrigger(ball,true)
+      setStrengthBar(0.2)
+
     }
   }
 
@@ -312,7 +405,14 @@ export class PhysicsManager {
       const ball = this.balls[this.carriedIndex]
       const throwableInfo = Throwable.getMutable(ball)      
 
-      Carried.deleteFrom(ball)
+     
+
+      AudioSource.createOrReplace(ball, {
+        audioClipUrl: throwBallSource,
+        playing: true,
+        loop:false,
+        volume: throwBallVolume
+      })
      // AvatarAttach.deleteFrom(ball)
       const ballTransform = Transform.getMutable(ball)
       ballTransform.parent = engine.RootEntity
@@ -337,6 +437,28 @@ export class PhysicsManager {
         dropPos = Vector3.add(dropPos, rightDir)
         
       }
+      
+
+      
+      // ADD TRAIL to the thrown ball for 4 seconds
+      // HasTrail.createOrReplace(ball,{
+      //   lastPos: Vector3.create(dropPos.x, dropPos.y, dropPos.z),
+      //   saveFreq: 0.05,
+      //   saveTimer: 0        
+      // })
+
+      utils.timers.setTimeout(()=>{
+        HasTrail.createOrReplace(ball,{
+          lastPos: Vector3.create(dropPos.x, dropPos.y, dropPos.z),
+          saveFreq: 0.05,
+          saveTimer: 0        
+        })
+      }, 50)
+      utils.timers.setTimeout(()=>{
+        HasTrail.deleteFrom(ball)
+      }, 4000)
+      
+      Carried.deleteFrom(ball)
 
 
       this.cannonBodies[this.carriedIndex].position.set(dropPos.x, dropPos.y, dropPos.z)
@@ -362,16 +484,80 @@ export class PhysicsManager {
   update(dt:number){
    this.world.step(FIXED_TIME_STEPS, dt, MAX_TIME_STEPS)
 
+   // UPDATE THE TRAILS ON EVERY FRAME (FADE + SIZE DECREASE)
+   for(let j = 0; j < this.trails.length; j++){  
+    const trailTransform = Transform.getMutable( this.trails[j])
+    const trailInfo = TrailObject.getMutable( this.trails[j])
+    
+     trailTransform.scale.x -= dt * 0.05
+     trailTransform.scale.z -= dt * 0.05
+    // trailTransform.scale.z -= dt * 0.4
+    trailInfo.fadeFactor += dt
+    if(trailInfo.fadeFactor > 1) trailInfo.fadeFactor = 1
+    if(trailTransform.scale.x < 0) trailTransform.scale.x = 0
+    if(trailTransform.scale.z < 0) trailTransform.scale.z = 0
+
+    Material.setPbrMaterial(this.trails[j], {
+      albedoColor: Color4.fromInts(255,255 *(1-trailInfo.fadeFactor) * 2, 255 *(1-trailInfo.fadeFactor) * 0.1, 255 * (1-trailInfo.fadeFactor) *0.5 ),
+      transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND,
+      emissiveColor: Color3.fromInts(255,255 *(1-trailInfo.fadeFactor) * 2, 255 *(1-trailInfo.fadeFactor) * 0.4),
+      emissiveIntensity: (1-trailInfo.fadeFactor) *2
+      
+      
+    })
+
+    
+    
+    // if(trailTransform.scale.y < 0) trailTransform.scale.y = 0
+    // if(trailTransform.scale.z < 0) trailTransform.scale.z = 0
+  }
+  
+  // ONLY ADD NEW TRAIL LINES AT A GIVEN FREQUENCY
    for(let i = 0; i < this.balls.length; i++){    
 
+    if(HasTrail.getOrNull(this.balls[i]) != null){
+      const transformBall = Transform.getMutable(this.balls[i])
+      let trailInfo = HasTrail.getMutable(this.balls[i])
+
+      trailInfo.saveTimer += dt
+
+      if(trailInfo.saveTimer > trailInfo.saveFreq){
+        trailInfo.saveTimer = 0    
+            
+
+        let trailLine = this.trails.shift()
+        //const trailTransform = Transform.getMutable(trailLine)        
+        //trailTransform.position = Vector3.create( transformBall.position.x,  transformBall.position.y,  transformBall.position.z)
+        //trailTransform.scale = Vector3.create(0.35,0.35,0.35),
+
+        moveLineBetween(trailLine, transformBall.position, trailInfo.lastPos  )
+        Vector3.copyFrom( transformBall.position, trailInfo.lastPos)
+        let fadeFactor = TrailObject.getMutable(trailLine).fadeFactor = 0
+
+        Material.setPbrMaterial(trailLine, {
+          albedoColor: Color4.fromInts(255,255 *(1-fadeFactor) * 2, 255 *(1-fadeFactor) * 0.1, 255 * (1-fadeFactor) *5 ),
+          transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND,
+          emissiveColor: Color3.fromInts(255,255 *(1-fadeFactor) * 2, 255 *(1-fadeFactor) * 0.1),
+          emissiveIntensity: (1-fadeFactor) *1
+          
+          
+        })
+       
+        this.trails.push(trailLine)
+      }
+    }
+
+    // ALL NON-CARRIED BALLS FOLLOW THE CANNON PHYSICS
     if(Carried.getOrNull(this.balls[i]) == null){
       const transformBall = Transform.getMutable(this.balls[i])
-
+      
       transformBall.position.x = this.cannonBodies[i].position.x
       transformBall.position.y = this.cannonBodies[i].position.y
       transformBall.position.z = this.cannonBodies[i].position.z 
       transformBall.rotation = this.cannonBodies[i].quaternion
-    }    
+
+    }   
+    // IF A BALL IS CARRIED THEN UPDATE THE THROW STRENGTH 
     else{
       if(this.strengthHold){
         const throwable = Throwable.get(this.balls[i])
@@ -392,9 +578,15 @@ export class PhysicsManager {
       
     }    
    }
-   this.playerCollider.position.x = Transform.get(engine.PlayerEntity).position.x
-   this.playerCollider.position.y = Transform.get(engine.PlayerEntity).position.y-1
-   this.playerCollider.position.z = Transform.get(engine.PlayerEntity).position.z
+  //  this.playerCollider.position.x = Transform.get(engine.PlayerEntity).position.x
+  //  this.playerCollider.position.y = Transform.get(engine.PlayerEntity).position.y-1
+  //  this.playerCollider.position.z = Transform.get(engine.PlayerEntity).position.z
+
+  // ball cannot leave the bar area within a distance from the center beam 
+  if(realDistance( Transform.get(engine.PlayerEntity).position, this.ballZoneCenter) > 19){
+    this.resetBall(this.carriedIndex)
+  }
+
   }
 }
 

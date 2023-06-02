@@ -43,6 +43,7 @@ const uiBasketball = () => (
       padding: 4,
       alignContent: 'center',
       display: basketUIVisible,
+      positionType: 'absolute',
       position: { top: '50%', left: '50%' }
     }}
   >
@@ -99,9 +100,9 @@ const uiBasketball = () => (
         <UiEntity
           //powerbar scaling bar part
           uiTransform={{
-            width: strengthValue,
-            height: '90%',
-            flexDirection: 'column',
+            width: strengthValue ,
+            height: '90%' ,
+            flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
             alignSelf: 'center'
@@ -253,7 +254,8 @@ function getPlayerPosition() {
 const uiComponent = () => [
   NpcUtilsUi(),
   uiBeamMeUp(),
-  customNpcUI()
+  customNpcUI(),
+  uiBasketball()
   //uiSpawnCube()
 ]
 

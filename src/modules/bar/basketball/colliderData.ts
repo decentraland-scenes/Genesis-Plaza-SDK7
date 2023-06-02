@@ -110,4 +110,19 @@ export let colliderData:CANNON.Body[] = [
         fixedRotation:true 
         //shape: new CANNON.Box(new CANNON.Vec3(4,40,4))   
     })   , 
+    //BAR CYLINDER 2
+    new CANNON.Body({
+        mass: 0, // kg
+        position: new CANNON.Vec3(32, 4, 25.8 ), 
+        quaternion: new CANNON.Quaternion(quat90.x, quat90.y, quat90.z, quat90.w),
+        shape: new CANNON.Cylinder( 4, 4, 10, 16)   ,
+        fixedRotation:true 
+        //shape: new CANNON.Box(new CANNON.Vec3(4,40,4))   
+    })   , 
+    //STAGE
+    new CANNON.Body({
+        mass: 0, // kg
+        position: new CANNON.Vec3(32, 0, 58 ), 
+        shape: new CANNON.Box(new CANNON.Vec3(10,0.75,4))    
+    }),
    ]
