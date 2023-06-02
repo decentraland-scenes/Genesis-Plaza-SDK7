@@ -55,7 +55,7 @@ REGISTRY.onConnectActions = (room: Room<any>, eventName: string) => {
 initBarNpcs()
 
 placeJukeBox()
-setBarMusicOn()
+//setBarMusicOn()
 
 //// ADD CLOUD LOBBY
 
@@ -140,7 +140,7 @@ onIdleStateChangedObservableAdd((isIdle:boolean)=>{
 
 // proper bar interior
 addRepeatTrigger(
-  Vector3.create(160 - coreBuildingOffset.x, 50, 155 - coreBuildingOffset.z),
+  Vector3.create(160 - coreBuildingOffset.x, 50, 152 - coreBuildingOffset.z),
   Vector3.create(50, 102, 50),
   () => {
     setBarMusicOn()
@@ -163,7 +163,7 @@ addRepeatTrigger(
   Vector3.create(160 - coreBuildingOffset.x, 30, 155 - coreBuildingOffset.z),
   Vector3.create(60, 60, 70),
   () => {
-    lowerVolume()
+    //lowerVolume()
     log('got closer')
   },
   undefined,
