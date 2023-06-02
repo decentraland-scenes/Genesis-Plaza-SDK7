@@ -25,13 +25,13 @@ export function realDistance(pos1: Vector3, pos2: Vector3): number
 export function moveLineBetween(line:Entity, A:Vector3, B:Vector3){
   
     let dist = realDistance(A,B)
-    let rotAngle = ToDegrees( Vector3.getAngleBetweenVectors(Vector3.Forward(), Vector3.subtract(A,B),Vector3.Up()) )  
+    let rotAngle =  Quaternion.fromToRotation(Vector3.Up(), Vector3.subtract(A,B)) 
 
    const transform = Transform.getMutable(line)
 
    transform.position = Vector3.lerp(A,B,0.5)
-   transform.position.y += 0.02
-   transform.scale =  Vector3.create(dist,0.02,1)
-   transform.rotation = Quaternion.fromEulerDegrees(0,90+rotAngle,0)
+//    transform.position.y += 0.02
+   transform.scale =  Vector3.create(0.1,dist,1)
+   transform.rotation = rotAngle
    //transform.rotation *= Quaternion. (Vector3.Right(),90)        
 }
