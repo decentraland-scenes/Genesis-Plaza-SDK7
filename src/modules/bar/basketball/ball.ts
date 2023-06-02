@@ -222,7 +222,7 @@ export class PhysicsManager {
     GltfContainer.create(this.perimeter, perimeterShape)
     VisibilityComponent.create(this.perimeter, {visible: false})
 
-    
+
     
 
 
@@ -394,6 +394,7 @@ export class PhysicsManager {
 
   resetBall(index:number){
     this.hidePerimeter()
+
     if(this.playerHolding){
       let ball = this.balls[this.carriedIndex]
       hideStrenghtBar()
@@ -405,7 +406,11 @@ export class PhysicsManager {
       ballTransform.parent = engine.RootEntity
       ballTransform.scale = throwableInfo.originalScale
 
-      this.cannonBodies[this.carriedIndex].position.set(playerTransform.position.x, playerTransform.position.y, playerTransform.position.z)
+      let dropVec = Vector3.subtract(playerTransform.position, this.ballZoneCenter)
+      dropVec = Vector3.normalize(dropVec)
+      dropVec = Vector3.scale(dropVec, PHYSICS_RADIUS-1)
+      dropVec = Vector3.add(this.ballZoneCenter, dropVec)
+      this.cannonBodies[this.carriedIndex].position.set(dropVec.x, dropVec.y, dropVec.z)
       
       this.playerHolding = false
       throwableInfo.strength = 0.2
@@ -622,7 +627,7 @@ export class PhysicsManager {
     pTransform.rotation = Quaternion.multiply(pTransform.rotation, Quaternion.fromEulerDegrees(0,2*dt,0))
 
     if(playerDist > PHYSICS_RADIUS/2){
-      pTransform.scale.y = (playerDist-PHYSICS_RADIUS/2)/PHYSICS_RADIUS *40
+      pTransform.scale.y = 2+ (playerDist-PHYSICS_RADIUS/2)/PHYSICS_RADIUS *40
     }
     
   }
