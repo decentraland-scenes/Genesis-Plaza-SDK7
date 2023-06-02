@@ -96,6 +96,7 @@ export class TeleportController {
     triggerBoxFallCheckPosition: Vector3
     triggerBoxFallCheckScale: Vector3
     portalLiftSpiral: Entity
+    beamChargeSound: Entity
     beamFireSound: Entity
     beamFallSound: Entity
     impactSound: Entity
@@ -115,20 +116,20 @@ export class TeleportController {
         //const playerTransform = Transform.getMutable(engine.PlayerEntity)
         //playerTransform.position = { x: lobbyCenter.x + 5, y: 140, z: lobbyCenter.z - 10 }
 
-          /*if (!tutorialRunning) {
-            let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
-            if(lobbyMusic) lobbyMusic.playing = true
-          }*/
-
-          let ambienceMusic = AudioSource.getMutableOrNull(ambienceBox)
-          if(ambienceMusic) ambienceMusic.playing = true
+        /*if (!tutorialRunning) {
           let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
           if(lobbyMusic) lobbyMusic.playing = true
+        }*/
 
-          //enable fall sound trigger
-          utils.triggers.enableTrigger(host.triggerBoxUp, true)
+        let ambienceMusic = AudioSource.getMutableOrNull(ambienceBox)
+        if(ambienceMusic) ambienceMusic.playing = true
+        let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
+        if(lobbyMusic) lobbyMusic.playing = true
+
+        //enable fall sound trigger
+        utils.triggers.enableTrigger(host.triggerBoxUp, true)
       }
-
+ 
       let triggerUpOnEnterTimerId: TimerId
       const COUNT_DOWN_TIMER_AMOUNT = 3000
 
@@ -142,15 +143,13 @@ export class TeleportController {
       utils.triggers.addTrigger(this.triggerBoxUp, utils.NO_LAYERS, utils.LAYER_1,  
         [{type: "box", position: this.triggerBoxUpPosition, scale: this.triggerBoxUpScale}],
         (entity:Entity)=>{ 
-        
           console.log(CLASSNAME,"trigger.camera.enter", "triggerBoxUp", Transform.getOrNull(engine.PlayerEntity),"triggered by",entity,engine.PlayerEntity,engine.CameraEntity)
+
           showTeleportUI("flex")
+          let chargeSound = AudioSource.getMutable(host.beamChargeSound)
+          if (chargeSound) chargeSound.playing = true
           
           triggerCounter.start(COUNT_DOWN_TIMER_AMOUNT / 1000)
-          
-          let portalLyftSpyralSound = AudioSource.getMutable(host.portalLiftSpiral)
-          if (!portalLyftSpyralSound.playing) portalLyftSpyralSound.playing = true
-
           triggerUpOnEnterTimerId = utils.timers.setTimeout(triggerUpOnEnter, COUNT_DOWN_TIMER_AMOUNT)
         },
         ()=>{
@@ -214,12 +213,6 @@ export class TeleportController {
 
 
       this.portalLiftSpiral = engine.addEntity()
-      AudioSource.create(this.portalLiftSpiral, {
-        audioClipUrl: 'sounds/beam_charge.mp3',
-        volume: 0.5,
-        //loop: true,
-        playing: false
-      })
       Transform.create(this.portalLiftSpiral,{
           position: Vector3.create(lobbyCenter.x, lobbyCenter.y, lobbyCenter.z),
           scale: Vector3.create(1, 0, 1)
@@ -227,8 +220,23 @@ export class TeleportController {
       GltfContainer.create(this.portalLiftSpiral,{
         src: "models/lobby/portal_lift_spiral.glb"
       })
+
       
-  
+
+      //beam charge sound attached to player
+      this.beamChargeSound = engine.addEntity()
+      AudioSource.create(this.beamChargeSound, {
+        audioClipUrl: 'sounds/beam_charge.mp3',
+        volume: 0.5,
+        //loop: true,
+        playing: false
+      })
+      Transform.create(this.beamChargeSound,{
+        position: Vector3.create(0, 1, 0),
+        parent: engine.PlayerEntity
+      })
+
+        
       //beam teleport sound attached to player
       this.beamFireSound = engine.addEntity()
       AudioSource.create(this.beamFireSound, {
