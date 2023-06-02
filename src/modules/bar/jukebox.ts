@@ -20,7 +20,7 @@ let FullVolume = 0.1
 let DistantVolume = 0.03
 
 //this has to be set false and triggered inside Index.ts see: https://github.com/nobodysGitHub/Genesis-Plaza/blob/master/src/game.ts#L92
-export let isInBar: boolean = true
+export let isInBar: boolean = false
 
 let barCurrentRadio: Radios | null = Radios.RAVE 
 let defaultStartStream: PBAudioStream = {
@@ -270,6 +270,7 @@ export class JukeboxButton {
   }
 }
 let barRadioOnTimeoutId:number|undefined = undefined
+
 function barRadioOn(station?: Radios) {
   console.log("jukebox.ts","barRadioOn","ENTRY",station)
   if (tutorialRunning) return
