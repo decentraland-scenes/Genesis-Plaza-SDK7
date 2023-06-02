@@ -272,8 +272,12 @@ export class JukeboxButton {
 let barRadioOnTimeoutId:number|undefined = undefined
 
 function barRadioOn(station?: Radios) {
-  console.log("jukebox.ts","barRadioOn","ENTRY",station)
   if (tutorialRunning) return
+
+  console.log("jukebox.ts","barRadioOn","ENTRY",station)
+
+  TextShape.getMutable(JukeBoxText).text = 'Radio:\n' + getRadioName(barCurrentRadioIndex)
+
   if (isInBar) {
     console.log("jukebox.ts ButtonOn has been pressed")
     if(barRadioOnTimeoutId)utils.timers.clearTimeout(barRadioOnTimeoutId) 
@@ -303,6 +307,8 @@ function barRadioOff() {
   }
   VisibilityComponent.getMutable(baseJukeBoxLights1).visible = false
   VisibilityComponent.getMutable(baseJukeBoxLights2).visible = false
+
+  TextShape.getMutable(JukeBoxText).text = "OFF"
 }
 
 export function setBarMusicOn() {
