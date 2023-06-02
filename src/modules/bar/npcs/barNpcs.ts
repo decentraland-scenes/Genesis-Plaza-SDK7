@@ -5,7 +5,7 @@ import { Billboard, Entity, MeshRenderer, TextShape, Transform, engine } from '@
 import { artistRecommendations, fashionistCommonDialog, fashionistEpicDialog, fashionistMythicDialog, fashionistNoneDialog, getFashionistDialog, getOcotDialog, girlArtistTalk } from './npcDialogs'
 import { rarestItem, rarityLevel } from './rarity'
 import * as utils from '@dcl-sdk/utils'
-import { barCenter, coreBuildingOffset } from '../../../lobby/resources/globals'
+import { coreBuildingOffset } from '../../../lobby/resources/globals'
 import { RemoteNpc, hideThinking } from '../../RemoteNpcs/remoteNpc'
 import { FollowPathData } from 'dcl-npc-toolkit/dist/types'
 import { CONFIG } from '../../../config'
@@ -27,7 +27,6 @@ const DOGE_NPC_ANIMATIONS: NpcAnimationNameType = {
   WAVE: { name: "Wave", duration: 4 + ANIM_TIME_PADD },
 }
 
-const npcParent: Entity = createBarParentEntity()
 export let octo: Entity
 export let fashionist: Entity
 export let boyArtist: Entity
@@ -39,15 +38,6 @@ export function initBarNpcs(): void {
   createFashionistNpc()
   createArtistCouple()
   createDogeNpc()
-}
-
-function createBarParentEntity(): Entity {
-  let result = engine.addEntity()
-  Transform.create(result, {
-    position: Vector3.create(24, 0, 40)
-  })
-  // MeshRenderer.setBox(result)
-  return result
 }
 
 function createOctopusNpc() {
@@ -87,15 +77,15 @@ function createOctopusNpc() {
   )
 
   utils.triggers.addTrigger(octo,
+    utils.NO_LAYERS,
     utils.LAYER_1,
-    utils.ALL_LAYERS,
     [{
       type: 'sphere',
       radius: 3,
       position: Vector3.create(0, 0, 0)
-    }],
+    }], 
     (entity) => {
-      // console.log("DebugSession", "Octpus-OnTriggerEnter");
+      // console.log("DebugSession", "Octpus-OnTriggerEnter"); 
       if (engine.PlayerEntity === entity) {
         console.log("DebugSession", "Player Enter Area");
         npcLib.activate(octo)
@@ -103,24 +93,6 @@ function createOctopusNpc() {
       }
     }
   )
-
-  //let playerTriggerEntity = engine.addEntity()
-  //Transform.create(playerTriggerEntity, {
-  //  parent: engine.PlayerEntity,
-  //  position: Vector3.create(0, 0, 0)
-  //})
-  //utils.triggers.addTrigger(
-  //  playerTriggerEntity,
-  //  utils.LAYER_1,
-  //  utils.ALL_LAYERS,
-  //  [{
-  //    type: 'sphere',
-  //    radius: 1
-  //  }],
-  //)
-
-  // utils.triggers.enableDebugDraw(true)
-
 }
 
 function createFashionistNpc(): void {
@@ -240,33 +212,31 @@ function createGirlArtist(): Entity {
 }
 
 function createDogeNpc(): void {
-  let parentPosition = Transform.get(npcParent).position
-  // - coreBuildingOffset.z - parentPosition.z
   let dogePathPoints = [
-    Vector3.create(166.7 - coreBuildingOffset.x - parentPosition.x, 0.24, 163. - coreBuildingOffset.z - parentPosition.z),
-    Vector3.create(161 - coreBuildingOffset.x - parentPosition.x, 0.24, 160 - coreBuildingOffset.z - parentPosition.z),
-    Vector3.create(157.5 - coreBuildingOffset.x - parentPosition.x, 0.24, 157.4 - coreBuildingOffset.z - parentPosition.z),
-    Vector3.create(153.7 - coreBuildingOffset.x - parentPosition.x, 0.24, 156.2 - coreBuildingOffset.z - parentPosition.z),
-    Vector3.create(148.1 - coreBuildingOffset.x - parentPosition.x, 0.24, 156.8 - coreBuildingOffset.z - parentPosition.z),
-    Vector3.create(146.4 - coreBuildingOffset.x - parentPosition.x, 0.24, 156 - coreBuildingOffset.z - parentPosition.z),
-    Vector3.create(143.1 - coreBuildingOffset.x - parentPosition.x, 0.24, 153.1 - coreBuildingOffset.z - parentPosition.z),
-    Vector3.create(143 - coreBuildingOffset.x - parentPosition.x, 0.24, 152.8 - coreBuildingOffset.z - parentPosition.z),
-    Vector3.create(143.2 - coreBuildingOffset.x - parentPosition.x, 0.24, 150.7 - coreBuildingOffset.z - parentPosition.z),
-    Vector3.create(143.26 - coreBuildingOffset.x - parentPosition.x, 0.24, 147.5 - coreBuildingOffset.z - parentPosition.z),
-    Vector3.create(148.1 - coreBuildingOffset.x - parentPosition.x, 0.24, 142.3 - coreBuildingOffset.z - parentPosition.z),
-    Vector3.create(151.9 - coreBuildingOffset.x - parentPosition.x, 0.24, 142.3 - coreBuildingOffset.z - parentPosition.z),
-    Vector3.create(153.8 - coreBuildingOffset.x - parentPosition.x, 0.24, 144.9 - coreBuildingOffset.z - parentPosition.z),
-    Vector3.create(154 - coreBuildingOffset.x - parentPosition.x, 0.24, 146.9 - coreBuildingOffset.z - parentPosition.z),
-    Vector3.create(154.6 - coreBuildingOffset.x - parentPosition.x, 0.24, 149.57 - coreBuildingOffset.z - parentPosition.z),
-    Vector3.create(156.65 - coreBuildingOffset.x - parentPosition.x, 0.24, 154.7 - coreBuildingOffset.z - parentPosition.z),
-    Vector3.create(162.3 - coreBuildingOffset.x - parentPosition.x, 0.24, 156.2 - coreBuildingOffset.z - parentPosition.z),
-    Vector3.create(166.4 - coreBuildingOffset.x - parentPosition.x, 0.24, 156.1 - coreBuildingOffset.z - parentPosition.z),
-    Vector3.create(169.7 - coreBuildingOffset.x - parentPosition.x, 0.24, 156.2 - coreBuildingOffset.z - parentPosition.z),
-    Vector3.create(171.9 - coreBuildingOffset.x - parentPosition.x, 0.24, 157.8 - coreBuildingOffset.z - parentPosition.z),
-    Vector3.create(173.8 - coreBuildingOffset.x - parentPosition.x, 0.24, 158.7 - coreBuildingOffset.z - parentPosition.z),
-    Vector3.create(173.8 - coreBuildingOffset.x - parentPosition.x, 0.24, 160.1 - coreBuildingOffset.z - parentPosition.z),
-    Vector3.create(173.15 - coreBuildingOffset.x - parentPosition.x, 0.24, 161.59 - coreBuildingOffset.z - parentPosition.z),
-    Vector3.create(171.3 - coreBuildingOffset.x - parentPosition.x, 0.24, 163.22 - coreBuildingOffset.z - parentPosition.z),
+    Vector3.create(166.7 - coreBuildingOffset.x, 0.24, 163. - coreBuildingOffset.z),
+    Vector3.create(161 - coreBuildingOffset.x, 0.24, 160 - coreBuildingOffset.z),
+    Vector3.create(157.5 - coreBuildingOffset.x, 0.24, 157.4 - coreBuildingOffset.z),
+    Vector3.create(153.7 - coreBuildingOffset.x, 0.24, 156.2 - coreBuildingOffset.z),
+    Vector3.create(148.1 - coreBuildingOffset.x, 0.24, 156.8 - coreBuildingOffset.z),
+    Vector3.create(146.4 - coreBuildingOffset.x, 0.24, 156 - coreBuildingOffset.z),
+    Vector3.create(143.1 - coreBuildingOffset.x, 0.24, 153.1 - coreBuildingOffset.z),
+    Vector3.create(143 - coreBuildingOffset.x, 0.24, 152.8 - coreBuildingOffset.z),
+    Vector3.create(143.2 - coreBuildingOffset.x, 0.24, 150.7 - coreBuildingOffset.z),
+    Vector3.create(143.26 - coreBuildingOffset.x, 0.24, 147.5 - coreBuildingOffset.z),
+    Vector3.create(148.1 - coreBuildingOffset.x, 0.24, 142.3 - coreBuildingOffset.z),
+    Vector3.create(151.9 - coreBuildingOffset.x, 0.24, 142.3 - coreBuildingOffset.z),
+    Vector3.create(153.8 - coreBuildingOffset.x, 0.24, 144.9 - coreBuildingOffset.z),
+    Vector3.create(154 - coreBuildingOffset.x, 0.24, 146.9 - coreBuildingOffset.z),
+    Vector3.create(154.6 - coreBuildingOffset.x, 0.24, 149.57 - coreBuildingOffset.z),
+    Vector3.create(156.65 - coreBuildingOffset.x, 0.24, 154.7 - coreBuildingOffset.z),
+    Vector3.create(162.3 - coreBuildingOffset.x, 0.24, 156.2 - coreBuildingOffset.z),
+    Vector3.create(166.4 - coreBuildingOffset.x, 0.24, 156.1 - coreBuildingOffset.z),
+    Vector3.create(169.7 - coreBuildingOffset.x, 0.24, 156.2 - coreBuildingOffset.z),
+    Vector3.create(171.9 - coreBuildingOffset.x, 0.24, 157.8 - coreBuildingOffset.z),
+    Vector3.create(173.8 - coreBuildingOffset.x, 0.24, 158.7 - coreBuildingOffset.z),
+    Vector3.create(173.8 - coreBuildingOffset.x, 0.24, 160.1 - coreBuildingOffset.z),
+    Vector3.create(173.15 - coreBuildingOffset.x, 0.24, 161.59 - coreBuildingOffset.z),
+    Vector3.create(171.3 - coreBuildingOffset.x, 0.24, 163.22 - coreBuildingOffset.z),
   ]
 
   for (let index = 0; index < dogePathPoints.length; index++) {
@@ -285,7 +255,7 @@ function createDogeNpc(): void {
     { resourceName: "workspaces/genesis_city/characters/doge" },
     {
       transformData: {
-        parent: npcParent,
+        // parent: npcParent,
         position: dogePathPoints[0],
         scale: Vector3.create(2, 2, 2)
       },
@@ -386,7 +356,6 @@ function createDebugEntity(text: string, position: Vector3) {
   if (!CONFIG.PATH_DEBUG) return
   let test = engine.addEntity()
   Transform.create(test, {
-    parent: npcParent,
     position: position,
     scale: Vector3.create(.25, .25, .25)
   })

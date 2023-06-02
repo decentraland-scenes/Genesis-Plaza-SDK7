@@ -121,7 +121,7 @@ onIdleStateChangedObservableAdd((isIdle: boolean) => {
 
 let barCenter = engine.addEntity()
 Transform.create(barCenter, {
-  position: Vector3.create(32, 0, 40)
+  position: Vector3.create(32, 0, 38)
 })
 utils.triggers.addTrigger(
   barCenter,
@@ -129,12 +129,18 @@ utils.triggers.addTrigger(
   utils.LAYER_1,
   [
     {
-      type: 'sphere',
-      radius: 52
+      type: 'box',
+      scale: {
+        x: 57,
+        y: 25,
+        z: 54
+      }
     }
   ],
-  () => {//onEnter
-    insideBar()
+  (other) => {//onEnter
+    console.log("lazyLoading", "OnEnter", "Other", other, "Player", engine.PlayerEntity, "& Cam", engine.CameraEntity);
+    if(other === engine.PlayerEntity || other === engine.CameraEntity)
+      insideBar()
   },
   () => {//onExit
     exitBar()
@@ -148,11 +154,11 @@ addRepeatTrigger(
   Vector3.create(50, 102, 50),
   () => {
     setBarMusicOn()
-    log('went in')
+    log('went in') 
   },
   undefined,
   false,
-  () => {
+  () => { 
     outOfBar()
     //endArtistTalk() //TODO TAG:PORT-REIMPLEMENT-ME
     lowerVolume()
@@ -244,7 +250,7 @@ utils.triggers.addTrigger(trigger, utils.NO_LAYERS, utils.NO_LAYERS,
 let areNpcsAdded: boolean = false
 function insideBar() {
   const METHOD_NAME = 'insideBar'
-  log(FILE_NAME, METHOD_NAME, "Player Enter")
+  log("lazyLoading",FILE_NAME, METHOD_NAME, "Player Enter")
 
   if (!areNpcsAdded) {
     //Quests
