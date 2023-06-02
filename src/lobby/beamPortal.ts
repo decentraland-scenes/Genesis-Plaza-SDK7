@@ -2,7 +2,7 @@ import { Animator, AudioSource, AudioStream, Entity, GltfContainer, InputAction,
 import { Color3, Vector3 } from '@dcl/sdk/math'
 import { BEAM_SCALE_AMOUNT, INTERACT_WITH_NOTHING_LAYER, ParcelCountMaxY, ParcelCountX, ParcelCountZ, coreBuildingOffset, lobbyCenter } from './resources/globals'
 import { lobbyHeight } from './resources/globals'
-import { isInBar, setBarMusicOn } from '../modules/bar/jukebox'
+import { setBarMusicOff, setBarMusicOn } from '../modules/bar/jukebox'
 import { movePlayerTo } from "~system/RestrictedActions"
 //import { tutorialEnableObservable } from '../modules/tutorialHandler'
 
@@ -23,7 +23,7 @@ AudioSource.create(ambienceBox,{
   audioClipUrl: 'sounds/lobby_ambience.mp3',
   volume: 1,
   loop: true,
-  playing: true
+  playing: false 
 })
 Transform.create(ambienceBox, {
   position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyHeight, lobbyCenter.z - coreBuildingOffset.z)
@@ -35,7 +35,7 @@ AudioSource.create(musicBox, {
   audioClipUrl: 'sounds/lobby_music.mp3',
   volume: 0.2,
   loop: true,
-  playing: true
+  playing: false
 })
 Transform.create(musicBox, {
   position: Vector3.create(0, 2, 0),
@@ -86,6 +86,9 @@ GltfContainer.createOrReplace(beam, beamShape)
 
 const CLASSNAME = "TeleportController"
 export class TeleportController {
+    triggerBoxLobby: Entity
+    triggerBoxLobbyPosition: Vector3
+    triggerBoxLobbyScale: Vector3
     triggerBoxUp: Entity
     triggerBoxUpPosition: Vector3
     triggerBoxUpScale: Vector3
@@ -96,6 +99,7 @@ export class TeleportController {
     triggerBoxFallCheckPosition: Vector3
     triggerBoxFallCheckScale: Vector3
     portalLiftSpiral: Entity
+    beamChargeSound: Entity
     beamFireSound: Entity
     beamFallSound: Entity
     impactSound: Entity
@@ -115,39 +119,42 @@ export class TeleportController {
         //const playerTransform = Transform.getMutable(engine.PlayerEntity)
         //playerTransform.position = { x: lobbyCenter.x + 5, y: 140, z: lobbyCenter.z - 10 }
 
-          /*if (!tutorialRunning) {
-            let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
-            if(lobbyMusic) lobbyMusic.playing = true
-          }*/
-          let ambienceMusic = AudioSource.getMutableOrNull(ambienceBox)
-          if(ambienceMusic) ambienceMusic.playing = true
-          //enable fall sound trigger
-          utils.triggers.enableTrigger(host.triggerBoxUp, true)
-      }
+        /*if (!tutorialRunning) {
+          let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
+          if(lobbyMusic) lobbyMusic.playing = true
+        }*/
 
+        let ambienceMusic = AudioSource.getMutableOrNull(ambienceBox)
+        if(ambienceMusic) ambienceMusic.playing = true
+        let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
+        if(lobbyMusic) lobbyMusic.playing = true
+
+        setBarMusicOff()
+
+        //enable fall sound trigger
+        //utils.triggers.enableTrigger(host.triggerBoxUp, true)
+      }
+ 
       let triggerUpOnEnterTimerId: TimerId
       const COUNT_DOWN_TIMER_AMOUNT = 3000
 
       // Trigger to handle teleporting the player up to the cloud
       this.triggerBoxUp = engine.addEntity()
-
-      this.triggerBoxUpPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y, lobbyCenter.z - coreBuildingOffset.z)
-      this.triggerBoxUpScale = Vector3.create(6, 4.5, 6)
       Transform.create(this.triggerBoxUp, {})
+      this.triggerBoxUpPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y, lobbyCenter.z - coreBuildingOffset.z)
+      this.triggerBoxUpScale = Vector3.create(5, 4.5, 5)
       
+
       utils.triggers.addTrigger(this.triggerBoxUp, INTERACT_WITH_NOTHING_LAYER, utils.LAYER_1,  
         [{type: "box", position: this.triggerBoxUpPosition, scale: this.triggerBoxUpScale}],
         (entity:Entity)=>{ 
-        
           console.log(CLASSNAME,"trigger.camera.enter", "triggerBoxUp", Transform.getOrNull(engine.PlayerEntity),"triggered by",entity,engine.PlayerEntity,engine.CameraEntity)
+
           showTeleportUI("flex")
+          let chargeSound = AudioSource.getMutable(host.beamChargeSound)
+          if (chargeSound) chargeSound.playing = true
           
           triggerCounter.start(COUNT_DOWN_TIMER_AMOUNT / 1000)
-          
-          let portalLyftSpyralSound = AudioSource.getMutable(host.portalLiftSpiral)
-
-          if (!portalLyftSpyralSound.playing) portalLyftSpyralSound.playing = true
-
           triggerUpOnEnterTimerId = utils.timers.setTimeout(triggerUpOnEnter, COUNT_DOWN_TIMER_AMOUNT)
         },
         ()=>{
@@ -170,40 +177,31 @@ export class TeleportController {
         [{type: "box", position: this.triggerBoxDownPosition, scale: this.triggerBoxDownScale}],
         (entity:Entity)=>{ 
           console.log("trigger.camera.enter", "triggerBoxDown","triggered by",entity,"player",engine.PlayerEntity,engine.CameraEntity)
-          //const playerTransform = Transform.getMutable(engine.PlayerEntity)
-          //playerTransform.position = { x: lobbyCenter.x - 5, y: 0, z: lobbyCenter.z + 2 }
+
           movePlayerTo({  newRelativePosition: Vector3.create(lobbyCenter.x - coreBuildingOffset.x - 5, 0, lobbyCenter.z - coreBuildingOffset.z + 2), cameraTarget: Vector3.create(lobbyCenter.x, 2, lobbyCenter.z - 12)})
 
-          let ambienceMusic = AudioSource.getMutableOrNull(ambienceBox)
-          if(ambienceMusic) ambienceMusic.playing = false
-          let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
-          if(lobbyMusic) lobbyMusic.playing = false
           let impactSounds = AudioSource.getMutable(host.impactSound)
           impactSounds.playing = true
+
+          setBarMusicOn()
         },
         undefined,
         Color3.Red()
       )
   
       // Trigger to play fall SFX
-      const triggerBoxFallCheckScale = Vector3.create((ParcelCountX)*16-4, 10, (ParcelCountZ)*16-4)
       this.triggerBoxFallCheck = engine.addEntity()
       Transform.create(this.triggerBoxFallCheck, {})
-      this.triggerBoxFallCheckPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y + lobbyHeight - triggerBoxFallCheckScale.y, lobbyCenter.z - coreBuildingOffset.z)
-      //this.triggerBoxFallCheckScale = Vector3.create(6, 10, 6)
-      //make wide to catch jumping/falling from cloud directlydown
+      const triggerBoxFallCheckScale = Vector3.create((ParcelCountX)*16-4, 10, (ParcelCountZ)*16-4)
       this.triggerBoxFallCheckScale = triggerBoxFallCheckScale
+      this.triggerBoxFallCheckPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y + lobbyHeight - triggerBoxFallCheckScale.y, lobbyCenter.z - coreBuildingOffset.z)
 
      
       utils.triggers.addTrigger(this.triggerBoxFallCheck, utils.NO_LAYERS, utils.LAYER_1, 
         [{type: "box", position: this.triggerBoxFallCheckPosition, scale: this.triggerBoxFallCheckScale}],
         ()=>{
-
           console.log(CLASSNAME,"trigger.camera.enter", "triggerBoxFallCheck")
-          let ambienceMusic = AudioSource.getMutableOrNull(ambienceBox)
-          if(ambienceMusic) ambienceMusic.playing = false
-          let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
-          if(lobbyMusic) lobbyMusic.playing = false
+
           let beamFallSound = AudioSource.getMutable(host.beamFallSound)
           beamFallSound.playing = true
         },
@@ -211,16 +209,35 @@ export class TeleportController {
         Color3.Red()
       )
 
+
+      this.triggerBoxLobby = engine.addEntity()
+      Transform.create(this.triggerBoxLobby, {})
+      this.triggerBoxLobbyScale = Vector3.create(35,6,35)
+      this.triggerBoxLobbyPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y + lobbyHeight, lobbyCenter.z - coreBuildingOffset.z)
   
+      utils.triggers.addTrigger(this.triggerBoxLobby, utils.NO_LAYERS, utils.LAYER_1,  
+        [{type: "box", position: this.triggerBoxLobbyPosition, scale: this.triggerBoxLobbyScale}],
+        ()=>{ 
+          let ambienceMusic = AudioSource.getMutableOrNull(ambienceBox)
+          if(ambienceMusic) ambienceMusic.playing = true
+          let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
+          if(lobbyMusic) lobbyMusic.playing = true
+        },
+        ()=>{
+          let ambienceMusic = AudioSource.getMutableOrNull(ambienceBox)
+          if(ambienceMusic) ambienceMusic.playing = false
+          let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
+          if(lobbyMusic) lobbyMusic.playing = false
+        },
+        Color3.Blue()
+      )
+
+
+
+
 
 
       this.portalLiftSpiral = engine.addEntity()
-      AudioSource.create(this.portalLiftSpiral, {
-        audioClipUrl: 'sounds/beam_charge.mp3',
-        volume: 0.5,
-        //loop: true,
-        playing: false
-      })
       Transform.create(this.portalLiftSpiral,{
           position: Vector3.create(lobbyCenter.x, lobbyCenter.y, lobbyCenter.z),
           scale: Vector3.create(1, 0, 1)
@@ -228,8 +245,22 @@ export class TeleportController {
       GltfContainer.create(this.portalLiftSpiral,{
         src: "models/lobby/portal_lift_spiral.glb"
       })
-      
-  
+
+
+      //beam charge sound attached to player
+      this.beamChargeSound = engine.addEntity()
+      AudioSource.create(this.beamChargeSound, {
+        audioClipUrl: 'sounds/beam_charge.mp3',
+        volume: 0.5,
+        //loop: true,
+        playing: false
+      })
+      Transform.create(this.beamChargeSound,{
+        position: Vector3.create(0, 1, 0),
+        parent: engine.PlayerEntity
+      })
+
+        
       //beam teleport sound attached to player
       this.beamFireSound = engine.addEntity()
       AudioSource.create(this.beamFireSound, {

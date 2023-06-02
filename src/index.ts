@@ -38,8 +38,8 @@ initRegistery()
 initConfig()
 addAnalytics()
 
-placeJukeBox() 
-setBarMusicOn()
+placeJukeBox()
+//setBarMusicOn()
 
 
 
@@ -124,7 +124,7 @@ onIdleStateChangedObservableAdd((isIdle: boolean) => {
 
 let barCenter = engine.addEntity()
 Transform.create(barCenter, {
-  position: Vector3.create(32, 0, 40)
+  position: Vector3.create(32, 0, 38)
 })
 utils.triggers.addTrigger(
   barCenter, 
@@ -132,13 +132,18 @@ utils.triggers.addTrigger(
   utils.LAYER_1,
   [ 
     {
-      type: 'sphere',
-      radius: 52
+      type: 'box',
+      scale: {
+        x: 57,
+        y: 25,
+        z: 54
+      }
     }
   ],
-  (entity: Entity) => {//onEnter 
-    console.log("index.ts", "trigger.bar.enter","triggerParent",barCenter,"entityInteracting", entity)
-    insideBar()
+  (other) => {//onEnter
+    console.log("lazyLoading", "OnEnter", "Other", other, "Player", engine.PlayerEntity, "& Cam", engine.CameraEntity);
+    if(other === engine.PlayerEntity || other === engine.CameraEntity)
+      insideBar()
   },
   (entity: Entity) => {//onExit
     console.log("index.ts", "trigger.bar.exit","triggerParent",barCenter,"entityInteracting", entity)
@@ -149,23 +154,21 @@ utils.triggers.addTrigger(
 
 // proper bar interior
 addRepeatTrigger(
-  Vector3.create(160 - coreBuildingOffset.x, 50, 155 - coreBuildingOffset.z),
+  Vector3.create(160 - coreBuildingOffset.x, 50, 152 - coreBuildingOffset.z),
   Vector3.create(50, 102, 50),
   (entity: Entity) => {
     console.log("index.ts", "trigger.bar2???.enter","triggerParent",undefined,"entityInteracting", entity)
     setBarMusicOn()
-    log('went in')
+    log('went in') 
   },
   undefined,
   false,
   (entity: Entity) => {
     console.log("index.ts", "trigger.bar2???.exit","triggerParent",undefined,"entityInteracting", entity)
-    outOfBar()
     //endArtistTalk() //TODO TAG:PORT-REIMPLEMENT-ME
+    outOfBar()
     lowerVolume()
     log('mid distance')
-
-    //setBarMusicOff()
   }
 )
 
@@ -175,8 +178,6 @@ addRepeatTrigger(
   Vector3.create(60, 60, 70),
   (entity: Entity) => {
     console.log("index.ts", "trigger.bar.outerparim.enter","triggerParent",undefined,"entityInteracting", entity)
-    lowerVolume()
-    log('got closer')
   },
   undefined,
   false,
@@ -253,7 +254,7 @@ utils.triggers.addTrigger(trigger, utils.NO_LAYERS, utils.NO_LAYERS,
 let areNpcsAdded: boolean = false
 function insideBar() {
   const METHOD_NAME = 'insideBar'
-  log(FILE_NAME, METHOD_NAME, "Player Enter")
+  log("lazyLoading",FILE_NAME, METHOD_NAME, "Player Enter")
 
   if (!areNpcsAdded) {
     //Quests

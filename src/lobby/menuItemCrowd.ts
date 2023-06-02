@@ -10,7 +10,8 @@ import { AudioSource, Entity, GltfContainer, InputAction, TextAlignMode, TextSha
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { _openExternalURL, _teleportTo } from '../back-ports/backPorts'
 import { getImageOrFallback } from '../utils/allowedMediaHelper'
-import { trackAction } from '../modules/stats/analyticsComponents'
+import { TrackingElement, trackAction } from '../modules/stats/analyticsComponents'
+import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES } from '../modules/stats/AnalyticsConfig'
 
  
 
@@ -57,6 +58,12 @@ export class CrowdMenuItem extends MenuItem {
     GltfContainer.createOrReplace(this.itemBox, resource.menuTitleBGShape )    
     VisibilityComponent.create(this.itemBox, {visible: true})
     Transform.getMutable(this.itemBox).parent = this.entity
+
+    TrackingElement.create(this.itemBox, 
+      {elementType: ANALYTICS_ELEMENTS_TYPES.interactable, 
+       elementId: ANALYTICS_ELEMENTS_IDS.menuItemCrowd
+    })
+
 
     this.defaultItemScale = Vector3.create(2, 2, 2)
     this.scale = Vector3.create(1, 0.5, 1)
