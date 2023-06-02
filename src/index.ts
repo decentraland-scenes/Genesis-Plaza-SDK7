@@ -135,10 +135,11 @@ utils.triggers.addTrigger(
     }
   ],
   (entity: Entity) => {//onEnter 
-    console.log("index.ts", "trigger.bar", entity)
+    console.log("index.ts", "trigger.bar.enter","triggerParent",barCenter,"entityInteracting", entity)
     insideBar()
   },
-  () => {//onExit
+  (entity: Entity) => {//onExit
+    console.log("index.ts", "trigger.bar.exit","triggerParent",barCenter,"entityInteracting", entity)
     exitBar()
   },
   Color3.Red()
@@ -148,13 +149,15 @@ utils.triggers.addTrigger(
 addRepeatTrigger(
   Vector3.create(160 - coreBuildingOffset.x, 50, 155 - coreBuildingOffset.z),
   Vector3.create(50, 102, 50),
-  () => {
+  (entity: Entity) => {
+    console.log("index.ts", "trigger.bar2???.enter","triggerParent",undefined,"entityInteracting", entity)
     setBarMusicOn()
     log('went in')
   },
   undefined,
   false,
-  () => {
+  (entity: Entity) => {
+    console.log("index.ts", "trigger.bar2???.exit","triggerParent",undefined,"entityInteracting", entity)
     outOfBar()
     //endArtistTalk() //TODO TAG:PORT-REIMPLEMENT-ME
     lowerVolume()
@@ -168,13 +171,15 @@ addRepeatTrigger(
 addRepeatTrigger(
   Vector3.create(160 - coreBuildingOffset.x, 30, 155 - coreBuildingOffset.z),
   Vector3.create(60, 60, 70),
-  () => {
+  (entity: Entity) => {
+    console.log("index.ts", "trigger.bar.outerparim.enter","triggerParent",undefined,"entityInteracting", entity)
     lowerVolume()
     log('got closer')
   },
   undefined,
   false,
-  () => {
+  (entity: Entity) => {
+    console.log("index.ts", "trigger.bar.outerparim.exit","triggerParent",undefined,"entityInteracting", entity)
     setBarMusicOff()
     log('got far')
   }
@@ -209,7 +214,7 @@ utils.addOneTimeTrigger(
       log('SOUTH BORDER')
       outsideBar()
     },
-  }
+  } 
 )
 
 utils.addOneTimeTrigger(

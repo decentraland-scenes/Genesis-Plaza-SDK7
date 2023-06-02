@@ -1,6 +1,7 @@
 import * as utils from '@dcl-sdk/utils'
 import { Entity, Transform, engine } from '@dcl/sdk/ecs';
 import { Color3, Vector3 } from '@dcl/sdk/math';
+import { INTERACT_WITH_NOTHING_LAYER } from '../lobby/resources/globals';
 
 export function shuffleArray<T>(array: T[]): T[] {
   for (let i = array.length - 1; i > 0; i--) {
@@ -16,10 +17,10 @@ export function shuffleArray<T>(array: T[]): T[] {
 export function addRepeatTrigger(
   position: Vector3,
   size: Vector3,
-  onPlayerEnter: () => void ,
+  onPlayerEnter: (entity: Entity) => void ,
   parent: Entity|undefined,
   show: boolean = false,
-  onExit: () => void 
+  onExit: (entity: Entity) => void 
 ) {
   
 
@@ -32,7 +33,7 @@ export function addRepeatTrigger(
  
   utils.triggers.addTrigger(
     trigger
-    , utils.NO_LAYERS, utils.LAYER_1 
+    , INTERACT_WITH_NOTHING_LAYER, utils.LAYER_1 
     ,[{position:Vector3.Zero(),scale:size,type:'box'}]
     ,onPlayerEnter
     ,onExit,  Color3.Yellow()
