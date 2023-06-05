@@ -174,7 +174,7 @@ addRepeatTrigger(
 )
 
 //outer perimeter
-console.log("index.ts", "trigger.bar2???.created","triggerParent",undefined)
+console.log("index.ts", "trigger.bar.outerparim.enter","triggerParent",undefined)
 addRepeatTrigger(
   Vector3.create(160 - coreBuildingOffset.x, 30, 155 - coreBuildingOffset.z),
   Vector3.create(60, 60, 70),
