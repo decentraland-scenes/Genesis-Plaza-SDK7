@@ -37,8 +37,8 @@ export function addAnalytics() {
   )
 
   const sliderInCloudAnalyticsTrigger = engine.addEntity()
-  const sliderInCloudAnalyticsTriggerPosition = Vector3.create(161, lobbyHeight, 159)
-  const sliderInCloudAnalyticsTriggerScale = Vector3.create(30, 4, 10)
+  const sliderInCloudAnalyticsTriggerPosition = Vector3.create(161 - coreBuildingOffset.x, lobbyHeight, 160 - coreBuildingOffset.z)
+  const sliderInCloudAnalyticsTriggerScale = Vector3.create(30, 4, 12)
   Transform.create(sliderInCloudAnalyticsTrigger, {})
 
   TrackingElement.create(sliderInCloudAnalyticsTrigger, {
@@ -58,11 +58,11 @@ export function addAnalytics() {
       console.log(AnalyticsLogLabel, "analytics.ts", "SliderArea_Region", "onExit")
       trackEnd(sliderInCloudAnalyticsTrigger)
     },
-    Color3.Blue()
+    Color3.Red()
   )
 
   const barAnalyticsTrigger = engine.addEntity()
-  const barAnalyticsTriggerPosition = Vector3.create(160, 1, 150)
+  const barAnalyticsTriggerPosition = Vector3.create(160 - coreBuildingOffset.x, 1, 166.5 - coreBuildingOffset.x)
   const barAnalyticsTriggerScale = Vector3.create(50, 30, 47)
   Transform.create(barAnalyticsTrigger, {})
 
