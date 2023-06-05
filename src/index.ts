@@ -26,6 +26,7 @@ import { initIdleStateChangedObservable, onIdleStateChangedObservableAdd } from 
 import { Transform, engine,Entity } from '@dcl/ecs'
 import { addAnalytics } from './analytics'
 import { initOnCameraModeChangedObservable } from './back-ports/onCameraModeChangedObservable'
+import { initSoundsAttachedToPlayerHandler } from './modules/soundsAttachedToPlayer'
 
 // export all the functions required to make the scene work
 export * from '@dcl/sdk'
@@ -40,6 +41,8 @@ initConfig()
 addAnalytics()
 
 initOnCameraModeChangedObservable()
+
+initSoundsAttachedToPlayerHandler()
 
 placeJukeBox()
 //setBarMusicOn()
