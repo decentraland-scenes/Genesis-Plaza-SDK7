@@ -41,8 +41,13 @@ export function applyAudioStreamWorkAround(type:'enter'|'exit'){
   }
 } 
 
+//CURRENT BUG - if currently playing and change volume sound resets :(
+const ENABLE_SOUND_ADJUST = true
 export function initSoundsAttachedToPlayerHandler(){
-
+  if(!ENABLE_SOUND_ADJUST){
+    console.log("initSoundsAttachedToPlayerHandler","disabled till bug where sound playing restarts when volume changed is fixed","ENABLE_SOUND_ADJUST",ENABLE_SOUND_ADJUST)
+    return;
+  }
   onOnCameraModeChangedObservableAdd((mode: CameraType) => {
     const audioStreamGroup = engine.getEntitiesWith(AudioSourceAttachedToPlayer)
     for(const [ent,audioAttachedToPlayerReadOnly] of audioStreamGroup){

@@ -319,6 +319,12 @@ export class TeleportController {
         position: Vector3.create(0, 1, 0),
         parent: engine.PlayerEntity
       })
+
+      AudioSourceAttachedToPlayer.create(this.impactSound,{
+        id: 'impact_hard',
+        thirdPersonVolume: AudioSource.get(this.impactSound).volume,
+        firstPersonVolume: AudioSource.get(this.impactSound).volume + FIRST_PERSON_VOLUME_ADJ
+      })
     }
 }
 
