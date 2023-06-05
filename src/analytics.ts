@@ -62,7 +62,7 @@ export function addAnalytics() {
   )
 
   const barAnalyticsTrigger = engine.addEntity()
-  const barAnalyticsTriggerPosition = Vector3.create(160, 1, 150)
+  const barAnalyticsTriggerPosition = Vector3.create(160 - coreBuildingOffset.x, 1, 166.5 - coreBuildingOffset.x)
   const barAnalyticsTriggerScale = Vector3.create(50, 30, 47)
   Transform.create(barAnalyticsTrigger, {})
 
