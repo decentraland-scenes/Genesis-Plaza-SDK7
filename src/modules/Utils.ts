@@ -34,7 +34,7 @@ export function addRepeatTrigger(
   if(parent){  
     triggerParams.parent = parent
   }
-  Transform.create(trigger)
+  Transform.create(trigger,triggerParams)
  
   utils.triggers.addTrigger(
     trigger
