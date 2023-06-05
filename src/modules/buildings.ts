@@ -1,4 +1,4 @@
-import { engine, executeTask, GltfContainer, InputAction, Material, pointerEventsSystem, Transform } from '@dcl/sdk/ecs'
+import { ColliderLayer, engine, executeTask, GltfContainer, InputAction, Material, pointerEventsSystem, Transform } from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { _openExternalURL, log } from '../back-ports/backPorts'
 import { barCenter, coreBuildingOffset, lobbyHeight, lobbyHeightLegacy, WELCOME_OFFSET_Y_AMOUNT } from '../lobby/resources/globals'
@@ -10,7 +10,7 @@ export function addBuildings() {
 
   // add lobby platform + teleport beam
   let lobby = engine.addEntity()
-  GltfContainer.create(lobby,{src:'models/lobby/lobby_platform_cutout.glb'})
+  GltfContainer.create(lobby,{src:'models/lobby/lobby_platform_cutout.glb', visibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
   Transform.create(lobby,{
       //position: Vector3.create(0 - coreBuildingOffset.x, lobbyHeight - lobbyHeightLegacy, 0 - coreBuildingOffset.z),
       position: Vector3.create(barCenter.x,0-2.3,barCenter.z),
