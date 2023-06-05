@@ -33,14 +33,16 @@ export function addRepeatTrigger(
   //BUG if you set parent even if it's undefined it breaks the layer logic somehow
   if(parent){  
     triggerParams.parent = parent
-  }
+  } 
   Transform.create(trigger,triggerParams)
  
   utils.triggers.addTrigger(
     trigger
     , TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, utils.LAYER_1 
+    //, position: Vector3.create(0,0,0), scale: Vector3.create(3,2,3)
     ,[{position:Vector3.Zero(),scale:size,type:'box'}]
     ,onPlayerEnter
-    ,onExit,  Color3.Yellow()
+    ,onExit
+    ,Color3.Yellow()
   ) 
 }
