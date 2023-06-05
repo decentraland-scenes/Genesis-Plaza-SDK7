@@ -148,7 +148,7 @@ export class TeleportController {
       utils.triggers.addTrigger(this.triggerBoxUp, TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, utils.LAYER_1,  
         [{type: "box", position: this.triggerBoxUpPosition, scale: this.triggerBoxUpScale}],
         (entity:Entity)=>{ 
-          console.log(CLASSNAME,"trigger.camera.enter", "triggerBoxUp", Transform.getOrNull(engine.PlayerEntity),"triggered by",entity,engine.PlayerEntity,engine.CameraEntity)
+          console.log(CLASSNAME,"trigger.beamMeUp.enter", "triggerBoxUp", Transform.getOrNull(engine.PlayerEntity),"triggered by",entity,engine.PlayerEntity,engine.CameraEntity)
 
           showTeleportUI("flex")
           let chargeSound = AudioSource.getMutable(host.beamChargeSound)
@@ -176,7 +176,7 @@ export class TeleportController {
       utils.triggers.addTrigger(this.triggerBoxDown, TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, utils.LAYER_1,  
         [{type: "box", position: this.triggerBoxDownPosition, scale: this.triggerBoxDownScale}],
         (entity:Entity)=>{ 
-          console.log("trigger.camera.enter", "triggerBoxDown","triggered by",entity,"player",engine.PlayerEntity,engine.CameraEntity)
+          console.log("trigger.barFromLobbyTrigger.enter", "triggerBoxDown","triggered by",entity,"player",engine.PlayerEntity,engine.CameraEntity)
 
           movePlayerTo({  newRelativePosition: Vector3.create(lobbyCenter.x - coreBuildingOffset.x - 5, 0, lobbyCenter.z - coreBuildingOffset.z + 2), cameraTarget: Vector3.create(lobbyCenter.x, 2, lobbyCenter.z - 12)})
 
@@ -200,13 +200,13 @@ export class TeleportController {
       utils.triggers.addTrigger(this.triggerBoxFallCheck, utils.NO_LAYERS, utils.LAYER_1, 
         [{type: "box", position: this.triggerBoxFallCheckPosition, scale: this.triggerBoxFallCheckScale}],
         ()=>{
-          console.log(CLASSNAME,"trigger.camera.enter", "triggerBoxFallCheck")
+          console.log(CLASSNAME,"trigger.triggerPlayerFell.enter", "triggerBoxFallCheck")
 
           let beamFallSound = AudioSource.getMutable(host.beamFallSound)
           beamFallSound.playing = true
         },
         undefined,
-        Color3.Red()
+        Color3.Teal()
       )
 
 
