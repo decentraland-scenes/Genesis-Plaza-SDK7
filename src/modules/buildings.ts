@@ -10,7 +10,11 @@ export function addBuildings() {
 
   // add lobby platform + teleport beam
   let lobby = engine.addEntity()
-  GltfContainer.create(lobby,{src:'models/lobby/lobby_platform_cutout.glb', visibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
+  GltfContainer.create(lobby,
+    {src:'models/lobby/lobby_platform_cutout.glb'
+      , visibleMeshesCollisionMask: ColliderLayer.CL_NONE
+      , invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS
+    })
   Transform.create(lobby,{
       //position: Vector3.create(0 - coreBuildingOffset.x, lobbyHeight - lobbyHeightLegacy, 0 - coreBuildingOffset.z),
       position: Vector3.create(barCenter.x,0-2.3,barCenter.z),
