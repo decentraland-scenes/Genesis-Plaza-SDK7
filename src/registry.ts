@@ -8,16 +8,23 @@ export type NpcAnimationNameDef = {
   name: string
   duration: number
   autoStart?: boolean
+  portraitDirectory?: string
 }
 export type NpcAnimationNameType = {
+  HI?: NpcAnimationNameDef
   IDLE: NpcAnimationNameDef
   WALK?: NpcAnimationNameDef
   RUN?: NpcAnimationNameDef
   THINKING?: NpcAnimationNameDef
   TALK?: NpcAnimationNameDef
+  LOADING?: NpcAnimationNameDef
+  LAUGH?: NpcAnimationNameDef
   WAVE?: NpcAnimationNameDef
   HEART_WITH_HANDS?: NpcAnimationNameDef
   COME_ON?: NpcAnimationNameDef
+  HAPPY?: NpcAnimationNameDef
+  SAD?: NpcAnimationNameDef
+  SURPRISE?: NpcAnimationNameDef
 }
 
 class Registry {

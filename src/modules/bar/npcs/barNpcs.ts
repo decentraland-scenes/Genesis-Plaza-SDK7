@@ -34,6 +34,7 @@ export let fashionist: Entity
 export let boyArtist: Entity
 export let girlArtist: Entity
 export let doge: RemoteNpc
+export let simonas: RemoteNpc
 
 export function initBarNpcs(): void {
   createOctopusNpc()
@@ -357,6 +358,69 @@ function createDogeNpc(): void {
   doge.predefinedQuestions = genericPrefinedQuestions
   REGISTRY.allNPCs.push(doge)
   npcLib.followPath(doge.entity)
+}
+
+const SIMONAS_NPC_ANIMATIONS: NpcAnimationNameType = {
+  HI: { name: "Hi", duration: 2, autoStart: undefined, portraitDirectory: "images/portaits/simone/hi1.png"},
+  IDLE: { name: "Idle", duration: 4, autoStart: undefined, portraitDirectory: "images/portaits/simone/idle1.png"},
+  TALK: { name: "Talking", duration: 2, autoStart: undefined, portraitDirectory: "images/portaits/simone/talking1.png"},
+  THINKING: { name: "Thinking", duration: 2, autoStart: undefined, portraitDirectory: "images/portaits/simone/interesting1.png"},
+  LOADING: { name: "Loading", duration: 2, autoStart: undefined, portraitDirectory: "images/portaits/simone/interesting1.png"},
+  LAUGH: { name: "Laugh", duration: 2, autoStart: undefined, portraitDirectory: "images/portaits/simone/laughing1.png"},
+  HAPPY: { name: "Happy", duration: 2, autoStart: undefined, portraitDirectory: "images/portaits/simone/happy1.png"},
+  SAD: { name: "Sad", duration: 2, autoStart: undefined, portraitDirectory: "images/portaits/simone/sad1.png"},
+  SURPRISE: { name: "Surprise", duration: 2, autoStart: undefined, portraitDirectory: "images/portaits/simone/surprise1.png"},
+}
+
+function createSimonas() {
+  simonas = new RemoteNpc(
+    { resourceName: "workspaces/genesis_city/characters/simone" },
+    {
+      transformData: { position: Vector3.create(6, 0, 6), scale: Vector3.create(1, 1, 1) },
+      npcData: {
+        type: npcLib.NPCType.CUSTOM,
+        model: 'models/Simone_Anim.glb',
+        onActivate: () => {
+          console.log('Simonas.NPC activated!')
+
+          if (simonas.npcAnimations.HI) npcLib.playAnimation(simonas.entity, simonas.npcAnimations.HI.name, true, simonas.npcAnimations.HI.duration)
+        },
+        onWalkAway: () => {
+          console.log("NPC", simonas.name, 'on walked away')
+
+          if (simonas.npcAnimations.SAD) npcLib.playAnimation(simonas.entity, simonas.npcAnimations.SAD.name, true, simonas.npcAnimations.SAD.duration)
+        },
+        idleAnim: SIMONAS_NPC_ANIMATIONS.IDLE.name,
+        
+        darkUI: true,
+        coolDownDuration: 3,
+        hoverText: 'Talk',
+        onlyETrigger: true,
+        onlyClickTrigger: false,
+        onlyExternalTrigger: false,
+        reactDistance: 5,
+        continueOnWalkAway: true,
+      }
+    },
+    {
+      npcAnimations: SIMONAS_NPC_ANIMATIONS,
+      thinking: {
+        enabled: true,
+        textEnabled: false,
+        modelPath: 'models/loading-icon.glb',
+        offsetX: 0,
+        offsetY: 2,
+        offsetZ: 0
+      }
+      , onEndOfRemoteInteractionStream: () => {
+        console.error(LogTag, "Missing UI", 97)
+      }
+      , onEndOfInteraction: () => {}
+    }
+  )
+  simonas.name = "npc.dclGuide"
+
+  REGISTRY.allNPCs.push(simonas)
 }
 
 
