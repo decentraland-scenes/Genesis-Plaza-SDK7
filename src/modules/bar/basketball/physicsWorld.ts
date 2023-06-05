@@ -24,5 +24,20 @@ export class PhysicsWorldStatic {
             this.world.addBody(colliderData[i])
         }
 
+        //ground plane collider
+        const planeShape = new CANNON.Plane()
+        const groundBody = new CANNON.Body({
+        mass: 0, // mass == 0 makes the body static
+        })
+        groundBody.addShape(planeShape)
+        groundBody.quaternion.setFromAxisAngle(
+        new CANNON.Vec3(1, 0, 0),
+        -Math.PI / 2
+        ) // Reorient ground plane to be in the y-axis
+        groundBody.position.y = 0.23 // Thickness of ground base model
+        groundBody.material = ballBounceMaterial
+        this.world.addBody(groundBody)
+    
+
     }
 }

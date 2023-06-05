@@ -93,7 +93,7 @@ const uiBasketball = () => (
           alignItems: 'center',
           alignSelf: 'center',
           positionType: 'absolute',
-          position: { left: '-50%', top: '50%' },
+          position: { left: '-50%', top: '120%' },
           display: strengthBarVisible
         }}
       >

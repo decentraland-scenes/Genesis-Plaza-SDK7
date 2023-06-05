@@ -7,6 +7,7 @@ import { displayBasketballUI, hideBasketballUI, hideStrenghtBar, scoreDisplay, s
 import { BasketballHoop } from './hoop'
 import { PhysicsWorldStatic, ballBounceMaterial } from './physicsWorld'
 import { bounceSource, bounceVolume, pickupSource, pickupVolume, throwBallSource, throwBallVolume } from './sounds'
+import { Perimeter } from './perimeter'
 import { moveLineBetween, realDistance } from './utilFunctions'
 import { barCenter } from '../../../lobby/resources/globals'
 
@@ -60,9 +61,6 @@ const ballShape:PBGltfContainer =  {
 }
 
 const ballHighlightShape:PBGltfContainer =  {src:"models/basketball/ball_outline.glb"}
-const perimeterShape:PBGltfContainer =  {src:"models/basketball/perimeter.glb"}
-
-
 
 export class PhysicsManager {
 
@@ -81,8 +79,8 @@ export class PhysicsManager {
   trails:Entity[]
   trailCount:number
   ballZoneCenter:Vector3
-  perimeter:Entity
-  perimeterColliderCount:number = 16
+  perimeter:Perimeter
+  
   
 
   constructor(ballCount:number){
@@ -123,32 +121,15 @@ export class PhysicsManager {
       
     })   
 
-
-    // const translocatorPhysicsMaterial: CANNON.Material = new CANNON.Material(
-    //   'translocatorMaterial',
-    // )   
-    // translocatorPhysicsMaterial.friction = 0.2
-    // translocatorPhysicsMaterial.restitution = 0.5
-    this.playerCollider.material = ballBounceMaterial // Add bouncy material to translocator body
-    this.playerCollider.linearDamping = 0.24 // Round bodies will keep translating even with friction so you need linearDamping
-    this.playerCollider.angularDamping = 0.4 // Round bodies will keep rotating even with friction so you need angularDamping
+    // this.playerCollider.material = ballBounceMaterial // Add bouncy material to translocator body
+    // this.playerCollider.linearDamping = 0.24 // Round bodies will keep translating even with friction so you need linearDamping
+    // this.playerCollider.angularDamping = 0.4 // Round bodies will keep rotating even with friction so you need angularDamping
     
     //this.world.addBody(this.playerCollider) 
     
-    //ground plane collider
-    const planeShape = new CANNON.Plane()
-    const groundBody = new CANNON.Body({
-      mass: 0, // mass == 0 makes the body static
-    })
-    groundBody.addShape(planeShape)
-    groundBody.quaternion.setFromAxisAngle(
-      new CANNON.Vec3(1, 0, 0),
-      -Math.PI / 2
-    ) // Reorient ground plane to be in the y-axis
-    groundBody.position.y = 0.23 // Thickness of ground base model
-    groundBody.material = ballBounceMaterial
-    this.world.addBody(groundBody)
-    
+    //add perimeter
+    this.perimeter = new Perimeter(Vector3.create(32,0,38), PHYSICS_RADIUS, this.world)
+
     //add initial balls
     for(let i=0; i< ballCount; i++){
       this.addObject(Vector3.create(24+Math.random()*2,4 + Math.random()*4,35+Math.random()*8))
@@ -214,50 +195,11 @@ export class PhysicsManager {
 
       this.trails.push(trailLine)
     }
-
-    //perimeter visualizer ring
-    this.perimeter = engine.addEntity()
-    Transform.create(this.perimeter, {
-      position: Vector3.create(this.ballZoneCenter.x, 0.22, this.ballZoneCenter.z ),
-      scale: Vector3.create(PHYSICS_RADIUS,3,PHYSICS_RADIUS)
-    })
-    GltfContainer.create(this.perimeter, perimeterShape)
-    VisibilityComponent.create(this.perimeter, {visible: false})
-
-
-    // PERIMETER COLLIDERS FOR PHYSICS OBJECTS
-    for(let i=0; i< this.perimeterColliderCount; i++){
-
-      let angleStep = 360/this.perimeterColliderCount 
-      let rot =  Quaternion.fromEulerDegrees(0,angleStep*i,0)
-      let pos = Vector3.rotate(Vector3.Forward(), rot)
-      pos = Vector3.scale(pos, PHYSICS_RADIUS)
-      pos = Vector3.add(this.ballZoneCenter, pos)
-      pos.y = 10
-
-      const pWall = new CANNON.Body({
-        mass: 0, // mass == 0 makes the body static
-        fixedRotation: true,
-        quaternion: new CANNON.Quaternion(rot.x, rot.y, rot.z, rot.w),
-        position: new CANNON.Vec3(pos.x, pos.y, pos.z)
-      })
-      pWall.addShape(new CANNON.Box(new CANNON.Vec3(5,20,0.5)))
-      
-      pWall.position.y = 0.2 // Thickness of ground base model
-      pWall.material = ballBounceMaterial
-      this.world.addBody(pWall)
-      
-    }
-
-
     
-
-
-    //this.addObject(Vector3.create(32,10,32))
   }
   addObject(pos:Vector3){
 
-    let cannonBody = new CANNON.Body({
+    let ballBody = new CANNON.Body({
       mass: 0.8, // kg
       position: new CANNON.Vec3(
         pos.x,
@@ -285,19 +227,19 @@ export class PhysicsManager {
     )
     utils.triggers.enableTrigger(ball,false)
 
-    const translocatorPhysicsMaterial: CANNON.Material = new CANNON.Material(
-      'translocatorMaterial'
+    const ballBallMaterial: CANNON.Material = new CANNON.Material(
+      'ballBallMaterial'
       
     )
 
-    cannonBody.material = translocatorPhysicsMaterial // Add bouncy material to translocator body
-    cannonBody.linearDamping = 0.1 // Round bodies will keep translating even with friction so you need linearDamping
-    cannonBody.angularDamping = 0.4 // Round bodies will keep rotating even with friction so you need angularDamping
+    ballBody.material = ballBallMaterial // Add bouncy material to translocator body
+    ballBody.linearDamping = 0.1 // Round bodies will keep translating even with friction so you need linearDamping
+    ballBody.angularDamping = 0.4 // Round bodies will keep rotating even with friction so you need angularDamping
     
     // ball collision event (bounce)
-    cannonBody.addEventListener('collide', ()=>{    
+    ballBody.addEventListener('collide', ()=>{    
       
-      const velocity = Vector3.length(Vector3.create(cannonBody.velocity.x, cannonBody.velocity.y, cannonBody.velocity.z ))
+      const velocity = Vector3.length(Vector3.create(ballBody.velocity.x, ballBody.velocity.y, ballBody.velocity.z ))
 
       if(velocity > 2){
         AudioSource.createOrReplace(ball, {
@@ -310,10 +252,10 @@ export class PhysicsManager {
         
     })
 
-    translocatorPhysicsMaterial.restitution = 1
-    this.world.addBody(cannonBody) 
+    ballBallMaterial.restitution = 1
+    this.world.addBody(ballBody) 
     this.balls.push(ball)
-    this.cannonBodies.push(cannonBody)
+    this.cannonBodies.push(ballBody)
     let index = this.balls.length-1
 
     Throwable.create(ball, {
@@ -326,18 +268,6 @@ export class PhysicsManager {
       anchorOffset: Vector3.create(-0.0,0.2,0),
      
     } )
-
-
-
-    
-
-
-    // pointerEventsSystem.onPointerDown(ball,
-    //   (e) => {      
-    //       this.pickUpBall(index)
-    //   },         
-    //   { hoverText: 'Pick up', button: InputAction.IA_PRIMARY, maxDistance:10 }
-    // )    
 
     PointerEvents.create(ball, { pointerEvents: [
       {
@@ -383,12 +313,7 @@ export class PhysicsManager {
 
   }
 
-  showPerimeter(){
-    VisibilityComponent.getMutable(this.perimeter).visible = true
-  }
-  hidePerimeter(){
-    VisibilityComponent.getMutable(this.perimeter).visible = false
-  }
+  
 
   pickUpBall(index:number){
    
@@ -415,12 +340,12 @@ export class PhysicsManager {
     // })
       this.carriedIndex = index
       displayBasketballUI()
-      this.showPerimeter()
+      this.perimeter.show()
     }
   }
 
   resetBall(index:number){
-    this.hidePerimeter()
+    this.perimeter.hide()
 
     if(this.playerHolding){
       let ball = this.balls[this.carriedIndex]
@@ -452,7 +377,7 @@ export class PhysicsManager {
   throw(){
 
     if(this.playerHolding){
-      this.hidePerimeter()
+      this.perimeter.hide()
       hideStrenghtBar()
       //lock the bottom of each hoop
       for ( let i=0; i< this.hoops.length; i++){
@@ -641,24 +566,10 @@ export class PhysicsManager {
   //  this.playerCollider.position.z = Transform.get(engine.PlayerEntity).position.z
 
   // ball cannot leave the bar area within a distance from the center beam 
-
-  let playerDist = realDistance( Transform.get(engine.PlayerEntity).position, this.ballZoneCenter)
-
-  if( playerDist > PHYSICS_RADIUS-1){
+  this.perimeter.update(dt)
+  if(this.perimeter.checkPerimeter()){
     this.resetBall(this.carriedIndex)
-  }
-  else{
-
-    const pTransform = Transform.getMutable(this.perimeter)
-    pTransform.scale.y = 2
-    pTransform.rotation = Quaternion.multiply(pTransform.rotation, Quaternion.fromEulerDegrees(0,2*dt,0))
-
-    if(playerDist > PHYSICS_RADIUS/3){
-      pTransform.scale.y = 2+ (playerDist-PHYSICS_RADIUS/3)/PHYSICS_RADIUS *30
-    }
-    
-  }
-  
+  }  
 
   }
 }
