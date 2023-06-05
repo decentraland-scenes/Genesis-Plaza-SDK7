@@ -46,6 +46,10 @@ export function initSoundsAttachedToPlayerHandler(){
   onOnCameraModeChangedObservableAdd((mode: CameraType) => {
     const audioStreamGroup = engine.getEntitiesWith(AudioSourceAttachedToPlayer)
     for(const [ent,audioAttachedToPlayerReadOnly] of audioStreamGroup){
+
+      //TODO check if still in engine, if not remove from listener
+      //if (targetEngine.getEntityState(entity) == EntityState.Removed || !Trigger.has(entity)) {
+
       const audioSource = AudioSource.getMutableOrNull(ent)
       if(!audioSource){
         console.log("initSoundsAttachedToPlayerHandler","no audio source to adjust",ent,audioAttachedToPlayerReadOnly)
