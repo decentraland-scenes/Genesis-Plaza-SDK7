@@ -380,7 +380,7 @@ function createSimonas() {
       transformData: { position: Vector3.create(6, 0, 6), scale: Vector3.create(1, 1, 1) },
       npcData: {
         type: npcLib.NPCType.CUSTOM,
-        model: 'models/Simone_Anim.glb',
+        model: 'models/core_building/Simone_Anim.glb',
         onActivate: () => {
           console.log('Simonas.NPC activated!')
 
