@@ -38,9 +38,6 @@ initRegistery()
 initConfig()
 addAnalytics()
 
-placeJukeBox()
-//setBarMusicOn()
-
 
 
 //// ADD CLOUD LOBBY
@@ -269,6 +266,8 @@ function insideBar() {
     }
 
     initBarNpcs()
+
+    placeJukeBox()
 
     areNpcsAdded = true
   }
