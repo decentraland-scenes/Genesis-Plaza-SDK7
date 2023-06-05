@@ -383,13 +383,19 @@ function createSimonas() {
         model: 'models/core_building/Simone_Anim.glb',
         onActivate: () => {
           console.log('Simonas.NPC activated!')
-
-          if (simonas.npcAnimations.HI) npcLib.playAnimation(simonas.entity, simonas.npcAnimations.HI.name, true, simonas.npcAnimations.HI.duration)
+          connectNpcToLobby(REGISTRY.lobbyScene, simonas)
         },
         onWalkAway: () => {
           console.log("NPC", simonas.name, 'on walked away')
-
-          if (simonas.npcAnimations.SAD) npcLib.playAnimation(simonas.entity, simonas.npcAnimations.SAD.name, true, simonas.npcAnimations.SAD.duration)
+          closeCustomUI(false)
+          hideThinking(simonas)
+          trtDeactivateNPC(simonas)
+        },
+        portrait:
+        {
+          path: 'images/portraits/simone/happy1.png', height: 300, width: 300
+          , offsetX: -100, offsetY: 0
+          , section: { sourceHeight: 256, sourceWidth: 256 }
         },
         idleAnim: SIMONAS_NPC_ANIMATIONS.IDLE.name,
         
@@ -407,14 +413,13 @@ function createSimonas() {
       npcAnimations: SIMONAS_NPC_ANIMATIONS,
       thinking: {
         enabled: true,
-        textEnabled: false,
-        modelPath: 'models/loading-icon.glb',
+        modelPath: 'models/core_building/loading-icon.glb',
         offsetX: 0,
-        offsetY: 2,
+        offsetY: 2.3,
         offsetZ: 0
       }
       , onEndOfRemoteInteractionStream: () => {
-        console.error(LogTag, "Missing UI", 97)
+        //openCustomUI()
       }
       , onEndOfInteraction: () => {}
     }
