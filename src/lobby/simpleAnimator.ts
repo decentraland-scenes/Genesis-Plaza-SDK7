@@ -52,8 +52,8 @@ export function ItemAnimationSystem(dt: number) {
     const snapThreshold = 0.05
 
     // POSITION AND SCALE
-    for (const [entity] of animatedItems) {
-        const infoReadonly = AnimatedItem.get(entity)
+    for (const [entity,infoReadonly] of animatedItems) {
+        //const infoReadonly = AnimatedItem.get(entity)
         
         let scaleDone = false
         let positionDone = false
@@ -114,17 +114,17 @@ export function ItemAnimationSystem(dt: number) {
     }
 
     //ROTATION
-    for (const [entity] of slerpedItems) {
-        const info = SlerpItem.get(entity)
+    for (const [entity,slerpReadOnly] of slerpedItems) {
+        //const slerpReadOnly = SlerpItem.get(entity)
         const transformReadonly = Transform.get(entity)
 
-        if(Quaternion.angle(transformReadonly.rotation, info.targetRotation) > 1){
+        if(Quaternion.angle(transformReadonly.rotation, slerpReadOnly.targetRotation) > 1){
             const transform = Transform.getMutable(entity)
-            transform.rotation = Quaternion.slerp(transform.rotation, info.targetRotation, 0.5)
+            transform.rotation = Quaternion.slerp(transform.rotation, slerpReadOnly.targetRotation, 0.5)
         }
         else{
             const transform = Transform.getMutable(entity)
-            transform.rotation = Quaternion.slerp(transform.rotation, info.targetRotation, 1)
+            transform.rotation = Quaternion.slerp(transform.rotation, slerpReadOnly.targetRotation, 1)
         }
             
         
