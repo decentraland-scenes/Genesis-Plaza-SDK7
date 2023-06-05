@@ -116,27 +116,25 @@ getRealm({}).then(
   Transform.create(discordLink,{
     position: Vector3.create(
       center.x - 1,
-      center.y + 1,
+      lobbyHeight + 1.1,
       center.z - 13.32
     ),
   })
-
-  //discordLink.addComponent(resource.discordShape)
-  GltfContainer.create(discordLink, resource.discordShape  )
+  GltfContainer.create(discordLink, resource.discordShape)
 
 
   pointerEventsSystem.onPointerDown(discordLink,
-      (e) => {
+    (e) => {
       _openExternalURL('https://dcl.gg/discord')
-      },
-      { hoverText: 'Join the Discussion', button: InputAction.IA_POINTER }
-    )
+    },
+    { hoverText: 'Join the Discussion', button: InputAction.IA_POINTER }
+  )
 
   let twitterLink = engine.addEntity()
-  Transform.create(twitterLink,{
+  Transform.create(twitterLink, {
     position: Vector3.create(
       center.x + 1.38,
-      center.y + 1,
+      lobbyHeight + 1.1,
       center.z - 13.3
     )
   })

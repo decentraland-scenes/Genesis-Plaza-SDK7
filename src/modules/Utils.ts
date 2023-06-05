@@ -1,6 +1,7 @@
 import * as utils from '@dcl-sdk/utils'
-import { Entity, Transform, engine } from '@dcl/sdk/ecs';
+import { Entity, Transform, TransformComponentExtended, TransformTypeWithOptionals, engine } from '@dcl/sdk/ecs';
 import { Color3, Vector3 } from '@dcl/sdk/math';
+import { TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS } from '../lobby/resources/globals';
 
 export function shuffleArray<T>(array: T[]): T[] {
   for (let i = array.length - 1; i > 0; i--) {
@@ -16,23 +17,28 @@ export function shuffleArray<T>(array: T[]): T[] {
 export function addRepeatTrigger(
   position: Vector3,
   size: Vector3,
-  onPlayerEnter: () => void ,
+  onPlayerEnter: (entity: Entity) => void ,
   parent: Entity|undefined,
   show: boolean = false,
-  onExit: () => void 
+  onExit: (entity: Entity) => void 
 ) {
   
+  //if(!parent) parent = engine.RootEntity
 
   const trigger = engine.addEntity()
-  Transform.create(trigger,
-    {
-      position:position,
-      parent:parent
-    })
+  const triggerParams:TransformTypeWithOptionals = {
+    position:position
+  }
+  //only set parent if it's defined
+  //BUG if you set parent even if it's undefined it breaks the layer logic somehow
+  if(parent){  
+    triggerParams.parent = parent
+  }
+  Transform.create(trigger)
  
   utils.triggers.addTrigger(
     trigger
-    , utils.NO_LAYERS, utils.LAYER_1 
+    , TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, utils.LAYER_1 
     ,[{position:Vector3.Zero(),scale:size,type:'box'}]
     ,onPlayerEnter
     ,onExit,  Color3.Yellow()

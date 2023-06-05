@@ -8,7 +8,7 @@ import * as allowedMediaHelper from './utils/allowedMediaHelper'
 import { lowerVolume, outOfBar, placeJukeBox, setBarMusicOff, setBarMusicOn } from './modules/bar/jukebox'
 import { addRepeatTrigger } from './modules/Utils'
 import { log } from './back-ports/backPorts'
-import { coreBuildingOffset } from './lobby/resources/globals'
+import { TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, coreBuildingOffset } from './lobby/resources/globals'
 import { initBarNpcs } from './modules/bar/npcs/barNpcs'
 import { setupUi } from './ui'
 import { placeDoors } from './modules/bar/doors'
@@ -24,6 +24,7 @@ import "./polyfill/delcares";
 import { PhysicsManager } from './modules/bar/basketball/ball'
 import { initIdleStateChangedObservable, onIdleStateChangedObservableAdd } from './back-ports/onIdleStateChangedObservable'
 import { Transform, engine,Entity } from '@dcl/ecs'
+import { addAnalytics } from './analytics'
 
 // export all the functions required to make the scene work
 export * from '@dcl/sdk'
@@ -32,12 +33,13 @@ const FILE_NAME = 'game'
 //load scene metadata
 allowedMediaHelper.getAndSetSceneMetaData()
 
+
 initRegistery()
 initConfig()
-
+addAnalytics()
 
 placeJukeBox()
-setBarMusicOn()
+//setBarMusicOn()
 
 
 
@@ -122,59 +124,67 @@ onIdleStateChangedObservableAdd((isIdle: boolean) => {
 
 let barCenter = engine.addEntity()
 Transform.create(barCenter, {
-  position: Vector3.create(32, 0, 40)
+  position: Vector3.create(32, 0, 38)
 })
 utils.triggers.addTrigger(
   barCenter, 
-  utils.NO_LAYERS,
+  TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS,
   utils.LAYER_1,
   [ 
     {
-      type: 'sphere',
-      radius: 52
+      type: 'box',
+      scale: {
+        x: 57,
+        y: 25,
+        z: 54
+      }
     }
   ],
-  (entity: Entity) => {//onEnter 
-    console.log("index.ts", "trigger.bar", entity)
-    insideBar()
+  (other) => {//onEnter
+    console.log("lazyLoading", "OnEnter", "Other", other, "Player", engine.PlayerEntity, "& Cam", engine.CameraEntity);
+    if(other === engine.PlayerEntity || other === engine.CameraEntity)
+      insideBar()
   },
-  () => {//onExit
+  (entity: Entity) => {//onExit
+    console.log("index.ts", "trigger.bar.exit","triggerParent",barCenter,"entityInteracting", entity)
     exitBar()
   },
   Color3.Red()
 )
 
 // proper bar interior
+console.log("index.ts", "trigger.bar2???.created","triggerParent",undefined)
 addRepeatTrigger(
-  Vector3.create(160 - coreBuildingOffset.x, 50, 155 - coreBuildingOffset.z),
+  Vector3.create(160 - coreBuildingOffset.x, 50, 152 - coreBuildingOffset.z),
   Vector3.create(50, 102, 50),
-  () => {
+  (entity: Entity) => {
+    console.log("index.ts", "trigger.bar2???.enter","triggerParent",undefined,"entityInteracting", entity)
     setBarMusicOn()
-    log('went in')
+    log('went in') 
   },
   undefined,
   false,
-  () => {
-    outOfBar()
+  (entity: Entity) => {
+    console.log("index.ts", "trigger.bar2???.exit","triggerParent",undefined,"entityInteracting", entity)
     //endArtistTalk() //TODO TAG:PORT-REIMPLEMENT-ME
+    outOfBar()
     lowerVolume()
     log('mid distance')
-
-    //setBarMusicOff()
   }
 )
 
 //outer perimeter
+console.log("index.ts", "trigger.bar2???.created","triggerParent",undefined)
 addRepeatTrigger(
   Vector3.create(160 - coreBuildingOffset.x, 30, 155 - coreBuildingOffset.z),
   Vector3.create(60, 60, 70),
-  () => {
-    lowerVolume()
-    log('got closer')
+  (entity: Entity) => {
+    console.log("index.ts", "trigger.bar.outerparim.enter","triggerParent",undefined,"entityInteracting", entity)
   },
   undefined,
   false,
-  () => {
+  (entity: Entity) => {
+    console.log("index.ts", "trigger.bar.outerparim.exit","triggerParent",undefined,"entityInteracting", entity)
     setBarMusicOff()
     log('got far')
   }
@@ -209,7 +219,7 @@ utils.addOneTimeTrigger(
       log('SOUTH BORDER')
       outsideBar()
     },
-  }
+  } 
 )
 
 utils.addOneTimeTrigger(
@@ -246,7 +256,7 @@ utils.triggers.addTrigger(trigger, utils.NO_LAYERS, utils.NO_LAYERS,
 let areNpcsAdded: boolean = false
 function insideBar() {
   const METHOD_NAME = 'insideBar'
-  log(FILE_NAME, METHOD_NAME, "Player Enter")
+  log("lazyLoading",FILE_NAME, METHOD_NAME, "Player Enter")
 
   if (!areNpcsAdded) {
     //Quests

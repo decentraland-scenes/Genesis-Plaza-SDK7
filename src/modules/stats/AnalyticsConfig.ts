@@ -32,6 +32,7 @@ export const ANALYTICS_ELEMENTS_IDS = {
   boyArtist : "boyArtist",
   girlArtist : "girlArtist",
   menuEventSlider: "menuEventSlider",
+  menuItemCrowd: "menuItemCrowd",
   atariMachine: "atariMachine",
   jukeBox: "jukeBox",
   beerMug: "beerMug",
