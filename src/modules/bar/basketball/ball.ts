@@ -5,9 +5,10 @@ import { addPhysicsConstraints } from './physicsConstraints'
 import * as utils from "@dcl-sdk/utils"
 import { displayBasketballUI, hideBasketballUI, hideStrenghtBar, scoreDisplay, setStrengthBar } from '../../../ui'
 import { BasketballHoop } from './hoop'
-import { PhysicsWorldStatic } from './physicsWorld'
+import { PhysicsWorldStatic, ballBounceMaterial } from './physicsWorld'
 import { bounceSource, bounceVolume, pickupSource, pickupVolume, throwBallSource, throwBallVolume } from './sounds'
 import { moveLineBetween, realDistance } from './utilFunctions'
+import { barCenter } from '../../../lobby/resources/globals'
 
 export const Throwable = engine.defineComponent('throwable-id', {
     index: Schemas.Number,
@@ -44,7 +45,7 @@ const Z_OFFSET = 1.5
 
 
 const FIXED_TIME_STEPS = 1.0/60 // seconds
-const MAX_TIME_STEPS = 3
+const MAX_TIME_STEPS = 6
 const PHYSICS_RADIUS = 19
 //const RECALL_SPEED = 10
 const SHOOT_VELOCITY = 45
@@ -81,6 +82,7 @@ export class PhysicsManager {
   trailCount:number
   ballZoneCenter:Vector3
   perimeter:Entity
+  perimeterColliderCount:number = 16
   
 
   constructor(ballCount:number){
@@ -122,12 +124,12 @@ export class PhysicsManager {
     })   
 
 
-    const translocatorPhysicsMaterial: CANNON.Material = new CANNON.Material(
-      'translocatorMaterial',
-    )   
-    translocatorPhysicsMaterial.friction = 0.2
-    translocatorPhysicsMaterial.restitution = 0.5
-    this.playerCollider.material = translocatorPhysicsMaterial // Add bouncy material to translocator body
+    // const translocatorPhysicsMaterial: CANNON.Material = new CANNON.Material(
+    //   'translocatorMaterial',
+    // )   
+    // translocatorPhysicsMaterial.friction = 0.2
+    // translocatorPhysicsMaterial.restitution = 0.5
+    this.playerCollider.material = ballBounceMaterial // Add bouncy material to translocator body
     this.playerCollider.linearDamping = 0.24 // Round bodies will keep translating even with friction so you need linearDamping
     this.playerCollider.angularDamping = 0.4 // Round bodies will keep rotating even with friction so you need angularDamping
     
@@ -143,8 +145,8 @@ export class PhysicsManager {
       new CANNON.Vec3(1, 0, 0),
       -Math.PI / 2
     ) // Reorient ground plane to be in the y-axis
-    groundBody.position.y = 0.2 // Thickness of ground base model
-    groundBody.material = translocatorPhysicsMaterial
+    groundBody.position.y = 0.23 // Thickness of ground base model
+    groundBody.material = ballBounceMaterial
     this.world.addBody(groundBody)
     
     //add initial balls
@@ -221,6 +223,31 @@ export class PhysicsManager {
     })
     GltfContainer.create(this.perimeter, perimeterShape)
     VisibilityComponent.create(this.perimeter, {visible: false})
+
+
+    // PERIMETER COLLIDERS FOR PHYSICS OBJECTS
+    for(let i=0; i< this.perimeterColliderCount; i++){
+
+      let angleStep = 360/this.perimeterColliderCount 
+      let rot =  Quaternion.fromEulerDegrees(0,angleStep*i,0)
+      let pos = Vector3.rotate(Vector3.Forward(), rot)
+      pos = Vector3.scale(pos, PHYSICS_RADIUS)
+      pos = Vector3.add(this.ballZoneCenter, pos)
+      pos.y = 10
+
+      const pWall = new CANNON.Body({
+        mass: 0, // mass == 0 makes the body static
+        fixedRotation: true,
+        quaternion: new CANNON.Quaternion(rot.x, rot.y, rot.z, rot.w),
+        position: new CANNON.Vec3(pos.x, pos.y, pos.z)
+      })
+      pWall.addShape(new CANNON.Box(new CANNON.Vec3(5,20,0.5)))
+      
+      pWall.position.y = 0.2 // Thickness of ground base model
+      pWall.material = ballBounceMaterial
+      this.world.addBody(pWall)
+      
+    }
 
 
     
@@ -588,7 +615,7 @@ export class PhysicsManager {
       transformBall.rotation = this.cannonBodies[i].quaternion
 
     }   
-    // IF A BALL IS CARRIED THEN UPDATE THE THROW STRENGTH 
+    // IF A BALL IS CARRIED THEN UPDATE THE THROW STRENGTH WHEN LMB IS HELD DOWN
     else{
       if(this.strengthHold){
         const throwable = Throwable.get(this.balls[i])
@@ -626,8 +653,8 @@ export class PhysicsManager {
     pTransform.scale.y = 2
     pTransform.rotation = Quaternion.multiply(pTransform.rotation, Quaternion.fromEulerDegrees(0,2*dt,0))
 
-    if(playerDist > PHYSICS_RADIUS/2){
-      pTransform.scale.y = 2+ (playerDist-PHYSICS_RADIUS/2)/PHYSICS_RADIUS *40
+    if(playerDist > PHYSICS_RADIUS/3){
+      pTransform.scale.y = 2+ (playerDist-PHYSICS_RADIUS/3)/PHYSICS_RADIUS *30
     }
     
   }
