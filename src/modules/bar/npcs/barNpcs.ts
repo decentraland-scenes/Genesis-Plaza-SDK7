@@ -41,6 +41,7 @@ export function initBarNpcs(): void {
   createFashionistNpc()
   createArtistCouple()
   createDogeNpc()
+  createSimonas()
 }
 
 function createOctopusNpc() {
