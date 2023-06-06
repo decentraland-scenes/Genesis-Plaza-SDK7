@@ -362,15 +362,15 @@ function createDogeNpc(): void {
 }
 
 const SIMONAS_NPC_ANIMATIONS: NpcAnimationNameType = {
-  HI: { name: "Hi", duration: 2, autoStart: undefined, portraitDirectory: "images/portaits/simone/hi1.png"},
-  IDLE: { name: "Idle", duration: 4, autoStart: undefined, portraitDirectory: "images/portaits/simone/idle1.png"},
-  TALK: { name: "Talking", duration: 2, autoStart: undefined, portraitDirectory: "images/portaits/simone/talking1.png"},
-  THINKING: { name: "Thinking", duration: 2, autoStart: undefined, portraitDirectory: "images/portaits/simone/interesting1.png"},
-  LOADING: { name: "Loading", duration: 2, autoStart: undefined, portraitDirectory: "images/portaits/simone/interesting1.png"},
-  LAUGH: { name: "Laugh", duration: 2, autoStart: undefined, portraitDirectory: "images/portaits/simone/laughing1.png"},
-  HAPPY: { name: "Happy", duration: 2, autoStart: undefined, portraitDirectory: "images/portaits/simone/happy1.png"},
-  SAD: { name: "Sad", duration: 2, autoStart: undefined, portraitDirectory: "images/portaits/simone/sad1.png"},
-  SURPRISE: { name: "Surprise", duration: 2, autoStart: undefined, portraitDirectory: "images/portaits/simone/surprise1.png"},
+  HI: { name: "Hi", duration: 2, autoStart: undefined, portraitPath: "images/portaits/simone/hi1.png"},
+  IDLE: { name: "Idle", duration: 4, autoStart: undefined, portraitPath: "images/portaits/simone/idle1.png"},
+  TALK: { name: "Talking", duration: 2, autoStart: undefined, portraitPath: "images/portaits/simone/talking1.png"},
+  THINKING: { name: "Thinking", duration: 2, autoStart: undefined, portraitPath: "images/portaits/simone/interesting1.png"},
+  LOADING: { name: "Loading", duration: 2, autoStart: undefined, portraitPath: "images/portaits/simone/interesting1.png"},
+  LAUGH: { name: "Laugh", duration: 2, autoStart: undefined, portraitPath: "images/portaits/simone/laughing1.png"},
+  HAPPY: { name: "Happy", duration: 2, autoStart: undefined, portraitPath: "images/portaits/simone/happy1.png"},
+  SAD: { name: "Sad", duration: 2, autoStart: undefined, portraitPath: "images/portaits/simone/sad1.png"},
+  SURPRISE: { name: "Surprise", duration: 2, autoStart: undefined, portraitPath: "images/portaits/simone/surprise1.png"},
 }
 
 function createSimonas() {

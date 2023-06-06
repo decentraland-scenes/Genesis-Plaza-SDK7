@@ -8,7 +8,7 @@ export type NpcAnimationNameDef = {
   name: string
   duration: number
   autoStart?: boolean
-  portraitDirectory?: string
+  portraitPath?: string
 }
 export type NpcAnimationNameType = {
   HI?: NpcAnimationNameDef
