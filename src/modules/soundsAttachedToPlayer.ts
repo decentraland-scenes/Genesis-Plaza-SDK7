@@ -42,7 +42,7 @@ export function applyAudioStreamWorkAround(type:'enter'|'exit'){
 } 
 
 //CURRENT BUG - if currently playing and change volume sound resets :(
-const ENABLE_SOUND_ADJUST = true
+const ENABLE_SOUND_ADJUST = false
 export function initSoundsAttachedToPlayerHandler(){
   if(!ENABLE_SOUND_ADJUST){
     console.log("initSoundsAttachedToPlayerHandler","disabled till bug where sound playing restarts when volume changed is fixed","ENABLE_SOUND_ADJUST",ENABLE_SOUND_ADJUST)
