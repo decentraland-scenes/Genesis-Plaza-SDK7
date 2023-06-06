@@ -1,6 +1,5 @@
 import { CameraMode, CameraType, InputAction, PointerEventType, Transform, engine, inputSystem } from "@dcl/sdk/ecs"
-
-const observablesCB: ((mode: CameraType) => void)[] = []
+import { Observable } from '@dcl/sdk/internal/Observable'
 
 let initAlready = false
 
@@ -15,17 +14,19 @@ function removeValue(value:any, index:any, arr:any) {
   return false;
 }
 
-export function onOnCameraModeChangedObservableAdd(callback: (mode: CameraType) => void) {
-  observablesCB.push(callback)
-  return () => { observablesCB.filter(removeValue) }
-}
 
-function notifyCameraModeStateChanged(mode: CameraType) {
-  //player went active
-  for (let cb of observablesCB) {
-    cb(mode)
-  }
-}
+
+let lastKnownCameraMode: CameraType
+export const onCameraModeChangedObservable = new Observable<CameraType>((observer) => {
+  onCameraModeChangedObservable.notifyObserver(observer, lastKnownCameraMode)
+})
+
+/*
+export function onOnCameraModeChangedObservableAdd(callback: (mode: CameraType) => void) {
+  //observablesCB.push(callback)
+  //return () => { observablesCB.filter(removeValue) }
+  return onCameraModeChangedObservable.add(callback)
+}*/
 
 
 function cameraModeCheckSystem(dt: number) {
@@ -33,19 +34,18 @@ function cameraModeCheckSystem(dt: number) {
 
   if (!cameraEntity) return
 
-  if (cameraEntity.mode !== previousCameraMode) {
-    previousCameraMode = cameraEntity.mode
+  if (cameraEntity.mode !== lastKnownCameraMode) {
+    lastKnownCameraMode = cameraEntity.mode
     if (cameraEntity.mode == CameraType.CT_THIRD_PERSON) {
       //console.log("The player is using the 3rd person camera")
-      notifyCameraModeStateChanged(cameraEntity.mode) 
+      onCameraModeChangedObservable.notifyObservers(cameraEntity.mode) 
     } else {
       //console.log("The player is using the 1st person camera")
-      notifyCameraModeStateChanged(cameraEntity.mode)
+      onCameraModeChangedObservable.notifyObservers(cameraEntity.mode)
     }
   }
 }
 
-let previousCameraMode: CameraType
 
 engine.addSystem(function cameraModeCheck() {
   
