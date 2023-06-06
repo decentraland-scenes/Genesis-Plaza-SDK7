@@ -29,7 +29,7 @@
     "@dcl-sdk/utils": "^1.1.1",
     "cannon": "github:schteppe/cannon.js",
     "colyseus.js": "^0.14.15-alpha.0",
-    "dcl-npc-toolkit": "^1.1.2-20230602114739.commit-0078120",
+    "dcl-npc-toolkit": "^1.1.2-20230602175626.commit-fe68218",
     "dcl-ui-toolkit": "^0.9.1"
   },
   "bundleDependencies": [
