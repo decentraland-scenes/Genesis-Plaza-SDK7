@@ -257,6 +257,7 @@ export function openCustomUI() {
 export function closeCustomUI(triggerWalkAway: boolean) {
   if (isVisible === false) return
   setVisibility(false)
+  if (!triggerWalkAway) return
   if (REGISTRY.activeNPC) {
     console.log('DebugSession', 'CLOSEUI => walked away')
     handleWalkAway(REGISTRY.activeNPC.entity)

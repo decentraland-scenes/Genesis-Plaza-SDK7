@@ -82,7 +82,7 @@ export function placeJukeBox() {
   })
   VisibilityComponent.createOrReplace(baseJukeBoxLights2, {visible: false})
 
-  Transform.createOrReplace(baseJukeBoxLights1, {
+  Transform.createOrReplace(baseJukeBoxLights2, {
     parent: baseJukeBox
   })
 
