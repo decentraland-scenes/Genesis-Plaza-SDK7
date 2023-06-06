@@ -343,6 +343,7 @@ function createDogeNpc(): void {
       npcAnimations: DOGE_NPC_ANIMATIONS,
       thinking: {
         enabled: true,
+        textEnabled: false,
         modelPath: 'models/core_building/loading-icon.glb',
         offsetX: 0,
         offsetY: 2,
@@ -415,6 +416,7 @@ function createSimonas() {
       npcAnimations: SIMONAS_NPC_ANIMATIONS,
       thinking: {
         enabled: true,
+        textEnabled: false,
         modelPath: 'models/core_building/loading-icon.glb',
         offsetX: 0,
         offsetY: 2.3,
