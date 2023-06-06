@@ -419,12 +419,12 @@ function createSimonas() {
         offsetZ: 0
       }
       , onEndOfRemoteInteractionStream: () => {
-        //openCustomUI()
+        openCustomUI()
       }
       , onEndOfInteraction: () => {}
     }
   )
-  simonas.name = "npc.dclGuide"
+  simonas.name = "npc.simone"
 
   REGISTRY.allNPCs.push(simonas)
 }
