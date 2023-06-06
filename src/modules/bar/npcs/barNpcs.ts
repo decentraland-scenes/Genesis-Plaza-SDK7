@@ -20,21 +20,14 @@ const LogTag: string = 'barNpcs'
 
 const ANIM_TIME_PADD = .2
 
-const DOGE_NPC_ANIMATIONS: NpcAnimationNameType = {
-  IDLE: { name: "Idle", duration: -1 },
-  WALK: { name: "Walk", duration: -1 },
-  TALK: { name: "Talk1", duration: 5 },
-  THINKING: { name: "Thinking", duration: 5 },
-  RUN: { name: "Run", duration: -1 },
-  WAVE: { name: "Wave", duration: 4 + ANIM_TIME_PADD },
-}
-
 export let octo: Entity
 export let fashionist: Entity
 export let boyArtist: Entity
 export let girlArtist: Entity
 export let doge: RemoteNpc
 export let simonas: RemoteNpc
+export let rob: RemoteNpc
+export let aisha: RemoteNpc
 
 export function initBarNpcs(): void {
   createOctopusNpc()
@@ -44,6 +37,7 @@ export function initBarNpcs(): void {
   createSimonas()
 }
 
+//#region octopus
 function createOctopusNpc() {
   let position: Vector3 = Vector3.create(160 - coreBuildingOffset.x, 0.2, 141.4 - coreBuildingOffset.z)
 
@@ -109,7 +103,9 @@ function createOctopusNpc() {
     }
   )
 }
+//#endregion
 
+//#region  fashionist
 function createFashionistNpc(): Entity {
 
   let position = Vector3.create(162.65 - coreBuildingOffset.x, 0.23, 133.15 - coreBuildingOffset.z)
@@ -175,8 +171,9 @@ function createFashionistNpc(): Entity {
 
   return fashionist
 }
+//#endregion
 
-
+//#region artistCouple
 function createArtistCouple(): void {
   boyArtist = createBoyArtist()
   girlArtist = createGirlArtist()
@@ -257,6 +254,19 @@ function createGirlArtist(): Entity {
 
   npcLib.playAnimation(girl, 'Talk', false)
   return girl
+}
+//#endregion
+
+//AI POWERED NPCs 
+
+//#region doge
+const DOGE_NPC_ANIMATIONS: NpcAnimationNameType = {
+  IDLE: { name: "Idle", duration: -1 },
+  WALK: { name: "Walk", duration: -1 },
+  TALK: { name: "Talk1", duration: 5 },
+  THINKING: { name: "Thinking", duration: 5 },
+  RUN: { name: "Run", duration: -1 },
+  WAVE: { name: "Wave", duration: 4 + ANIM_TIME_PADD },
 }
 
 function createDogeNpc(): void {
@@ -360,7 +370,9 @@ function createDogeNpc(): void {
   REGISTRY.allNPCs.push(doge)
   npcLib.followPath(doge.entity)
 }
+//#endregion
 
+//#region  simone
 const SIMONAS_NPC_ANIMATIONS: NpcAnimationNameType = {
   HI: { name: "Hi", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/hi1.png" },
   IDLE: { name: "Idle", duration: 4, autoStart: undefined, portraitPath: "images/portraits/simone/idle1.png" },
@@ -426,6 +438,137 @@ function createSimonas() {
   simonas.predefinedQuestions = genericPrefinedQuestions
   REGISTRY.allNPCs.push(simonas)
 }
+//#endregion
+
+//#region  Rob
+const ROB_NPC_ANIMATIONS: NpcAnimationNameType = {
+  HI: { name: "Hi", duration: 2, autoStart: undefined, portraitPath: "images/portaits/rob/hi1.png"},
+  IDLE: { name: "Idle", duration: 4, autoStart: undefined, portraitPath: "images/portaits/rob/idle1.png"},
+  TALK: { name: "Talking", duration: 2, autoStart: undefined, portraitPath: "images/portaits/rob/talking1.png"},
+  THINKING: { name: "Thinking", duration: 2, autoStart: undefined, portraitPath: "images/portaits/rob/interesting1.png"},
+  LOADING: { name: "Loading", duration: 2, autoStart: undefined, portraitPath: "images/portaits/rob/interesting1.png"},
+  LAUGH: { name: "Laugh", duration: 2, autoStart: undefined, portraitPath: "images/portaits/rob/laughing1.png"},
+  HAPPY: { name: "Happy", duration: 2, autoStart: undefined, portraitPath: "images/portaits/rob/happy1.png"},
+  SAD: { name: "Sad", duration: 2, autoStart: undefined, portraitPath: "images/portaits/rob/sad1.png"},
+  SURPRISE: { name: "Surprise", duration: 2, autoStart: undefined, portraitPath: "images/portaits/rob/surprise1.png"},
+}
+
+function createRob() {
+  rob = new RemoteNpc(
+    { resourceName: "workspaces/genesis_city/characters/" },
+    {
+      transformData: { position: Vector3.create(9, 0, 9), scale: Vector3.create(1, 1, 1) },
+      npcData: {
+        type: npcLib.NPCType.CUSTOM,
+        model: 'models/',
+        onActivate: () => {
+          console.log('Rob.NPC activated!')
+
+          if (rob.npcAnimations.HI) npcLib.playAnimation(rob.entity, rob.npcAnimations.HI.name, true, rob.npcAnimations.HI.duration)
+        },
+        onWalkAway: () => {
+          console.log("NPC", rob.name, 'on walked away')
+
+          if (rob.npcAnimations.SAD) npcLib.playAnimation(rob.entity, rob.npcAnimations.SAD.name, true, rob.npcAnimations.SAD.duration)
+        },
+        idleAnim: ROB_NPC_ANIMATIONS.IDLE.name,
+        
+        darkUI: true,
+        coolDownDuration: 3,
+        hoverText: 'Talk',
+        onlyETrigger: true,
+        onlyClickTrigger: false,
+        onlyExternalTrigger: false,
+        reactDistance: 5,
+        continueOnWalkAway: true,
+      }
+    },
+    {
+      npcAnimations: ROB_NPC_ANIMATIONS,
+      thinking: {
+        enabled: true,
+        textEnabled: false,
+        modelPath: 'models/loading-icon.glb',
+        offsetX: 0,
+        offsetY: 2,
+        offsetZ: 0
+      }
+      , onEndOfRemoteInteractionStream: () => {
+        openCustomUI()
+      }
+      , onEndOfInteraction: () => {}
+    }
+  )
+  rob.name = "npc.dclGuide"
+
+  REGISTRY.allNPCs.push(rob)
+}
+//#endregion
+
+//#region AIsha
+const AISHA_NPC_ANIMATIONS: NpcAnimationNameType = {
+  HI: { name: "Hi", duration: 2, autoStart: undefined, portraitPath: "images/portaits/aisha/hi1.png"},
+  IDLE: { name: "Idle", duration: 4, autoStart: undefined, portraitPath: "images/portaits/aisha/idle1.png"},
+  TALK: { name: "Talking", duration: 2, autoStart: undefined, portraitPath: "images/portaits/aisha/talking1.png"},
+  THINKING: { name: "Thinking", duration: 2, autoStart: undefined, portraitPath: "images/portaits/aisha/interesting1.png"},
+  LOADING: { name: "Loading", duration: 2, autoStart: undefined, portraitPath: "images/portaits/aisha/interesting1.png"},
+  LAUGH: { name: "Laugh", duration: 2, autoStart: undefined, portraitPath: "images/portaits/aisha/laughing1.png"},
+  HAPPY: { name: "Happy", duration: 2, autoStart: undefined, portraitPath: "images/portaits/aisha/happy1.png"},
+  SAD: { name: "Sad", duration: 2, autoStart: undefined, portraitPath: "images/portaits/aisha/sad1.png"},
+  SURPRISE: { name: "Surprise", duration: 2, autoStart: undefined, portraitPath: "images/portaits/aisha/surprise1.png"},
+}
+
+function createAisha() {
+  aisha = new RemoteNpc(
+    { resourceName: "workspaces/genesis_city/characters/" },
+    {
+      transformData: { position: Vector3.create(3, 0, 3), scale: Vector3.create(1, 1, 1) },
+      npcData: {
+        type: npcLib.NPCType.CUSTOM,
+        model: 'models/',
+        onActivate: () => {
+          console.log('AIsha.NPC activated!')
+
+          if (aisha.npcAnimations.HI) npcLib.playAnimation(aisha.entity, aisha.npcAnimations.HI.name, true, aisha.npcAnimations.HI.duration)
+        },
+        onWalkAway: () => {
+          console.log("NPC", aisha.name, 'on walked away')
+
+          if (aisha.npcAnimations.SAD) npcLib.playAnimation(aisha.entity, aisha.npcAnimations.SAD.name, true, aisha.npcAnimations.SAD.duration)
+        },
+        idleAnim: AISHA_NPC_ANIMATIONS.IDLE.name,
+        
+        darkUI: true,
+        coolDownDuration: 3,
+        hoverText: 'Talk',
+        onlyETrigger: true,
+        onlyClickTrigger: false,
+        onlyExternalTrigger: false,
+        reactDistance: 5,
+        continueOnWalkAway: true,
+      }
+    },
+    {
+      npcAnimations: AISHA_NPC_ANIMATIONS,
+      thinking: {
+        enabled: true,
+        textEnabled: false,
+        modelPath: 'models/loading-icon.glb',
+        offsetX: 0,
+        offsetY: 2,
+        offsetZ: 0
+      }
+      , onEndOfRemoteInteractionStream: () => {
+        openCustomUI()
+      }
+      , onEndOfInteraction: () => {}
+    }
+  )
+  aisha.name = "npc.dclGuide"
+
+  REGISTRY.allNPCs.push(aisha)
+}
+//#endregion
 
 
 function RotateFashionist(targetPosition: Vector3) {
