@@ -11,6 +11,7 @@ let teleportUIVisibility: DisplayType = 'none'
 let timeToBeamUp: number = 3
 let scoreUIVisible: DisplayType = 'none'
 let basketUIVisible: DisplayType = 'none'
+let outOfBoundsVisible: DisplayType = 'none'
 let strengthBarVisible: DisplayType = 'none'
 let strengthValue: PositionUnit = '30%'
 let shake: number = 0
@@ -30,6 +31,46 @@ export function setTeleportCountdown(_numberString: string) {
   //teleportCountdownText.value = _numberString
 }
 
+const uiOutOfBounds = () => (
+  <UiEntity
+    //top level root ui div
+    uiTransform={{
+      width: 400,
+      height: 400,
+
+      // { top: 4, bottom: 4, left: 4, right: 4 },
+      padding: 4,
+      alignContent: 'center',
+      display: outOfBoundsVisible,
+      positionType: 'absolute',
+      position: { top: '50%', left: '50%' }
+    }}
+  >
+
+    <Label
+      // OUT OF BOUNDS MESSAGE
+      value="Ball out of bounds"
+      fontSize={32}
+      textAlign='middle-center'
+      uiTransform={{ width: '100%', height: '30%', positionType: 'absolute', position: {left: '-50%'}}}
+      uiBackground={{
+        textureMode: 'nine-slices',
+        texture: {
+          src: 'images/basketball/bar_fg.png'
+        },
+        textureSlices: {
+          top: 0.49,
+          bottom: 0.49,
+          left: 0.49,
+          right: 0.49
+        }
+      }}
+    
+    />
+
+  </UiEntity>
+)
+
 const uiBasketball = () => (
   <UiEntity
     //top level root ui div
@@ -45,6 +86,7 @@ const uiBasketball = () => (
       position: { top: '50%', left: '50%' }
     }}
   >
+    
     <UiEntity
       // root container for bar and score popups
       uiTransform={{
@@ -54,6 +96,7 @@ const uiBasketball = () => (
         positionType: 'absolute'
       }}
     >
+      
       <UiEntity
         // container for SCORE popup
         uiTransform={{
@@ -206,7 +249,8 @@ const uiComponent = () => [
   NpcUtilsUi(),
   uiBeamMeUp(),
   customNpcUI(),
-  uiBasketball()
+  uiBasketball(),
+  uiOutOfBounds()
   //uiSpawnCube()
 ]
 
@@ -229,6 +273,13 @@ export function showStrenghtBar() {
 }
 export function hideStrenghtBar() {
   strengthBarVisible = 'none'
+}
+// OOB UI
+export function showOOB() {
+  outOfBoundsVisible = 'flex'
+}
+export function hideOOB() {
+  outOfBoundsVisible = 'none'
 }
 
 let elapsed = 0

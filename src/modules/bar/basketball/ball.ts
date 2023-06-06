@@ -3,7 +3,7 @@ import { AudioSource, AvatarAnchorPointType, AvatarAttach, CameraMode, CameraTyp
 import { Vector3, Quaternion, Color3, Color4 } from "@dcl/sdk/math"
 import { addPhysicsConstraints } from './physicsConstraints'
 import * as utils from "@dcl-sdk/utils"
-import { displayBasketballUI, hideBasketballUI, hideStrenghtBar, scoreDisplay, setStrengthBar } from '../../../ui'
+import { displayBasketballUI, hideBasketballUI, hideOOB, hideStrenghtBar, scoreDisplay, setStrengthBar, showOOB } from '../../../ui'
 import { BasketballHoop } from './hoop'
 import { PhysicsWorldStatic, ballBounceMaterial } from './physicsWorld'
 import { bounceSource, bounceVolume, pickupSource, pickupVolume, throwBallSource, throwBallVolume } from './sounds'
@@ -80,6 +80,7 @@ export class PhysicsManager {
   trailCount:number
   ballZoneCenter:Vector3
   perimeter:Perimeter
+  playerInbound:boolean = true
   
   
 
@@ -568,9 +569,29 @@ export class PhysicsManager {
 
   // ball cannot leave the bar area within a distance from the center beam 
   this.perimeter.update(dt)
+
+  
   if(this.perimeter.checkPerimeter()){
-    this.resetBall(this.carriedIndex)
+
+    if(this.playerInbound && this.playerHolding){
+      this.playerInbound = false
+      
+      console.log("PLAYER LEFT BASKETBALL AREA")
+      showOOB()  
+      utils.timers.setTimeout(()=>{
+          hideOOB()  
+      }, 1500)  
+    }       
+    this.resetBall(this.carriedIndex)    
+  }
+  else{
+    if(!this.playerInbound){
+      this.playerInbound = true
+      hideOOB()
+    }
   }  
+  
+  
 
   }
 }

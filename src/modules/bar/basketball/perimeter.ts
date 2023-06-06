@@ -4,6 +4,8 @@ import { colliderData } from "./colliderData"
 import * as CANNON from 'cannon/build/cannon'
 import { ballBounceMaterial } from "./physicsWorld"
 import { realDistance } from "./utilFunctions"
+import { hideOOB, showOOB } from "../../../ui"
+import * as utils from "@dcl-sdk/utils"
 
 
 
@@ -13,6 +15,7 @@ export class Perimeter {
     perimeter:Entity
     perimeterColliderCount:number  = 16
     world: CANNON.World
+    playerOOB:boolean = false
 
     constructor(_center: Vector3, _radius:number, _world:CANNON.World){
 
@@ -74,16 +77,22 @@ export class Perimeter {
 
         if(playerDist > this.radius/3){
             pTransform.scale.y = 2+ (playerDist - this.radius / 3) / this.radius *30
-        }          
+        }  
+        
+        
+
     }
 
     checkPerimeter():boolean{
+
+        
         let playerDist = realDistance( Transform.get(engine.PlayerEntity).position, this.center)
 
         if( playerDist > this.radius-1){
+            
             return true
         }
-
+        
         return false
     }
 }
