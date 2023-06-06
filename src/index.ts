@@ -27,6 +27,8 @@ import { Transform, engine,Entity } from '@dcl/ecs'
 import { addAnalytics } from './analytics'
 import { initOnCameraModeChangedObservable } from './back-ports/onCameraModeChangedObservable'
 import { applyAudioStreamWorkAround, initSoundsAttachedToPlayerHandler } from './modules/soundsAttachedToPlayer'
+import { onEnterScene, onLeaveScene } from '@dcl/sdk/observables'
+import { isMovePlayerInProgress } from './back-ports/movePlayer'
 //import { onEnterScene, onLeaveScene } from '@dcl/sdk/observables'
 
 // export all the functions required to make the scene work
@@ -180,6 +182,40 @@ addRepeatTrigger(
   }
 )
 
+//FIXME need to check player.id matches
+
+onEnterScene.add((player) => { 
+  console.log("onEnterScene", "player", player,"isMovePlayerInProgress()",isMovePlayerInProgress())
+  applyAudioStreamWorkAround('enter')
+})
+ 
+onLeaveScene.add((player) => {
+  console.log("onLeaveScene", "player", player,"isMovePlayerInProgress()",isMovePlayerInProgress())
+  applyAudioStreamWorkAround('exit')
+})
+
+
+
+//scene wide trigger, can't trust onEnterScene/onLeaveScene as trigger during playermoves
+/*console.log("index.ts", "trigger.bar.outerparim.enter","triggerParent",undefined)
+addRepeatTrigger(
+  Vector3.create(160 - coreBuildingOffset.x, 30, 155 - coreBuildingOffset.z),
+  Vector3.create(60, 60, 70),
+  (entity: Entity) => {
+    console.log("index.ts", "trigger.bar.outerparim.enter","triggerParent",undefined,"entityInteracting", entity)
+  },
+  undefined,
+  false,
+  (entity: Entity) => {
+    console.log("index.ts", "trigger.bar.outerparim.exit","triggerParent",undefined,"entityInteracting", entity)
+    setBarMusicOff()
+    log('got far')
+
+    
+  }
+)*/
+
+
 //outer perimeter
 console.log("index.ts", "trigger.bar.outerparim.enter","triggerParent",undefined)
 addRepeatTrigger(
@@ -194,6 +230,8 @@ addRepeatTrigger(
     console.log("index.ts", "trigger.bar.outerparim.exit","triggerParent",undefined,"entityInteracting", entity)
     setBarMusicOff()
     log('got far')
+
+    
   }
 )
 
