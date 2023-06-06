@@ -287,7 +287,7 @@ export class PhysicsManager {
 
     engine.addSystem(() => {
       const meshEntities = engine.getEntitiesWith(Throwable)
-      for (const [entity] of meshEntities) {
+      for (const [entity,throwableDataReadOnly] of meshEntities) {
         
         if (inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_HOVER_ENTER, entity)) {
           // don't highlight if player is holding the ball
@@ -305,7 +305,7 @@ export class PhysicsManager {
         }
     
          if (inputSystem.isTriggered(InputAction.IA_PRIMARY, PointerEventType.PET_DOWN, entity)) {
-          this.pickUpBall(Throwable.get(entity).index)
+          this.pickUpBall(throwableDataReadOnly.index)
         }
       }
     })

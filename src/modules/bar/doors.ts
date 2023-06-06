@@ -85,10 +85,10 @@ export class Door  {
 
     if (withTrigger) {
       const triggerEntity = engine.addEntity()
-      Transform.create(triggerEntity, {})
-    
+      Transform.create(triggerEntity, {}) 
+     
       console.log("doors.ts", "trigger.door.created","triggerParent",triggerEntity)
-      utils.triggers.addTrigger(triggerEntity, utils.LAYER_1, utils.LAYER_1, 
+      utils.triggers.addTrigger(triggerEntity, utils.NO_LAYERS, utils.LAYER_1, 
         [{type: "box",position: triggerPos.position , scale: triggerScale}],
         (entity: Entity) => {
             console.log("doors.ts", "trigger.door.enter","triggerParent",triggerEntity,"entityInteracting", entity)

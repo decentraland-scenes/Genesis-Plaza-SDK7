@@ -25,6 +25,8 @@ import { PhysicsManager } from './modules/bar/basketball/ball'
 import { initIdleStateChangedObservable, onIdleStateChangedObservableAdd } from './back-ports/onIdleStateChangedObservable'
 import { Transform, engine,Entity } from '@dcl/ecs'
 import { addAnalytics } from './analytics'
+import { initOnCameraModeChangedObservable } from './back-ports/onCameraModeChangedObservable'
+import { initSoundsAttachedToPlayerHandler } from './modules/soundsAttachedToPlayer'
 
 // export all the functions required to make the scene work
 export * from '@dcl/sdk'
@@ -37,6 +39,10 @@ allowedMediaHelper.getAndSetSceneMetaData()
 initRegistery()
 initConfig()
 addAnalytics()
+
+initOnCameraModeChangedObservable()
+
+initSoundsAttachedToPlayerHandler()
 
 placeJukeBox()
 //setBarMusicOn()
@@ -174,7 +180,7 @@ addRepeatTrigger(
 )
 
 //outer perimeter
-console.log("index.ts", "trigger.bar2???.created","triggerParent",undefined)
+console.log("index.ts", "trigger.bar.outerparim.enter","triggerParent",undefined)
 addRepeatTrigger(
   Vector3.create(160 - coreBuildingOffset.x, 30, 155 - coreBuildingOffset.z),
   Vector3.create(60, 60, 70),
