@@ -11,10 +11,11 @@ let teleportUIVisibility: DisplayType = 'none'
 let timeToBeamUp: number = 3
 let scoreUIVisible: DisplayType = 'none'
 let basketUIVisible: DisplayType = 'none'
+let outOfBoundsVisible: DisplayType = 'none'
 let strengthBarVisible: DisplayType = 'none'
-let strengthValue: PositionUnit = '20%'
+let strengthValue: PositionUnit = '30%'
 let shake: number = 0
-const originalPos: PositionUnit = '50%'
+const originalPos: PositionUnit = '120%'
 let shakePos: PositionUnit = '50%'
 let isScoreEnabled = false
 let scorePositionX: PositionUnit = '0%'
@@ -29,6 +30,46 @@ export function showTeleportUI(isVisible: DisplayType) {
 export function setTeleportCountdown(_numberString: string) {
   //teleportCountdownText.value = _numberString
 }
+
+const uiOutOfBounds = () => (
+  <UiEntity
+    //top level root ui div
+    uiTransform={{
+      width: 400,
+      height: 400,
+
+      // { top: 4, bottom: 4, left: 4, right: 4 },
+      padding: 4,
+      alignContent: 'center',
+      display: outOfBoundsVisible,
+      positionType: 'absolute',
+      position: { top: '50%', left: '50%' }
+    }}
+  >
+
+    <Label
+      // OUT OF BOUNDS MESSAGE
+      value="Ball out of bounds"
+      fontSize={32}
+      textAlign='middle-center'
+      uiTransform={{ width: '100%', height: '30%', positionType: 'absolute', position: {left: '-50%'}}}
+      uiBackground={{
+        textureMode: 'nine-slices',
+        texture: {
+          src: 'images/basketball/bar_fg.png'
+        },
+        textureSlices: {
+          top: 0.49,
+          bottom: 0.49,
+          left: 0.49,
+          right: 0.49
+        }
+      }}
+    
+    />
+
+  </UiEntity>
+)
 
 const uiBasketball = () => (
   <UiEntity
@@ -45,6 +86,7 @@ const uiBasketball = () => (
       position: { top: '50%', left: '50%' }
     }}
   >
+    
     <UiEntity
       // root container for bar and score popups
       uiTransform={{
@@ -54,6 +96,7 @@ const uiBasketball = () => (
         positionType: 'absolute'
       }}
     >
+      
       <UiEntity
         // container for SCORE popup
         uiTransform={{
@@ -91,10 +134,22 @@ const uiBasketball = () => (
           alignItems: 'center',
           alignSelf: 'center',
           positionType: 'absolute',
-          position: { left: '-50%', top: '50%' },
+          position: { left: '-50%', top: '120%' },
           display: strengthBarVisible
         }}
       >
+        <Label
+          // Instructions text for power bar
+          value="        Press and hold       to set throw power"
+          fontSize={20}
+          uiTransform={{ width: '100%', height: '100%', positionType: 'absolute', position: {top: '55%', left: '-5%'}}}
+          uiBackground={{textureMode: 'center',
+          texture: {
+            src: 'images/basketball/lmb_icon.png'
+          }
+        }}
+        />
+        
         <UiEntity
           //powerbar scaling bar part
           uiTransform={{
@@ -117,7 +172,10 @@ const uiBasketball = () => (
               right: 0.49
             }
           }}
-        ></UiEntity>
+        >
+          
+
+        </UiEntity>
         <UiEntity
           //powerbar frame image
           uiTransform={{
@@ -141,7 +199,17 @@ const uiBasketball = () => (
               right: 0.49
             }
           }}
-        ></UiEntity>
+        >
+          <Label
+          // Instructions text for power bar
+          value = ""
+          fontSize={20}
+          uiTransform={{ width: '100%', height: '100%', positionType: 'absolute', position: {top: '10%'}}}          
+        
+        />
+
+
+        </UiEntity>
       </UiEntity>
     </UiEntity>
   </UiEntity>
@@ -181,7 +249,8 @@ const uiComponent = () => [
   NpcUtilsUi(),
   uiBeamMeUp(),
   customNpcUI(),
-  uiBasketball()
+  uiBasketball(),
+  uiOutOfBounds()
   //uiSpawnCube()
 ]
 
@@ -205,6 +274,13 @@ export function showStrenghtBar() {
 export function hideStrenghtBar() {
   strengthBarVisible = 'none'
 }
+// OOB UI
+export function showOOB() {
+  outOfBoundsVisible = 'flex'
+}
+export function hideOOB() {
+  outOfBoundsVisible = 'none'
+}
 
 let elapsed = 0
 
@@ -218,8 +294,8 @@ export function hideScore() {
 }
 
 export function setStrengthBar(value: number) {
-  strengthValue = (0.2 + value * 100 + '%') as PositionUnit
-  shake = value * 20
+  strengthValue = ((0.0+ value) * 100 + '%') as PositionUnit
+  shake = value * 20 
 }
 
 let elapsedTime = 0
