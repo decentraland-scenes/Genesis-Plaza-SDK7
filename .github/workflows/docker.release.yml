@@ -1,0 +1,28 @@
+name: Deploy to DCL PROD
+
+on:
+  push:
+    branches:
+      - release
+
+env:
+  DCL_PRIVATE_KEY: ${{ secrets.DCL_PRIVATE_KEY }}
+
+jobs:
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: install decentraland
+      run: npm i -g decentraland@latest
+    - name: Install npm packages
+      run: |
+        npm install
+    - name: Build scene
+      run: |
+        npm run build:ci
+    - name: Deploy scene
+      run: |
+        npm run deploy:prod
