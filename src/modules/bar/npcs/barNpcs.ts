@@ -34,12 +34,14 @@ export let fashionist: Entity
 export let boyArtist: Entity
 export let girlArtist: Entity
 export let doge: RemoteNpc
+export let simonas: RemoteNpc
 
 export function initBarNpcs(): void {
   createOctopusNpc()
   createFashionistNpc()
   createArtistCouple()
   createDogeNpc()
+  createSimonas()
 }
 
 function createOctopusNpc() {
@@ -96,7 +98,7 @@ function createOctopusNpc() {
       type: 'sphere',
       radius: 3,
       position: Vector3.create(0, 0, 0)
-    }], 
+    }],
     (entity) => {
       // console.log("DebugSession", "Octpus-OnTriggerEnter"); 
       if (engine.PlayerEntity === entity) {
@@ -194,14 +196,14 @@ function createBoyArtist(): Entity {
       dialogSound: navigationForwardSfx,
       onlyETrigger: true,
       onActivate: () => {
-        npcLib.activate(girlArtist)		
+        npcLib.activate(girlArtist)
         console.log(AnalyticsLogLabel, "barNpcs.ts", "boyArtist")
         trackAction(boy, "Interact", undefined)
         trackStart(boy)
       },
       onWalkAway: () => {
         trackEnd(boy)
-       },
+      },
       textBubble: true,
       portrait: {
         path: `images/portraits/ACch2.png`,
@@ -216,7 +218,7 @@ function createBoyArtist(): Entity {
 
   npcLib.playAnimation(boy, 'Talk', false)
   return boy
-} 
+}
 
 function createGirlArtist(): Entity {
   let girl = npcLib.create(
@@ -237,7 +239,7 @@ function createGirlArtist(): Entity {
         trackStart(girl)
       },
       onWalkAway: () => {
-        artistTalkToEachOther(false)	    
+        artistTalkToEachOther(false)
         trackEnd(girl)
       },
       textBubble: true,
@@ -317,7 +319,7 @@ function createDogeNpc(): void {
           closeCustomUI(false)
           hideThinking(doge)
           trtDeactivateNPC(doge)
-          npcLib.followPath(doge.entity, dogePath)
+          // npcLib.followPath(doge.entity, dogePath)
         },
         portrait:
         {
@@ -357,6 +359,72 @@ function createDogeNpc(): void {
   doge.predefinedQuestions = genericPrefinedQuestions
   REGISTRY.allNPCs.push(doge)
   npcLib.followPath(doge.entity)
+}
+
+const SIMONAS_NPC_ANIMATIONS: NpcAnimationNameType = {
+  HI: { name: "Hi", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/hi1.png" },
+  IDLE: { name: "Idle", duration: 4, autoStart: undefined, portraitPath: "images/portraits/simone/idle1.png" },
+  TALK: { name: "Talking", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/talking1.png" },
+  THINKING: { name: "Thinking", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/interesting1.png" },
+  LOADING: { name: "Loading", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/interesting1.png" },
+  LAUGH: { name: "Laugh", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/laughing1.png" },
+  HAPPY: { name: "Happy", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/happy1.png" },
+  SAD: { name: "Sad", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/sad1.png" },
+  SURPRISE: { name: "Surprise", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/surprise1.png" },
+}
+
+function createSimonas() {
+  simonas = new RemoteNpc(
+    { resourceName: "workspaces/genesis_city/characters/simone" },
+    {
+      transformData: { position: Vector3.create(38, 0.8, 57), scale: Vector3.create(1, 1, 1), rotation: Quaternion.create(0, 1, 0, 0) },
+      npcData: {
+        type: npcLib.NPCType.CUSTOM,
+        model: 'models/core_building/Simone_Anim.glb',
+        onActivate: () => {
+          console.log('Simonas.NPC activated!')
+          connectNpcToLobby(REGISTRY.lobbyScene, simonas)
+        },
+        onWalkAway: () => {
+          console.log("NPC", simonas.name, 'on walked away')
+          closeCustomUI(false)
+          hideThinking(simonas)
+          trtDeactivateNPC(simonas)
+        },
+        portrait:
+        {
+          path: SIMONAS_NPC_ANIMATIONS.IDLE.portraitPath, height: 300, width: 300
+          , offsetX: -100, offsetY: 0
+          , section: { sourceHeight: 256, sourceWidth: 256 }
+        },
+        idleAnim: SIMONAS_NPC_ANIMATIONS.IDLE.name,
+        hoverText: 'Hello',
+        faceUser: true,
+        darkUI: true,
+        coolDownDuration: 3,
+        onlyETrigger: true,
+        reactDistance: 6,
+        continueOnWalkAway: false,
+      }
+    },
+    {
+      npcAnimations: SIMONAS_NPC_ANIMATIONS,
+      thinking: {
+        enabled: true,
+        modelPath: 'models/core_building/loading-icon.glb',
+        offsetX: 0,
+        offsetY: 2.3,
+        offsetZ: 0
+      }
+      , onEndOfRemoteInteractionStream: () => {
+        openCustomUI()
+      }
+      , onEndOfInteraction: () => { }
+    }
+  )
+  simonas.name = "npc.simone"
+  simonas.predefinedQuestions = genericPrefinedQuestions
+  REGISTRY.allNPCs.push(simonas)
 }
 
 
