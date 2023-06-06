@@ -398,15 +398,12 @@ function createSimonas() {
           , section: { sourceHeight: 256, sourceWidth: 256 }
         },
         idleAnim: SIMONAS_NPC_ANIMATIONS.IDLE.name,
-        
+        faceUser: true,
         darkUI: true,
         coolDownDuration: 3,
-        hoverText: 'Talk',
         onlyETrigger: true,
-        onlyClickTrigger: false,
-        onlyExternalTrigger: false,
-        reactDistance: 5,
-        continueOnWalkAway: true,
+        reactDistance: 6,
+        continueOnWalkAway: false,
       }
     },
     {
