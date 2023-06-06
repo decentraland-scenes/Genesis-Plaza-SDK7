@@ -98,7 +98,7 @@ function createOctopusNpc() {
       type: 'sphere',
       radius: 3,
       position: Vector3.create(0, 0, 0)
-    }], 
+    }],
     (entity) => {
       // console.log("DebugSession", "Octpus-OnTriggerEnter"); 
       if (engine.PlayerEntity === entity) {
@@ -196,14 +196,14 @@ function createBoyArtist(): Entity {
       dialogSound: navigationForwardSfx,
       onlyETrigger: true,
       onActivate: () => {
-        npcLib.activate(girlArtist)		
+        npcLib.activate(girlArtist)
         console.log(AnalyticsLogLabel, "barNpcs.ts", "boyArtist")
         trackAction(boy, "Interact", undefined)
         trackStart(boy)
       },
       onWalkAway: () => {
         trackEnd(boy)
-       },
+      },
       textBubble: true,
       portrait: {
         path: `images/portraits/ACch2.png`,
@@ -218,7 +218,7 @@ function createBoyArtist(): Entity {
 
   npcLib.playAnimation(boy, 'Talk', false)
   return boy
-} 
+}
 
 function createGirlArtist(): Entity {
   let girl = npcLib.create(
@@ -239,7 +239,7 @@ function createGirlArtist(): Entity {
         trackStart(girl)
       },
       onWalkAway: () => {
-        artistTalkToEachOther(false)	    
+        artistTalkToEachOther(false)
         trackEnd(girl)
       },
       textBubble: true,
@@ -319,7 +319,7 @@ function createDogeNpc(): void {
           closeCustomUI(false)
           hideThinking(doge)
           trtDeactivateNPC(doge)
-          npcLib.followPath(doge.entity, dogePath)
+          // npcLib.followPath(doge.entity, dogePath)
         },
         portrait:
         {
@@ -362,15 +362,15 @@ function createDogeNpc(): void {
 }
 
 const SIMONAS_NPC_ANIMATIONS: NpcAnimationNameType = {
-  HI: { name: "Hi", duration: 2, autoStart: undefined, portraitPath: "images/portaits/simone/hi1.png"},
-  IDLE: { name: "Idle", duration: 4, autoStart: undefined, portraitPath: "images/portaits/simone/idle1.png"},
-  TALK: { name: "Talking", duration: 2, autoStart: undefined, portraitPath: "images/portaits/simone/talking1.png"},
-  THINKING: { name: "Thinking", duration: 2, autoStart: undefined, portraitPath: "images/portaits/simone/interesting1.png"},
-  LOADING: { name: "Loading", duration: 2, autoStart: undefined, portraitPath: "images/portaits/simone/interesting1.png"},
-  LAUGH: { name: "Laugh", duration: 2, autoStart: undefined, portraitPath: "images/portaits/simone/laughing1.png"},
-  HAPPY: { name: "Happy", duration: 2, autoStart: undefined, portraitPath: "images/portaits/simone/happy1.png"},
-  SAD: { name: "Sad", duration: 2, autoStart: undefined, portraitPath: "images/portaits/simone/sad1.png"},
-  SURPRISE: { name: "Surprise", duration: 2, autoStart: undefined, portraitPath: "images/portaits/simone/surprise1.png"},
+  HI: { name: "Hi", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/hi1.png" },
+  IDLE: { name: "Idle", duration: 4, autoStart: undefined, portraitPath: "images/portraits/simone/idle1.png" },
+  TALK: { name: "Talking", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/talking1.png" },
+  THINKING: { name: "Thinking", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/interesting1.png" },
+  LOADING: { name: "Loading", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/interesting1.png" },
+  LAUGH: { name: "Laugh", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/laughing1.png" },
+  HAPPY: { name: "Happy", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/happy1.png" },
+  SAD: { name: "Sad", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/sad1.png" },
+  SURPRISE: { name: "Surprise", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/surprise1.png" },
 }
 
 function createSimonas() {
@@ -393,11 +393,12 @@ function createSimonas() {
         },
         portrait:
         {
-          path: 'images/portraits/simone/happy1.png', height: 300, width: 300
+          path: SIMONAS_NPC_ANIMATIONS.IDLE.portraitPath, height: 300, width: 300
           , offsetX: -100, offsetY: 0
           , section: { sourceHeight: 256, sourceWidth: 256 }
         },
         idleAnim: SIMONAS_NPC_ANIMATIONS.IDLE.name,
+        hoverText: 'Hello',
         faceUser: true,
         darkUI: true,
         coolDownDuration: 3,
@@ -418,11 +419,11 @@ function createSimonas() {
       , onEndOfRemoteInteractionStream: () => {
         openCustomUI()
       }
-      , onEndOfInteraction: () => {}
+      , onEndOfInteraction: () => { }
     }
   )
   simonas.name = "npc.simone"
-
+  simonas.predefinedQuestions = genericPrefinedQuestions
   REGISTRY.allNPCs.push(simonas)
 }
 
