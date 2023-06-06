@@ -1,7 +1,7 @@
 import * as npcLib from 'dcl-npc-toolkit'
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { aritst1Model, aritst2Model, fashionistModel, navigationForwardSfx, octopusModel } from '../../../lobby/resources/resources'
-import { Billboard, Entity, MeshRenderer, TextShape, Transform, engine } from '@dcl/sdk/ecs'
+import { Billboard, ColliderLayer, Entity, GltfContainer, MeshRenderer, TextShape, Transform, engine } from '@dcl/sdk/ecs'
 import { artistRecommendations, fashionistCommonDialog, fashionistEpicDialog, fashionistMythicDialog, fashionistNoneDialog, getFashionistDialog, getOcotDialog, girlArtistTalk } from './npcDialogs'
 import { rarestItem, rarityLevel } from './rarity'
 import * as utils from '@dcl-sdk/utils'
@@ -380,7 +380,11 @@ function createSimonas() {
       transformData: { position: Vector3.create(38, 0.8, 57), scale: Vector3.create(1, 1, 1), rotation: Quaternion.create(0, 1, 0, 0) },
       npcData: {
         type: npcLib.NPCType.CUSTOM,
-        model: 'models/core_building/Simone_Anim.glb',
+        model: {
+            src: 'models/core_building/Simone_Anim.glb',
+            invisibleMeshesCollisionMask: ColliderLayer.CL_NONE,
+            visibleMeshesCollisionMask: ColliderLayer.CL_POINTER
+            },
         onActivate: () => {
           console.log('Simonas.NPC activated!')
           connectNpcToLobby(REGISTRY.lobbyScene, simonas)
