@@ -22,11 +22,12 @@ import { Room } from 'colyseus.js'
 import { onNpcRoomConnect } from './connection/onConnect'
 import "./polyfill/delcares";
 import { PhysicsManager } from './modules/bar/basketball/ball'
-import { initIdleStateChangedObservable, onIdleStateChangedObservableAdd } from './back-ports/onIdleStateChangedObservable'
+import { initIdleStateChangedObservable, onIdleStateChangedObservable } from './back-ports/onIdleStateChangedObservable'
 import { Transform, engine,Entity } from '@dcl/ecs'
 import { addAnalytics } from './analytics'
 import { initOnCameraModeChangedObservable } from './back-ports/onCameraModeChangedObservable'
-import { initSoundsAttachedToPlayerHandler } from './modules/soundsAttachedToPlayer'
+import { applyAudioStreamWorkAround, initSoundsAttachedToPlayerHandler } from './modules/soundsAttachedToPlayer'
+//import { onEnterScene, onLeaveScene } from '@dcl/sdk/observables'
 
 // export all the functions required to make the scene work
 export * from '@dcl/sdk'
@@ -120,7 +121,7 @@ getRealm({}).then(
 )
 
 initIdleStateChangedObservable()
-onIdleStateChangedObservableAdd((isIdle: boolean) => {
+onIdleStateChangedObservable.add((isIdle: boolean) => {
   if (isIdle) {
     console.log("index.ts", "onIdleStateChangedObservableAdd", "player is idle")
   } else {
