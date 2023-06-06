@@ -186,8 +186,8 @@ export class TeleportController {
 
           movePlayerTo({  newRelativePosition: Vector3.create(lobbyCenter.x - coreBuildingOffset.x - 5, 0, lobbyCenter.z - coreBuildingOffset.z + 2), cameraTarget: Vector3.create(lobbyCenter.x, 2, lobbyCenter.z - 12)})
 
-          let impactSounds = AudioSource.getMutable(host.impactSound)
-          impactSounds.playing = true
+          let impactSounds = AudioSource.getMutableOrNull(host.impactSound)
+          if(impactSounds) impactSounds.playing = true
 
           setBarMusicOn()
         },
@@ -208,8 +208,8 @@ export class TeleportController {
         ()=>{
           console.log(CLASSNAME,"trigger.triggerPlayerFell.enter", "triggerBoxFallCheck")
 
-          let beamFallSound = AudioSource.getMutable(host.beamFallSound)
-          beamFallSound.playing = true
+          let beamFallSound = AudioSource.getMutableOrNull(host.beamFallSound)
+          if(beamFallSound) beamFallSound.playing = true
         },
         undefined,
         Color3.Teal()
