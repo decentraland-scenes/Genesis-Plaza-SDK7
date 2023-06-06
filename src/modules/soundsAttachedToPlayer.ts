@@ -8,29 +8,35 @@ export const FIRST_PERSON_VOLUME_ADJ=-.075
 const FIRST_PERSON_VOLUME_ADJ_MIN = .02//if adjust goes below 0, set it just very low
 
 const SOUNDS_ATTACHED_TO_PLAYER_STORAGE:Map<string,PBAudioSource> = new Map()
+
+//workaround to audio plays when entering scene. but also on first time walking into scene plays them all at once yikes!
+//only add when want to play i think is the workaround :(
 export function applyAudioStreamWorkAround(type:'enter'|'exit'){
-  
+  console.log("applyAudioStreamWorkAround","ENTRY",type) 
+  //return
   const audioStreamGroup = engine.getEntitiesWith(AudioSourceAttachedToPlayer)
   for(const [ent,audioAttachedToPlayerReadOnly] of audioStreamGroup){
-  
     if(type === 'enter'){
       if(AudioSource.has(ent)){
-        console.error("applyAudioStreamWorkAround","already has audio",ent,audioAttachedToPlayerReadOnly)
+        console.log("applyAudioStreamWorkAround","WARN already audio",ent,audioAttachedToPlayerReadOnly)
       }else{
         const addAudio:PBAudioSource = SOUNDS_ATTACHED_TO_PLAYER_STORAGE.get( audioAttachedToPlayerReadOnly.id )
         
         if(addAudio){
           console.log("applyAudioStreamWorkAround","adding audio back",ent,audioAttachedToPlayerReadOnly)
+          //disable playing, if was playing - will be enabled by action 
+          //issue is if needs to be background music wont auto play
+          addAudio.playing = false
           AudioSource.create( ent,  addAudio )
         }else{
           console.log("applyAudioStreamWorkAround","no audio to add",ent,audioAttachedToPlayerReadOnly)
         }
       }
     }else{
-      //exit
+      //exit 
       const removedAudio:PBAudioSource = AudioSource.deleteFrom( ent )
       
-      if(removedAudio){
+      if(removedAudio){ 
         console.log("applyAudioStreamWorkAround","removed audio, stored for later",ent,audioAttachedToPlayerReadOnly)
         SOUNDS_ATTACHED_TO_PLAYER_STORAGE.set(audioAttachedToPlayerReadOnly.id,removedAudio)
       }else{
