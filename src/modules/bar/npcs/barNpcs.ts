@@ -463,24 +463,28 @@ function createRob() {
         model: 'models/',
         onActivate: () => {
           console.log('Rob.NPC activated!')
-
-          if (rob.npcAnimations.HI) npcLib.playAnimation(rob.entity, rob.npcAnimations.HI.name, true, rob.npcAnimations.HI.duration)
+          connectNpcToLobby(REGISTRY.lobbyScene, rob)
         },
         onWalkAway: () => {
           console.log("NPC", rob.name, 'on walked away')
-
-          if (rob.npcAnimations.SAD) npcLib.playAnimation(rob.entity, rob.npcAnimations.SAD.name, true, rob.npcAnimations.SAD.duration)
+          closeCustomUI(false)
+          hideThinking(rob)
+          trtDeactivateNPC(rob)
+        },
+        portrait:
+        {
+          path: ROB_NPC_ANIMATIONS.IDLE.portraitPath, height: 300, width: 300
+          , offsetX: -100, offsetY: 0
+          , section: { sourceHeight: 256, sourceWidth: 256 }
         },
         idleAnim: ROB_NPC_ANIMATIONS.IDLE.name,
-        
+        hoverText: 'Hello',
+        faceUser: true,
         darkUI: true,
         coolDownDuration: 3,
-        hoverText: 'Talk',
         onlyETrigger: true,
-        onlyClickTrigger: false,
-        onlyExternalTrigger: false,
         reactDistance: 5,
-        continueOnWalkAway: true,
+        continueOnWalkAway: false,
       }
     },
     {
@@ -500,7 +504,7 @@ function createRob() {
     }
   )
   rob.name = "npc.dclGuide"
-
+  rob.predefinedQuestions = genericPrefinedQuestions
   REGISTRY.allNPCs.push(rob)
 }
 //#endregion
@@ -528,24 +532,28 @@ function createAisha() {
         model: 'models/',
         onActivate: () => {
           console.log('AIsha.NPC activated!')
-
-          if (aisha.npcAnimations.HI) npcLib.playAnimation(aisha.entity, aisha.npcAnimations.HI.name, true, aisha.npcAnimations.HI.duration)
+          connectNpcToLobby(REGISTRY.lobbyScene, aisha)
         },
         onWalkAway: () => {
           console.log("NPC", aisha.name, 'on walked away')
-
-          if (aisha.npcAnimations.SAD) npcLib.playAnimation(aisha.entity, aisha.npcAnimations.SAD.name, true, aisha.npcAnimations.SAD.duration)
+          closeCustomUI(false)
+          hideThinking(aisha)
+          trtDeactivateNPC(aisha)
+        },
+        portrait:
+        {
+          path: AISHA_NPC_ANIMATIONS.IDLE.portraitPath, height: 300, width: 300
+          , offsetX: -100, offsetY: 0
+          , section: { sourceHeight: 256, sourceWidth: 256 }
         },
         idleAnim: AISHA_NPC_ANIMATIONS.IDLE.name,
-        
+        hoverText: 'Hello',
+        faceUser: true,
         darkUI: true,
         coolDownDuration: 3,
-        hoverText: 'Talk',
         onlyETrigger: true,
-        onlyClickTrigger: false,
-        onlyExternalTrigger: false,
         reactDistance: 5,
-        continueOnWalkAway: true,
+        continueOnWalkAway: false,
       }
     },
     {
@@ -565,7 +573,7 @@ function createAisha() {
     }
   )
   aisha.name = "npc.dclGuide"
-
+  aisha.predefinedQuestions = genericPrefinedQuestions
   REGISTRY.allNPCs.push(aisha)
 }
 //#endregion
