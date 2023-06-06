@@ -247,7 +247,8 @@ function createDogeNpc(): void {
   let dogePath: FollowPathData = {
     path: dogePathPoints,
     loop: true,
-    totalDuration: dogePathPoints.length * 4
+    totalDuration: dogePathPoints.length * 3
+    
     // curve: true,
   }
 
