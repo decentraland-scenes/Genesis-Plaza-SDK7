@@ -12,9 +12,9 @@ let timeToBeamUp: number = 3
 let scoreUIVisible: DisplayType = 'none'
 let basketUIVisible: DisplayType = 'none'
 let strengthBarVisible: DisplayType = 'none'
-let strengthValue: PositionUnit = '20%'
+let strengthValue: PositionUnit = '30%'
 let shake: number = 0
-const originalPos: PositionUnit = '50%'
+const originalPos: PositionUnit = '120%'
 let shakePos: PositionUnit = '50%'
 let isScoreEnabled = false
 let scorePositionX: PositionUnit = '0%'
@@ -95,6 +95,18 @@ const uiBasketball = () => (
           display: strengthBarVisible
         }}
       >
+        <Label
+          // Instructions text for power bar
+          value="        Press and hold       to set throw power"
+          fontSize={20}
+          uiTransform={{ width: '100%', height: '100%', positionType: 'absolute', position: {top: '55%', left: '-5%'}}}
+          uiBackground={{textureMode: 'center',
+          texture: {
+            src: 'images/basketball/lmb_icon.png'
+          }
+        }}
+        />
+        
         <UiEntity
           //powerbar scaling bar part
           uiTransform={{
@@ -117,7 +129,10 @@ const uiBasketball = () => (
               right: 0.49
             }
           }}
-        ></UiEntity>
+        >
+          
+
+        </UiEntity>
         <UiEntity
           //powerbar frame image
           uiTransform={{
@@ -141,7 +156,17 @@ const uiBasketball = () => (
               right: 0.49
             }
           }}
-        ></UiEntity>
+        >
+          <Label
+          // Instructions text for power bar
+          value = ""
+          fontSize={20}
+          uiTransform={{ width: '100%', height: '100%', positionType: 'absolute', position: {top: '10%'}}}          
+        
+        />
+
+
+        </UiEntity>
       </UiEntity>
     </UiEntity>
   </UiEntity>
@@ -218,8 +243,8 @@ export function hideScore() {
 }
 
 export function setStrengthBar(value: number) {
-  strengthValue = (0.2 + value * 100 + '%') as PositionUnit
-  shake = value * 20
+  strengthValue = ((0.0+ value) * 100 + '%') as PositionUnit
+  shake = value * 20 
 }
 
 let elapsedTime = 0

@@ -260,7 +260,7 @@ export class PhysicsManager {
 
     Throwable.create(ball, {
       index: index,
-      strength:0.2, 
+      strength:0.3, 
       isFired:false, 
       maxStrength:1,
       holdScale: Vector3.create(0.5, 0.5, 0.5),
@@ -365,11 +365,12 @@ export class PhysicsManager {
       this.cannonBodies[this.carriedIndex].position.set(dropVec.x, dropVec.y, dropVec.z)
       
       this.playerHolding = false
-      throwableInfo.strength = 0.2
+      this.strengthHold = false
+      throwableInfo.strength = 0.3
 
       //ball only triggers the score zone once it is thrown
       utils.triggers.enableTrigger(ball,true)
-      setStrengthBar(0.2)
+      setStrengthBar(0.3)
 
     }
   }
@@ -455,11 +456,11 @@ export class PhysicsManager {
           dropPos.y, 
           dropPos.z))
       this.playerHolding = false
-      throwableInfo.strength = 0.2
+      throwableInfo.strength = 0.3
 
       //ball only triggers the score zone once it is thrown
       utils.triggers.enableTrigger(ball,true)
-      setStrengthBar(0.2)
+      setStrengthBar(0.3)
     }
     
   }
