@@ -13,6 +13,7 @@ let scoreUIVisible: DisplayType = 'none'
 let basketUIVisible: DisplayType = 'none'
 let outOfBoundsVisible: DisplayType = 'none'
 let strengthBarVisible: DisplayType = 'none'
+let powerHightlightVisible: DisplayType = 'none'
 let strengthValue: PositionUnit = '30%'
 let shake: number = 0
 const originalPos = 50
@@ -137,12 +138,41 @@ const uiBasketball = () => (
           position: { left: '-50%', top: '120%' },
           display: strengthBarVisible
         }}
+        
       >
+        <UiEntity
+          //powerbar highlight
+          uiTransform={{
+            width: '100%',
+            height: '100%',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            alignSelf: 'center',
+            positionType: 'absolute',
+            display: powerHightlightVisible
+          }}
+          uiBackground={{
+            textureMode: 'nine-slices',
+            texture: {
+              src: 'images/basketball/bar_bg.png'
+            },
+            textureSlices: {
+              top: 0.49,
+              bottom: 0.49,
+              left: 0.49,
+              right: 0.49
+            }
+          }}
+        >    
+
+
+        </UiEntity>
         <Label
           // Instructions text for power bar
           value="        Press and hold       to set throw power"
           fontSize={20}
-          uiTransform={{ width: '100%', height: '100%', positionType: 'absolute', position: {top: '55%', left: '-5%'}}}
+          uiTransform={{ width: '100%', height: '100%', positionType: 'absolute', position: {top: '60%', left: '-5%'}}}
           uiBackground={{textureMode: 'center',
           texture: {
             src: 'images/basketball/lmb_icon.png'
@@ -154,7 +184,7 @@ const uiBasketball = () => (
           //powerbar scaling bar part
           uiTransform={{
             width: strengthValue ,
-            height: '90%' ,
+            height: '100%' ,
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -180,7 +210,7 @@ const uiBasketball = () => (
           //powerbar frame image
           uiTransform={{
             width: '100%',
-            height: '90%',
+            height: '100%',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -200,13 +230,7 @@ const uiBasketball = () => (
             }
           }}
         >
-          <Label
-          // Instructions text for power bar
-          value = ""
-          fontSize={20}
-          uiTransform={{ width: '100%', height: '100%', positionType: 'absolute', position: {top: '10%'}}}          
-        
-        />
+         
 
 
         </UiEntity>
@@ -267,12 +291,18 @@ export function displayBasketballUI() {
 export function hideBasketballUI() {
   basketUIVisible = 'none'
 }
-
+// STRENGTH BAR SETTINGS
 export function showStrenghtBar() {
   strengthBarVisible = 'flex'
 }
 export function hideStrenghtBar() {
   strengthBarVisible = 'none'
+}
+export function showBarHighlight() {
+  powerHightlightVisible = 'flex'
+}
+export function hideBarHighlight() {
+  powerHightlightVisible = 'none'
 }
 // OOB UI
 export function showOOB() {

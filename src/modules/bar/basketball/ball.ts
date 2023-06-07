@@ -3,7 +3,7 @@ import { AudioSource, AvatarAnchorPointType, AvatarAttach, CameraMode, CameraTyp
 import { Vector3, Quaternion, Color3, Color4 } from "@dcl/sdk/math"
 import { addPhysicsConstraints } from './physicsConstraints'
 import * as utils from "@dcl-sdk/utils"
-import { displayBasketballUI, hideBasketballUI, hideOOB, hideStrenghtBar, scoreDisplay, setStrengthBar, showOOB } from '../../../ui'
+import { displayBasketballUI, hideBarHighlight, hideBasketballUI, hideOOB, hideStrenghtBar, scoreDisplay, setStrengthBar, showBarHighlight, showOOB } from '../../../ui'
 import { BasketballHoop } from './hoop'
 import { PhysicsWorldStatic, ballBounceMaterial } from './physicsWorld'
 import { ballDropSource, ballDropVolume, bounceSource, bounceVolume, pickupSource, pickupVolume, throwBallSource, throwBallVolume } from './sounds'
@@ -552,11 +552,17 @@ export class PhysicsManager {
         if(throwable.strength + dt   < throwable.maxStrength ){
           Throwable.getMutable(this.balls[i]).strength += dt * 0.5
           setStrengthBar(throwable.strength)
+          
         }
         else{
           Throwable.getMutable(this.balls[i]).strength  = throwable.maxStrength
           setStrengthBar(throwable.strength)
         }
+
+        showBarHighlight()
+      }
+      else{
+        hideBarHighlight()
       }
        //const transformBall = Transform.getMutable(this.balls[i])
       // const cameraDir =  Vector3.rotate(Vector3.Forward(), Transform.get(engine.CameraEntity).rotation)
