@@ -10,6 +10,12 @@ export const ballBounceMaterial: CANNON.Material = new CANNON.Material(
   ballBounceMaterial.friction = 0.2
   ballBounceMaterial.restitution = 0.5
 
+export const hoopContactMaterial: CANNON.Material = new CANNON.Material(
+    'hoopContactMaterial',
+  )   
+  hoopContactMaterial.friction = 0.2
+  hoopContactMaterial.restitution = 0.1
+
 export class PhysicsWorldStatic {
     colliders:CANNON.Body[]
     world:CANNON.World

@@ -15,7 +15,7 @@ let outOfBoundsVisible: DisplayType = 'none'
 let strengthBarVisible: DisplayType = 'none'
 let strengthValue: PositionUnit = '30%'
 let shake: number = 0
-const originalPos: PositionUnit = '120%'
+const originalPos = 50
 let shakePos: PositionUnit = '50%'
 let isScoreEnabled = false
 let scorePositionX: PositionUnit = '0%'
@@ -43,7 +43,7 @@ const uiOutOfBounds = () => (
       alignContent: 'center',
       display: outOfBoundsVisible,
       positionType: 'absolute',
-      position: { top: '50%', left: '50%' }
+      position: { top: shakePos, left: shakePos }
     }}
   >
 
@@ -277,6 +277,7 @@ export function hideStrenghtBar() {
 // OOB UI
 export function showOOB() {
   outOfBoundsVisible = 'flex'
+  elapsedTime = 0
 }
 export function hideOOB() {
   outOfBoundsVisible = 'none'
@@ -300,9 +301,19 @@ export function setStrengthBar(value: number) {
 
 let elapsedTime = 0
 
-// UI SHAKE
-engine.addSystem((dt: number) => {
-  shakePos = (originalPos + Math.random() * shake) as PositionUnit
+// UI SHAKE FOR OUT OF BOUNDS POPUP
+engine.addSystem((dt: number) => { 
+
+  if(elapsedTime < 0.4){
+    elapsedTime +=dt
+    let shakeSize = originalPos + Math.random() * 30*dt * (0.4-elapsedTime)
+    shakePos = shakeSize + "%" as PositionUnit
+  }
+  else{
+    shakePos = '50%'
+  }
+  
+  //console.log("SHAKE: " + shakePos )
 })
 
 let factor = 0

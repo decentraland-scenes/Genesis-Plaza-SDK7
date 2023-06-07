@@ -5,6 +5,7 @@ import * as CANNON from 'cannon/build/cannon'
 import { scoreDisplay } from "../../../ui";
 import { ToRadian } from "./utilFunctions";
 import { scoreSource, scoreVolume } from "./sounds";
+import { hoopContactMaterial } from "./physicsWorld";
 
 
 const hoopShape:PBGltfContainer =  {src:"models/basketball/basketball_hoop.glb"}
@@ -101,6 +102,8 @@ export class BasketballHoop {
         
        //shape: new CANNON.Box(new CANNON.Vec3(0.35, 0.35, 0.35)),
       })
+      cannonWall.material = hoopContactMaterial
+
       this.world.addBody(cannonWall)
     
       // bottom blocker preventing scoring from bottom-up

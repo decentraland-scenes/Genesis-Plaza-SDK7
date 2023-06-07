@@ -10,3 +10,6 @@ export const bounceVolume = 1
 
 export const pickupSource = 'sounds/pickup.mp3'
 export const pickupVolume = 1
+
+export const ballDropSource = 'sounds/ball_dropped.mp3'
+export const ballDropVolume = 1

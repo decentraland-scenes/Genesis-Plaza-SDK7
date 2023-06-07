@@ -6,7 +6,7 @@ import * as utils from "@dcl-sdk/utils"
 import { displayBasketballUI, hideBasketballUI, hideOOB, hideStrenghtBar, scoreDisplay, setStrengthBar, showOOB } from '../../../ui'
 import { BasketballHoop } from './hoop'
 import { PhysicsWorldStatic, ballBounceMaterial } from './physicsWorld'
-import { bounceSource, bounceVolume, pickupSource, pickupVolume, throwBallSource, throwBallVolume } from './sounds'
+import { ballDropSource, ballDropVolume, bounceSource, bounceVolume, pickupSource, pickupVolume, throwBallSource, throwBallVolume } from './sounds'
 import { Perimeter } from './perimeter'
 import { moveLineBetween, realDistance } from './utilFunctions'
 import { barCenter } from '../../../lobby/resources/globals'
@@ -319,7 +319,7 @@ export class PhysicsManager {
   pickUpBall(index:number){
    
     if(!this.playerHolding){
-
+      this.playerHolding = true 
       const throwableInfo = Throwable.get(this.balls[index])
       Carried.createOrReplace(this.balls[index])
       Transform.createOrReplace(this.balls[index], {
@@ -328,20 +328,16 @@ export class PhysicsManager {
         parent: this.avatarHandRoot
       })
       HasTrail.deleteFrom(this.balls[index])
-      this.playerHolding = true
+           
+      this.carriedIndex = index
+      displayBasketballUI()
+      this.perimeter.show()
       AudioSource.createOrReplace(this.balls[index], {
         audioClipUrl: pickupSource,
         playing: true,
         loop:false,
         volume: pickupVolume
       })
-
-    //   AvatarAttach.create(this.balls[index],{
-    //     anchorPointId: AvatarAnchorPointType.AAPT_RIGHT_HAND,
-    // })
-      this.carriedIndex = index
-      displayBasketballUI()
-      this.perimeter.show()
     }
   }
 
@@ -372,6 +368,12 @@ export class PhysicsManager {
       //ball only triggers the score zone once it is thrown
       utils.triggers.enableTrigger(ball,true)
       setStrengthBar(0.3)
+      AudioSource.createOrReplace(ball, {
+        audioClipUrl: ballDropSource,
+        playing: true,
+        loop:false,
+        volume: ballDropVolume
+      })
 
     }
   }
@@ -486,12 +488,10 @@ export class PhysicsManager {
       albedoColor: Color4.fromInts(255,255 *(1-trailInfo.fadeFactor) * 2, 255 *(1-trailInfo.fadeFactor) * 0.1, 255 * (1-trailInfo.fadeFactor) *0.5 ),
       transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND,
       emissiveColor: Color3.fromInts(255,255 *(1-trailInfo.fadeFactor) * 2, 255 *(1-trailInfo.fadeFactor) * 0.4),
-      emissiveIntensity: (1-trailInfo.fadeFactor) *2
+      emissiveIntensity: 2
       
       
     })
-
-    
     
     // if(trailTransform.scale.y < 0) trailTransform.scale.y = 0
     // if(trailTransform.scale.z < 0) trailTransform.scale.z = 0
@@ -502,7 +502,9 @@ export class PhysicsManager {
 
     if(HasTrail.getOrNull(this.balls[i]) != null){
       const transformBall = Transform.getMutable(this.balls[i])
-      let trailInfo = HasTrail.getMutable(this.balls[i])
+      let trailInfo = HasTrail.getMutable(this.balls[i])      
+      
+   
 
       trailInfo.saveTimer += dt
 
@@ -523,7 +525,7 @@ export class PhysicsManager {
           albedoColor: Color4.fromInts(255,255 *(1-fadeFactor) * 2, 255 *(1-fadeFactor) * 0.1, 255 * (1-fadeFactor) *5 ),
           transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND,
           emissiveColor: Color3.fromInts(255,255 *(1-fadeFactor) * 2, 255 *(1-fadeFactor) * 0.1),
-          emissiveIntensity: (1-fadeFactor) *1
+          emissiveIntensity: 2
           
           
         })
