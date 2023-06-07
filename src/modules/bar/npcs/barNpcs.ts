@@ -395,10 +395,18 @@ function createSimonas() {
         model: 'models/core_building/Simone_Anim.glb',
         onActivate: () => {
           console.log('Simonas.NPC activated!')
+
+          console.log(AnalyticsLogLabel, "barNpcs.ts", "Simone")
+          trackAction(simonas.entity, "Interact", undefined)
+          trackStart(simonas.entity)
+
           connectNpcToLobby(REGISTRY.lobbyScene, simonas)
         },
         onWalkAway: () => {
           console.log("NPC", simonas.name, 'on walked away')
+
+          trackEnd(simonas.entity)
+
           closeCustomUI(false)
           hideThinking(simonas)
           trtDeactivateNPC(simonas)
@@ -437,6 +445,11 @@ function createSimonas() {
   simonas.name = "npc.simone"
   simonas.predefinedQuestions = genericPrefinedQuestions
   REGISTRY.allNPCs.push(simonas)
+
+  TrackingElement.create(simonas.entity, {
+    elementType: ANALYTICS_ELEMENTS_TYPES.npc,
+    elementId: ANALYTICS_ELEMENTS_IDS.simone,
+  })
 }
 //#endregion
 

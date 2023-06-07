@@ -29,6 +29,7 @@ export const ANALYTICS_ELEMENTS_IDS = {
   tradingCenter: "tradingCenter",
   octopus: "octopus",
   doge: "doge",
+  simone: "simone",
   rob: "rob",
   aisha: "aisha",
   fashionist: "fashionist",
