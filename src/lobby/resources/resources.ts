@@ -62,6 +62,7 @@ export const octopusModel = 'models/core_building/BobOctorossV46.glb'
 export const fashionistModel = 'models/core_building/WearableConnoisseurRotatedV08.glb'
 export const aritst1Model = 'models/core_building/ch1_crowdV5.glb'
 export const aritst2Model = 'models/core_building/ch2_crowdV5.glb'
+export const simoneModel = 'models/core_building/Simone_Anim.glb'
 
 //Audio
 export const navigationForwardSfx = `sounds/navigationForward.mp3`

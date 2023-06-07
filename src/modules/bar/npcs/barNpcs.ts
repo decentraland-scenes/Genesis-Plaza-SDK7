@@ -1,6 +1,6 @@
 import * as npcLib from 'dcl-npc-toolkit'
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
-import { aritst1Model, aritst2Model, fashionistModel, navigationForwardSfx, octopusModel } from '../../../lobby/resources/resources'
+import { aritst1Model, aritst2Model, fashionistModel, navigationForwardSfx, octopusModel, simoneModel } from '../../../lobby/resources/resources'
 import { Billboard, ColliderLayer, Entity, GltfContainer, MeshRenderer, TextShape, Transform, engine } from '@dcl/sdk/ecs'
 import { artistRecommendations, fashionistCommonDialog, fashionistEpicDialog, fashionistMythicDialog, fashionistNoneDialog, getFashionistDialog, getOcotDialog, girlArtistTalk } from './npcDialogs'
 import { rarestItem, rarityLevel } from './rarity'
@@ -407,7 +407,7 @@ function createSimonas() {
       npcData: {
         type: npcLib.NPCType.CUSTOM,
         model: {
-            src: 'models/core_building/Simone_Anim.glb',
+            src: simoneModel,
             invisibleMeshesCollisionMask: ColliderLayer.CL_NONE,
             visibleMeshesCollisionMask: ColliderLayer.CL_POINTER
             },
