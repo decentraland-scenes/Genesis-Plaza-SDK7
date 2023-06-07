@@ -463,10 +463,18 @@ function createRob() {
         model: 'models/',
         onActivate: () => {
           console.log('Rob.NPC activated!')
+
+          console.log(AnalyticsLogLabel, "barNpcs.ts", "Rob")
+          trackAction(rob.entity, "Interact", undefined)
+          trackStart(rob.entity)
+
           connectNpcToLobby(REGISTRY.lobbyScene, rob)
         },
         onWalkAway: () => {
           console.log("NPC", rob.name, 'on walked away')
+
+          trackEnd(rob.entity)
+
           closeCustomUI(false)
           hideThinking(rob)
           trtDeactivateNPC(rob)
@@ -506,6 +514,11 @@ function createRob() {
   rob.name = "npc.dclGuide"
   rob.predefinedQuestions = genericPrefinedQuestions
   REGISTRY.allNPCs.push(rob)
+
+  TrackingElement.create(rob.entity, {
+    elementType: ANALYTICS_ELEMENTS_TYPES.npc,
+    elementId: ANALYTICS_ELEMENTS_IDS.octopus,
+  })
 }
 //#endregion
 
