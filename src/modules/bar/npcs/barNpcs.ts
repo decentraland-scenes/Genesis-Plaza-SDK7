@@ -1,6 +1,6 @@
 import * as npcLib from 'dcl-npc-toolkit'
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
-import { aritst1Model, aritst2Model, fashionistModel, navigationForwardSfx, octopusModel, simoneModel } from '../../../lobby/resources/resources'
+import { aritst1ModelPath, aritst2ModelPath, dogeModelPath, fashionistModelPath, navigationForwardSfx, octopusModelPath, simoneModelPath } from '../../../lobby/resources/resources'
 import { Billboard, ColliderLayer, Entity, GltfContainer, MeshRenderer, TextShape, Transform, engine } from '@dcl/sdk/ecs'
 import { artistRecommendations, fashionistCommonDialog, fashionistEpicDialog, fashionistMythicDialog, fashionistNoneDialog, getFashionistDialog, getOcotDialog, girlArtistTalk } from './npcDialogs'
 import { rarestItem, rarityLevel } from './rarity'
@@ -48,7 +48,7 @@ function createOctopusNpc() {
     },
     {
       type: npcLib.NPCType.CUSTOM,
-      model: octopusModel,
+      model: octopusModelPath,
       dialogSound: navigationForwardSfx,
       onlyETrigger: true,
       onActivate: () => {
@@ -114,7 +114,7 @@ function createFashionistNpc(): Entity {
     { position: position },
     {
       type: npcLib.NPCType.CUSTOM,
-      model: fashionistModel,
+      model: fashionistModelPath,
       dialogSound: navigationForwardSfx,
       onlyETrigger: true,
       onActivate: async () => {
@@ -189,7 +189,7 @@ function createBoyArtist(): Entity {
     },
     {
       type: npcLib.NPCType.CUSTOM,
-      model: aritst1Model,
+      model: aritst1ModelPath,
       dialogSound: navigationForwardSfx,
       onlyETrigger: true,
       onActivate: () => {
@@ -225,7 +225,7 @@ function createGirlArtist(): Entity {
     },
     {
       type: npcLib.NPCType.CUSTOM,
-      model: aritst2Model,
+      model: aritst2ModelPath,
       dialogSound: navigationForwardSfx,
       onlyETrigger: true,
       onActivate: () => {
@@ -319,7 +319,7 @@ function createDogeNpc(): void {
       },
       npcData: {
         type: npcLib.NPCType.CUSTOM,
-        model: 'models/core_building/dogeNPC_anim4.glb',
+        model: dogeModelPath,
         onActivate: () => {
           console.log('doge.Ai_NPC activated!')
 
@@ -407,7 +407,7 @@ function createSimonas() {
       npcData: {
         type: npcLib.NPCType.CUSTOM,
         model: {
-            src: simoneModel,
+            src: simoneModelPath,
             invisibleMeshesCollisionMask: ColliderLayer.CL_NONE,
             visibleMeshesCollisionMask: ColliderLayer.CL_POINTER
             },
