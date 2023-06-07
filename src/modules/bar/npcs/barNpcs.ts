@@ -382,9 +382,9 @@ function createSimonas() {
       npcData: {
         type: npcLib.NPCType.CUSTOM,
         model: {
-            src: 'models/core_building/Simone_Anim.glb',
-            invisibleMeshesCollisionMask: ColliderLayer.CL_NONE,
-            visibleMeshesCollisionMask: ColliderLayer.CL_POINTER
+            src: 'models/core_building/Simone_Anim_Collider.glb', //collider not working for Simone_Anim.glb
+            invisibleMeshesCollisionMask: ColliderLayer.CL_POINTER | ColliderLayer.CL_PHYSICS,
+            visibleMeshesCollisionMask: ColliderLayer.CL_NONE
             },
         onActivate: () => {
           console.log('Simonas.NPC activated!')
