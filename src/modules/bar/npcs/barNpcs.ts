@@ -517,7 +517,7 @@ function createRob() {
 
   TrackingElement.create(rob.entity, {
     elementType: ANALYTICS_ELEMENTS_TYPES.npc,
-    elementId: ANALYTICS_ELEMENTS_IDS.octopus,
+    elementId: ANALYTICS_ELEMENTS_IDS.rob,
   })
 }
 //#endregion
@@ -545,10 +545,18 @@ function createAisha() {
         model: 'models/',
         onActivate: () => {
           console.log('AIsha.NPC activated!')
+
+          console.log(AnalyticsLogLabel, "barNpcs.ts", "AIsha")
+          trackAction(aisha.entity, "Interact", undefined)
+          trackStart(aisha.entity)
+
           connectNpcToLobby(REGISTRY.lobbyScene, aisha)
         },
         onWalkAway: () => {
           console.log("NPC", aisha.name, 'on walked away')
+
+          trackEnd(aisha.entity)
+
           closeCustomUI(false)
           hideThinking(aisha)
           trtDeactivateNPC(aisha)
@@ -588,6 +596,11 @@ function createAisha() {
   aisha.name = "npc.dclGuide"
   aisha.predefinedQuestions = genericPrefinedQuestions
   REGISTRY.allNPCs.push(aisha)
+
+  TrackingElement.create(aisha.entity, {
+    elementType: ANALYTICS_ELEMENTS_TYPES.npc,
+    elementId: ANALYTICS_ELEMENTS_IDS.aisha,
+  })
 }
 //#endregion
 
