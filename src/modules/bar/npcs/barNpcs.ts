@@ -322,10 +322,18 @@ function createDogeNpc(): void {
         model: 'models/core_building/dogeNPC_anim4.glb',
         onActivate: () => {
           console.log('doge.Ai_NPC activated!')
+
+          console.log(AnalyticsLogLabel, "barNpcs.ts", "Doge")
+          trackAction(doge.entity, "Interact", undefined)
+          trackStart(doge.entity)
+
           connectNpcToLobby(REGISTRY.lobbyScene, doge)
         },
         onWalkAway: () => {
           console.log("NPC", doge.name, 'walk away')
+
+          trackEnd(doge.entity)
+
           closeCustomUI(false)
           hideThinking(doge)
           trtDeactivateNPC(doge)
@@ -369,6 +377,11 @@ function createDogeNpc(): void {
   doge.predefinedQuestions = genericPrefinedQuestions
   REGISTRY.allNPCs.push(doge)
   npcLib.followPath(doge.entity)
+
+  TrackingElement.create(doge.entity, {
+    elementType: ANALYTICS_ELEMENTS_TYPES.npc,
+    elementId: ANALYTICS_ELEMENTS_IDS.doge,
+  })
 }
 //#endregion
 
