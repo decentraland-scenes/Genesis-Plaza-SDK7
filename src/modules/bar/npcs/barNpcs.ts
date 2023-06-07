@@ -1,6 +1,6 @@
 import * as npcLib from 'dcl-npc-toolkit'
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
-import { aritst1ModelPath, aritst2ModelPath, dogeModelPath, fashionistModelPath, navigationForwardSfx, octopusModelPath, simoneModelPath } from '../../../lobby/resources/resources'
+import { aishaModelPath, aritst1ModelPath, aritst2ModelPath, dogeModelPath, fashionistModelPath, navigationForwardSfx, octopusModelPath, robModelPath, simoneModelPath } from '../../../lobby/resources/resources'
 import { Billboard, ColliderLayer, Entity, GltfContainer, MeshRenderer, TextShape, Transform, engine } from '@dcl/sdk/ecs'
 import { artistRecommendations, fashionistCommonDialog, fashionistEpicDialog, fashionistMythicDialog, fashionistNoneDialog, getFashionistDialog, getOcotDialog, girlArtistTalk } from './npcDialogs'
 import { rarestItem, rarityLevel } from './rarity'
@@ -493,7 +493,7 @@ function createRob() {
       transformData: { position: Vector3.create(9, 0, 9), scale: Vector3.create(1, 1, 1) },
       npcData: {
         type: npcLib.NPCType.CUSTOM,
-        model: 'models/',
+        model: robModelPath,
         onActivate: () => {
           console.log('Rob.NPC activated!')
 
@@ -575,7 +575,7 @@ function createAisha() {
       transformData: { position: Vector3.create(3, 0, 3), scale: Vector3.create(1, 1, 1) },
       npcData: {
         type: npcLib.NPCType.CUSTOM,
-        model: 'models/',
+        model: aishaModelPath,
         onActivate: () => {
           console.log('AIsha.NPC activated!')
 
