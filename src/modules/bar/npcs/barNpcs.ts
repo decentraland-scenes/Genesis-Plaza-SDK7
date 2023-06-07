@@ -466,6 +466,7 @@ function createSimonas() {
 }
 //#endregion
 
+/*
 //#region  Rob
 const ROB_NPC_ANIMATIONS: NpcAnimationNameType = {
   HI: { name: "Hi", duration: 2, autoStart: undefined, portraitPath: "images/portaits/rob/hi1.png"},
@@ -629,7 +630,7 @@ function createAisha() {
   })
 }
 //#endregion
-
+*/
 
 function RotateFashionist(targetPosition: Vector3) {
   let targetRotation = Quaternion.fromLookAt(
