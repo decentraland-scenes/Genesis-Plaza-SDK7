@@ -12,8 +12,8 @@ export function addAnalytics() {
   addAnalyticsAdded = true 
 
   const cloudAnalyticsTrigger = engine.addEntity()
-  const cloudAnalyticsTriggerPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyHeight+3, lobbyCenter.z - coreBuildingOffset.z)
-  const cloudAnalyticsTriggerScale = Vector3.create(50, 3, 50)
+  const cloudAnalyticsTriggerPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyHeight+1, lobbyCenter.z - coreBuildingOffset.z)
+  const cloudAnalyticsTriggerScale = Vector3.create(50, 4, 50)
   Transform.create(cloudAnalyticsTrigger, {})
 
   TrackingElement.create(cloudAnalyticsTrigger, {
@@ -37,7 +37,7 @@ export function addAnalytics() {
   )
 
   const sliderInCloudAnalyticsTrigger = engine.addEntity()
-  const sliderInCloudAnalyticsTriggerPosition = Vector3.create(161 - coreBuildingOffset.x, lobbyHeight, 160 - coreBuildingOffset.z)
+  const sliderInCloudAnalyticsTriggerPosition = Vector3.create(161 - coreBuildingOffset.x, lobbyHeight+1, 160 - coreBuildingOffset.z)
   const sliderInCloudAnalyticsTriggerScale = Vector3.create(30, 4, 12)
   Transform.create(sliderInCloudAnalyticsTrigger, {})
 
@@ -84,6 +84,35 @@ export function addAnalytics() {
       trackEnd(barAnalyticsTrigger)
     },
     Color3.Red()
+  )
+
+  const secondFloorAnalyticsTrigger = engine.addEntity()
+  const secondFloorAnalyticsTriggerPosition1 = Vector3.create(lobbyCenter.x - coreBuildingOffset.x , 13, lobbyCenter.z - coreBuildingOffset.z - 15)
+  const secondFloorAnalyticsTriggerPosition2 = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, 13, lobbyCenter.z - coreBuildingOffset.z + 15)
+  const secondFloorAnalyticsTriggerPosition3 = Vector3.create(lobbyCenter.x - coreBuildingOffset.x - 15, 13, lobbyCenter.z - coreBuildingOffset.z)
+  const secondFloorAnalyticsTriggerPosition4 = Vector3.create(lobbyCenter.x - coreBuildingOffset.x +15, 13, lobbyCenter.z - coreBuildingOffset.z)
+  const secondFloorAnalyticsTriggerScale1 = Vector3.create(40, 8, 15)
+  const secondFloorAnalyticsTriggerScale2 = Vector3.create(15, 8, 40)
+  Transform.create(secondFloorAnalyticsTrigger, {})
+
+  TrackingElement.create(secondFloorAnalyticsTrigger, {
+    elementType: ANALYTICS_ELEMENTS_TYPES.region,
+    elementId: ANALYTICS_ELEMENTS_IDS.secondFloor,
+  })
+
+  utils.triggers.addTrigger(secondFloorAnalyticsTrigger, TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, utils.LAYER_1,  
+    [{type: "box", position: secondFloorAnalyticsTriggerPosition1, scale: secondFloorAnalyticsTriggerScale1},{type: "box", position: secondFloorAnalyticsTriggerPosition2, scale: secondFloorAnalyticsTriggerScale1},{type: "box", position: secondFloorAnalyticsTriggerPosition3, scale: secondFloorAnalyticsTriggerScale2},{type: "box", position: secondFloorAnalyticsTriggerPosition4, scale: secondFloorAnalyticsTriggerScale2}],
+    (entity:Entity)=>{  
+      console.log("analytics.ts", "trigger.secondFloor.secondFloorAnalyticsTrigger.enter","triggerParent",secondFloorAnalyticsTrigger,"entityInteracting", entity)
+      console.log(AnalyticsLogLabel, "analytics.ts", "secondFloor_Region", "onEnter")
+      trackStart(secondFloorAnalyticsTrigger)
+    },
+    (entity:Entity)=>{ 
+      console.log("analytics.ts", "trigger.secondFloor.secondFloorAnalyticsTrigger.exit","triggerParent",secondFloorAnalyticsTrigger,"entityInteracting", entity)
+      console.log(AnalyticsLogLabel, "analytics.ts", "secondFloor_Region", "onExit")
+      trackEnd(secondFloorAnalyticsTrigger)
+    },
+    Color3.Blue()
   )
 
   /*

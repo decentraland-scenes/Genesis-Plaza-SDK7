@@ -1,13 +1,15 @@
 import * as CANNON from 'cannon/build/cannon'
-import { AudioSource, AvatarAnchorPointType, AvatarAttach, CameraMode, CameraType, ColliderLayer, Entity, GltfContainer, InputAction, Material, MaterialTransparencyMode, MeshCollider, MeshRenderer, PBGltfContainer, PBMaterial_PbrMaterial, PointerEventType, PointerEvents, Schemas, Texture, TextureUnion, Transform, TransformType, TransformTypeWithOptionals, VisibilityComponent, engine, inputSystem, pointerEventsSystem } from "@dcl/sdk/ecs"
+import { AudioSource, AvatarAnchorPointType, AvatarAttach, CameraMode, CameraType, ColliderLayer, Entity, EntityMappingMode, GltfContainer, InputAction, Material, MaterialTransparencyMode, MeshCollider, MeshRenderer, PBGltfContainer, PBMaterial_PbrMaterial, PointerEventType, PointerEvents, Schemas, Texture, TextureUnion, Transform, TransformType, TransformTypeWithOptionals, VisibilityComponent, engine, inputSystem, pointerEventsSystem } from "@dcl/sdk/ecs"
 import { Vector3, Quaternion, Color3, Color4 } from "@dcl/sdk/math"
 import { addPhysicsConstraints } from './physicsConstraints'
 import * as utils from "@dcl-sdk/utils"
-import { displayBasketballUI, hideBasketballUI, hideStrenghtBar, scoreDisplay, setStrengthBar } from '../../../ui'
+import { displayBasketballUI, hideBasketballUI, hideOOB, hideStrenghtBar, scoreDisplay, setStrengthBar, showOOB } from '../../../ui'
 import { BasketballHoop } from './hoop'
-import { PhysicsWorldStatic } from './physicsWorld'
+import { PhysicsWorldStatic, ballBounceMaterial } from './physicsWorld'
 import { bounceSource, bounceVolume, pickupSource, pickupVolume, throwBallSource, throwBallVolume } from './sounds'
+import { Perimeter } from './perimeter'
 import { moveLineBetween, realDistance } from './utilFunctions'
+import { barCenter } from '../../../lobby/resources/globals'
 
 export const Throwable = engine.defineComponent('throwable-id', {
     index: Schemas.Number,
@@ -44,7 +46,8 @@ const Z_OFFSET = 1.5
 
 
 const FIXED_TIME_STEPS = 1.0/60 // seconds
-const MAX_TIME_STEPS = 3
+const MAX_TIME_STEPS = 6
+const PHYSICS_RADIUS = 19
 //const RECALL_SPEED = 10
 const SHOOT_VELOCITY = 45
 
@@ -58,8 +61,6 @@ const ballShape:PBGltfContainer =  {
 }
 
 const ballHighlightShape:PBGltfContainer =  {src:"models/basketball/ball_outline.glb"}
-
-
 
 export class PhysicsManager {
 
@@ -78,6 +79,9 @@ export class PhysicsManager {
   trails:Entity[]
   trailCount:number
   ballZoneCenter:Vector3
+  perimeter:Perimeter
+  playerInbound:boolean = true
+  
   
 
   constructor(ballCount:number){
@@ -118,32 +122,15 @@ export class PhysicsManager {
       
     })   
 
-
-    const translocatorPhysicsMaterial: CANNON.Material = new CANNON.Material(
-      'translocatorMaterial',
-    )   
-    translocatorPhysicsMaterial.friction = 0.2
-    translocatorPhysicsMaterial.restitution = 0.5
-    this.playerCollider.material = translocatorPhysicsMaterial // Add bouncy material to translocator body
-    this.playerCollider.linearDamping = 0.24 // Round bodies will keep translating even with friction so you need linearDamping
-    this.playerCollider.angularDamping = 0.4 // Round bodies will keep rotating even with friction so you need angularDamping
+    // this.playerCollider.material = ballBounceMaterial // Add bouncy material to translocator body
+    // this.playerCollider.linearDamping = 0.24 // Round bodies will keep translating even with friction so you need linearDamping
+    // this.playerCollider.angularDamping = 0.4 // Round bodies will keep rotating even with friction so you need angularDamping
     
     //this.world.addBody(this.playerCollider) 
     
-    //ground plane collider
-    const planeShape = new CANNON.Plane()
-    const groundBody = new CANNON.Body({
-      mass: 0, // mass == 0 makes the body static
-    })
-    groundBody.addShape(planeShape)
-    groundBody.quaternion.setFromAxisAngle(
-      new CANNON.Vec3(1, 0, 0),
-      -Math.PI / 2
-    ) // Reorient ground plane to be in the y-axis
-    groundBody.position.y = 0.2 // Thickness of ground base model
-    groundBody.material = translocatorPhysicsMaterial
-    this.world.addBody(groundBody)
-    
+    //add perimeter
+    this.perimeter = new Perimeter(Vector3.create(32,0,38), PHYSICS_RADIUS, this.world)
+
     //add initial balls
     for(let i=0; i< ballCount; i++){
       this.addObject(Vector3.create(24+Math.random()*2,4 + Math.random()*4,35+Math.random()*8))
@@ -172,6 +159,7 @@ export class PhysicsManager {
       anchorPointId: AvatarAnchorPointType.AAPT_RIGHT_HAND,
     })
 
+    //set up the hoops
     this.hoops.push(new BasketballHoop(this.world, Vector3.create(32, 6, 30.4), Quaternion.fromEulerDegrees(0,0,0)))
     this.hoops.push(new BasketballHoop(this.world, Vector3.create(41.6, 5.2, 40), Quaternion.fromEulerDegrees(0,-90,0)))
     this.hoops.push(new BasketballHoop(this.world, Vector3.create(22.4, 5.2, 40), Quaternion.fromEulerDegrees(0,90,0)))
@@ -209,13 +197,10 @@ export class PhysicsManager {
       this.trails.push(trailLine)
     }
     
-
-
-    //this.addObject(Vector3.create(32,10,32))
   }
   addObject(pos:Vector3){
 
-    let cannonBody = new CANNON.Body({
+    let ballBody = new CANNON.Body({
       mass: 0.8, // kg
       position: new CANNON.Vec3(
         pos.x,
@@ -243,19 +228,19 @@ export class PhysicsManager {
     )
     utils.triggers.enableTrigger(ball,false)
 
-    const translocatorPhysicsMaterial: CANNON.Material = new CANNON.Material(
-      'translocatorMaterial'
+    const ballBallMaterial: CANNON.Material = new CANNON.Material(
+      'ballBallMaterial'
       
     )
 
-    cannonBody.material = translocatorPhysicsMaterial // Add bouncy material to translocator body
-    cannonBody.linearDamping = 0.1 // Round bodies will keep translating even with friction so you need linearDamping
-    cannonBody.angularDamping = 0.4 // Round bodies will keep rotating even with friction so you need angularDamping
+    ballBody.material = ballBallMaterial // Add bouncy material to translocator body
+    ballBody.linearDamping = 0.1 // Round bodies will keep translating even with friction so you need linearDamping
+    ballBody.angularDamping = 0.4 // Round bodies will keep rotating even with friction so you need angularDamping
     
     // ball collision event (bounce)
-    cannonBody.addEventListener('collide', ()=>{    
+    ballBody.addEventListener('collide', ()=>{    
       
-      const velocity = Vector3.length(Vector3.create(cannonBody.velocity.x, cannonBody.velocity.y, cannonBody.velocity.z ))
+      const velocity = Vector3.length(Vector3.create(ballBody.velocity.x, ballBody.velocity.y, ballBody.velocity.z ))
 
       if(velocity > 2){
         AudioSource.createOrReplace(ball, {
@@ -268,15 +253,15 @@ export class PhysicsManager {
         
     })
 
-    translocatorPhysicsMaterial.restitution = 1
-    this.world.addBody(cannonBody) 
+    ballBallMaterial.restitution = 1
+    this.world.addBody(ballBody) 
     this.balls.push(ball)
-    this.cannonBodies.push(cannonBody)
+    this.cannonBodies.push(ballBody)
     let index = this.balls.length-1
 
     Throwable.create(ball, {
       index: index,
-      strength:0.2, 
+      strength:0.3, 
       isFired:false, 
       maxStrength:1,
       holdScale: Vector3.create(0.5, 0.5, 0.5),
@@ -284,18 +269,6 @@ export class PhysicsManager {
       anchorOffset: Vector3.create(-0.0,0.2,0),
      
     } )
-
-
-
-    
-
-
-    // pointerEventsSystem.onPointerDown(ball,
-    //   (e) => {      
-    //       this.pickUpBall(index)
-    //   },         
-    //   { hoverText: 'Pick up', button: InputAction.IA_PRIMARY, maxDistance:10 }
-    // )    
 
     PointerEvents.create(ball, { pointerEvents: [
       {
@@ -315,7 +288,7 @@ export class PhysicsManager {
 
     engine.addSystem(() => {
       const meshEntities = engine.getEntitiesWith(Throwable)
-      for (const [entity] of meshEntities) {
+      for (const [entity,throwableDataReadOnly] of meshEntities) {
         
         if (inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_HOVER_ENTER, entity)) {
           // don't highlight if player is holding the ball
@@ -333,13 +306,15 @@ export class PhysicsManager {
         }
     
          if (inputSystem.isTriggered(InputAction.IA_PRIMARY, PointerEventType.PET_DOWN, entity)) {
-          this.pickUpBall(Throwable.get(entity).index)
+          this.pickUpBall(throwableDataReadOnly.index)
         }
       }
     })
     
 
   }
+
+  
 
   pickUpBall(index:number){
    
@@ -366,28 +341,37 @@ export class PhysicsManager {
     // })
       this.carriedIndex = index
       displayBasketballUI()
+      this.perimeter.show()
     }
   }
 
   resetBall(index:number){
+    this.perimeter.hide()
+
     if(this.playerHolding){
       let ball = this.balls[this.carriedIndex]
       hideStrenghtBar()
       hideBasketballUI()
       Carried.deleteFrom(ball)
       const ballTransform = Transform.getMutable(ball)
+      const playerTransform = Transform.get(engine.PlayerEntity)
       const throwableInfo = Throwable.getMutable(ball)
       ballTransform.parent = engine.RootEntity
       ballTransform.scale = throwableInfo.originalScale
 
-      this.cannonBodies[this.carriedIndex].position.set(22+ Math.random(), 5, 34 + Math.random())
+      let dropVec = Vector3.subtract(playerTransform.position, this.ballZoneCenter)
+      dropVec = Vector3.normalize(dropVec)
+      dropVec = Vector3.scale(dropVec, PHYSICS_RADIUS-1)
+      dropVec = Vector3.add(this.ballZoneCenter, dropVec)
+      this.cannonBodies[this.carriedIndex].position.set(dropVec.x, dropVec.y, dropVec.z)
       
       this.playerHolding = false
-      throwableInfo.strength = 0.2
+      this.strengthHold = false
+      throwableInfo.strength = 0.3
 
       //ball only triggers the score zone once it is thrown
       utils.triggers.enableTrigger(ball,true)
-      setStrengthBar(0.2)
+      setStrengthBar(0.3)
 
     }
   }
@@ -395,6 +379,7 @@ export class PhysicsManager {
   throw(){
 
     if(this.playerHolding){
+      this.perimeter.hide()
       hideStrenghtBar()
       //lock the bottom of each hoop
       for ( let i=0; i< this.hoops.length; i++){
@@ -472,11 +457,11 @@ export class PhysicsManager {
           dropPos.y, 
           dropPos.z))
       this.playerHolding = false
-      throwableInfo.strength = 0.2
+      throwableInfo.strength = 0.3
 
       //ball only triggers the score zone once it is thrown
       utils.triggers.enableTrigger(ball,true)
-      setStrengthBar(0.2)
+      setStrengthBar(0.3)
     }
     
   }
@@ -557,7 +542,7 @@ export class PhysicsManager {
       transformBall.rotation = this.cannonBodies[i].quaternion
 
     }   
-    // IF A BALL IS CARRIED THEN UPDATE THE THROW STRENGTH 
+    // IF A BALL IS CARRIED THEN UPDATE THE THROW STRENGTH WHEN LMB IS HELD DOWN
     else{
       if(this.strengthHold){
         const throwable = Throwable.get(this.balls[i])
@@ -583,9 +568,30 @@ export class PhysicsManager {
   //  this.playerCollider.position.z = Transform.get(engine.PlayerEntity).position.z
 
   // ball cannot leave the bar area within a distance from the center beam 
-  if(realDistance( Transform.get(engine.PlayerEntity).position, this.ballZoneCenter) > 19){
-    this.resetBall(this.carriedIndex)
+  this.perimeter.update(dt)
+
+  
+  if(this.perimeter.checkPerimeter()){
+
+    if(this.playerInbound && this.playerHolding){
+      this.playerInbound = false
+      
+      console.log("PLAYER LEFT BASKETBALL AREA")
+      showOOB()  
+      utils.timers.setTimeout(()=>{
+          hideOOB()  
+      }, 1500)  
+    }       
+    this.resetBall(this.carriedIndex)    
   }
+  else{
+    if(!this.playerInbound){
+      this.playerInbound = true
+      hideOOB()
+    }
+  }  
+  
+  
 
   }
 }

@@ -14,6 +14,9 @@ import { showTeleportUI } from '../ui'
 import { TimerId } from '@dcl-sdk/utils/dist/timer'
 import { CountDownUtil } from './countDown'
 import { beamShape } from './resources/resources'
+import { AudioSourceAttachedToPlayer } from '../components'
+import { FIRST_PERSON_VOLUME_ADJ, addAudioSourceAttachedToPlayer, applyAudioStreamWorkAround, setAudioSourceAttachedToPlayerPlaying } from '../modules/soundsAttachedToPlayer'
+import { setMovePlayerInProgress } from '../back-ports/movePlayer'
 
 export const triggerCounter = new CountDownUtil()
 
@@ -41,7 +44,11 @@ Transform.create(musicBox, {
   position: Vector3.create(0, 2, 0),
   parent: engine.PlayerEntity
 })
-
+addAudioSourceAttachedToPlayer(musicBox,{
+  id: 'lobby_music',
+  thirdPersonVolume: AudioSource.get(musicBox).volume,
+  firstPersonVolume: AudioSource.get(musicBox).volume + FIRST_PERSON_VOLUME_ADJ
+})
 
 
 /*
@@ -112,10 +119,16 @@ export class TeleportController {
 
 
       const triggerUpOnEnter = () => {
-         
-        const movePlayerPosition = { x: lobbyCenter.x - coreBuildingOffset.x + 5, y: Math.min(ParcelCountMaxY-2.5,140), z: lobbyCenter.z - 10 - coreBuildingOffset.z}
+        console.log(CLASSNAME,"trigger.beamMeUp.enter.called.triggerUpOnEnter", "triggerUpOnEnter")
 
-        movePlayerTo({  newRelativePosition: movePlayerPosition})
+        const movePlayerPosition = { x: lobbyCenter.x - coreBuildingOffset.x + 5, y: Math.min(ParcelCountMaxY-2.5,140), z: lobbyCenter.z - 10 - coreBuildingOffset.z}
+        //debugger
+
+        setMovePlayerInProgress(true)
+        applyAudioStreamWorkAround('exit')
+        movePlayerTo({  newRelativePosition: movePlayerPosition}).then(() => {
+          setMovePlayerInProgress(false)
+        })
         //const playerTransform = Transform.getMutable(engine.PlayerEntity)
         //playerTransform.position = { x: lobbyCenter.x + 5, y: 140, z: lobbyCenter.z - 10 }
 
@@ -124,10 +137,14 @@ export class TeleportController {
           if(lobbyMusic) lobbyMusic.playing = true
         }*/
 
+        
         let ambienceMusic = AudioSource.getMutableOrNull(ambienceBox)
         if(ambienceMusic) ambienceMusic.playing = true
-        let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
-        if(lobbyMusic) lobbyMusic.playing = true
+
+        setAudioSourceAttachedToPlayerPlaying(musicBox,true)
+
+        setAudioSourceAttachedToPlayerPlaying(this.beamFireSound,true)
+
 
         setBarMusicOff()
 
@@ -148,11 +165,11 @@ export class TeleportController {
       utils.triggers.addTrigger(this.triggerBoxUp, TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, utils.LAYER_1,  
         [{type: "box", position: this.triggerBoxUpPosition, scale: this.triggerBoxUpScale}],
         (entity:Entity)=>{ 
-          console.log(CLASSNAME,"trigger.camera.enter", "triggerBoxUp", Transform.getOrNull(engine.PlayerEntity),"triggered by",entity,engine.PlayerEntity,engine.CameraEntity)
+          console.log(CLASSNAME,"trigger.beamMeUp.enter", "triggerBoxUp", Transform.getOrNull(engine.PlayerEntity),"triggered by",entity,engine.PlayerEntity,engine.CameraEntity)
 
           showTeleportUI("flex")
-          let chargeSound = AudioSource.getMutable(host.beamChargeSound)
-          if (chargeSound) chargeSound.playing = true
+          
+          setAudioSourceAttachedToPlayerPlaying(this.beamChargeSound,true)
           
           triggerCounter.start(COUNT_DOWN_TIMER_AMOUNT / 1000)
           triggerUpOnEnterTimerId = utils.timers.setTimeout(triggerUpOnEnter, COUNT_DOWN_TIMER_AMOUNT)
@@ -176,12 +193,16 @@ export class TeleportController {
       utils.triggers.addTrigger(this.triggerBoxDown, TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, utils.LAYER_1,  
         [{type: "box", position: this.triggerBoxDownPosition, scale: this.triggerBoxDownScale}],
         (entity:Entity)=>{ 
-          console.log("trigger.camera.enter", "triggerBoxDown","triggered by",entity,"player",engine.PlayerEntity,engine.CameraEntity)
+          console.log("trigger.barFromLobbyTrigger.enter", "triggerBoxDown","triggered by",entity,"player",engine.PlayerEntity,engine.CameraEntity)
 
-          movePlayerTo({  newRelativePosition: Vector3.create(lobbyCenter.x - coreBuildingOffset.x - 5, 0, lobbyCenter.z - coreBuildingOffset.z + 2), cameraTarget: Vector3.create(lobbyCenter.x, 2, lobbyCenter.z - 12)})
+          setMovePlayerInProgress(true)
+          applyAudioStreamWorkAround('exit')
+          movePlayerTo({  newRelativePosition: Vector3.create(lobbyCenter.x - coreBuildingOffset.x - 5, 0, lobbyCenter.z - coreBuildingOffset.z + 2), cameraTarget: Vector3.create(lobbyCenter.x, 2, lobbyCenter.z - 12)}).then(
+            ()=>{
+              setMovePlayerInProgress(false)
+            })
 
-          let impactSounds = AudioSource.getMutable(host.impactSound)
-          impactSounds.playing = true
+          setAudioSourceAttachedToPlayerPlaying(this.impactSound,true)
 
           setBarMusicOn()
         },
@@ -200,13 +221,12 @@ export class TeleportController {
       utils.triggers.addTrigger(this.triggerBoxFallCheck, utils.NO_LAYERS, utils.LAYER_1, 
         [{type: "box", position: this.triggerBoxFallCheckPosition, scale: this.triggerBoxFallCheckScale}],
         ()=>{
-          console.log(CLASSNAME,"trigger.camera.enter", "triggerBoxFallCheck")
+          console.log(CLASSNAME,"trigger.triggerPlayerFell.enter", "triggerBoxFallCheck")
 
-          let beamFallSound = AudioSource.getMutable(host.beamFallSound)
-          beamFallSound.playing = true
+          setAudioSourceAttachedToPlayerPlaying(this.beamFallSound,true)
         },
         undefined,
-        Color3.Red()
+        Color3.Teal()
       )
 
 
@@ -220,14 +240,14 @@ export class TeleportController {
         ()=>{ 
           let ambienceMusic = AudioSource.getMutableOrNull(ambienceBox)
           if(ambienceMusic) ambienceMusic.playing = true
-          let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
-          if(lobbyMusic) lobbyMusic.playing = true
+
+          setAudioSourceAttachedToPlayerPlaying(musicBox,true)
         },
         ()=>{
           let ambienceMusic = AudioSource.getMutableOrNull(ambienceBox)
           if(ambienceMusic) ambienceMusic.playing = false
-          let lobbyMusic = AudioSource.getMutableOrNull(musicBox)
-          if(lobbyMusic) lobbyMusic.playing = false
+
+          setAudioSourceAttachedToPlayerPlaying(musicBox,false)
         },
         Color3.Blue()
       )
@@ -259,7 +279,11 @@ export class TeleportController {
         position: Vector3.create(0, 1, 0),
         parent: engine.PlayerEntity
       })
-
+      addAudioSourceAttachedToPlayer(this.beamChargeSound,{
+        id: 'beam_charge',
+        thirdPersonVolume: AudioSource.get(this.beamChargeSound).volume,
+        firstPersonVolume: AudioSource.get(this.beamChargeSound).volume + FIRST_PERSON_VOLUME_ADJ
+      })
         
       //beam teleport sound attached to player
       this.beamFireSound = engine.addEntity()
@@ -273,7 +297,11 @@ export class TeleportController {
         position: Vector3.create(0, 1, 0),
         parent: engine.PlayerEntity
       })
-      
+      addAudioSourceAttachedToPlayer(this.beamFireSound,{
+        id: 'beam_fire',
+        thirdPersonVolume: AudioSource.get(this.beamFireSound).volume, 
+        firstPersonVolume: AudioSource.get(this.beamFireSound).volume + FIRST_PERSON_VOLUME_ADJ
+      })
   
       //beam fall sound attached to player
       this.beamFallSound = engine.addEntity()
@@ -287,6 +315,11 @@ export class TeleportController {
         position: Vector3.create(0, 4, 0),
         parent: engine.PlayerEntity
       })
+      addAudioSourceAttachedToPlayer(this.beamFallSound,{
+        id: 'beam_fall',
+        thirdPersonVolume: AudioSource.get(this.beamFallSound).volume,
+        firstPersonVolume: AudioSource.get(this.beamFallSound).volume + FIRST_PERSON_VOLUME_ADJ
+      })
   
       //impact sound when landing
       this.impactSound = engine.addEntity()
@@ -299,6 +332,12 @@ export class TeleportController {
       Transform.create(this.impactSound, {
         position: Vector3.create(0, 1, 0),
         parent: engine.PlayerEntity
+      })
+
+      addAudioSourceAttachedToPlayer(this.impactSound,{
+        id: 'impact_hard',
+        thirdPersonVolume: AudioSource.get(this.impactSound).volume,
+        firstPersonVolume: AudioSource.get(this.impactSound).volume + FIRST_PERSON_VOLUME_ADJ
       })
     }
 }

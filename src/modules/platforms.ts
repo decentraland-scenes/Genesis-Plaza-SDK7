@@ -52,7 +52,7 @@ export class Platform  {
     const triggerEntity = engine.addEntity()
     Transform.create(triggerEntity, {})
 
-    utils.triggers.addTrigger(triggerEntity, utils.LAYER_1, utils.LAYER_1, 
+    utils.triggers.addTrigger(triggerEntity, utils.NO_LAYERS, utils.LAYER_1, 
       [{type: "box",position: triggerPos.position , scale: triggerScale}],
       ()=>{ 
         sceneMessageBus.emit(messageBusHandle, {})
