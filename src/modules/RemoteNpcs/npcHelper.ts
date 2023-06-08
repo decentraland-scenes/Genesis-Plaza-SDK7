@@ -46,23 +46,23 @@ export function getNpcEmotion(emotion: ChatPart): NpcAnimationNameDef {
   let result: NpcAnimationNameDef = undefined;
   switch (emotion.packet.emotions.behavior) {
     case EmotionBehaviorCode.JOY:
-      result = activeNpc.args.npcAnimations.HAPPY
+      if (activeNpc.args.npcAnimations.HAPPY) result = activeNpc.args.npcAnimations.HAPPY
       break
     // case EmotionBehaviorCode.AFFECTION:
-    //   result = activeNpc.args.npcAnimations.HEART_WITH_HANDS
+    //   if(activeNpc.args.npcAnimations.HEART_WITH_HANDS) result = activeNpc.args.npcAnimations.HEART_WITH_HANDS
     //   break
     // case EmotionBehaviorCode.STONEWALLING:
-    //   result = activeNpc.args.npcAnimations.COME_ON
+    //   if(activeNpc.args.npcAnimations.COME_ON) result = activeNpc.args.npcAnimations.COME_ON
     //   break
     case EmotionBehaviorCode.HUMOR:
     case EmotionBehaviorCode.TENSE_HUMOR:
-      result = activeNpc.args.npcAnimations.LAUGH
+      if (activeNpc.args.npcAnimations.LAUGH) result = activeNpc.args.npcAnimations.LAUGH
       break
     case EmotionBehaviorCode.SADNESS:
-      result = activeNpc.args.npcAnimations.SAD
+      if (activeNpc.args.npcAnimations.SAD) result = activeNpc.args.npcAnimations.SAD
       break
     case EmotionBehaviorCode.SURPRISE:
-      result = activeNpc.args.npcAnimations.SURPRISE
+      if (activeNpc.args.npcAnimations.SURPRISE) result = activeNpc.args.npcAnimations.SURPRISE
       break
   }
   result = result ? result : defaultEmotion

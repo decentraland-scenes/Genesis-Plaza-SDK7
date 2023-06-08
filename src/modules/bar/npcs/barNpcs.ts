@@ -285,8 +285,6 @@ function createDogeNpc(): void {
     Vector3.create(148.1 - coreBuildingOffset.x, 0.24, 156.8 - coreBuildingOffset.z),
     Vector3.create(146.4 - coreBuildingOffset.x, 0.24, 156 - coreBuildingOffset.z),
     Vector3.create(143.1 - coreBuildingOffset.x, 0.24, 153.1 - coreBuildingOffset.z),
-    Vector3.create(143 - coreBuildingOffset.x, 0.24, 152.8 - coreBuildingOffset.z),
-    Vector3.create(143.2 - coreBuildingOffset.x, 0.24, 150.7 - coreBuildingOffset.z),
     Vector3.create(143.26 - coreBuildingOffset.x, 0.24, 147.5 - coreBuildingOffset.z),
     Vector3.create(148.1 - coreBuildingOffset.x, 0.24, 142.3 - coreBuildingOffset.z),
     Vector3.create(151.9 - coreBuildingOffset.x, 0.24, 142.3 - coreBuildingOffset.z),
