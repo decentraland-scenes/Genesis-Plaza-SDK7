@@ -29,7 +29,7 @@ export class Perimeter {
         this.perimeter = engine.addEntity()
         Transform.create(this.perimeter, {
         position: Vector3.create(this.center.x, 0.22, this.center.z ),
-        scale: Vector3.create(this.radius, 3, this.radius)
+        scale: Vector3.create(this.radius-1, 3, this.radius-1)
         })
         GltfContainer.create(this.perimeter, perimeterShape)
         VisibilityComponent.create(this.perimeter, {visible: false})
@@ -68,19 +68,38 @@ export class Perimeter {
         VisibilityComponent.getMutable(this.perimeter).visible = false
     }
 
-    update(dt:number){
+    update(dt:number, ballCarried:boolean){
         let playerDist = realDistance( Transform.get(engine.PlayerEntity).position, this.center)
        
-        const pTransform = Transform.getMutable(this.perimeter)
-        pTransform.scale.y = 2
+        const pTransform = Transform.getMutable(this.perimeter)        
+        
+
+        if(ballCarried){
+            if( playerDist <= this.radius-1){
+                pTransform.scale.y = 2
+                if(playerDist > this.radius/3){
+                    pTransform.scale.y = 2+ (playerDist - this.radius / 3) / this.radius *30
+                }  
+            }        
+        }
+        
+        if( !ballCarried){
+           
+            pTransform.scale.y -= 20*dt
+            if(pTransform.scale.y < 0){
+                pTransform.scale.y = 0
+                this.hide()
+            }
+        }
+
         pTransform.rotation = Quaternion.multiply(pTransform.rotation, Quaternion.fromEulerDegrees(0,2*dt,0))
-
-        if(playerDist > this.radius/3){
-            pTransform.scale.y = 2+ (playerDist - this.radius / 3) / this.radius *30
-        }  
-        
         
 
+    }
+    popUp(){
+        this.show()
+        const pTransform = Transform.getMutable(this.perimeter)   
+        pTransform.scale.y = 10   
     }
 
     checkPerimeter():boolean{
@@ -89,7 +108,7 @@ export class Perimeter {
         let playerDist = realDistance( Transform.get(engine.PlayerEntity).position, this.center)
 
         if( playerDist > this.radius-1){
-            
+            this.playerOOB = true
             return true
         }
         

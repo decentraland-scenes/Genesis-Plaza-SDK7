@@ -6,7 +6,7 @@ import * as utils from "@dcl-sdk/utils"
 import { displayBasketballUI, hideBarHighlight, hideBasketballUI, hideOOB, hideStrenghtBar, scoreDisplay, setStrengthBar, showBarHighlight, showOOB } from '../../../ui'
 import { BasketballHoop } from './hoop'
 import { PhysicsWorldStatic, ballBounceMaterial } from './physicsWorld'
-import { ballDropSource, ballDropVolume, bounceSource, bounceVolume, pickupSource, pickupVolume, throwBallSource, throwBallVolume } from './sounds'
+import { ballDropSource, ballDropVolume, bounceSource, bounceVolume, chargeThrowSource, chargeThrowVolume, pickupSource, pickupVolume, throwBallSource, throwBallVolume } from './sounds'
 import { Perimeter } from './perimeter'
 import { moveLineBetween, realDistance } from './utilFunctions'
 import { barCenter } from '../../../lobby/resources/globals'
@@ -24,7 +24,10 @@ export const Throwable = engine.defineComponent('throwable-id', {
     
 })
 
-export const Carried = engine.defineComponent('carried-id', {          
+export const Carried = engine.defineComponent('carried-id', {  
+  pickUpLerpFactor: Schemas.Number,
+  fullyPicked: Schemas.Boolean,
+  index:Schemas.Number        
 })
 
 export const HasTrail = engine.defineComponent('hastrail-id', {     
@@ -81,6 +84,8 @@ export class PhysicsManager {
   ballZoneCenter:Vector3
   perimeter:Perimeter
   playerInbound:boolean = true
+  soundBox:Entity
+  
   
   
 
@@ -131,15 +136,33 @@ export class PhysicsManager {
     //add perimeter
     this.perimeter = new Perimeter(Vector3.create(32,0,38), PHYSICS_RADIUS, this.world)
 
+
     //add initial balls
     for(let i=0; i< ballCount; i++){
       this.addObject(Vector3.create(24+Math.random()*2,4 + Math.random()*4,35+Math.random()*8))
     }
 
+    // add soundbox attached to player for sfx
+
+    this.soundBox = engine.addEntity()
+    Transform.create(this.soundBox)
+    AvatarAttach.create(this.soundBox, {anchorPointId: AvatarAnchorPointType.AAPT_NAME_TAG})
+
     // START INCREASING THE STRENGTH OF THE THROW
     engine.addSystem(() => {
       if (inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_DOWN)){
-        this.strengthHold = true
+
+        
+        if(this.playerHolding){
+          this.strengthHold = true
+          AudioSource.createOrReplace(this.soundBox, {
+            audioClipUrl: chargeThrowSource,
+            playing: true,
+            loop:false,
+            volume: chargeThrowVolume
+          })
+        }
+        
       }
     })
     // THROW THE BALL ON RELEASE
@@ -148,6 +171,7 @@ export class PhysicsManager {
         if(this.strengthHold){
           this.throw()
           this.strengthHold = false
+          AudioSource.getMutable(this.soundBox).playing = false
         }  
         
       }
@@ -286,8 +310,9 @@ export class PhysicsManager {
      
     ]})
 
-    engine.addSystem(() => {
+    engine.addSystem((dt:number) => {
       const meshEntities = engine.getEntitiesWith(Throwable)
+      const pickedEntities = engine.getEntitiesWith(Carried, Throwable)
       for (const [entity,throwableDataReadOnly] of meshEntities) {
         
         if (inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_HOVER_ENTER, entity)) {
@@ -309,40 +334,91 @@ export class PhysicsManager {
           this.pickUpBall(throwableDataReadOnly.index)
         }
       }
-    })
+
+      for (const [entity,carriedDataReadOnly, throwableDataReadOnly] of pickedEntities) {
+        
+        if(!carriedDataReadOnly.fullyPicked){
+          const carriedInfo = Carried.getMutable(entity)
+          carriedInfo.pickUpLerpFactor += dt 
+          const transform = Transform.getMutable(entity)
+          const playerTransform = Transform.get(engine.PlayerEntity)
+
+          // lerp the ball towards the right hand of the player (roughly)
+          let offsetPos = Vector3.rotate(Vector3.scale(Vector3.Right(),0.25), Transform.get(engine.CameraEntity).rotation)
+          offsetPos = Vector3.add(Transform.get(engine.PlayerEntity).position, offsetPos)
+         
+          transform.position = Vector3.lerp(transform.position, offsetPos, carriedInfo.pickUpLerpFactor)
+          transform.scale = Vector3.lerp(throwableDataReadOnly.originalScale, throwableDataReadOnly.holdScale, carriedInfo.pickUpLerpFactor)
+
+          if(carriedInfo.pickUpLerpFactor >= 0.8){
+            
+            carriedInfo.fullyPicked = true
+           // console.log("ATTACHING BALL" + carriedInfo.index)
+            this.attachBall(carriedInfo.index)
+
+          }
+
+          
+        }
+      }
+
+    })   
+
+  } 
+  attachBall(index:number){
+    const throwableInfo = Throwable.get(this.balls[index])
     
-
+    Transform.createOrReplace(this.balls[index], {
+      position: Vector3.create(throwableInfo.anchorOffset.x, throwableInfo.anchorOffset.y, throwableInfo.anchorOffset.z),
+      scale: throwableInfo.holdScale,
+      parent: this.avatarHandRoot
+    })
+    HasTrail.deleteFrom(this.balls[index])        
+    
+    
+   
   }
-
-  
 
   pickUpBall(index:number){
    
     if(!this.playerHolding){
-      this.playerHolding = true 
-      const throwableInfo = Throwable.get(this.balls[index])
-      Carried.createOrReplace(this.balls[index])
-      Transform.createOrReplace(this.balls[index], {
-        position: Vector3.create(throwableInfo.anchorOffset.x, throwableInfo.anchorOffset.y, throwableInfo.anchorOffset.z),
-        scale: throwableInfo.holdScale,
-        parent: this.avatarHandRoot
-      })
-      HasTrail.deleteFrom(this.balls[index])
-           
-      this.carriedIndex = index
-      displayBasketballUI()
-      this.perimeter.show()
-      AudioSource.createOrReplace(this.balls[index], {
-        audioClipUrl: pickupSource,
-        playing: true,
-        loop:false,
-        volume: pickupVolume
-      })
+      if(this.playerInbound){
+        
+        displayBasketballUI()
+        this.perimeter.show()
+        AudioSource.createOrReplace(this.balls[index], {
+          audioClipUrl: pickupSource,
+          playing: true,
+          loop:false,
+          volume: pickupVolume
+        })
+        this.carriedIndex = index
+        Carried.createOrReplace(this.balls[index], {
+          pickUpLerpFactor: 0,
+          fullyPicked: false,
+          index:  this.carriedIndex
+        })
+        this.playerHolding = true 
+      }
+      else{
+        this.perimeter.popUp()
+        showOOB("Player out of bounds")  
+        utils.timers.setTimeout(()=>{
+            hideOOB()  
+        }, 1500)     
+        AudioSource.createOrReplace(this.balls[index], {
+          audioClipUrl: ballDropSource,
+          playing: true,
+          loop:false,
+          volume: ballDropVolume
+        })       
+      }
     }
+      
   }
 
   resetBall(index:number){
-    this.perimeter.hide()
+    //this.perimeter.hide()
 
     if(this.playerHolding){
       let ball = this.balls[this.carriedIndex]
@@ -357,7 +433,7 @@ export class PhysicsManager {
 
       let dropVec = Vector3.subtract(playerTransform.position, this.ballZoneCenter)
       dropVec = Vector3.normalize(dropVec)
-      dropVec = Vector3.scale(dropVec, PHYSICS_RADIUS-1)
+      dropVec = Vector3.scale(dropVec, PHYSICS_RADIUS-1.5)
       dropVec = Vector3.add(this.ballZoneCenter, dropVec)
       this.cannonBodies[this.carriedIndex].position.set(dropVec.x, dropVec.y, dropVec.z)
       
@@ -423,16 +499,7 @@ export class PhysicsManager {
         // add this offset vector to the original drop position
         dropPos = Vector3.add(dropPos, rightDir)
         
-      }
-      
-
-      
-      // ADD TRAIL to the thrown ball for 4 seconds
-      // HasTrail.createOrReplace(ball,{
-      //   lastPos: Vector3.create(dropPos.x, dropPos.y, dropPos.z),
-      //   saveFreq: 0.05,
-      //   saveTimer: 0        
-      // })
+      }      
 
       utils.timers.setTimeout(()=>{
         HasTrail.createOrReplace(ball,{
@@ -488,6 +555,7 @@ export class PhysicsManager {
       albedoColor: Color4.fromInts(255,255 *(1-trailInfo.fadeFactor) * 2, 255 *(1-trailInfo.fadeFactor) * 0.1, 255 * (1-trailInfo.fadeFactor) *0.5 ),
       transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND,
       emissiveColor: Color3.fromInts(255,255 *(1-trailInfo.fadeFactor) * 2, 255 *(1-trailInfo.fadeFactor) * 0.4),
+      //emissiveColor: Color3.fromInts(255,255 *0.8, 255 * 0.4),
       emissiveIntensity: 2
       
       
@@ -516,19 +584,22 @@ export class PhysicsManager {
         //const trailTransform = Transform.getMutable(trailLine)        
         //trailTransform.position = Vector3.create( transformBall.position.x,  transformBall.position.y,  transformBall.position.z)
         //trailTransform.scale = Vector3.create(0.35,0.35,0.35),
-
-        moveLineBetween(trailLine, transformBall.position, trailInfo.lastPos  )
-        Vector3.copyFrom( transformBall.position, trailInfo.lastPos)
         let fadeFactor = TrailObject.getMutable(trailLine).fadeFactor = 0
-
         Material.setPbrMaterial(trailLine, {
           albedoColor: Color4.fromInts(255,255 *(1-fadeFactor) * 2, 255 *(1-fadeFactor) * 0.1, 255 * (1-fadeFactor) *5 ),
           transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND,
           emissiveColor: Color3.fromInts(255,255 *(1-fadeFactor) * 2, 255 *(1-fadeFactor) * 0.1),
+          //emissiveColor: Color3.fromInts(255,255 *0.8, 255 * 0.1),
           emissiveIntensity: 2
           
           
         })
+
+        moveLineBetween(trailLine, transformBall.position, trailInfo.lastPos  )
+        Vector3.copyFrom( transformBall.position, trailInfo.lastPos)
+        
+
+       
        
         this.trails.push(trailLine)
       }
@@ -576,7 +647,7 @@ export class PhysicsManager {
   //  this.playerCollider.position.z = Transform.get(engine.PlayerEntity).position.z
 
   // ball cannot leave the bar area within a distance from the center beam 
-  this.perimeter.update(dt)
+  this.perimeter.update(dt, this.playerHolding)
 
   
   if(this.perimeter.checkPerimeter()){
@@ -584,8 +655,8 @@ export class PhysicsManager {
     if(this.playerInbound && this.playerHolding){
       this.playerInbound = false
       
-      console.log("PLAYER LEFT BASKETBALL AREA")
-      showOOB()  
+     // console.log("PLAYER LEFT BASKETBALL AREA")
+      showOOB("Ball out of bounds")  
       utils.timers.setTimeout(()=>{
           hideOOB()  
       }, 1500)  

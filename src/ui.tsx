@@ -12,6 +12,7 @@ let timeToBeamUp: number = 3
 let scoreUIVisible: DisplayType = 'none'
 let basketUIVisible: DisplayType = 'none'
 let outOfBoundsVisible: DisplayType = 'none'
+let outOfBoundsText:string = "Ball out of bounds"
 let strengthBarVisible: DisplayType = 'none'
 let powerHightlightVisible: DisplayType = 'none'
 let strengthValue: PositionUnit = '30%'
@@ -50,7 +51,7 @@ const uiOutOfBounds = () => (
 
     <Label
       // OUT OF BOUNDS MESSAGE
-      value="Ball out of bounds"
+      value = {outOfBoundsText}
       fontSize={32}
       textAlign='middle-center'
       uiTransform={{ width: '100%', height: '30%', positionType: 'absolute', position: {left: '-50%'}}}
@@ -305,8 +306,9 @@ export function hideBarHighlight() {
   powerHightlightVisible = 'none'
 }
 // OOB UI
-export function showOOB() {
+export function showOOB(text:string) {
   outOfBoundsVisible = 'flex'
+  outOfBoundsText = text
   elapsedTime = 0
 }
 export function hideOOB() {
