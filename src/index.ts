@@ -75,9 +75,6 @@ barPlatforms()
 // ADD EVENT CARDS TO BAR
 addTVPanels()
 
-// ADD BASKETBALL GAME
-
-let physicsManager = new PhysicsManager(5)
 
 
 
@@ -299,6 +296,7 @@ utils.triggers.addTrigger(trigger, utils.NO_LAYERS, utils.NO_LAYERS,
 
 
 let areNpcsAdded: boolean = false
+let isBasketballAdded: boolean = false
 function insideBar() {
   const METHOD_NAME = 'insideBar'
   log("lazyLoading",FILE_NAME, METHOD_NAME, "Player Enter")
@@ -316,6 +314,13 @@ function insideBar() {
     initBarNpcs()
 
     areNpcsAdded = true
+  }
+  if (!isBasketballAdded) {
+
+    // ADD BASKETBALL GAME
+
+    let physicsManager = new PhysicsManager(3)
+    isBasketballAdded = true
   }
 }
 
