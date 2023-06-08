@@ -6,7 +6,8 @@ import { scoreDisplay } from "../../../ui";
 import { ToRadian } from "./utilFunctions";
 import { scoreSource, scoreVolume } from "./sounds";
 import { hoopContactMaterial } from "./physicsWorld";
-
+import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES } from '../../stats/AnalyticsConfig'
+import { trackAction } from "../../stats/analyticsComponents";
 
 const hoopShape:PBGltfContainer =  {src:"models/basketball/basketball_hoop.glb"}
 const sparksShape:PBGltfContainer =  {src:"models/basketball/sparks.glb"}
@@ -130,7 +131,7 @@ export class BasketballHoop {
       utils.triggers.addTrigger(this.hoopEntity ,utils.LAYER_2, utils.LAYER_2, 
         [{type: "box", position: Vector3.create(0,-0.4,0), scale: Vector3.create(0.5, 0.2, 0.5)}],
         ()=>{     
-          console.log("SCORE!!!!")
+         // console.log("SCORE!!!!")
          this.disableLock()
          scoreDisplay()
          this.startCelebration()
@@ -168,6 +169,8 @@ export class BasketballHoop {
     startCelebration(){
       const transform = Transform.getMutable(this.sparks)
       transform.scale = Vector3.One()    
+
+      trackAction(this.hoopEntity, "score")
 
       AudioSource.createOrReplace(this.hoopEntity, {
         audioClipUrl: scoreSource,

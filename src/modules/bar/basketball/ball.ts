@@ -10,6 +10,8 @@ import { ballDropSource, ballDropVolume, bounceSource, bounceVolume, chargeThrow
 import { Perimeter } from './perimeter'
 import { moveLineBetween, realDistance } from './utilFunctions'
 import { barCenter } from '../../../lobby/resources/globals'
+import { TrackingElement, trackAction } from '../../stats/analyticsComponents'
+import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES } from '../../stats/AnalyticsConfig'
 
 export const Throwable = engine.defineComponent('throwable-id', {
     index: Schemas.Number,
@@ -37,6 +39,10 @@ export const HasTrail = engine.defineComponent('hastrail-id', {
 })
 
 export const TrailObject = engine.defineComponent('trail-id', {    
+  fadeFactor: Schemas.Number      
+})
+
+export const AimLine = engine.defineComponent('aimline-id', {    
   fadeFactor: Schemas.Number      
 })
 //utils.triggers.enableDebugDraw(true)
@@ -80,11 +86,15 @@ export class PhysicsManager {
   ballHighlight:Entity
   forceMultiplier:number
   trails:Entity[]
+  aimLines:Entity[]
   trailCount:number
   ballZoneCenter:Vector3
   perimeter:Perimeter
   playerInbound:boolean = true
   soundBox:Entity
+  pickUpCounter:number = 0
+  aimWorld:CANNON.World
+  aimBall:CANNON.Body
   
   
   
@@ -95,6 +105,7 @@ export class PhysicsManager {
     this.cannonBodies = []
     this.hoops = []
     this.trails = []
+    this.aimLines = []
     this.trailCount = 16
 
     
@@ -117,6 +128,31 @@ export class PhysicsManager {
       { friction: 0.1, restitution: 0.8}
     )
     this.world.addContactMaterial(groundContactMaterial)
+
+    //phantom world for aim prediction
+    this.aimWorld = new CANNON.World()
+    this.aimWorld.quatNormalizeSkip = 0
+    this.aimWorld.quatNormalizeFast = false
+    this.aimWorld.gravity.set(0, -9.82 *2, 0) // m/s²    
+    this.aimWorld.addContactMaterial(groundContactMaterial)
+
+
+    this.aimBall = new CANNON.Body({
+      mass: 0.8, // kg
+      position: new CANNON.Vec3(
+        8,
+        -2,
+        8
+      ), // m
+      shape: new CANNON.Sphere(0.35),
+     //shape: new CANNON.Box(new CANNON.Vec3(0.35, 0.35, 0.35)),
+    })
+
+    this.aimBall.linearDamping = 0.1 // Round bodies will keep translating even with friction so you need linearDamping
+    this.aimBall.angularDamping = 0.4 // Round bodies will keep rotating even with friction so you need angularDamping
+
+    this.aimWorld.addBody(this.aimBall)
+    
 
     this.playerCollider = new CANNON.Body({
       mass: 10, // kg
@@ -190,7 +226,7 @@ export class PhysicsManager {
 
    
     // add imported static cannon colliders
-    this.staticWorld = new PhysicsWorldStatic(this.world)
+    this.staticWorld = new PhysicsWorldStatic(this.world, this.aimWorld)
      
     this.ballHighlight = engine.addEntity()
     Transform.create(this.ballHighlight, { 
@@ -220,6 +256,26 @@ export class PhysicsManager {
 
       this.trails.push(trailLine)
     }
+    // create pool of aim lines
+    for(let i=0; i< 5; i++){
+      let aimLine = engine.addEntity()
+      Transform.create(aimLine, {scale: Vector3.create(0, 0, 0)})
+      MeshRenderer.setCylinder(aimLine, 0.9, 1)
+
+      Material.setPbrMaterial(aimLine, {
+        albedoColor: Color4.fromHexString("#FF000044"),
+        transparencyMode: MaterialTransparencyMode.MTM_ALPHA_BLEND,
+        emissiveColor: Color4.fromHexString("#FF000044")
+        
+        
+      })
+      TrailObject.create(aimLine, {fadeFactor:0})
+
+      this.aimLines.push(aimLine)
+    }
+
+    
+
     
   }
   addObject(pos:Vector3){
@@ -294,6 +350,11 @@ export class PhysicsManager {
      
     } )
 
+    TrackingElement.create(ball, {
+      elementType: ANALYTICS_ELEMENTS_TYPES.interactable,
+      elementId: ANALYTICS_ELEMENTS_IDS.basketball,
+    })
+
     PointerEvents.create(ball, { pointerEvents: [
       {
         eventInfo: {button: InputAction.IA_POINTER, maxDistance: 10},
@@ -310,61 +371,47 @@ export class PhysicsManager {
      
     ]})
 
-    engine.addSystem((dt:number) => {
-      const meshEntities = engine.getEntitiesWith(Throwable)
-      const pickedEntities = engine.getEntitiesWith(Carried, Throwable)
-      for (const [entity,throwableDataReadOnly] of meshEntities) {
-        
-        if (inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_HOVER_ENTER, entity)) {
-          // don't highlight if player is holding the ball
-          if(!Carried.has(entity)){
-            const transform = Transform.getMutable(this.ballHighlight)
-            transform.parent = entity
-            transform.position = Vector3.Zero()
-          }         
-        }
-    
-         if (inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_HOVER_LEAVE, entity)) {
-          const transform = Transform.getMutable(this.ballHighlight)
-          transform.parent = engine.RootEntity
-          transform.position = Vector3.create(8,-10,8)
-        }
-    
-         if (inputSystem.isTriggered(InputAction.IA_PRIMARY, PointerEventType.PET_DOWN, entity)) {
-          this.pickUpBall(throwableDataReadOnly.index)
-        }
-      }
-
-      for (const [entity,carriedDataReadOnly, throwableDataReadOnly] of pickedEntities) {
-        
-        if(!carriedDataReadOnly.fullyPicked){
-          const carriedInfo = Carried.getMutable(entity)
-          carriedInfo.pickUpLerpFactor += dt 
-          const transform = Transform.getMutable(entity)
-          const playerTransform = Transform.get(engine.PlayerEntity)
-
-          // lerp the ball towards the right hand of the player (roughly)
-          let offsetPos = Vector3.rotate(Vector3.scale(Vector3.Right(),0.25), Transform.get(engine.CameraEntity).rotation)
-          offsetPos = Vector3.add(Transform.get(engine.PlayerEntity).position, offsetPos)
-         
-          transform.position = Vector3.lerp(transform.position, offsetPos, carriedInfo.pickUpLerpFactor)
-          transform.scale = Vector3.lerp(throwableDataReadOnly.originalScale, throwableDataReadOnly.holdScale, carriedInfo.pickUpLerpFactor)
-
-          if(carriedInfo.pickUpLerpFactor >= 0.8){
-            
-            carriedInfo.fullyPicked = true
-           // console.log("ATTACHING BALL" + carriedInfo.index)
-            this.attachBall(carriedInfo.index)
-
-          }
-
-          
-        }
-      }
-
-    })   
+      
 
   } 
+
+  drawAimPath(){
+   
+
+    const playerPos = Transform.get(engine.PlayerEntity).position
+    let currentPos = Vector3.One()
+
+    Vector3.copyFrom(playerPos, currentPos)
+    const cameraDir =  Vector3.rotate(Vector3.Forward(), Transform.get(engine.CameraEntity).rotation)
+
+
+    let dropPos =  Vector3.add( cameraDir, currentPos ) 
+    dropPos.y = dropPos.y +2
+    this.aimBall.position.set(dropPos.x, dropPos.y, dropPos.z)
+    this.aimBall.applyImpulse(
+        new CANNON.Vec3(
+          cameraDir.x * 0.5 * this.forceMultiplier, 
+          cameraDir.y * 0.5 * this.forceMultiplier, 
+          cameraDir.z * 0.5 * this.forceMultiplier), 
+        new CANNON.Vec3(
+          dropPos.x, 
+          dropPos.y, 
+          dropPos.z))
+
+    for(let i=0; i< this.aimLines.length; i++){
+
+
+      this.aimWorld.step(0.01, 0.01, 20)
+      let newPos = Vector3.create(this.aimBall.position.x, this.aimBall.position.y, this.aimBall.position.z) 
+      
+      moveLineBetween(this.aimLines[i], currentPos, newPos)
+
+      Vector3.copyFrom(newPos, currentPos)
+      //console.log("AIMPATH: " + currentPos)
+    }
+
+    this.aimBall.position.set(dropPos.x, dropPos.y, dropPos.z)
+  }
   attachBall(index:number){
     const throwableInfo = Throwable.get(this.balls[index])
     
@@ -399,6 +446,7 @@ export class PhysicsManager {
           index:  this.carriedIndex
         })
         this.playerHolding = true 
+        trackAction(this.balls[index], "pick_up")
       }
       else{
         this.perimeter.popUp()
@@ -531,13 +579,15 @@ export class PhysicsManager {
       //ball only triggers the score zone once it is thrown
       utils.triggers.enableTrigger(ball,true)
       setStrengthBar(0.3)
+      trackAction(ball, "throw")
+
     }
     
   }
 
   update(dt:number){
    this.world.step(FIXED_TIME_STEPS, dt, MAX_TIME_STEPS)
-
+   //this.drawAimPath()
    // UPDATE THE TRAILS ON EVERY FRAME (FADE + SIZE DECREASE)
    for(let j = 0; j < this.trails.length; j++){  
     const trailTransform = Transform.getMutable( this.trails[j])
@@ -564,6 +614,57 @@ export class PhysicsManager {
     // if(trailTransform.scale.y < 0) trailTransform.scale.y = 0
     // if(trailTransform.scale.z < 0) trailTransform.scale.z = 0
   }
+  const meshEntities = engine.getEntitiesWith(Throwable)
+  const pickedEntities = engine.getEntitiesWith(Carried, Throwable)
+  for (const [entity,throwableDataReadOnly] of meshEntities) {
+    
+    if (inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_HOVER_ENTER, entity)) {
+      // don't highlight if player is holding the ball
+      if(!Carried.has(entity)){
+        const transform = Transform.getMutable(this.ballHighlight)
+        transform.parent = entity
+        transform.position = Vector3.Zero()
+      }         
+    }
+
+      if (inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_HOVER_LEAVE, entity)) {
+      const transform = Transform.getMutable(this.ballHighlight)
+      transform.parent = engine.RootEntity
+      transform.position = Vector3.create(8,-10,8)
+    }
+
+      if (inputSystem.isTriggered(InputAction.IA_PRIMARY, PointerEventType.PET_DOWN, entity)) {
+      this.pickUpBall(throwableDataReadOnly.index)
+    }
+  }
+
+  for (const [entity,carriedDataReadOnly, throwableDataReadOnly] of pickedEntities) {
+    
+    if(!carriedDataReadOnly.fullyPicked){
+      const carriedInfo = Carried.getMutable(entity)
+      carriedInfo.pickUpLerpFactor += dt* 4 
+      const transform = Transform.getMutable(entity)
+      const playerTransform = Transform.get(engine.PlayerEntity)
+
+      // lerp the ball towards the right hand of the player (roughly)
+      let offsetPos = Vector3.rotate(Vector3.scale(Vector3.Right(),0.25), Transform.get(engine.CameraEntity).rotation)
+      offsetPos = Vector3.add(Transform.get(engine.PlayerEntity).position, offsetPos)
+      
+      transform.position = Vector3.lerp(transform.position, offsetPos, carriedInfo.pickUpLerpFactor)
+      transform.scale = Vector3.lerp(throwableDataReadOnly.originalScale, throwableDataReadOnly.holdScale, carriedInfo.pickUpLerpFactor)
+
+      if(carriedInfo.pickUpLerpFactor >= 0.8){
+        
+        carriedInfo.fullyPicked = true
+        // console.log("ATTACHING BALL" + carriedInfo.index)
+        this.attachBall(carriedInfo.index)
+
+      }
+
+      
+    }
+  }
+
   
   // ONLY ADD NEW TRAIL LINES AT A GIVEN FREQUENCY
    for(let i = 0; i < this.balls.length; i++){    
@@ -617,6 +718,7 @@ export class PhysicsManager {
     }   
     // IF A BALL IS CARRIED THEN UPDATE THE THROW STRENGTH WHEN LMB IS HELD DOWN
     else{
+      
       if(this.strengthHold){
         const throwable = Throwable.get(this.balls[i])
 

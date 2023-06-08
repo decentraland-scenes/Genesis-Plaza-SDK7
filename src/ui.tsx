@@ -14,6 +14,7 @@ let basketUIVisible: DisplayType = 'none'
 let outOfBoundsVisible: DisplayType = 'none'
 let outOfBoundsText:string = "Ball out of bounds"
 let strengthBarVisible: DisplayType = 'none'
+let strengthAlpha: Color4 = Color4.fromInts(0, 255 ,20 , 200)
 let powerHightlightVisible: DisplayType = 'none'
 let strengthValue: PositionUnit = '30%'
 let shake: number = 0
@@ -66,6 +67,7 @@ const uiOutOfBounds = () => (
           left: 0.49,
           right: 0.49
         }
+        
       }}
     
     />
@@ -201,7 +203,8 @@ const uiBasketball = () => (
               bottom: 0.49,
               left: 0.49,
               right: 0.49
-            }
+            },
+              color:  strengthAlpha
           }}
         >
           
@@ -329,6 +332,7 @@ export function hideScore() {
 export function setStrengthBar(value: number) {
   strengthValue = ((0.0+ value) * 100 + '%') as PositionUnit
   shake = value * 20 
+  strengthAlpha  = Color4.fromInts(value *255, 255 - value * 200,20 , 200 + value *55)
 }
 
 let elapsedTime = 0
