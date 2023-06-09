@@ -208,20 +208,26 @@ export class CrowdMenuItem extends MenuItem {
     })  
 
     if(_scene.baseCoords[0] == -9 && _scene.baseCoords[1] == -9){
-      pointerEventsSystem.onPointerDown(this.coordsPanel,
+      pointerEventsSystem.onPointerDown(
+        {
+          entity:this.coordsPanel,
+          opts: { hoverText: 'YOU ARE HERE', button: InputAction.IA_POINTER }
+        },
         (e) => {
           //_teleportTo(_scene.baseCoords[0], _scene.baseCoords[1])      
-        },
-        { hoverText: 'YOU ARE HERE', button: InputAction.IA_POINTER }
+        }
       )
     }
     else{
-      pointerEventsSystem.onPointerDown(this.coordsPanel,
+      pointerEventsSystem.onPointerDown(
+        {
+          entity:this.coordsPanel,
+          opts: { hoverText: 'GO THERE', button: InputAction.IA_POINTER }
+        },
         (e) => {
           trackAction(this.itemBox, "button_go_there", _scene.baseCoords[0] + ',' + _scene.baseCoords[1], _scene.name)
           _teleportTo(_scene.baseCoords[0], _scene.baseCoords[1])      
-        },
-        { hoverText: 'GO THERE', button: InputAction.IA_POINTER }
+        }
       )
     }
     
@@ -280,24 +286,28 @@ export class CrowdMenuItem extends MenuItem {
     if(_scene.baseCoords[0] == -9 && _scene.baseCoords[1] == -9){
       TextShape.getMutable(this.jumpButtonText).text = 'HERE'    
     
-      pointerEventsSystem.onPointerDown(this.jumpInButton,
-        (e) => {
-
-         // _teleportTo(_scene.baseCoords[0] , _scene.baseCoords[1])      
+      pointerEventsSystem.onPointerDown(
+        {
+          entity:this.jumpInButton,
+          opts: { hoverText: 'YOU ARE HERE', button: InputAction.IA_POINTER }
         },
-        { hoverText: 'YOU ARE HERE', button: InputAction.IA_POINTER }
-      )       
+        (e) => {
+          //_teleportTo(_scene.baseCoords[0], _scene.baseCoords[1])      
+        }
+      )    
     }
     else{
       TextShape.getMutable(this.jumpButtonText).text = 'JUMP IN'    
-    
-      pointerEventsSystem.onPointerDown(this.jumpInButton,
+      pointerEventsSystem.onPointerDown(
+        {
+          entity:this.jumpInButton,
+          opts: { hoverText: 'JUMP IN', button: InputAction.IA_POINTER }
+        },
         (e) => {
           trackAction(this.itemBox, "button_jump_in", _scene.baseCoords[0] + ',' + _scene.baseCoords[1], _scene.name)
           _teleportTo(_scene.baseCoords[0] , _scene.baseCoords[1])      
-        },
-        { hoverText: 'JUMP IN', button: InputAction.IA_POINTER }
-      ) 
+        }
+      )
     }
           
 
@@ -363,37 +373,49 @@ export class CrowdMenuItem extends MenuItem {
     
     //exclusion for genesis plaza   
     if(_scene.baseCoords[0] == -9 && _scene.baseCoords[1] == -9){
-      pointerEventsSystem.onPointerDown(this.coordsPanel,
+      pointerEventsSystem.onPointerDown(
+        {
+          entity:this.coordsPanel,
+          opts: { hoverText: 'YOU ARE HERE', button: InputAction.IA_POINTER }
+        },
         (e) => {
           //_teleportTo(_scene.baseCoords[0], _scene.baseCoords[1])      
-        },
-        { hoverText: 'YOU ARE HERE', button: InputAction.IA_POINTER }
+        }
       )
 
       TextShape.getMutable(this.jumpButtonText).text = "HERE"
-      pointerEventsSystem.onPointerDown(this.jumpInButton,
+      pointerEventsSystem.onPointerDown(
+        {
+          entity:this.jumpInButton,
+          opts: { hoverText: 'YOU ARE HERE', button: InputAction.IA_POINTER }
+        },
         (e) => {
           //_teleportTo(_scene.baseCoords[0], _scene.baseCoords[1])      
-        },
-        { hoverText: 'YOU ARE HERE', button: InputAction.IA_POINTER }
+        }
       )
     }
     else{
-      pointerEventsSystem.onPointerDown(this.coordsPanel,
+      pointerEventsSystem.onPointerDown(
+        {
+          entity:this.coordsPanel,
+          opts: { hoverText: 'GO THERE', button: InputAction.IA_POINTER }
+        },
         (e) => {
           trackAction(this.itemBox, "button_go_there", _scene.baseCoords[0] + ',' + _scene.baseCoords[1], _scene.name)
           _teleportTo(_scene.baseCoords[0], _scene.baseCoords[1])      
-        },
-        { hoverText: 'GO THERE', button: InputAction.IA_POINTER }
+        }
       )
 
       TextShape.getMutable(this.jumpButtonText).text = "JUMP IN"
-      pointerEventsSystem.onPointerDown(this.jumpInButton,
+      pointerEventsSystem.onPointerDown(
+        {
+          entity:this.jumpInButton,
+          opts: { hoverText: 'JUMP IN', button: InputAction.IA_POINTER }
+        },
         (e) => {
           trackAction(this.itemBox, "button_jump_in", _scene.baseCoords[0] + ',' + _scene.baseCoords[1], _scene.name)
           _teleportTo(_scene.baseCoords[0], _scene.baseCoords[1])      
-        },
-        { hoverText: 'JUMP IN', button: InputAction.IA_POINTER }
+        }
       )
     }
   }

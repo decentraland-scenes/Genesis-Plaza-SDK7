@@ -31,11 +31,16 @@ function addPanel(textureUrl:string, alphaTextureUrl:string, _transform:Transfor
     metallic: 0,
     roughness: 1
   })
-  pointerEventsSystem.onPointerDown(panel,
-    (e) => {
-      _teleportTo( _coordX , _coordY)      
+
+  pointerEventsSystem.onPointerDown(
+    {
+      entity:panel,
+      opts: { hoverText: 'VISIT SCENE', button: InputAction.IA_POINTER }
     },
-    { hoverText: 'VISIT SCENE', button: InputAction.IA_POINTER }
+    (e) => {
+      //TODO ADD ANALYTICS
+      _teleportTo( _coordX , _coordY)      
+    }
   )
 }
 
