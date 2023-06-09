@@ -1,5 +1,5 @@
 import { Animator, AudioSource, AudioStream, Entity, GltfContainer, InputAction, Material, MeshRenderer, PBAudioStream, TextShape, Transform, VisibilityComponent, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
-import { Color3, Vector3 } from '@dcl/sdk/math'
+import { Color3, Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { BEAM_SCALE_AMOUNT, TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, ParcelCountMaxY, ParcelCountX, ParcelCountZ, coreBuildingOffset, lobbyCenter } from './resources/globals'
 import { lobbyHeight } from './resources/globals'
 import { setBarMusicOff, setBarMusicOn } from '../modules/bar/jukebox'
@@ -18,6 +18,8 @@ import { AudioSourceAttachedToPlayer } from '../components'
 import { FIRST_PERSON_VOLUME_ADJ, addAudioSourceAttachedToPlayer, applyAudioStreamWorkAround, setAudioSourceAttachedToPlayerPlaying } from '../modules/soundsAttachedToPlayer'
 import { setMovePlayerInProgress } from '../back-ports/movePlayer'
 import { beamChargeSource, beamChargeSourceVolume, beamFallSource, beamFallSourceVolume, beamFireSource, beamFireSourceVolume, impactHardSource, impactHardSourceVolume, lobbyMusicSource, lobbyMusicSourceVolume } from './resources/sounds'
+import { GetRealmResponse, getRealm } from '~system/Runtime'
+
 
 export const triggerCounter = new CountDownUtil()
 
@@ -119,16 +121,46 @@ export class TeleportController {
       
       const host = this
 
+      const triggerUpSpawnArea = { x: (lobbyCenter.x - coreBuildingOffset.x + 5) , y: Math.min(ParcelCountMaxY-2.5,140), z: (lobbyCenter.z - 10 - coreBuildingOffset.z) }
+
+      const spawnRandomX = 2
+      const spawnRandomZ = 1
+      getRealm({}).then(
+        (value:GetRealmResponse) => {
+          if(value.realmInfo?.isPreview){
+              console.log("beamPortal.ts","temp.planes","getRealm is preview, adding planes for spawn and ceiling")
+              //START find the max height, help with visualizing how high we can go
+              let spawnAreaPlane = engine.addEntity()
+              //PUT PARCEL SIZE HERE 4X5 FOR EXAMPLE
+              const parcelMaxHeight = (Math.log((ParcelCountX*ParcelCountZ)) * Math.LOG2E) * 20
+              Transform.create(spawnAreaPlane,{
+                position: { x: triggerUpSpawnArea.x + (spawnRandomX/2) , y: lobbyHeight, z: triggerUpSpawnArea.z + (spawnRandomZ/2)},
+                scale: Vector3.create(spawnRandomX,spawnRandomZ,.1),
+                rotation: Quaternion.fromEulerDegrees(90,0,0)
+              })
+              //MeshCollider.setPlane(findCeilingPlane)
+              MeshRenderer.setPlane(spawnAreaPlane)
+              Material.setPbrMaterial(spawnAreaPlane, {
+                //texture: Material.Texture.,
+                albedoColor: Color4.fromHexString("#00000088"),
+                specularIntensity: 0,
+                metallic: 0,
+                roughness: 1
+              })
+          }
+        }
+      )
 
       const triggerUpOnEnter = () => {
-        console.log(CLASSNAME,"trigger.beamMeUp.enter.called.triggerUpOnEnter", "triggerUpOnEnter")
+        console.log(CLASSNAME,"trigger.beamMeUp.enter.called.triggerUpOnEnter", "triggerUpOnEnter") 
 
-        const movePlayerPosition = { x: lobbyCenter.x - coreBuildingOffset.x + 5, y: Math.min(ParcelCountMaxY-2.5,140), z: lobbyCenter.z - 10 - coreBuildingOffset.z}
+        //using Math.random() to slightly randomize spawn point
+        const movePlayerPosition = { x: triggerUpSpawnArea.x + (Math.random()*spawnRandomX), y: triggerUpSpawnArea.y, z: triggerUpSpawnArea.z + (Math.random()*spawnRandomZ)}
         //debugger
 
         setMovePlayerInProgress(true)
         applyAudioStreamWorkAround('exit')
-        movePlayerTo({  newRelativePosition: movePlayerPosition}).then(() => {
+        movePlayerTo({  newRelativePosition: movePlayerPosition, cameraTarget: Vector3.create(31,lobbyHeight + 8 ,51)}).then(() => {
           setMovePlayerInProgress(false)
         })
         //const playerTransform = Transform.getMutable(engine.PlayerEntity)
