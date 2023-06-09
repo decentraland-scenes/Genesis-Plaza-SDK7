@@ -11,7 +11,7 @@ let selectedPredefinedQuestion: NpcQuestionData[] = []
 let isVisible: boolean = false
 
 let typedQuestion: string = ''
-const placeHolderText: string = 'Type your question here then hit enter...'
+const placeHolderText: string = 'Type your question here then click Send...'
 
 let portraitPath: string = ''
 let selectedTheme: string = AtlasTheme.ATLAS_PATH_DARK

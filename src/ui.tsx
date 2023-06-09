@@ -4,6 +4,7 @@ import ReactEcs, { Button, DisplayType, Label, ReactEcsRenderer, UiEntity, Posit
 import { triggerCounter } from './lobby/beamPortal'
 import { NpcUtilsUi } from 'dcl-npc-toolkit/dist/ui'
 import { customNpcUI } from './utils/customNpcUi/customUi'
+import {render} from 'dcl-ui-toolkit'
 
 import * as utils from '@dcl-sdk/utils'
 
@@ -278,8 +279,9 @@ const uiComponent = () => [
   uiBeamMeUp(),
   customNpcUI(),
   uiBasketball(),
-  uiOutOfBounds()
+  uiOutOfBounds(),
   //uiSpawnCube()
+  render(),
 ]
 
 setupUi()
