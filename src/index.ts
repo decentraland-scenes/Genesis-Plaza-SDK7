@@ -47,7 +47,7 @@ initOnCameraModeChangedObservable()
 
 initSoundsAttachedToPlayerHandler()
 
-placeJukeBox()
+
 //setBarMusicOn()
 
 
@@ -302,6 +302,8 @@ let areNpcsAdded: boolean = false
 function insideBar() {
   const METHOD_NAME = 'insideBar'
   log("lazyLoading",FILE_NAME, METHOD_NAME, "Player Enter")
+
+  placeJukeBox()
 
   if (!areNpcsAdded) {
     //Quests
