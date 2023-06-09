@@ -3,9 +3,11 @@ import * as utils from "@dcl-sdk/utils"
 import { Color3, Vector3, Quaternion } from "@dcl/sdk/math";
 import * as CANNON from 'cannon/build/cannon'
 import { scoreDisplay } from "../../../ui";
-import { ToRadian } from "./utilFunctions";
+import { ToRadian, flatDistance } from "./utilFunctions";
 import { scoreSource, scoreVolume } from "./sounds";
-
+import { hoopContactMaterial } from "./physicsWorld";
+import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES } from '../../stats/AnalyticsConfig'
+import { trackAction } from "../../stats/analyticsComponents";
 
 const hoopShape:PBGltfContainer =  {src:"models/basketball/basketball_hoop.glb"}
 const sparksShape:PBGltfContainer =  {src:"models/basketball/sparks.glb"}
@@ -17,7 +19,9 @@ export class BasketballHoop {
     bottomLock:Entity
     cannonLock:CANNON.Body
     sparks:Entity
-    glowRings:Entity
+    glowRings:Entity   
+    radius:number = 1
+    
   
     constructor(world:CANNON.World, position:Vector3, _rotation:Quaternion){
       this.world = world
@@ -42,8 +46,8 @@ export class BasketballHoop {
   
       let sides = 8
       let angleStep = 360/sides
-      let radius = 1
-      let side = 2 * radius * Math.tan( ToRadian(180 / sides))
+     
+      let side = 2 * this.radius * Math.tan( ToRadian(180 / sides))
       const hoopPos = Transform.get(this.hoopEntity).position
       const lockTransform = Transform.get(this.bottomLock)
   
@@ -53,7 +57,7 @@ export class BasketballHoop {
         let rotation = Quaternion.fromEulerDegrees(0,i*angleStep,0)
         rotation = Quaternion.multiply(rotation, _rotation)
         let pos = Vector3.rotate(Vector3.Forward(), rotation)
-        pos = Vector3.scale(pos, radius)
+        pos = Vector3.scale(pos, this.radius)
   
         //debug boxes
         // let collider = engine.addEntity()
@@ -101,6 +105,8 @@ export class BasketballHoop {
         
        //shape: new CANNON.Box(new CANNON.Vec3(0.35, 0.35, 0.35)),
       })
+      cannonWall.material = hoopContactMaterial
+
       this.world.addBody(cannonWall)
     
       // bottom blocker preventing scoring from bottom-up
@@ -127,7 +133,7 @@ export class BasketballHoop {
       utils.triggers.addTrigger(this.hoopEntity ,utils.LAYER_2, utils.LAYER_2, 
         [{type: "box", position: Vector3.create(0,-0.4,0), scale: Vector3.create(0.5, 0.2, 0.5)}],
         ()=>{     
-          console.log("SCORE!!!!")
+         // console.log("SCORE!!!!")
          this.disableLock()
          scoreDisplay()
          this.startCelebration()
@@ -153,7 +159,10 @@ export class BasketballHoop {
         parent: this.hoopEntity
       })
       GltfContainer.create(this.glowRings, glowRingsShape)
+
+      
     }
+    
     disableLock(){
       this.world.remove(this.cannonLock)
       //VisibilityComponent.getMutable(this.bottomLock).visible = false
@@ -165,6 +174,8 @@ export class BasketballHoop {
     startCelebration(){
       const transform = Transform.getMutable(this.sparks)
       transform.scale = Vector3.One()    
+
+      trackAction(this.hoopEntity, "score")
 
       AudioSource.createOrReplace(this.hoopEntity, {
         audioClipUrl: scoreSource,
