@@ -75,9 +75,8 @@ barPlatforms()
 // ADD EVENT CARDS TO BAR
 addTVPanels()
 
-// ADD BASKETBALL GAME
 
-let physicsManager = new PhysicsManager(5)
+
 
 
 
@@ -304,6 +303,8 @@ function insideBar() {
   log("lazyLoading",FILE_NAME, METHOD_NAME, "Player Enter")
 
   placeJukeBox()
+
+  let physicsManager = new PhysicsManager(5)
 
   if (!areNpcsAdded) {
     //Quests
