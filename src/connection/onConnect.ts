@@ -20,7 +20,7 @@ import { Color4 } from "@dcl/sdk/math";
 import { Animator, AudioStream, executeTask } from "@dcl/sdk/ecs";
 import { onConnectHost } from "../lobby-scene/lobbyScene";
 import { endOfRemoteInteractionStream, goodBye, hideThinking } from "../modules/RemoteNpcs/remoteNpc";
-import { getNpcEmotion, isBeingPlayed } from "../modules/RemoteNpcs/npcHelper";
+import { getNpcEmotion } from "../modules/RemoteNpcs/npcHelper";
 
 //const canvas = ui.canvas
 
@@ -232,12 +232,10 @@ function onLevelConnect(room: Room<clientState.NpcGameRoomState>) {
           }
 
           talk(REGISTRY.activeNPC.entity, [nextDialog]);
-
           console.log("Emotions", "Dialog", nextDialog);
 
 
           console.log('Emotions', 'Animation:', emotion.name);
-          // if (!isBeingPlayed(REGISTRY.activeNPC.entity, emotion.name))
           if (hasEmotion && emotion.name) playAnimation(REGISTRY.activeNPC.entity, emotion.name, true, emotion.duration)
 
           if (true) {//audio optional
@@ -340,8 +338,7 @@ function onLevelConnect(room: Room<clientState.NpcGameRoomState>) {
         talk(REGISTRY.activeNPC.entity, [dialog]);
         console.log("Emotions", "Dialog", dialog);
 
-        console.log('Emotions', 'Animation', dialog.portrait);
-        // if (!isBeingPlayed(REGISTRY.activeNPC.entity, emotion.name))
+        console.log('Emotions', 'Animation', dialog.name);
         if (hasEmotion && emotion.name) playAnimation(REGISTRY.activeNPC.entity, emotion.name, true, emotion.duration)
       } else {
         console.log("structuredMsg", "createDialog", "no dialog to show,probably just a control msg", dialog, "chatPart", chatPart, "nextPart", nextPart)
