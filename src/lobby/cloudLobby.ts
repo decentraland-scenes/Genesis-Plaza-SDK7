@@ -41,7 +41,7 @@ export function addCloudLobby(){
 getRealm({}).then(
   (value:GetRealmResponse) => {
     if(value.realmInfo?.isPreview){
-      console.log("cloudLobby.ts","temp.planes","getRealm is NOT preview, adding planes for spawn and ceiling")
+      console.log("cloudLobby.ts","temp.planes","getRealm is preview, adding planes for spawn and ceiling")
       //START find the max height, help with visualizing how high we can go
       let findCeilingPlane = engine.addEntity()
       //PUT PARCEL SIZE HERE 4X5 FOR EXAMPLE
