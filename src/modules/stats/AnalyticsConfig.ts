@@ -38,7 +38,8 @@ export const ANALYTICS_ELEMENTS_IDS = {
   jukeBox: "jukeBox",
   beerMug: "beerMug",
   eventsSlider: "eventsSlider",
-  basketball:"basketball"
+  basketball:"basketball",
+  barTvPanel:"barTvPanel",
 }
 
 export const ANALYTICS_GENERIC_EVENTS = {

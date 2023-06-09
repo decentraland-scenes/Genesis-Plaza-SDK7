@@ -41,7 +41,7 @@ export function addCloudLobby(){
 getRealm({}).then(
   (value:GetRealmResponse) => {
     if(value.realmInfo?.isPreview){
-      console.log("cloudLobby.ts","temp.planes","getRealm is NOT preview, adding planes for spawn and ceiling")
+      console.log("cloudLobby.ts","temp.planes","getRealm is preview, adding planes for spawn and ceiling")
       //START find the max height, help with visualizing how high we can go
       let findCeilingPlane = engine.addEntity()
       //PUT PARCEL SIZE HERE 4X5 FOR EXAMPLE
@@ -122,12 +122,14 @@ getRealm({}).then(
   })
   GltfContainer.create(discordLink, resource.discordShape)
 
-
-  pointerEventsSystem.onPointerDown(discordLink,
+  pointerEventsSystem.onPointerDown(
+    {
+      entity:discordLink,
+      opts: {hoverText: 'Join the Discussion', button: InputAction.IA_POINTER }
+    },
     (e) => {
       _openExternalURL('https://dcl.gg/discord')
-    },
-    { hoverText: 'Join the Discussion', button: InputAction.IA_POINTER }
+    }
   )
 
   let twitterLink = engine.addEntity()
@@ -140,14 +142,16 @@ getRealm({}).then(
   })
 
   GltfContainer.create(twitterLink,resource.twitterShape)
-  pointerEventsSystem.onPointerDown(twitterLink,
-      (e) => {
-        _openExternalURL('https://twitter.com/decentraland')
-      },
-      { hoverText: 'Follow Us!', button: InputAction.IA_POINTER }
-    )
 
-
+  pointerEventsSystem.onPointerDown(
+    {
+      entity:twitterLink,
+      opts: { hoverText: 'Follow Us!', button: InputAction.IA_POINTER }
+    },
+    (e) => {
+      _openExternalURL('https://twitter.com/decentraland')
+    }
+  )
 
   //DIVING SIGN
   let divingSign = engine.addEntity()
