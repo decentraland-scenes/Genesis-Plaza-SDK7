@@ -265,17 +265,18 @@ export class JukeboxButton {
     })
 
 
-
-    pointerEventsSystem.onPointerDown( 
-        this.entity, 
-        () => {
-            action()
-            this.press(animationName)
-        },
-        {
+    pointerEventsSystem.onPointerDown(
+      {
+        entity:this.entity,
+        opts: {
             button: InputAction.IA_POINTER,
             hoverText: text ? text : 'Press',
         }
+      },
+      (e) => {
+        action()
+        this.press(animationName)
+      }
     )
   }
 
