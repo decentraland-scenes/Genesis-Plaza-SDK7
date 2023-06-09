@@ -2,9 +2,11 @@ import { InputAction, Material, MaterialTransparencyMode, MeshCollider, MeshRend
 import { Color3, Quaternion, Vector3 } from "@dcl/sdk/math"
 import { getEvents } from "../../lobby/checkApi"
 import { _teleportTo } from "../../back-ports/backPorts"
+import { TrackingElement, trackAction } from "../stats/analyticsComponents"
+import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES } from "../stats/AnalyticsConfig"
 
 
-function addPanel(textureUrl:string, alphaTextureUrl:string, _transform:TransformType,_coordX:number, _coordY:number ){
+function addPanel(textureUrl:string, alphaTextureUrl:string, _transform:TransformType,_coordX:number, _coordY:number, eventData:any ){
 
   let panel = engine.addEntity()
   MeshRenderer.setPlane(panel)
@@ -32,13 +34,21 @@ function addPanel(textureUrl:string, alphaTextureUrl:string, _transform:Transfor
     roughness: 1
   })
 
+  let eventId:string=eventData.id
+  let eventName:string=eventData.name
+
+  TrackingElement.create(panel, {
+    elementType: ANALYTICS_ELEMENTS_TYPES.interactable,
+    elementId: ANALYTICS_ELEMENTS_IDS.barTvPanel,
+  })
+
   pointerEventsSystem.onPointerDown(
     {
       entity:panel,
       opts: { hoverText: 'VISIT SCENE', button: InputAction.IA_POINTER }
     },
     (e) => {
-      //TODO ADD ANALYTICS
+      trackAction(panel, "click", eventId, (_coordX + ',' + _coordY+":"+eventName))
       _teleportTo( _coordX , _coordY)      
     }
   )
@@ -61,6 +71,7 @@ export async function addTVPanels() {
           },
           events[0].coordinates[0],
           events[0].coordinates[1],
+          events[0]
         ) 
       }
        
@@ -75,6 +86,7 @@ export async function addTVPanels() {
         },
         events[1].coordinates[0],
         events[1].coordinates[1],
+        events[1]
       )  
     }
 
@@ -89,6 +101,7 @@ export async function addTVPanels() {
         },
         events[2].coordinates[0],
         events[2].coordinates[1],
+        events[2]
       )  
     }
 
@@ -103,6 +116,7 @@ export async function addTVPanels() {
         },
         events[3].coordinates[0],
         events[3].coordinates[1],
+        events[3]
       )  
     }
     }  
