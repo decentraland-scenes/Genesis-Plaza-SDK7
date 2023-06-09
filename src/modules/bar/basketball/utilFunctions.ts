@@ -22,6 +22,13 @@ export function realDistance(pos1: Vector3, pos2: Vector3): number
     return Math.sqrt(a * a + b * b + c * c)
 }
 
+export function flatDistance(pos1: Vector3, pos2: Vector3): number 
+{
+    const a = pos1.x - pos2.x   
+    const c = pos1.z - pos2.z
+    return Math.sqrt(a * a + c * c)
+}
+
 export function moveLineBetween(line:Entity, A:Vector3, B:Vector3){
   
     let dist = realDistance(A,B)
