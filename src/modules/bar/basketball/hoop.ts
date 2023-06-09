@@ -3,7 +3,7 @@ import * as utils from "@dcl-sdk/utils"
 import { Color3, Vector3, Quaternion } from "@dcl/sdk/math";
 import * as CANNON from 'cannon/build/cannon'
 import { scoreDisplay } from "../../../ui";
-import { ToRadian } from "./utilFunctions";
+import { ToRadian, flatDistance } from "./utilFunctions";
 import { scoreSource, scoreVolume } from "./sounds";
 import { hoopContactMaterial } from "./physicsWorld";
 import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES } from '../../stats/AnalyticsConfig'
@@ -19,7 +19,9 @@ export class BasketballHoop {
     bottomLock:Entity
     cannonLock:CANNON.Body
     sparks:Entity
-    glowRings:Entity
+    glowRings:Entity   
+    radius:number = 1
+    
   
     constructor(world:CANNON.World, position:Vector3, _rotation:Quaternion){
       this.world = world
@@ -44,8 +46,8 @@ export class BasketballHoop {
   
       let sides = 8
       let angleStep = 360/sides
-      let radius = 1
-      let side = 2 * radius * Math.tan( ToRadian(180 / sides))
+     
+      let side = 2 * this.radius * Math.tan( ToRadian(180 / sides))
       const hoopPos = Transform.get(this.hoopEntity).position
       const lockTransform = Transform.get(this.bottomLock)
   
@@ -55,7 +57,7 @@ export class BasketballHoop {
         let rotation = Quaternion.fromEulerDegrees(0,i*angleStep,0)
         rotation = Quaternion.multiply(rotation, _rotation)
         let pos = Vector3.rotate(Vector3.Forward(), rotation)
-        pos = Vector3.scale(pos, radius)
+        pos = Vector3.scale(pos, this.radius)
   
         //debug boxes
         // let collider = engine.addEntity()
@@ -157,7 +159,10 @@ export class BasketballHoop {
         parent: this.hoopEntity
       })
       GltfContainer.create(this.glowRings, glowRingsShape)
+
+      
     }
+    
     disableLock(){
       this.world.remove(this.cannonLock)
       //VisibilityComponent.getMutable(this.bottomLock).visible = false

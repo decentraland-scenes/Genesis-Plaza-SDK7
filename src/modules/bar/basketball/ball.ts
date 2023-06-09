@@ -1,5 +1,5 @@
 import * as CANNON from 'cannon/build/cannon'
-import { AudioSource, AvatarAnchorPointType, AvatarAttach, CameraMode, CameraType, ColliderLayer, Entity, EntityMappingMode, GltfContainer, InputAction, Material, MaterialTransparencyMode, MeshCollider, MeshRenderer, PBGltfContainer, PBMaterial_PbrMaterial, PointerEventType, PointerEvents, Schemas, Texture, TextureUnion, Transform, TransformType, TransformTypeWithOptionals, VisibilityComponent, engine, inputSystem, pointerEventsSystem } from "@dcl/sdk/ecs"
+import { Animator, AudioSource, AvatarAnchorPointType, AvatarAttach, CameraMode, CameraType, ColliderLayer, Entity, EntityMappingMode, GltfContainer, InputAction, Material, MaterialTransparencyMode, MeshCollider, MeshRenderer, PBGltfContainer, PBMaterial_PbrMaterial, PointerEventType, PointerEvents, Schemas, Texture, TextureUnion, Transform, TransformType, TransformTypeWithOptionals, VisibilityComponent, engine, inputSystem, pointerEventsSystem } from "@dcl/sdk/ecs"
 import { Vector3, Quaternion, Color3, Color4 } from "@dcl/sdk/math"
 import { addPhysicsConstraints } from './physicsConstraints'
 import * as utils from "@dcl-sdk/utils"
@@ -12,6 +12,7 @@ import { moveLineBetween, realDistance } from './utilFunctions'
 import { barCenter } from '../../../lobby/resources/globals'
 import { TrackingElement, trackAction } from '../../stats/analyticsComponents'
 import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES } from '../../stats/AnalyticsConfig'
+import { util } from 'protobufjs'
 
 export const Throwable = engine.defineComponent('throwable-id', {
     index: Schemas.Number,
@@ -22,7 +23,7 @@ export const Throwable = engine.defineComponent('throwable-id', {
     originalScale:Schemas.Vector3,
     anchorOffset: Schemas.Vector3,
     lastPos: Schemas.Vector3,
-    lastDir: Schemas.Vector3,    
+    lastDir: Schemas.Vector3,       
     
 })
 
@@ -65,8 +66,11 @@ const SHOOT_VELOCITY = 45
 
 const ballShape:PBGltfContainer =  {
   src:"models/basketball/ball.glb",
-  invisibleMeshesCollisionMask: ColliderLayer.CL_NONE,
-  visibleMeshesCollisionMask: ColliderLayer.CL_POINTER
+  invisibleMeshesCollisionMask: ColliderLayer.CL_POINTER,
+  visibleMeshesCollisionMask: ColliderLayer.CL_NONE
+}
+const puffShape:PBGltfContainer =  {
+  src:"models/basketball/puff.glb" 
 }
 
 const ballHighlightShape:PBGltfContainer =  {src:"models/basketball/ball_outline.glb"}
@@ -93,8 +97,8 @@ export class PhysicsManager {
   playerInbound:boolean = true
   soundBox:Entity
   pickUpCounter:number = 0
-  aimWorld:CANNON.World
-  aimBall:CANNON.Body
+  puff:Entity
+  
   
   
   
@@ -128,31 +132,6 @@ export class PhysicsManager {
       { friction: 0.1, restitution: 0.8}
     )
     this.world.addContactMaterial(groundContactMaterial)
-
-    //phantom world for aim prediction
-    this.aimWorld = new CANNON.World()
-    this.aimWorld.quatNormalizeSkip = 0
-    this.aimWorld.quatNormalizeFast = false
-    this.aimWorld.gravity.set(0, -9.82 *2, 0) // m/s²    
-    this.aimWorld.addContactMaterial(groundContactMaterial)
-
-
-    this.aimBall = new CANNON.Body({
-      mass: 0.8, // kg
-      position: new CANNON.Vec3(
-        8,
-        -2,
-        8
-      ), // m
-      shape: new CANNON.Sphere(0.35),
-     //shape: new CANNON.Box(new CANNON.Vec3(0.35, 0.35, 0.35)),
-    })
-
-    this.aimBall.linearDamping = 0.1 // Round bodies will keep translating even with friction so you need linearDamping
-    this.aimBall.angularDamping = 0.4 // Round bodies will keep rotating even with friction so you need angularDamping
-
-    this.aimWorld.addBody(this.aimBall)
-    
 
     this.playerCollider = new CANNON.Body({
       mass: 10, // kg
@@ -226,7 +205,7 @@ export class PhysicsManager {
 
    
     // add imported static cannon colliders
-    this.staticWorld = new PhysicsWorldStatic(this.world, this.aimWorld)
+    this.staticWorld = new PhysicsWorldStatic(this.world)
      
     this.ballHighlight = engine.addEntity()
     Transform.create(this.ballHighlight, { 
@@ -274,7 +253,22 @@ export class PhysicsManager {
       this.aimLines.push(aimLine)
     }
 
+    //puff smoke particles that fire on pickup
+    this.puff = engine.addEntity()
+    Transform.create(this.puff, {
+      position: Vector3.create(8,-2,8)
+    })
+    VisibilityComponent.create(this.puff).visible = false
     
+    Animator.create(this.puff, {
+      states:[{
+          name: "Animation",
+          clip: "Animation",
+          playing: true,
+          loop: false
+        }
+      ]
+    })
 
     
   }
@@ -347,6 +341,7 @@ export class PhysicsManager {
       holdScale: Vector3.create(0.5, 0.5, 0.5),
       originalScale: Vector3.One(),
       anchorOffset: Vector3.create(-0.0,0.2,0),
+      
      
     } )
 
@@ -375,43 +370,7 @@ export class PhysicsManager {
 
   } 
 
-  drawAimPath(){
-   
-
-    const playerPos = Transform.get(engine.PlayerEntity).position
-    let currentPos = Vector3.One()
-
-    Vector3.copyFrom(playerPos, currentPos)
-    const cameraDir =  Vector3.rotate(Vector3.Forward(), Transform.get(engine.CameraEntity).rotation)
-
-
-    let dropPos =  Vector3.add( cameraDir, currentPos ) 
-    dropPos.y = dropPos.y +2
-    this.aimBall.position.set(dropPos.x, dropPos.y, dropPos.z)
-    this.aimBall.applyImpulse(
-        new CANNON.Vec3(
-          cameraDir.x * 0.5 * this.forceMultiplier, 
-          cameraDir.y * 0.5 * this.forceMultiplier, 
-          cameraDir.z * 0.5 * this.forceMultiplier), 
-        new CANNON.Vec3(
-          dropPos.x, 
-          dropPos.y, 
-          dropPos.z))
-
-    for(let i=0; i< this.aimLines.length; i++){
-
-
-      this.aimWorld.step(0.01, 0.01, 20)
-      let newPos = Vector3.create(this.aimBall.position.x, this.aimBall.position.y, this.aimBall.position.z) 
-      
-      moveLineBetween(this.aimLines[i], currentPos, newPos)
-
-      Vector3.copyFrom(newPos, currentPos)
-      //console.log("AIMPATH: " + currentPos)
-    }
-
-    this.aimBall.position.set(dropPos.x, dropPos.y, dropPos.z)
-  }
+ 
   attachBall(index:number){
     const throwableInfo = Throwable.get(this.balls[index])
     
@@ -430,7 +389,17 @@ export class PhysicsManager {
    
     if(!this.playerHolding){
       if(this.playerInbound){
-        
+
+        let ballPos = Transform.get(this.balls[index]).position
+        Transform.getMutable(this.puff).position = {x:ballPos.x, y:ballPos.y, z:ballPos.z }
+        GltfContainer.createOrReplace(this.puff, puffShape)
+        VisibilityComponent.getMutable(this.puff).visible = true
+        Animator.playSingleAnimation(this.puff, "", true)
+
+        utils.timers.setTimeout(()=>{
+          VisibilityComponent.getMutable(this.puff).visible = false
+        },
+        500)
         displayBasketballUI()
         this.perimeter.show()
         AudioSource.createOrReplace(this.balls[index], {
@@ -587,7 +556,7 @@ export class PhysicsManager {
 
   update(dt:number){
    this.world.step(FIXED_TIME_STEPS, dt, MAX_TIME_STEPS)
-   //this.drawAimPath()
+   
    // UPDATE THE TRAILS ON EVERY FRAME (FADE + SIZE DECREASE)
    for(let j = 0; j < this.trails.length; j++){  
     const trailTransform = Transform.getMutable( this.trails[j])
@@ -616,6 +585,7 @@ export class PhysicsManager {
   }
   const meshEntities = engine.getEntitiesWith(Throwable)
   const pickedEntities = engine.getEntitiesWith(Carried, Throwable)
+
   for (const [entity,throwableDataReadOnly] of meshEntities) {
     
     if (inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_HOVER_ENTER, entity)) {
@@ -713,7 +683,7 @@ export class PhysicsManager {
       transformBall.position.x = this.cannonBodies[i].position.x
       transformBall.position.y = this.cannonBodies[i].position.y
       transformBall.position.z = this.cannonBodies[i].position.z 
-      transformBall.rotation = this.cannonBodies[i].quaternion
+      transformBall.rotation = this.cannonBodies[i].quaternion   
 
     }   
     // IF A BALL IS CARRIED THEN UPDATE THE THROW STRENGTH WHEN LMB IS HELD DOWN

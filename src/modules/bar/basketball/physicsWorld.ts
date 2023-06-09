@@ -20,18 +20,18 @@ export const hoopContactMaterial: CANNON.Material = new CANNON.Material(
 export class PhysicsWorldStatic {
     colliders:CANNON.Body[]
     world:CANNON.World
-    worldAim:CANNON.World
+    
 
-    constructor(_world:CANNON.World, _aimWorld:CANNON.World){
+    constructor(_world:CANNON.World){
         
         this.colliders = []
         this.world = _world
-        this.worldAim = _aimWorld
+       
 
         for(let i=0; i< colliderData.length; i++){
             colliderData[i].material = ballBounceMaterial
             this.world.addBody(colliderData[i])
-            this.worldAim.addBody(colliderData[i])
+           
         }
 
         //ground plane collider
@@ -46,8 +46,7 @@ export class PhysicsWorldStatic {
         ) // Reorient ground plane to be in the y-axis
         groundBody.position.y = 0.23 // Thickness of ground base model
         groundBody.material = ballBounceMaterial
-        this.world.addBody(groundBody)
-        this.worldAim.addBody(groundBody)
+        this.world.addBody(groundBody)      
     
 
     }
