@@ -16,6 +16,7 @@ export const ANALYTICS_ELEMENTS_TYPES = {
 export const ANALYTICS_ELEMENTS_IDS = {
   cloud: "cloud",
   bar: "bar",
+  secondFloor: "secondFloor",
   agora: "agora",
   artichoke: "artichoke",
   hallway: "hallway",

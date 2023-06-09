@@ -1,11 +1,10 @@
 import { engine, Transform } from '@dcl/sdk/ecs'
 import { Color4 } from '@dcl/sdk/math'
 import ReactEcs, { Button, DisplayType, Label, ReactEcsRenderer, UiEntity, PositionUnit } from '@dcl/sdk/react-ecs'
-import { Cube } from './components'
-import { createCube } from './factory'
 import { triggerCounter } from './lobby/beamPortal'
 import { NpcUtilsUi } from 'dcl-npc-toolkit/dist/ui'
 import { customNpcUI } from './utils/customNpcUi/customUi'
+import {render} from 'dcl-ui-toolkit'
 
 import * as utils from '@dcl-sdk/utils'
 
@@ -13,10 +12,11 @@ let teleportUIVisibility: DisplayType = 'none'
 let timeToBeamUp: number = 3
 let scoreUIVisible: DisplayType = 'none'
 let basketUIVisible: DisplayType = 'none'
+let outOfBoundsVisible: DisplayType = 'none'
 let strengthBarVisible: DisplayType = 'none'
-let strengthValue: PositionUnit = '20%'
+let strengthValue: PositionUnit = '30%'
 let shake: number = 0
-const originalPos: PositionUnit = '50%'
+const originalPos: PositionUnit = '120%'
 let shakePos: PositionUnit = '50%'
 let isScoreEnabled = false
 let scorePositionX: PositionUnit = '0%'
@@ -31,6 +31,46 @@ export function showTeleportUI(isVisible: DisplayType) {
 export function setTeleportCountdown(_numberString: string) {
   //teleportCountdownText.value = _numberString
 }
+
+const uiOutOfBounds = () => (
+  <UiEntity
+    //top level root ui div
+    uiTransform={{
+      width: 400,
+      height: 400,
+
+      // { top: 4, bottom: 4, left: 4, right: 4 },
+      padding: 4,
+      alignContent: 'center',
+      display: outOfBoundsVisible,
+      positionType: 'absolute',
+      position: { top: '50%', left: '50%' }
+    }}
+  >
+
+    <Label
+      // OUT OF BOUNDS MESSAGE
+      value="Ball out of bounds"
+      fontSize={32}
+      textAlign='middle-center'
+      uiTransform={{ width: '100%', height: '30%', positionType: 'absolute', position: {left: '-50%'}}}
+      uiBackground={{
+        textureMode: 'nine-slices',
+        texture: {
+          src: 'images/basketball/bar_fg.png'
+        },
+        textureSlices: {
+          top: 0.49,
+          bottom: 0.49,
+          left: 0.49,
+          right: 0.49
+        }
+      }}
+    
+    />
+
+  </UiEntity>
+)
 
 const uiBasketball = () => (
   <UiEntity
@@ -47,6 +87,7 @@ const uiBasketball = () => (
       position: { top: '50%', left: '50%' }
     }}
   >
+    
     <UiEntity
       // root container for bar and score popups
       uiTransform={{
@@ -56,6 +97,7 @@ const uiBasketball = () => (
         positionType: 'absolute'
       }}
     >
+      
       <UiEntity
         // container for SCORE popup
         uiTransform={{
@@ -93,10 +135,22 @@ const uiBasketball = () => (
           alignItems: 'center',
           alignSelf: 'center',
           positionType: 'absolute',
-          position: { left: '-50%', top: '50%' },
+          position: { left: '-50%', top: '120%' },
           display: strengthBarVisible
         }}
       >
+        <Label
+          // Instructions text for power bar
+          value="        Press and hold       to set throw power"
+          fontSize={20}
+          uiTransform={{ width: '100%', height: '100%', positionType: 'absolute', position: {top: '55%', left: '-5%'}}}
+          uiBackground={{textureMode: 'center',
+          texture: {
+            src: 'images/basketball/lmb_icon.png'
+          }
+        }}
+        />
+        
         <UiEntity
           //powerbar scaling bar part
           uiTransform={{
@@ -119,7 +173,10 @@ const uiBasketball = () => (
               right: 0.49
             }
           }}
-        ></UiEntity>
+        >
+          
+
+        </UiEntity>
         <UiEntity
           //powerbar frame image
           uiTransform={{
@@ -143,7 +200,17 @@ const uiBasketball = () => (
               right: 0.49
             }
           }}
-        ></UiEntity>
+        >
+          <Label
+          // Instructions text for power bar
+          value = ""
+          fontSize={20}
+          uiTransform={{ width: '100%', height: '100%', positionType: 'absolute', position: {top: '10%'}}}          
+        
+        />
+
+
+        </UiEntity>
       </UiEntity>
     </UiEntity>
   </UiEntity>
@@ -179,84 +246,14 @@ const uiBeamMeUp = () => (
   </UiEntity>
 )
 
-const uiSpawnCube = () => (
-  <UiEntity
-    uiTransform={{
-      width: 400,
-      height: 230,
-      //  { top: 16, right: 0, bottom: 8 left: 270 },
-      margin: '16px 0 8px 270px',
-      // { top: 4, bottom: 4, left: 4, right: 4 },
-      padding: 4
-    }}
-    uiBackground={{ color: Color4.create(0.5, 0.8, 0.1, 0.6) }}
-  >
-    <UiEntity
-      uiTransform={{
-        width: '100%',
-        height: '100%',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'space-between'
-      }}
-      uiBackground={{ color: Color4.fromHexString('#70ac76ff') }}
-    >
-      <UiEntity
-        uiTransform={{
-          width: '100%',
-          height: 50,
-          margin: '8px 0'
-        }}
-        uiBackground={{
-          textureMode: 'center',
-          texture: {
-            src: 'images/scene-thumbnail.png'
-          }
-        }}
-        uiText={{ value: 'SDK7', fontSize: 18 }}
-      />
-      <Label
-        onMouseDown={() => {
-          console.log('Player Position clicked !')
-        }}
-        value={`Player: ${getPlayerPosition()}`}
-        fontSize={18}
-        uiTransform={{ width: '100%', height: 30 }}
-      />
-      <Label
-        onMouseDown={() => {
-          console.log('# Cubes clicked !')
-        }}
-        value={`# Cubes: ${[...engine.getEntitiesWith(Cube)].length}`}
-        fontSize={18}
-        uiTransform={{ width: '100%', height: 30 }}
-      />
-      <Button
-        uiTransform={{ width: 100, height: 40, margin: 8 }}
-        value="Spawn cube"
-        variant="primary"
-        fontSize={14}
-        onMouseDown={() => {
-          createCube(1 + Math.random() * 8, Math.random() * 8, 1 + Math.random() * 8, false)
-        }}
-      />
-    </UiEntity>
-  </UiEntity>
-)
-
-function getPlayerPosition() {
-  const playerPosition = Transform.getOrNull(engine.PlayerEntity)
-  if (!playerPosition) return ' no data yet'
-  const { x, y, z } = playerPosition.position
-  return `{X: ${x.toFixed(2)}, Y: ${y.toFixed(2)}, z: ${z.toFixed(2)} }`
-}
-
 const uiComponent = () => [
   NpcUtilsUi(),
   uiBeamMeUp(),
   customNpcUI(),
-  uiBasketball()
+  uiBasketball(),
+  uiOutOfBounds(),
   //uiSpawnCube()
+  render(),
 ]
 
 setupUi()
@@ -279,6 +276,13 @@ export function showStrenghtBar() {
 export function hideStrenghtBar() {
   strengthBarVisible = 'none'
 }
+// OOB UI
+export function showOOB() {
+  outOfBoundsVisible = 'flex'
+}
+export function hideOOB() {
+  outOfBoundsVisible = 'none'
+}
 
 let elapsed = 0
 
@@ -292,8 +296,8 @@ export function hideScore() {
 }
 
 export function setStrengthBar(value: number) {
-  strengthValue = (0.2 + value * 100 + '%') as PositionUnit
-  shake = value * 20
+  strengthValue = ((0.0+ value) * 100 + '%') as PositionUnit
+  shake = value * 20 
 }
 
 let elapsedTime = 0

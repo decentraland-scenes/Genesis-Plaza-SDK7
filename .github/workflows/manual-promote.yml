@@ -1,0 +1,31 @@
+name: Promote environment
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      env:
+        type: choice
+        options:
+          - testing
+          - prod
+        required: true
+        description: Environment
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: install decentraland
+      run: npm i -g decentraland@latest
+    - name: Install npm packages
+      run: |
+        npm install
+    - name: Build scene
+      run: |
+        npm run build:ci
+    - name: Deploy scene
+      run: |
+        npm run deploy:${{ inputs.env }}
