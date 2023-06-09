@@ -87,7 +87,7 @@ export let colliderData:CANNON.Body[] = [
         mass: 0, // kg
         position: new CANNON.Vec3(19, 10, 39.65 ), 
         quaternion: new CANNON.Quaternion(quat90.x, quat90.y, quat90.z, quat90.w),
-        shape: new CANNON.Cylinder( 2, 2, 20, 12)   ,
+        shape: new CANNON.Cylinder( 1.9, 1.9, 20, 12)   ,
         fixedRotation:true 
         //shape: new CANNON.Box(new CANNON.Vec3(4,40,4))   
     })   , 
@@ -105,7 +105,7 @@ export let colliderData:CANNON.Body[] = [
         mass: 0, // kg
         position: new CANNON.Vec3(45, 10, 39.65 ), 
         quaternion: new CANNON.Quaternion(quat90.x, quat90.y, quat90.z, quat90.w),
-        shape: new CANNON.Cylinder( 2, 2, 20, 12)   ,
+        shape: new CANNON.Cylinder( 1.9, 1.9, 20, 12)   ,
         fixedRotation:true 
         //shape: new CANNON.Box(new CANNON.Vec3(4,40,4))   
     })   , 
@@ -133,7 +133,7 @@ export let colliderData:CANNON.Body[] = [
         mass: 0, // kg
         position: new CANNON.Vec3(32, 4, 25.8 ), 
         quaternion: new CANNON.Quaternion(quat90.x, quat90.y, quat90.z, quat90.w),
-        shape: new CANNON.Cylinder( 4, 4, 10, 12)   ,
+        shape: new CANNON.Cylinder( 3.0, 3.0, 10, 12)   ,
         fixedRotation:true 
         //shape: new CANNON.Box(new CANNON.Vec3(4,40,4))   
     })   , 
@@ -142,5 +142,33 @@ export let colliderData:CANNON.Body[] = [
         mass: 0, // kg
         position: new CANNON.Vec3(32, 0, 58 ), 
         shape: new CANNON.Box(new CANNON.Vec3(10,0.75,4))    
+    }),
+    //BOOTH PILLAR LEFT1
+    new CANNON.Body({
+        mass: 0, // kg
+        position: new CANNON.Vec3(21.5, 0.5, 23.5 ), 
+        shape: new CANNON.Box(new CANNON.Vec3(1.4,1.2,2.4)),   
+        quaternion: new CANNON.Quaternion(quat45.x, quat45.y, quat45.z, quat45.w), 
+    }),
+    //BOOTH PILLAR LEFT2
+    new CANNON.Body({
+        mass: 0, // kg
+        position: new CANNON.Vec3(15.6, 0.5, 29.08 ), 
+        shape: new CANNON.Box(new CANNON.Vec3(2.4,1.2,1.4)),   
+        quaternion: new CANNON.Quaternion(quat45.x, quat45.y, quat45.z, quat45.w), 
+    }),
+    //BOOTH PILLAR RIGHT1
+    new CANNON.Body({
+        mass: 0, // kg
+        position: new CANNON.Vec3(43.5, 0.5, 23.5 ), 
+        shape: new CANNON.Box(new CANNON.Vec3(1.4,1.2,2.4)),   
+        quaternion: new CANNON.Quaternion(quat45.x, quat45.y, quat45.z, quat45.w), 
+    }),
+    //BOOTH PILLAR RIGHT2
+    new CANNON.Body({
+        mass: 0, // kg
+        position: new CANNON.Vec3(47.8, 0.5, 29.08 ), 
+        shape: new CANNON.Box(new CANNON.Vec3(2.4,1.2,1.4)),   
+        quaternion: new CANNON.Quaternion(quat45.x, quat45.y, quat45.z, quat45.w), 
     }),
    ]
