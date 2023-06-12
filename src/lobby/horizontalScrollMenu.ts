@@ -27,8 +27,9 @@ export class HorizontalMenu {
     scrollTarget:Quaternion
     visibleItems:number
     topFrame:Entity
+    analyticParent:Entity
 
-    constructor(_position:Vector3, _rotation:Quaternion){
+    constructor(_position:Vector3, _rotation:Quaternion,_analyticParent:Entity){
         this.spacing = 3.3
         this.angleSpacing = 12
         this.items = []
@@ -36,6 +37,7 @@ export class HorizontalMenu {
         this.clickBoxes = []
         this.radius = 16
         this.visibleItems = 10
+        this.analyticParent = _analyticParent
 
         this.menuRoot = engine.addEntity()
         Transform.create(this.menuRoot, {
@@ -316,6 +318,7 @@ export class HorizontalMenu {
                   scale: Vector3.create(2,2,2)
                 },        
                 "images/rounded_alpha.png",
+                this.analyticParent,
                 events[i]
               ))
             }    
@@ -365,6 +368,7 @@ export class HorizontalMenu {
                 scale: Vector3.create(2,2,2)
               },        
               "images/rounded_alpha.png",
+              this.analyticParent,
               scenes[i]
             ))
             

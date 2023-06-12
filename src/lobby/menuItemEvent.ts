@@ -10,7 +10,7 @@ import { AudioSource, Entity, GltfContainer, InputAction, TextAlignMode, TextSha
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { liveSignShape } from './resources/resources'
 import { _openExternalURL, _teleportTo } from '../back-ports/backPorts'
-import { TrackingElement, trackAction } from '../modules/stats/analyticsComponents'
+import { TrackingElement, generateGUID, getRegisteredAnalyticsEntity, trackAction } from '../modules/stats/analyticsComponents'
 import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES } from '../modules/stats/AnalyticsConfig'
 
 let dummyLiveBadge = engine.addEntity()
@@ -58,6 +58,7 @@ export class EventMenuItem extends MenuItem {
   constructor(
     _transform: TransformType,
     _alphaTexture: string,
+    analyticParent: Entity,
     _event: any
   ) {
     super()
@@ -78,8 +79,11 @@ export class EventMenuItem extends MenuItem {
     
 
     TrackingElement.create(this.itemBox, 
-      {elementType: ANALYTICS_ELEMENTS_TYPES.interactable, 
-       elementId: ANALYTICS_ELEMENTS_IDS.menuEventSlider
+      {
+        guid: generateGUID(),
+        elementType: ANALYTICS_ELEMENTS_TYPES.interactable, 
+        elementId: ANALYTICS_ELEMENTS_IDS.menuEventSlider,
+        parent: analyticParent
     })
 
 
