@@ -65,8 +65,6 @@ export async function sendTrack(trackEvent: string,
   await getSegment().track(trackEvent, doc)
 }
 
-declare function btoa(soruce: string): string
-
 class Segment {
 
   constructor(public readonly segmentKey: string) { }
@@ -101,7 +99,7 @@ class Segment {
       await fetch(`https://api.segment.io/v1/track`, {
         method: 'POST',
         headers: {
-          'authorization': 'Basic ' + btoa(this.segmentKey + ':'),
+          'authorization': 'Basic ' + base64.encode(this.segmentKey + ':'),
           'content-type': 'application/json',
         },
         body: JSON.stringify(data)
