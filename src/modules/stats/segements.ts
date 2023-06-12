@@ -5,6 +5,7 @@ import { getRealm } from "~system/Runtime"
 import { getWorldPosition } from "@dcl-sdk/utils";
 import { log } from "../../back-ports/backPorts";
 import { GenesisData } from "./genesis.data";
+import { base64 } from "../../polyfill/delcares";
 
 const SCENE_ID: string = "genesis_plaza"
 const IN_SECONDS: boolean = false
@@ -31,6 +32,8 @@ export async function sendTrackOld(eventName: string,) {
 export async function sendTrack(trackEvent: string,
   elementType: string,
   elementId: string,
+  rootId: string,
+  parentId: string,
   instance: string,
   event: string,
   durationTime?: number,
@@ -44,7 +47,9 @@ export async function sendTrack(trackEvent: string,
 
   const doc: any = {
     sceneId: SCENE_ID,
-    realm: realm,
+    realm: realm.realmInfo?.realmName,
+    rootSpanId: rootId,
+    parentSpanId: parentId,
     spanId: instance,
     elementType: elementType,
     elementId: elementId,
