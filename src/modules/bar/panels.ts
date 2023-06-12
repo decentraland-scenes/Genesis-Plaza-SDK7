@@ -2,7 +2,7 @@ import { InputAction, Material, MaterialTransparencyMode, MeshCollider, MeshRend
 import { Color3, Quaternion, Vector3 } from "@dcl/sdk/math"
 import { getEvents } from "../../lobby/checkApi"
 import { _teleportTo } from "../../back-ports/backPorts"
-import { TrackingElement, trackAction } from "../stats/analyticsComponents"
+import { TrackingElement, generateGUID, getRegisteredAnalyticsEntity, trackAction } from "../stats/analyticsComponents"
 import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES } from "../stats/AnalyticsConfig"
 
 
@@ -38,8 +38,10 @@ function addPanel(textureUrl:string, alphaTextureUrl:string, _transform:Transfor
   let eventName:string=eventData.name
 
   TrackingElement.create(panel, {
+    guid: generateGUID(),
     elementType: ANALYTICS_ELEMENTS_TYPES.interactable,
     elementId: ANALYTICS_ELEMENTS_IDS.barTvPanel,
+    parent: getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.bar)
   })
 
   pointerEventsSystem.onPointerDown(

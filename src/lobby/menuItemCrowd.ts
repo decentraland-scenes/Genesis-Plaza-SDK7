@@ -10,7 +10,7 @@ import { AudioSource, Entity, GltfContainer, InputAction, TextAlignMode, TextSha
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { _openExternalURL, _teleportTo } from '../back-ports/backPorts'
 import { getImageOrFallback } from '../utils/allowedMediaHelper'
-import { TrackingElement, trackAction } from '../modules/stats/analyticsComponents'
+import { TrackingElement, generateGUID, getRegisteredAnalyticsEntity, trackAction } from '../modules/stats/analyticsComponents'
 import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES } from '../modules/stats/AnalyticsConfig'
 
  
@@ -41,6 +41,7 @@ export class CrowdMenuItem extends MenuItem {
   constructor(
     _transform: TransformType,
     _alphaTexture: string,
+    _analyticParent: Entity,
     _scene: any
   ) {
     super()
@@ -60,8 +61,11 @@ export class CrowdMenuItem extends MenuItem {
     Transform.getMutable(this.itemBox).parent = this.entity
 
     TrackingElement.create(this.itemBox, 
-      {elementType: ANALYTICS_ELEMENTS_TYPES.interactable, 
-       elementId: ANALYTICS_ELEMENTS_IDS.menuItemCrowd
+      {
+        guid: generateGUID(),
+        elementType: ANALYTICS_ELEMENTS_TYPES.interactable, 
+        elementId: ANALYTICS_ELEMENTS_IDS.menuItemCrowd,
+        parent: _analyticParent
     })
 
 
