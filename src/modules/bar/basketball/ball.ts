@@ -10,7 +10,7 @@ import { ballDropSource, ballDropVolume, bounceSource, bounceVolume, chargeThrow
 import { Perimeter } from './perimeter'
 import { moveLineBetween, realDistance } from './utilFunctions'
 import { barCenter } from '../../../lobby/resources/globals'
-import { TrackingElement, trackAction } from '../../stats/analyticsComponents'
+import { TrackingElement, generateGUID, getRegisteredAnalyticsEntity, trackAction } from '../../stats/analyticsComponents'
 import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES } from '../../stats/AnalyticsConfig'
 import { util } from 'protobufjs'
 
@@ -346,8 +346,10 @@ export class PhysicsManager {
     } )
 
     TrackingElement.create(ball, {
+      guid: generateGUID(),
       elementType: ANALYTICS_ELEMENTS_TYPES.interactable,
       elementId: ANALYTICS_ELEMENTS_IDS.basketball,
+      parent: getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.bar)
     })
 
     PointerEvents.create(ball, { pointerEvents: [
