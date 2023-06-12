@@ -70,8 +70,8 @@ getRealm({}).then(
     //const parcelMaxHeight = lobbyHeight//(Math.log((4*5) + 1) * Math.LOG2E) * 20
     Transform.create(cloudSpawnTempPlane,{
       //taken from scene.json spawn to make sure is good spot
-      position: Vector3.create((36.5+26.5)/2, lobbyHeight, (30+26)/2),
-      scale: Vector3.create(30-26,36.5-26.5,.1),
+      position: Vector3.create((36.5+27.5)/2, lobbyHeight, (30+26)/2),
+      scale: Vector3.create(30-26,36.5-27.5,.1),
       rotation: Quaternion.fromEulerDegrees(90,0,90)
     })
     //MeshCollider.setPlane(cloudSpawnTempPlane)
