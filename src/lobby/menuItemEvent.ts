@@ -1,5 +1,5 @@
 import { ThumbnailPlane } from './subItems/thumbnail'
-import { cleanString, monthToString, wordWrap } from './helperFunctions'
+import { cleanString, dateToRemainingTime, monthToString, wordWrap } from './helperFunctions'
 import { AnimatedItem, ProximityScale } from './simpleAnimator'
 import * as resource from './resources/resources'
 import { MenuItem } from './menuItem'
@@ -53,7 +53,9 @@ export class EventMenuItem extends MenuItem {
   coords: Entity  
   timePanel: Entity
   startTime: Entity  
+  remainingTimeRoot:Entity
   event: any
+
 
   constructor(
     _transform: TransformType,
@@ -183,6 +185,22 @@ export class EventMenuItem extends MenuItem {
       VisibilityComponent.getMutable(this.dateMonthRoot).visible = true
       VisibilityComponent.getMutable(this.dateRoot).visible = true
     }
+
+    // remaining time
+    this.remainingTimeRoot = engine.addEntity()
+    Transform.create(this.remainingTimeRoot, {
+      position: Vector3.create(0, -0.6, -0.05),
+      parent: this.dateBG
+    })   
+    VisibilityComponent.create(this.remainingTimeRoot, {visible: true})    
+    TextShape.create(this.remainingTimeRoot, {
+      //text: monthToString(this.date.getMonth()).toUpperCase(),
+      text: dateToRemainingTime(this.event.next_start_at),
+      fontSize:1,
+      textColor: resource.dateMonthColor,      
+      outlineColor: resource.dateMonthColor, 
+      outlineWidth: 0.2     
+    })
 
     AnimatedItem.create(this.entity, {
       wasClicked:false,
@@ -677,7 +695,10 @@ export class EventMenuItem extends MenuItem {
       VisibilityComponent.getMutable(this.dateMonthRoot).visible = true
       VisibilityComponent.getMutable(this.dateRoot).visible = true
     }   
+
+
     
+    VisibilityComponent.getMutable(this.remainingTimeRoot).visible = true
     VisibilityComponent.getMutable(this.title).visible = true
     VisibilityComponent.getMutable(this.detailTextPanel).visible = true
     this.thumbNail.show()
@@ -691,6 +712,7 @@ export class EventMenuItem extends MenuItem {
     VisibilityComponent.getMutable(this.dateRoot).visible = false
     VisibilityComponent.getMutable(this.title).visible = false
     VisibilityComponent.getMutable(this.detailTextPanel).visible = false
+    VisibilityComponent.getMutable(this.remainingTimeRoot).visible = false
     this.thumbNail.hide()
     Transform.getMutable(this.entity).scale = Vector3.Zero()
   }

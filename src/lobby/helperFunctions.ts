@@ -151,3 +151,77 @@ export function monthToString(_monthID:number):string{
   
   return "N/A"
 }
+
+export function dateToRemainingTime(dateStart:string):string{
+
+  let eventStartTime = Date.parse(dateStart)
+  let currentTime = Date.now()
+
+  
+
+
+//complete remaining time in MILLISECONDS
+  let remainingTime = eventStartTime - currentTime
+
+  //complete remaining time in SECONDS
+  let fullSeconds  =  Math.abs(Math.floor(remainingTime / 1000))
+
+  //complete remaining time in HOURS
+  let fullHours = Math.abs(Math.floor(fullSeconds/3600))
+  
+  //complete remaining time in HOURS
+  let fullDays =  Math.abs(Math.floor(fullHours/24))
+  
+  let fractionHour = fullSeconds/3600 - fullHours
+  let leftoverMinutes = Math.floor(fractionHour * 60)
+
+  // console.log("DATE:")
+  // console.log("EVENT START: " + eventStartTime)
+  // console.log("CURRENT TIM: " + Date.now())  
+  // console.log("DIFF HOURS : " + fullHours)  
+  // console.log("FRAC HOURS : " + fractionHour)  
+  // console.log("DAY        : " + fullDays)  
+
+  
+  let finalTime = fullHours
+  let finalUnit = "hrs"
+
+ 
+  if(fullDays > 1){
+    finalTime = Math.abs(fullDays)
+    finalUnit = "days"
+  }
+  
+  if(fullDays == 1){
+    finalTime = Math.abs(fullDays)
+    finalUnit = "day"
+  }  
+
+  if(Math.abs(fullDays) < 1){
+    if(fullHours == 0){
+      finalTime = leftoverMinutes
+      finalUnit = "mins"
+    }
+    if(fullHours == 1){
+      finalTime = Math.abs(fullHours)
+      finalUnit = "hr"
+    }    
+    if(fullHours > 1 ){
+      finalTime = Math.abs(fullHours)
+      finalUnit = "hrs"
+    }
+  }
+  
+    
+      
+  
+
+  let endString = ("in "+ finalTime + " " + finalUnit)
+
+  if( remainingTime < 0){
+    endString = ("started "+ finalTime + " "+ finalUnit + " ago")
+  }
+
+
+  return endString
+}
