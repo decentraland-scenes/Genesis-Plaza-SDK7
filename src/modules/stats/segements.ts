@@ -1,11 +1,13 @@
 import { Transform, engine } from "@dcl/sdk/ecs";
 import { AnalyticsLogLabel, SKIP_ANALYTICS } from "./AnalyticsConfig";
 import { getUserData } from "~system/UserIdentity"
-import { getRealm } from "~system/Runtime"
+import { GetRealmResponse, RealmInfo, getRealm } from "~system/Runtime"
 import { getWorldPosition } from "@dcl-sdk/utils";
 import { log } from "../../back-ports/backPorts";
 import { GenesisData } from "./genesis.data";
 import { base64 } from "../../polyfill/delcares";
+import { GetSceneResponse, getSceneInfo } from "~system/Scene";
+import { SceneMetaData, getAndSetSceneMetaData, getSceneMetadata } from "../../utils/sceneDataHelper";
 
 const SCENE_ID: string = "genesis_plaza"
 const IN_SECONDS: boolean = false
@@ -29,6 +31,9 @@ export async function sendTrackOld(eventName: string,) {
   await getSegment().track(eventName, doc)
 }
 
+//start fetch now so less of a wait
+const sceneInfoPromise = getAndSetSceneMetaData()
+
 export async function sendTrack(trackEvent: string,
   elementType: string,
   elementId: string,
@@ -41,9 +46,20 @@ export async function sendTrack(trackEvent: string,
   selectionDetails?: string) {
 
   console.log(AnalyticsLogLabel, "sendTrack", elementType,elementId,instance,event,durationTime,selection,selectionDetails)
-  const realm = await getRealm({})
+  const realmPromise = getRealm({})
+  
+  await Promise.all([realmPromise, sceneInfoPromise])
+  
+  const realm:GetRealmResponse = (await realmPromise)
+  const sceneInfo:SceneMetaData = getSceneMetadata()
 
-  const worldPos = getWorldPosition(engine.PlayerEntity)
+  //get scene relative position
+  const scenePos = getWorldPosition(engine.PlayerEntity)
+  //now compute world absolute position
+  const worldPos = {...scenePos}
+  //must add base coords to compute abs world pos
+  worldPos.x += (sceneInfo.scene._baseCoords.x*16)
+  worldPos.z += (sceneInfo.scene._baseCoords.y*16)
 
   const doc: any = {
     sceneId: SCENE_ID,
@@ -89,7 +105,7 @@ class Segment {
       context: {
         library: {
           name: 'dcl-segment-gists',
-          version: '0.0.0-development'
+          version: '2.0.0'
         }
       }
     }
