@@ -75,13 +75,12 @@ const uiOutOfBounds = () => (
 
   </UiEntity>
 )
-
-const uiBasketball = () => (
+const uiBasketballScore = () => (
   <UiEntity
     //top level root ui div
     uiTransform={{
-      width: 400,
-      height: 400,
+      width: "20%",
+      height: "30%",
 
       // { top: 4, bottom: 4, left: 4, right: 4 },
       padding: 4,
@@ -91,16 +90,6 @@ const uiBasketball = () => (
       position: { top: '50%', left: '50%' }
     }}
   >
-    
-    <UiEntity
-      // root container for bar and score popups
-      uiTransform={{
-        width: '100%',
-        height: '100%',
-        alignContent: 'center',
-        positionType: 'absolute'
-      }}
-    >
       
       <UiEntity
         // container for SCORE popup
@@ -131,15 +120,45 @@ const uiBasketball = () => (
         />
       </UiEntity>
 
+    </UiEntity>
+ 
+
+)
+const uiBasketballPower = () => (
+  <UiEntity
+    //top level root ui div
+    uiTransform={{
+      width: "20%",
+      height: "30%",
+
+      // { top: 4, bottom: 4, left: 4, right: 4 },
+      padding: 4,
+      alignContent: 'center',
+      display: basketUIVisible,
+      positionType: 'absolute',
+      position: { bottom: '0%', left: '50%' }
+    }}
+  >    
+    <UiEntity
+      // root container for bar
+      uiTransform={{
+        width: '100%',
+        height: '100%',
+        alignContent: 'center',
+        positionType: 'absolute'
+      }}
+    >      
+
       <UiEntity
         // Powerbar container
         uiTransform={{
           width: '100%',
-          height: '128',
+          height: '30%',
+          minHeight:'100',
           alignItems: 'center',
           alignSelf: 'center',
           positionType: 'absolute',
-          position: { left: '-50%', top: '120%' },
+          position: { left: '-50%', top: '50%' },
           display: strengthBarVisible
         }}
         
@@ -172,17 +191,7 @@ const uiBasketball = () => (
 
 
         </UiEntity>
-        <Label
-          // Instructions text for power bar
-          value="        Press and hold       to set throw power"
-          fontSize={20}
-          uiTransform={{ width: '100%', height: '100%', positionType: 'absolute', position: {top: '60%', left: '-5%'}}}
-          uiBackground={{textureMode: 'center',
-          texture: {
-            src: 'images/basketball/lmb_icon.png'
-          }
-        }}
-        />
+        
         
         <UiEntity
           //powerbar scaling bar part
@@ -235,7 +244,17 @@ const uiBasketball = () => (
             }
           }}
         >
-         
+         <Label
+          // Instructions text for power bar
+          value="        Press and hold       to set throw power"
+          fontSize={20}
+          uiTransform={{ width: '100%', height: '100%', positionType: 'absolute', position: {top: '0%', left: '-5%'}}}
+          uiBackground={{textureMode: 'center',
+          texture: {
+            src: 'images/basketball/lmb_icon.png'
+          }
+        }}
+        />
 
 
         </UiEntity>
@@ -278,7 +297,8 @@ const uiComponent = () => [
   NpcUtilsUi(),
   uiBeamMeUp(),
   customNpcUI(),
-  uiBasketball(),
+  uiBasketballPower(),
+  uiBasketballScore(),
   uiOutOfBounds(),
   //uiSpawnCube()
   render(),
