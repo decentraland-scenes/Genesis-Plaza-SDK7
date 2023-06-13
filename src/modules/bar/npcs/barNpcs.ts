@@ -1,6 +1,6 @@
 import * as npcLib from 'dcl-npc-toolkit'
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
-import { aritst1Model, aritst2Model, fashionistModel, navigationForwardSfx, octopusModel } from '../../../lobby/resources/resources'
+import { aishaModelPath, aritst1ModelPath, aritst2ModelPath, dogeModelPath, fashionistModelPath, navigationForwardSfx, octopusModelPath, robModelPath, simoneModelPath } from '../../../lobby/resources/resources'
 import { Billboard, ColliderLayer, Entity, GltfContainer, MeshRenderer, TextShape, Transform, engine } from '@dcl/sdk/ecs'
 import { artistRecommendations, fashionistCommonDialog, fashionistEpicDialog, fashionistMythicDialog, fashionistNoneDialog, getFashionistDialog, getOcotDialog, girlArtistTalk } from './npcDialogs'
 import { rarestItem, rarityLevel } from './rarity'
@@ -52,6 +52,8 @@ export let boyArtist: Entity
 export let girlArtist: Entity
 export let doge: RemoteNpc
 export let simonas: RemoteNpc
+export let rob: RemoteNpc
+export let aisha: RemoteNpc
 
 export function initBarNpcs(): void {
   createOctopusNpc()
@@ -61,6 +63,7 @@ export function initBarNpcs(): void {
   createSimonas()
 }
 
+//#region octopus
 function createOctopusNpc() {
   let position: Vector3 = Vector3.create(160 - coreBuildingOffset.x, 0.2, 141.4 - coreBuildingOffset.z)
 
@@ -71,7 +74,7 @@ function createOctopusNpc() {
     },
     {
       type: npcLib.NPCType.CUSTOM,
-      model: octopusModel,
+      model: octopusModelPath,
       dialogSound: navigationForwardSfx,
       onlyETrigger: true,
       onActivate: () => {
@@ -128,7 +131,9 @@ function createOctopusNpc() {
     }
   )
 }
+//#endregion
 
+//#region  fashionist
 function createFashionistNpc(): Entity {
 
   let position = Vector3.create(162.65 - coreBuildingOffset.x, 0.23, 133.15 - coreBuildingOffset.z)
@@ -137,7 +142,7 @@ function createFashionistNpc(): Entity {
     { position: position },
     {
       type: npcLib.NPCType.CUSTOM,
-      model: fashionistModel,
+      model: fashionistModelPath,
       dialogSound: navigationForwardSfx,
       onlyETrigger: true,
       onActivate: async () => {
@@ -196,8 +201,9 @@ function createFashionistNpc(): Entity {
 
   return fashionist
 }
+//#endregion
 
-
+//#region artistCouple
 function createArtistCouple(): void {
   boyArtist = createBoyArtist()
   girlArtist = createGirlArtist()
@@ -213,7 +219,7 @@ function createBoyArtist(): Entity {
     },
     {
       type: npcLib.NPCType.CUSTOM,
-      model: aritst1Model,
+      model: aritst1ModelPath,
       dialogSound: navigationForwardSfx,
       onlyETrigger: true,
       onActivate: () => {
@@ -251,7 +257,7 @@ function createGirlArtist(): Entity {
     },
     {
       type: npcLib.NPCType.CUSTOM,
-      model: aritst2Model,
+      model: aritst2ModelPath,
       dialogSound: navigationForwardSfx,
       onlyETrigger: true,
       onActivate: () => {
@@ -283,7 +289,11 @@ function createGirlArtist(): Entity {
   npcLib.playAnimation(girl, 'Talk', false)
   return girl
 }
+//#endregion
 
+//AI POWERED NPCs 
+
+//#region doge
 function createDogeNpc(): void {
   let dogePathPoints = [
     Vector3.create(166.7 - coreBuildingOffset.x, 0.24, 163. - coreBuildingOffset.z),
@@ -333,13 +343,21 @@ function createDogeNpc(): void {
       },
       npcData: {
         type: npcLib.NPCType.CUSTOM,
-        model: 'models/core_building/dogeNPC_anim4.glb',
+        model: dogeModelPath,
         onActivate: () => {
           console.log('doge.Ai_NPC activated!')
+
+          console.log(AnalyticsLogLabel, "barNpcs.ts", "Doge")
+          trackAction(doge.entity, "Interact", undefined)
+          trackStart(doge.entity)
+
           connectNpcToLobby(REGISTRY.lobbyScene, doge)
         },
         onWalkAway: () => {
           console.log("NPC", doge.name, 'walk away')
+
+          trackEnd(doge.entity)
+
           closeCustomUI(false)
           hideThinking(doge)
           trtDeactivateNPC(doge)
@@ -384,7 +402,13 @@ function createDogeNpc(): void {
   doge.predefinedQuestions = genericPrefinedQuestions
   REGISTRY.allNPCs.push(doge)
   npcLib.followPath(doge.entity)
+
+  TrackingElement.create(doge.entity, {
+    elementType: ANALYTICS_ELEMENTS_TYPES.npc,
+    elementId: ANALYTICS_ELEMENTS_IDS.doge,
+  })
 }
+//#endregion
 
 function createSimonas() {
   simonas = new RemoteNpc(
@@ -394,16 +418,24 @@ function createSimonas() {
       npcData: {
         type: npcLib.NPCType.CUSTOM,
         model: {
-          src: 'models/core_building/Simone_Anim_Collider.glb', //collider not working for Simone_Anim.glb
+          src: simoneModelPath, //collider not working for Simone_Anim.glb
           invisibleMeshesCollisionMask: ColliderLayer.CL_POINTER | ColliderLayer.CL_PHYSICS,
           visibleMeshesCollisionMask: ColliderLayer.CL_NONE
         },
         onActivate: () => {
           console.log('Simonas.NPC activated!')
+
+          console.log(AnalyticsLogLabel, "barNpcs.ts", "Simone")
+          trackAction(simonas.entity, "Interact", undefined)
+          trackStart(simonas.entity)
+
           connectNpcToLobby(REGISTRY.lobbyScene, simonas)
         },
         onWalkAway: () => {
           console.log("NPC", simonas.name, 'on walked away')
+
+          trackEnd(simonas.entity)
+
           closeCustomUI(false)
           hideThinking(simonas)
           trtDeactivateNPC(simonas)
@@ -443,8 +475,179 @@ function createSimonas() {
   simonas.name = "npc.simone"
   simonas.predefinedQuestions = genericPrefinedQuestions
   REGISTRY.allNPCs.push(simonas)
+
+  TrackingElement.create(simonas.entity, {
+    elementType: ANALYTICS_ELEMENTS_TYPES.npc,
+    elementId: ANALYTICS_ELEMENTS_IDS.simone,
+  })
+}
+//#endregion
+
+/*
+//#region  Rob
+const ROB_NPC_ANIMATIONS: NpcAnimationNameType = {
+  HI: { name: "Hi", duration: 2, autoStart: undefined, portraitPath: "images/portaits/rob/hi1.png"},
+  IDLE: { name: "Idle", duration: 4, autoStart: undefined, portraitPath: "images/portaits/rob/idle1.png"},
+  TALK: { name: "Talking", duration: 2, autoStart: undefined, portraitPath: "images/portaits/rob/talking1.png"},
+  THINKING: { name: "Thinking", duration: 2, autoStart: undefined, portraitPath: "images/portaits/rob/interesting1.png"},
+  LOADING: { name: "Loading", duration: 2, autoStart: undefined, portraitPath: "images/portaits/rob/interesting1.png"},
+  LAUGH: { name: "Laugh", duration: 2, autoStart: undefined, portraitPath: "images/portaits/rob/laughing1.png"},
+  HAPPY: { name: "Happy", duration: 2, autoStart: undefined, portraitPath: "images/portaits/rob/happy1.png"},
+  SAD: { name: "Sad", duration: 2, autoStart: undefined, portraitPath: "images/portaits/rob/sad1.png"},
+  SURPRISE: { name: "Surprise", duration: 2, autoStart: undefined, portraitPath: "images/portaits/rob/surprise1.png"},
 }
 
+function createRob() {
+  rob = new RemoteNpc(
+    { resourceName: "workspaces/genesis_city/characters/" },
+    {
+      transformData: { position: Vector3.create(9, 0, 9), scale: Vector3.create(1, 1, 1) },
+      npcData: {
+        type: npcLib.NPCType.CUSTOM,
+        model: robModelPath,
+        onActivate: () => {
+          console.log('Rob.NPC activated!')
+
+          console.log(AnalyticsLogLabel, "barNpcs.ts", "Rob")
+          trackAction(rob.entity, "Interact", undefined)
+          trackStart(rob.entity)
+
+          connectNpcToLobby(REGISTRY.lobbyScene, rob)
+        },
+        onWalkAway: () => {
+          console.log("NPC", rob.name, 'on walked away')
+
+          trackEnd(rob.entity)
+
+          closeCustomUI(false)
+          hideThinking(rob)
+          trtDeactivateNPC(rob)
+        },
+        portrait:
+        {
+          path: ROB_NPC_ANIMATIONS.IDLE.portraitPath, height: 300, width: 300
+          , offsetX: -100, offsetY: 0
+          , section: { sourceHeight: 256, sourceWidth: 256 }
+        },
+        idleAnim: ROB_NPC_ANIMATIONS.IDLE.name,
+        hoverText: 'Hello',
+        faceUser: true,
+        darkUI: true,
+        coolDownDuration: 3,
+        onlyETrigger: true,
+        reactDistance: 5,
+        continueOnWalkAway: false,
+      }
+    },
+    {
+      npcAnimations: ROB_NPC_ANIMATIONS,
+      thinking: {
+        enabled: true,
+        textEnabled: false,
+        modelPath: 'models/loading-icon.glb',
+        offsetX: 0,
+        offsetY: 2,
+        offsetZ: 0
+      }
+      , onEndOfRemoteInteractionStream: () => {
+        openCustomUI()
+      }
+      , onEndOfInteraction: () => {}
+    }
+  )
+  rob.name = "npc.dclGuide"
+  rob.predefinedQuestions = genericPrefinedQuestions
+  REGISTRY.allNPCs.push(rob)
+
+  TrackingElement.create(rob.entity, {
+    elementType: ANALYTICS_ELEMENTS_TYPES.npc,
+    elementId: ANALYTICS_ELEMENTS_IDS.rob,
+  })
+}
+//#endregion
+
+//#region AIsha
+const AISHA_NPC_ANIMATIONS: NpcAnimationNameType = {
+  HI: { name: "Hi", duration: 2, autoStart: undefined, portraitPath: "images/portaits/aisha/hi1.png"},
+  IDLE: { name: "Idle", duration: 4, autoStart: undefined, portraitPath: "images/portaits/aisha/idle1.png"},
+  TALK: { name: "Talking", duration: 2, autoStart: undefined, portraitPath: "images/portaits/aisha/talking1.png"},
+  THINKING: { name: "Thinking", duration: 2, autoStart: undefined, portraitPath: "images/portaits/aisha/interesting1.png"},
+  LOADING: { name: "Loading", duration: 2, autoStart: undefined, portraitPath: "images/portaits/aisha/interesting1.png"},
+  LAUGH: { name: "Laugh", duration: 2, autoStart: undefined, portraitPath: "images/portaits/aisha/laughing1.png"},
+  HAPPY: { name: "Happy", duration: 2, autoStart: undefined, portraitPath: "images/portaits/aisha/happy1.png"},
+  SAD: { name: "Sad", duration: 2, autoStart: undefined, portraitPath: "images/portaits/aisha/sad1.png"},
+  SURPRISE: { name: "Surprise", duration: 2, autoStart: undefined, portraitPath: "images/portaits/aisha/surprise1.png"},
+}
+
+function createAisha() {
+  aisha = new RemoteNpc(
+    { resourceName: "workspaces/genesis_city/characters/" },
+    {
+      transformData: { position: Vector3.create(3, 0, 3), scale: Vector3.create(1, 1, 1) },
+      npcData: {
+        type: npcLib.NPCType.CUSTOM,
+        model: aishaModelPath,
+        onActivate: () => {
+          console.log('AIsha.NPC activated!')
+
+          console.log(AnalyticsLogLabel, "barNpcs.ts", "AIsha")
+          trackAction(aisha.entity, "Interact", undefined)
+          trackStart(aisha.entity)
+
+          connectNpcToLobby(REGISTRY.lobbyScene, aisha)
+        },
+        onWalkAway: () => {
+          console.log("NPC", aisha.name, 'on walked away')
+
+          trackEnd(aisha.entity)
+
+          closeCustomUI(false)
+          hideThinking(aisha)
+          trtDeactivateNPC(aisha)
+        },
+        portrait:
+        {
+          path: AISHA_NPC_ANIMATIONS.IDLE.portraitPath, height: 300, width: 300
+          , offsetX: -100, offsetY: 0
+          , section: { sourceHeight: 256, sourceWidth: 256 }
+        },
+        idleAnim: AISHA_NPC_ANIMATIONS.IDLE.name,
+        hoverText: 'Hello',
+        faceUser: true,
+        darkUI: true,
+        coolDownDuration: 3,
+        onlyETrigger: true,
+        reactDistance: 5,
+        continueOnWalkAway: false,
+      }
+    },
+    {
+      npcAnimations: AISHA_NPC_ANIMATIONS,
+      thinking: {
+        enabled: true,
+        textEnabled: false,
+        modelPath: 'models/loading-icon.glb',
+        offsetX: 0,
+        offsetY: 2,
+        offsetZ: 0
+      }
+      , onEndOfRemoteInteractionStream: () => {
+        openCustomUI()
+      }
+      , onEndOfInteraction: () => {}
+    }
+  )
+  aisha.name = "npc.dclGuide"
+  aisha.predefinedQuestions = genericPrefinedQuestions
+  REGISTRY.allNPCs.push(aisha)
+
+  TrackingElement.create(aisha.entity, {
+    elementType: ANALYTICS_ELEMENTS_TYPES.npc,
+    elementId: ANALYTICS_ELEMENTS_IDS.aisha,
+  })
+}
+//#endregion
+*/
 
 function RotateFashionist(targetPosition: Vector3) {
   let targetRotation = Quaternion.fromLookAt(
