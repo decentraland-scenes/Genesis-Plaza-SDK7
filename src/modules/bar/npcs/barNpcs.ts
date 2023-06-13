@@ -294,15 +294,6 @@ function createGirlArtist(): Entity {
 //AI POWERED NPCs 
 
 //#region doge
-const DOGE_NPC_ANIMATIONS: NpcAnimationNameType = {
-  IDLE: { name: "Idle", duration: -1 },
-  WALK: { name: "Walk", duration: -1 },
-  TALK: { name: "Talk1", duration: 5 },
-  THINKING: { name: "Thinking", duration: 5 },
-  RUN: { name: "Run", duration: -1 },
-  WAVE: { name: "Wave", duration: 4 + ANIM_TIME_PADD },
-}
-
 function createDogeNpc(): void {
   let dogePathPoints = [
     Vector3.create(166.7 - coreBuildingOffset.x, 0.24, 163. - coreBuildingOffset.z),
@@ -427,7 +418,7 @@ function createSimonas() {
       npcData: {
         type: npcLib.NPCType.CUSTOM,
         model: {
-          src: 'models/core_building/Simone_Anim_Collider.glb', //collider not working for Simone_Anim.glb
+          src: simoneModelPath, //collider not working for Simone_Anim.glb
           invisibleMeshesCollisionMask: ColliderLayer.CL_POINTER | ColliderLayer.CL_PHYSICS,
           visibleMeshesCollisionMask: ColliderLayer.CL_NONE
         },
