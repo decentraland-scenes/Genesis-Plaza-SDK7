@@ -14,6 +14,8 @@ const IN_SECONDS: boolean = false
 
 let segment: Segment
 
+const PARCEL_SIZE = 16
+
 export function getSegment() {
   if (segment) return segment;
 
@@ -26,7 +28,7 @@ export async function sendTrackOld(eventName: string,) {
     sceneId: SCENE_ID,
     playTime: Date.now() - GenesisData.instance().startPlayTime,
     exactPosition: getWorldPosition(engine.PlayerEntity),
-    position: Math.floor(getWorldPosition(engine.PlayerEntity).x / 16) + "," + Math.floor(getWorldPosition(engine.PlayerEntity).z / 16)
+    position: Math.floor(getWorldPosition(engine.PlayerEntity).x / PARCEL_SIZE) + "," + Math.floor(getWorldPosition(engine.PlayerEntity).z / PARCEL_SIZE)
   }
   await getSegment().track(eventName, doc)
 }
@@ -57,9 +59,14 @@ export async function sendTrack(trackEvent: string,
   const scenePos = getWorldPosition(engine.PlayerEntity)
   //now compute world absolute position
   const worldPos = {...scenePos}
+  
   //must add base coords to compute abs world pos
-  worldPos.x += (sceneInfo.scene._baseCoords.x*16)
-  worldPos.z += (sceneInfo.scene._baseCoords.y*16)
+  worldPos.x += (sceneInfo.scene._baseCoords.x*PARCEL_SIZE)
+  worldPos.z += (sceneInfo.scene._baseCoords.y*PARCEL_SIZE)
+
+  //What would happen if tomorrow a proposal to increase the LAND size from 16 to ??? is approved by the DAO?
+  //added insulation will send scenePosition + sceneBase
+  //from there we are insulated from an such change and if needed you can compute the exact coords ourself on the backend
 
   const doc: any = {
     sceneId: SCENE_ID,
@@ -76,7 +83,9 @@ export async function sendTrack(trackEvent: string,
 
     playTime: Date.now() - GenesisData.instance().startPlayTime,
     exactPosition: worldPos,
-    position: Math.floor(worldPos.x / 16) + "," + Math.floor(worldPos.z / 16)
+    scenePosition: scenePos,
+    sceneBaseParcel: sceneInfo.scene.base,
+    position: Math.floor(worldPos.x / PARCEL_SIZE) + "," + Math.floor(worldPos.z / PARCEL_SIZE)
   }
   await getSegment().track(trackEvent, doc)
 }
