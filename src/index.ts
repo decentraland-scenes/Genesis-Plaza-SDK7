@@ -4,7 +4,7 @@ import { addBuildings } from './modules/buildings'
 //import { placeDoors } from './modules/bar/doors'
 import { barPlatforms } from './modules/platforms'
 import { addCloudLobby } from './lobby/cloudLobby'
-import * as allowedMediaHelper from './utils/allowedMediaHelper'
+import * as sceneDataHelper from './utils/sceneDataHelper'
 import { lowerVolume, outOfBar, placeJukeBox, setBarMusicOff, setBarMusicOn } from './modules/bar/jukebox'
 import { addRepeatTrigger } from './modules/Utils'
 import { log } from './back-ports/backPorts'
@@ -36,7 +36,7 @@ export * from '@dcl/sdk'
 const FILE_NAME = 'game'
 
 //load scene metadata
-allowedMediaHelper.getAndSetSceneMetaData()
+sceneDataHelper.getAndSetSceneMetaData()
 
 
 initRegistery()

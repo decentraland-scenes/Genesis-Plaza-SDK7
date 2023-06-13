@@ -13,7 +13,7 @@ import { closeCustomUI, openCustomUI } from '../../../utils/customNpcUi/customUi
 import { NpcAnimationNameType, REGISTRY, trtDeactivateNPC } from '../../../registry'
 import { connectNpcToLobby } from '../../../lobby-scene/lobbyScene'
 import { genericPrefinedQuestions } from '../../../utils/customNpcUi/customUIFunctionality'
-import { TrackingElement, trackAction, trackEnd, trackStart } from '../../stats/analyticsComponents'
+import { TrackingElement, generateGUID, getRegisteredAnalyticsEntity, trackAction, trackEnd, trackStart } from '../../stats/analyticsComponents'
 import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES, AnalyticsLogLabel } from '../../stats/AnalyticsConfig'
 
 const LogTag: string = 'barNpcs'
@@ -104,8 +104,10 @@ function createOctopusNpc() {
   )
 
   TrackingElement.create(octo, {
+    guid: generateGUID(),
     elementType: ANALYTICS_ELEMENTS_TYPES.npc,
     elementId: ANALYTICS_ELEMENTS_IDS.octopus,
+    parent: getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.bar)
   })
 
   utils.triggers.addTrigger(octo,
@@ -186,8 +188,10 @@ function createFashionistNpc(): Entity {
   )
 
   TrackingElement.create(fashionist, {
+    guid: generateGUID(),
     elementType: ANALYTICS_ELEMENTS_TYPES.npc,
     elementId: ANALYTICS_ELEMENTS_IDS.fashionist,
+    parent: getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.bar)
   })
 
   return fashionist
@@ -229,8 +233,10 @@ function createBoyArtist(): Entity {
   )
 
   TrackingElement.create(boy, {
+    guid: generateGUID(),
     elementType: ANALYTICS_ELEMENTS_TYPES.npc,
     elementId: ANALYTICS_ELEMENTS_IDS.boyArtist,
+    parent: getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.bar)
   })
 
   npcLib.playAnimation(boy, 'Talk', false)
@@ -268,8 +274,10 @@ function createGirlArtist(): Entity {
   )
 
   TrackingElement.create(girl, {
+    guid: generateGUID(),
     elementType: ANALYTICS_ELEMENTS_TYPES.npc,
     elementId: ANALYTICS_ELEMENTS_IDS.girlArtist,
+    parent: getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.bar)
   })
 
   npcLib.playAnimation(girl, 'Talk', false)

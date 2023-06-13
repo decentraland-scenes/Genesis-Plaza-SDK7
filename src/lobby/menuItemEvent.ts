@@ -10,7 +10,7 @@ import { AudioSource, Entity, GltfContainer, InputAction, TextAlignMode, TextSha
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { liveSignShape } from './resources/resources'
 import { _openExternalURL, _teleportTo } from '../back-ports/backPorts'
-import { TrackingElement, trackAction } from '../modules/stats/analyticsComponents'
+import { TrackingElement, generateGUID, getRegisteredAnalyticsEntity, trackAction } from '../modules/stats/analyticsComponents'
 import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES } from '../modules/stats/AnalyticsConfig'
 
 let dummyLiveBadge = engine.addEntity()
@@ -60,6 +60,7 @@ export class EventMenuItem extends MenuItem {
   constructor(
     _transform: TransformType,
     _alphaTexture: string,
+    analyticParent: Entity,
     _event: any
   ) {
     super()
@@ -80,8 +81,11 @@ export class EventMenuItem extends MenuItem {
     
 
     TrackingElement.create(this.itemBox, 
-      {elementType: ANALYTICS_ELEMENTS_TYPES.interactable, 
-       elementId: ANALYTICS_ELEMENTS_IDS.menuEventSlider
+      {
+        guid: generateGUID(),
+        elementType: ANALYTICS_ELEMENTS_TYPES.interactable, 
+        elementId: ANALYTICS_ELEMENTS_IDS.menuEventSlider,
+        parent: analyticParent
     })
 
 
@@ -331,14 +335,16 @@ export class EventMenuItem extends MenuItem {
       done: false
     })  
 
-    pointerEventsSystem.onPointerDown(this.coordsPanel,
+    pointerEventsSystem.onPointerDown(
+      {
+        entity:this.coordsPanel,
+        opts: { hoverText: 'GO THERE', button: InputAction.IA_POINTER }
+      },
       (e) => {
         trackAction(this.itemBox, "button_go_there", _event.coordinates[0] + ',' + _event.coordinates[1],_event.name)
         _teleportTo(_event.coordinates[0] , _event.coordinates[1])      
-      },
-      { hoverText: 'GO THERE', button: InputAction.IA_POINTER }
+      }
     )
-    
 
     this.coords = engine.addEntity()
     Transform.create(this.coords,{
@@ -393,26 +399,32 @@ export class EventMenuItem extends MenuItem {
     if (this.live) {
       TextShape.getMutable(this.jumpButtonText).text = 'JUMP IN'
       
-      pointerEventsSystem.onPointerDown(this.jumpInButton,
+      pointerEventsSystem.onPointerDown(
+        {
+          entity:this.jumpInButton,
+          opts: { hoverText: 'JUMP IN', button: InputAction.IA_POINTER }
+        },
         (e) => {
           trackAction(this.itemBox, "button_jump_in", _event.coordinates[0] + ',' + _event.coordinates[1],_event.name)
           _teleportTo(_event.coordinates[0] , _event.coordinates[1])      
-        },
-        { hoverText: 'JUMP IN', button: InputAction.IA_POINTER }
+        }
       )
     } 
     else {
       TextShape.getMutable(this.jumpButtonText).text = 'SIGN UP'
 
-      pointerEventsSystem.onPointerDown(this.jumpInButton,
-        (e) => {
+      pointerEventsSystem.onPointerDown(
+        {
+          entity:this.jumpInButton,
+          opts: { hoverText: 'CHECK EVENT PAGE', button: InputAction.IA_POINTER }
+        },
+        async (e) => {
           const url = 'https://events.decentraland.org/en/?event='
           trackAction(this.itemBox, "button_check_event_page", url, _event.name)
           _openExternalURL(
              url + _event.id
           )    
-        },
-        { hoverText: 'CHECK EVENT PAGE', button: InputAction.IA_POINTER }
+        }
       )
       
     }
@@ -485,17 +497,20 @@ export class EventMenuItem extends MenuItem {
       parent: this.detailTextPanel
     })    
     GltfContainer.create(this.readMoreButton, resource.readMoreBtnShape) 
-
-    pointerEventsSystem.onPointerDown(this.readMoreButton,
+    
+    pointerEventsSystem.onPointerDown(
+      {
+        entity:this.readMoreButton,
+        opts: { hoverText: 'READ MORE', button: InputAction.IA_POINTER }
+      },
       async (e) => {
         const url = 'https://events.decentraland.org/en/?event='
         trackAction(this.itemBox, "button_read_more", url, _event.name)
         _openExternalURL(
           url + _event.id
         )   
-      },
-      { hoverText: 'READ MORE', button: InputAction.IA_POINTER }
-    )    
+      }
+    )
 
     // highlights BG on selection
     this.highlightRays = engine.addEntity()
@@ -542,14 +557,17 @@ export class EventMenuItem extends MenuItem {
 
       //update jump in button
       TextShape.getMutable(this.jumpButtonText).text = 'JUMP IN'
-
-      pointerEventsSystem.onPointerDown(this.jumpInButton,
+     
+      pointerEventsSystem.onPointerDown(
+        {
+          entity:this.jumpInButton,
+          opts: { hoverText: 'JUMP IN', button: InputAction.IA_POINTER }
+        },
         (e) => {
           trackAction(this.itemBox, "button_jump_in", _event.id, (_event.coordinates[0] + ',' + _event.coordinates[1]+":"+_event.name))
-          _teleportTo(_event.coordinates[0] , _event.coordinates[1])      
-        },
-        { hoverText: 'JUMP IN', button: InputAction.IA_POINTER }
-      )      
+          _teleportTo(_event.coordinates[0] , _event.coordinates[1])        
+        }
+      )
       
       Transform.getMutable(this.dateBG).parent = engine.RootEntity
       
@@ -565,17 +583,19 @@ export class EventMenuItem extends MenuItem {
       //update jump in button to sign up button
       TextShape.getMutable(this.jumpButtonText).text = 'SIGN UP'
       
-
-      pointerEventsSystem.onPointerDown(this.jumpInButton,
-        (e) => {
+      pointerEventsSystem.onPointerDown(
+        {
+          entity:this.jumpInButton,
+          opts: { hoverText: 'CHECK EVENT PAGE', button: InputAction.IA_POINTER }
+        },
+        async (e) => {
           const url = 'https://events.decentraland.org/en/?event='
           trackAction(this.itemBox, "button_check_event_page", url, _event.name)
           _openExternalURL(
             url + _event.id
           )     
-        },
-        { hoverText: 'CHECK EVENT PAGE', button: InputAction.IA_POINTER }
-      )          
+        }
+      )
       
       Transform.getMutable(this.liveSign).parent = engine.RootEntity
     }
@@ -601,14 +621,18 @@ export class EventMenuItem extends MenuItem {
 
     //coords
     TextShape.getMutable(this.coords).text = (_event.coordinates[0] + ',' + _event.coordinates[1])
-    
-    pointerEventsSystem.onPointerDown(this.coordsPanel,
+         
+    pointerEventsSystem.onPointerDown(
+      {
+        entity:this.coordsPanel,
+        opts: { hoverText: 'GO THERE', button: InputAction.IA_POINTER }
+      },
       (e) => {
         trackAction(this.itemBox, "button_go_there", _event.id, (_event.coordinates[0] + ',' + _event.coordinates[1]+":"+_event.name))
         _teleportTo(_event.coordinates[0] , _event.coordinates[1])     
-      },
-      { hoverText: 'GO THERE', button: InputAction.IA_POINTER }
-    )      
+      }
+    )
+    
     
     //detail text
     //remove non-UTF-8 characters and wrap
@@ -618,16 +642,20 @@ export class EventMenuItem extends MenuItem {
     TextShape.getMutable(this.detailText).text = '\n\n' + wordWrap(cleanString(_event.description), 70, 11) + '</cspace>'
     
     //details website button (read more)
-    pointerEventsSystem.onPointerDown(this.readMoreButton,
+    pointerEventsSystem.onPointerDown(
+      {
+        entity:this.readMoreButton,
+        opts: { hoverText: 'READ MORE', button: InputAction.IA_POINTER }
+      },
       async (e) => {
         const url = 'https://events.decentraland.org/en/?event='
         trackAction(this.itemBox, "button_read_more", url, _event.name)
         _openExternalURL(
           url + _event.id
         )    
-      },
-      { hoverText: 'READ MORE', button: InputAction.IA_POINTER }
-    )  
+      }
+    )
+    
 
   }
   updateItemTime(){

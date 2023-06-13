@@ -22,6 +22,8 @@ import { whenAllowedMediaHelperReadyAddCallback } from '../utils/allowedMediaHel
 import { HorizontalMenu } from './horizontalScrollMenu'
 import { getRealm,GetRealmResponse } from "~system/Runtime"
 import * as utils from '@dcl-sdk/utils'
+import { getRegisteredAnalyticsEntity } from '../modules/stats/analyticsComponents'
+import { ANALYTICS_ELEMENTS_IDS } from '../modules/stats/AnalyticsConfig'
 //import * as sfx from './resources/sounds'
 //import { insideBar } from 'src/game'
 
@@ -69,8 +71,8 @@ getRealm({}).then(
     //const parcelMaxHeight = lobbyHeight//(Math.log((4*5) + 1) * Math.LOG2E) * 20
     Transform.create(cloudSpawnTempPlane,{
       //taken from scene.json spawn to make sure is good spot
-      position: Vector3.create((36.5+26.5)/2, lobbyHeight, (30+26)/2),
-      scale: Vector3.create(30-26,36.5-26.5,.1),
+      position: Vector3.create((36.5+27.5)/2, lobbyHeight, (30+26)/2),
+      scale: Vector3.create(30-26,36.5-27.5,.1),
       rotation: Quaternion.fromEulerDegrees(90,0,90)
     })
     //MeshCollider.setPlane(cloudSpawnTempPlane)
@@ -123,12 +125,14 @@ getRealm({}).then(
   })
   GltfContainer.create(discordLink, resource.discordShape)
 
-
-  pointerEventsSystem.onPointerDown(discordLink,
+  pointerEventsSystem.onPointerDown(
+    {
+      entity:discordLink,
+      opts: {hoverText: 'Join the Discussion', button: InputAction.IA_POINTER }
+    },
     (e) => {
       _openExternalURL('https://dcl.gg/discord')
-    },
-    { hoverText: 'Join the Discussion', button: InputAction.IA_POINTER }
+    }
   )
 
   let twitterLink = engine.addEntity()
@@ -141,14 +145,16 @@ getRealm({}).then(
   })
 
   GltfContainer.create(twitterLink,resource.twitterShape)
-  pointerEventsSystem.onPointerDown(twitterLink,
-      (e) => {
-        _openExternalURL('https://twitter.com/decentraland')
-      },
-      { hoverText: 'Follow Us!', button: InputAction.IA_POINTER }
-    )
 
-
+  pointerEventsSystem.onPointerDown(
+    {
+      entity:twitterLink,
+      opts: { hoverText: 'Follow Us!', button: InputAction.IA_POINTER }
+    },
+    (e) => {
+      _openExternalURL('https://twitter.com/decentraland')
+    }
+  )
 
   //DIVING SIGN
   let divingSign = engine.addEntity()
@@ -183,10 +189,10 @@ getRealm({}).then(
 
 
   whenAllowedMediaHelperReadyAddCallback(()=>{
-    let eventMenu = new HorizontalMenu( Vector3.create(lobbyCenter.x- coreBuildingOffset.x, lobbyHeight + 1.25  , lobbyCenter.z- coreBuildingOffset.z), Quaternion.fromEulerDegrees(0,-54,0))
+    let eventMenu = new HorizontalMenu( Vector3.create(lobbyCenter.x- coreBuildingOffset.x, lobbyHeight + 1.25  , lobbyCenter.z- coreBuildingOffset.z), Quaternion.fromEulerDegrees(0,-54,0), getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.eventsSlider))
     eventMenu.updateEventsMenu(15)
  
-    let crowdsMenu = new HorizontalMenu( Vector3.create(lobbyCenter.x- coreBuildingOffset.x, lobbyHeight + 3.5 , lobbyCenter.z- coreBuildingOffset.z), Quaternion.fromEulerDegrees(0,-54,0))  
+    let crowdsMenu = new HorizontalMenu( Vector3.create(lobbyCenter.x- coreBuildingOffset.x, lobbyHeight + 3.5 , lobbyCenter.z- coreBuildingOffset.z), Quaternion.fromEulerDegrees(0,-54,0), getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.eventsSlider))  
     crowdsMenu.updateCrowdsMenu(10)
 
     // refresh remaining time displays every minute (local calculation update, no server fetch)
