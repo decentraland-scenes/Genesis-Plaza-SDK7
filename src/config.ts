@@ -59,8 +59,9 @@ export class Config {
   DEBUG_UI_ANNOUNCE_ENABLED = DEBUG_FLAGS[ENV]
 
   DEBUG_SHOW_NPC_PATH = DEBUG_FLAGS[ENV] //if npc path is lit up
-  PATH_DEBUG: boolean = false
+  PATH_DEBUG: boolean = true
   USE_ANY_INPUT: boolean = false
+  EMOTION_DEBUG: boolean = true
 
 
   center!: Vector3
@@ -91,6 +92,7 @@ export function initConfig() {
     console.log("IN_PREVIEW", CONFIG.IN_PREVIEW, val)
     CONFIG.IN_PREVIEW = val || CONFIG.FORCE_PREVIEW_ENABLED
     CONFIG.PATH_DEBUG = CONFIG.IN_PREVIEW && CONFIG.PATH_DEBUG
+    CONFIG.EMOTION_DEBUG = CONFIG.IN_PREVIEW && CONFIG.EMOTION_DEBUG
   })
   return CONFIG
 }

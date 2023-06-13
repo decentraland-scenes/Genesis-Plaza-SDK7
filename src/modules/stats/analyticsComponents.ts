@@ -6,16 +6,51 @@ const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567
 function randomChar(): string {
   return characters.charAt(Math.floor(Math.random() * characters.length))
 }
-function generateGUID(): string {
+export function generateGUID(): string {
   return ([...Array(36)].map(() => randomChar()).join(''))
 }
 
+
+export const ANALYTIC_ENTITY_REGISTRY:Record<string,Entity> = {
+
+}
+
+export function registerAnalyticsEntity(ent:Entity){
+  const key = TrackingElement.getOrNull(ent)?.elementId
+  ANALYTIC_ENTITY_REGISTRY[ key ] = ent
+}
+export function getRegisteredAnalyticsEntity(key:string){
+  return ANALYTIC_ENTITY_REGISTRY[ key ]
+}
+
+const ROOT_GUID = generateGUID()
+
+export function getParentGuid(trackingElement: TrackingElementType){
+  //TODO recursive look for tracking parent 
+  if(trackingElement && trackingElement.parent){
+    return TrackingElement.getOrNull(trackingElement.parent)?.guid
+  }
+  //default is root
+  return ROOT_GUID
+}
+
+export type TrackingElementType={
+    guid: string,
+    elementType: string,
+    elementId: string,
+    parent: Entity,
+    startTime: number
+    isStarted: boolean
+}
+
+
 export const TrackingElement = engine.defineComponent(
-  "trackingElement",
+  "analytics.trackingElement",
   {
     guid: Schemas.String,
     elementType: Schemas.String,
     elementId: Schemas.String,
+    parent: Schemas.Entity,
     startTime: Schemas.Number,
     isStarted: Schemas.Boolean,
   })
@@ -38,6 +73,8 @@ export function trackStart(entity: Entity, inTrackingKey?: string, event?: strin
     trackingKey,
     trackingElement.elementType,
     trackingElement.elementId,
+    ROOT_GUID,
+    getParentGuid(trackingElement as TrackingElementType),
     trackingElement.guid,
     eventKey,
     undefined,
@@ -55,6 +92,8 @@ export function trackAction(entity: Entity, eventKey: string, selection?: string
     ANALYTICS_EVENT_KEYS.scene_element_event,
     trackingElement.elementType,
     trackingElement.elementId,
+    ROOT_GUID,
+    getParentGuid(trackingElement as TrackingElementType),
     trackingElement.guid,
     eventKey,
     undefined,
@@ -77,6 +116,8 @@ export function trackEnd(entity: Entity, inTrackingKey?: string, event?: string)
     trackingKey,
     trackingElement.elementType,
     trackingElement.elementId,
+    ROOT_GUID,
+    getParentGuid(trackingElement as TrackingElementType),
     trackingElement.guid,
     eventKey,
     trackingElement.startTime,

@@ -1,7 +1,7 @@
 import * as utils from '@dcl-sdk/utils'
 import { Entity, Transform, engine } from "@dcl/sdk/ecs"
 import { Color3, Vector3 } from "@dcl/sdk/math"
-import { TrackingElement, trackEnd, trackStart } from "./modules/stats/analyticsComponents"
+import { TrackingElement, generateGUID, getRegisteredAnalyticsEntity, registerAnalyticsEntity, trackEnd, trackStart } from "./modules/stats/analyticsComponents"
 import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES, AnalyticsLogLabel } from "./modules/stats/AnalyticsConfig"
 import { TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, coreBuildingOffset, lobbyCenter, lobbyHeight } from './lobby/resources/globals'
 
@@ -17,9 +17,11 @@ export function addAnalytics() {
   Transform.create(cloudAnalyticsTrigger, {})
 
   TrackingElement.create(cloudAnalyticsTrigger, {
+    guid: generateGUID(),
     elementType: ANALYTICS_ELEMENTS_TYPES.region,
     elementId: ANALYTICS_ELEMENTS_IDS.cloud,
   })
+  registerAnalyticsEntity(cloudAnalyticsTrigger)
 
   utils.triggers.addTrigger(cloudAnalyticsTrigger, TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, utils.LAYER_1,  
     [{type: "box", position: cloudAnalyticsTriggerPosition, scale: cloudAnalyticsTriggerScale}],
@@ -42,9 +44,12 @@ export function addAnalytics() {
   Transform.create(sliderInCloudAnalyticsTrigger, {})
 
   TrackingElement.create(sliderInCloudAnalyticsTrigger, {
+    guid: generateGUID(),
     elementType: ANALYTICS_ELEMENTS_TYPES.region,
     elementId: ANALYTICS_ELEMENTS_IDS.eventsSlider,
+    parent: getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.cloud)
   })
+  registerAnalyticsEntity(sliderInCloudAnalyticsTrigger)
 
   utils.triggers.addTrigger(sliderInCloudAnalyticsTrigger, TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, utils.LAYER_1,  
     [{type: "box", position: sliderInCloudAnalyticsTriggerPosition, scale: sliderInCloudAnalyticsTriggerScale}],
@@ -67,9 +72,11 @@ export function addAnalytics() {
   Transform.create(barAnalyticsTrigger, {})
 
   TrackingElement.create(barAnalyticsTrigger, {
+    guid: generateGUID(),
     elementType: ANALYTICS_ELEMENTS_TYPES.region,
     elementId: ANALYTICS_ELEMENTS_IDS.bar,
   })
+  registerAnalyticsEntity(barAnalyticsTrigger)
 
   utils.triggers.addTrigger(barAnalyticsTrigger, TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, utils.LAYER_1,  
     [{type: "box", position: barAnalyticsTriggerPosition, scale: barAnalyticsTriggerScale}],
@@ -96,8 +103,10 @@ export function addAnalytics() {
   Transform.create(secondFloorAnalyticsTrigger, {})
 
   TrackingElement.create(secondFloorAnalyticsTrigger, {
+    guid: generateGUID(),
     elementType: ANALYTICS_ELEMENTS_TYPES.region,
     elementId: ANALYTICS_ELEMENTS_IDS.secondFloor,
+    parent: getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.bar)
   })
 
   utils.triggers.addTrigger(secondFloorAnalyticsTrigger, TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, utils.LAYER_1,  

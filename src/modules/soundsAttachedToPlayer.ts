@@ -1,7 +1,7 @@
 import { AudioSource, AudioStream, CameraType, Entity, PBAudioSource, Transform, engine } from "@dcl/sdk/ecs";
 import { AudioSourceAttachedToPlayer, PBAudioSourceAttachedToPlayer } from "../components";
 import { onCameraModeChangedObservable } from "../back-ports/onCameraModeChangedObservable";
-
+import * as utils from '@dcl-sdk/utils'
 
 //if AudioSourceAttachedToPlayer.firstPersonVolume not set will take  AudioSourceAttachedToPlayer.thirdPersonVolume and drop by this much
 export const FIRST_PERSON_VOLUME_ADJ=-.075
@@ -20,7 +20,7 @@ export function applyAudioStreamWorkAround(type:'enter'|'exit'){
   }
 } 
  
-function applyAudioStreamWorkaroundToEnt(type: string, ent: Entity, audioAttachedToPlayerReadOnly:PBAudioSourceAttachedToPlayer) {
+function applyAudioStreamWorkaroundToEnt(type: string, ent: Entity, audioAttachedToPlayerReadOnly:PBAudioSourceAttachedToPlayer,_removedAudio?:PBAudioSource) {
   if (type === 'enter') {
     if (AudioSource.has(ent)) {
       console.log("applyAudioStreamWorkAround", "WARN already audio", ent, audioAttachedToPlayerReadOnly);
@@ -45,7 +45,12 @@ function applyAudioStreamWorkaroundToEnt(type: string, ent: Entity, audioAttache
       console.log("applyAudioStreamWorkAround", "removed audio, stored for later", ent, audioAttachedToPlayerReadOnly);
       SOUNDS_ATTACHED_TO_PLAYER_STORAGE.set(audioAttachedToPlayerReadOnly.id, removedAudio);
     } else {
-      console.log("applyAudioStreamWorkAround", "no audio to remove", ent, audioAttachedToPlayerReadOnly);
+      if(_removedAudio){
+        console.log("applyAudioStreamWorkAround", "provided audio, stored for later", ent, audioAttachedToPlayerReadOnly);
+        SOUNDS_ATTACHED_TO_PLAYER_STORAGE.set(audioAttachedToPlayerReadOnly.id, _removedAudio);
+      }else{
+        console.log("applyAudioStreamWorkAround", "no audio to remove", ent, audioAttachedToPlayerReadOnly);
+      }
     }
 
   }
@@ -72,10 +77,30 @@ export function setAudioSourceAttachedToPlayerPlaying(entity:Entity,play:boolean
   }
 }
 
-export function addAudioSourceAttachedToPlayer(entity:Entity,audioAttachedToPlayer:PBAudioSourceAttachedToPlayer){
+export function addAudioSourceAttachedToPlayer(entity:Entity,audioAttachedToPlayer:PBAudioSourceAttachedToPlayer, audioSource?:PBAudioSource){
   AudioSourceAttachedToPlayer.create(entity,audioAttachedToPlayer)
-  //WORKAROUND only add when playing :(
-  applyAudioStreamWorkaroundToEnt('exit',entity,audioAttachedToPlayer)
+
+  //create now???
+  if(audioSource && audioSource.playing){
+    AudioSource.create(entity, audioSource)
+  }else{
+    //workaround on workarounds
+    //TODO attach it to an entity far away with volume 0.1 so it gets downloaded, then delete it
+    
+    const tempEnt = engine.addEntity()
+    const copy = {...audioSource}
+    copy.playing = false
+    copy.volume = .001//quiet
+    AudioSource.create(entity, audioSource)
+    utils.timers.setTimeout(()=>{
+      //delete entity, just wanted it downloaded
+      //console.log("addAudioSourceAttachedToPlayer","deleting tempEnt",tempEnt)
+      engine.removeEntity(tempEnt)
+    },500)
+
+    //WORKAROUND only add when playing :(
+    applyAudioStreamWorkaroundToEnt('exit',entity,audioAttachedToPlayer,audioSource)
+  }
 }
 
 //CURRENT BUG - if currently playing and change volume sound resets :(
