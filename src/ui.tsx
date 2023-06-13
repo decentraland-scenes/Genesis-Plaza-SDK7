@@ -13,10 +13,13 @@ let timeToBeamUp: number = 3
 let scoreUIVisible: DisplayType = 'none'
 let basketUIVisible: DisplayType = 'none'
 let outOfBoundsVisible: DisplayType = 'none'
+let outOfBoundsText:string = "Ball out of bounds"
 let strengthBarVisible: DisplayType = 'none'
+let strengthAlpha: Color4 = Color4.fromInts(0, 255 ,20 , 200)
+let powerHightlightVisible: DisplayType = 'none'
 let strengthValue: PositionUnit = '30%'
 let shake: number = 0
-const originalPos: PositionUnit = '120%'
+const originalPos = 50
 let shakePos: PositionUnit = '50%'
 let isScoreEnabled = false
 let scorePositionX: PositionUnit = '0%'
@@ -44,13 +47,13 @@ const uiOutOfBounds = () => (
       alignContent: 'center',
       display: outOfBoundsVisible,
       positionType: 'absolute',
-      position: { top: '50%', left: '50%' }
+      position: { top: shakePos, left: shakePos }
     }}
   >
 
     <Label
       // OUT OF BOUNDS MESSAGE
-      value="Ball out of bounds"
+      value = {outOfBoundsText}
       fontSize={32}
       textAlign='middle-center'
       uiTransform={{ width: '100%', height: '30%', positionType: 'absolute', position: {left: '-50%'}}}
@@ -65,19 +68,19 @@ const uiOutOfBounds = () => (
           left: 0.49,
           right: 0.49
         }
+        
       }}
     
     />
 
   </UiEntity>
 )
-
-const uiBasketball = () => (
+const uiBasketballScore = () => (
   <UiEntity
     //top level root ui div
     uiTransform={{
-      width: 400,
-      height: 400,
+      width: "20%",
+      height: "30%",
 
       // { top: 4, bottom: 4, left: 4, right: 4 },
       padding: 4,
@@ -87,16 +90,6 @@ const uiBasketball = () => (
       position: { top: '50%', left: '50%' }
     }}
   >
-    
-    <UiEntity
-      // root container for bar and score popups
-      uiTransform={{
-        width: '100%',
-        height: '100%',
-        alignContent: 'center',
-        positionType: 'absolute'
-      }}
-    >
       
       <UiEntity
         // container for SCORE popup
@@ -127,35 +120,84 @@ const uiBasketball = () => (
         />
       </UiEntity>
 
+    </UiEntity>
+ 
+
+)
+const uiBasketballPower = () => (
+  <UiEntity
+    //top level root ui div
+    uiTransform={{
+      width: "20%",
+      height: "30%",
+
+      // { top: 4, bottom: 4, left: 4, right: 4 },
+      padding: 4,
+      alignContent: 'center',
+      display: basketUIVisible,
+      positionType: 'absolute',
+      position: { bottom: '0%', left: '50%' }
+    }}
+  >    
+    <UiEntity
+      // root container for bar
+      uiTransform={{
+        width: '100%',
+        height: '100%',
+        alignContent: 'center',
+        positionType: 'absolute'
+      }}
+    >      
+
       <UiEntity
         // Powerbar container
         uiTransform={{
           width: '100%',
-          height: '128',
+          height: '30%',
+          minHeight:'100',
           alignItems: 'center',
           alignSelf: 'center',
           positionType: 'absolute',
-          position: { left: '-50%', top: '120%' },
+          position: { left: '-50%', top: '50%' },
           display: strengthBarVisible
         }}
+        
       >
-        <Label
-          // Instructions text for power bar
-          value="        Press and hold       to set throw power"
-          fontSize={20}
-          uiTransform={{ width: '100%', height: '100%', positionType: 'absolute', position: {top: '55%', left: '-5%'}}}
-          uiBackground={{textureMode: 'center',
-          texture: {
-            src: 'images/basketball/lmb_icon.png'
-          }
-        }}
-        />
+        <UiEntity
+          //powerbar highlight
+          uiTransform={{
+            width: '100%',
+            height: '100%',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            alignSelf: 'center',
+            positionType: 'absolute',
+            display: powerHightlightVisible
+          }}
+          uiBackground={{
+            textureMode: 'nine-slices',
+            texture: {
+              src: 'images/basketball/bar_bg.png'
+            },
+            textureSlices: {
+              top: 0.49,
+              bottom: 0.49,
+              left: 0.49,
+              right: 0.49
+            }
+          }}
+        >    
+
+
+        </UiEntity>
+        
         
         <UiEntity
           //powerbar scaling bar part
           uiTransform={{
             width: strengthValue ,
-            height: '90%' ,
+            height: '100%' ,
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -171,7 +213,8 @@ const uiBasketball = () => (
               bottom: 0.49,
               left: 0.49,
               right: 0.49
-            }
+            },
+              color:  strengthAlpha
           }}
         >
           
@@ -181,7 +224,7 @@ const uiBasketball = () => (
           //powerbar frame image
           uiTransform={{
             width: '100%',
-            height: '90%',
+            height: '100%',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -201,12 +244,16 @@ const uiBasketball = () => (
             }
           }}
         >
-          <Label
+         <Label
           // Instructions text for power bar
-          value = ""
+          value="        Press and hold       to set throw power"
           fontSize={20}
-          uiTransform={{ width: '100%', height: '100%', positionType: 'absolute', position: {top: '10%'}}}          
-        
+          uiTransform={{ width: '100%', height: '100%', positionType: 'absolute', position: {top: '0%', left: '-5%'}}}
+          uiBackground={{textureMode: 'center',
+          texture: {
+            src: 'images/basketball/lmb_icon.png'
+          }
+        }}
         />
 
 
@@ -250,7 +297,8 @@ const uiComponent = () => [
   NpcUtilsUi(),
   uiBeamMeUp(),
   customNpcUI(),
-  uiBasketball(),
+  uiBasketballPower(),
+  uiBasketballScore(),
   uiOutOfBounds(),
   //uiSpawnCube()
   render(),
@@ -269,16 +317,24 @@ export function displayBasketballUI() {
 export function hideBasketballUI() {
   basketUIVisible = 'none'
 }
-
+// STRENGTH BAR SETTINGS
 export function showStrenghtBar() {
   strengthBarVisible = 'flex'
 }
 export function hideStrenghtBar() {
   strengthBarVisible = 'none'
 }
+export function showBarHighlight() {
+  powerHightlightVisible = 'flex'
+}
+export function hideBarHighlight() {
+  powerHightlightVisible = 'none'
+}
 // OOB UI
-export function showOOB() {
+export function showOOB(text:string) {
   outOfBoundsVisible = 'flex'
+  outOfBoundsText = text
+  elapsedTime = 0
 }
 export function hideOOB() {
   outOfBoundsVisible = 'none'
@@ -298,13 +354,24 @@ export function hideScore() {
 export function setStrengthBar(value: number) {
   strengthValue = ((0.0+ value) * 100 + '%') as PositionUnit
   shake = value * 20 
+  strengthAlpha  = Color4.fromInts(value *255, 255 - value * 200,20 , 200 + value *55)
 }
 
 let elapsedTime = 0
 
-// UI SHAKE
-engine.addSystem((dt: number) => {
-  shakePos = (originalPos + Math.random() * shake) as PositionUnit
+// UI SHAKE FOR OUT OF BOUNDS POPUP
+engine.addSystem((dt: number) => { 
+
+  if(elapsedTime < 0.4){
+    elapsedTime +=dt
+    let shakeSize = originalPos + Math.random() * 30*dt * (0.4-elapsedTime)
+    shakePos = shakeSize + "%" as PositionUnit
+  }
+  else{
+    shakePos = '50%'
+  }
+  
+  //console.log("SHAKE: " + shakePos )
 })
 
 let factor = 0

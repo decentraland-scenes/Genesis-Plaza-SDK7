@@ -24,6 +24,19 @@ const ADMIN_RIGHTS_ANYONE: Record<string, string[]> = {
   "prd": ["YOU-WALLET-HERE", "any"]
 }
 
+const PATH_DEBUG: Record<string, boolean> = {
+  "local": true,
+  "dev": true,
+  "stg": false,
+  "prd": false
+}
+const EMOTION_DEBUG: Record<string, boolean> = {
+  "local": true,
+  "dev": true,
+  "stg": false,
+  "prd": false
+}
+
 
 const ParcelCountX: number = 1
 const ParcelCountZ: number = 1
@@ -51,7 +64,7 @@ export class Config {
   COLYSEUS_HTTP_ENDPOINT = "see #initForEnv"; // prod environment
 
   IN_PREVIEW = false
-  FORCE_PREVIEW_ENABLED = true
+  FORCE_PREVIEW_ENABLED = false
 
   DEBUG_ACTIVE_SCENE_TRIGGER_ENABLED = DEBUG_FLAGS[ENV]
 
@@ -59,9 +72,9 @@ export class Config {
   DEBUG_UI_ANNOUNCE_ENABLED = DEBUG_FLAGS[ENV]
 
   DEBUG_SHOW_NPC_PATH = DEBUG_FLAGS[ENV] //if npc path is lit up
-  PATH_DEBUG: boolean = false
+  PATH_DEBUG: boolean = PATH_DEBUG[ENV]
   USE_ANY_INPUT: boolean = false
-  EMOTION_DEBUG: boolean = false
+  EMOTION_DEBUG: boolean = EMOTION_DEBUG[ENV]
 
 
   center!: Vector3

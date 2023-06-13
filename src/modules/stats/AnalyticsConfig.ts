@@ -1,4 +1,4 @@
-export const SKIP_ANALYTICS: boolean = true
+export const SKIP_ANALYTICS: boolean = false
 export const AnalyticsLogLabel: string = "AnalyticLogs"
 
 export const ANALYTICS_EVENT_KEYS = {
@@ -27,8 +27,11 @@ export const ANALYTICS_ELEMENTS_IDS = {
   auditorium: "auditorium",
   shell: "shell",
   tradingCenter: "tradingCenter",
-  doge: "doge",
   octopus: "octopus",
+  doge: "doge",
+  simone: "simone",
+  rob: "rob",
+  aisha: "aisha",
   fashionist: "fashionist",
   boyArtist : "boyArtist",
   girlArtist : "girlArtist",
@@ -38,6 +41,8 @@ export const ANALYTICS_ELEMENTS_IDS = {
   jukeBox: "jukeBox",
   beerMug: "beerMug",
   eventsSlider: "eventsSlider",
+  basketball:"basketball",
+  barTvPanel:"barTvPanel",
 }
 
 export const ANALYTICS_GENERIC_EVENTS = {
