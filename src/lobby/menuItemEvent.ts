@@ -1,5 +1,5 @@
 import { ThumbnailPlane } from './subItems/thumbnail'
-import { cleanString, monthToString, wordWrap } from './helperFunctions'
+import { cleanString, dateToRemainingTime, eventIsSoon, monthToString, wordWrap } from './helperFunctions'
 import { AnimatedItem, ProximityScale } from './simpleAnimator'
 import * as resource from './resources/resources'
 import { MenuItem } from './menuItem'
@@ -53,7 +53,9 @@ export class EventMenuItem extends MenuItem {
   coords: Entity  
   timePanel: Entity
   startTime: Entity  
+  remainingTimeRoot:Entity
   event: any
+
 
   constructor(
     _transform: TransformType,
@@ -188,6 +190,44 @@ export class EventMenuItem extends MenuItem {
       VisibilityComponent.getMutable(this.dateRoot).visible = true
     }
 
+    // remaining time
+    this.remainingTimeRoot = engine.addEntity()
+    Transform.create(this.remainingTimeRoot, {
+      position: Vector3.create(0, -0.65, 0.05),
+      scale: Vector3.create(1.2, 1.2, 1.5),
+      parent: this.dateBG
+    })   
+    GltfContainer.create(this.remainingTimeRoot, resource.remainingBGShape)
+    VisibilityComponent.create(this.remainingTimeRoot, {visible: true})   
+
+    TextShape.create(this.remainingTimeRoot, {
+      //text: monthToString(this.date.getMonth()).toUpperCase(),
+      text: dateToRemainingTime(this.event.next_start_at),
+      fontSize:1,
+      textColor: resource.remainingWhite,      
+      outlineColor: resource.remainingWhite, 
+      outlineWidth: 0.2     
+    })
+
+    if( eventIsSoon(this.event.next_start_at)){
+      let textMutable = TextShape.getMutable(this.remainingTimeRoot)
+      textMutable.textColor = resource.remainingRed     
+      textMutable.outlineColor= resource.remainingRed 
+    }
+
+    AnimatedItem.create(this.remainingTimeRoot, {
+      wasClicked:false,
+      isHighlighted:false,
+      defaultPosition: Vector3.create(0, -0.65, 0.05),
+      highlightPosition: Vector3.create(0, -0.65, -0.05),
+      defaultScale: Vector3.create(1.0, 1.0, 1.5),
+      highlightScale: Vector3.create(1.6, 1.6, 1.5),
+      animFraction: 0,
+      animVeclocity: 0,
+      speed: 0.5,
+      done: false
+    })    
+
     AnimatedItem.create(this.entity, {
       wasClicked:false,
       isHighlighted:false,
@@ -215,18 +255,18 @@ export class EventMenuItem extends MenuItem {
     this.timePanel = engine.addEntity()
     Transform.create(this.timePanel, {
       position: Vector3.create(-0.4, 0, -0.2),
-      rotation: Quaternion.fromEulerDegrees(0, -30, 0),
-      parent: this.detailsRoot
+      rotation: Quaternion.fromEulerDegrees(0, 0, 0),
+      parent: this.remainingTimeRoot
     })
     GltfContainer.createOrReplace(this.timePanel, resource.timePanelShape)    
 
     AnimatedItem.create(this.timePanel, {
       wasClicked:false,
       isHighlighted:false,
-      defaultPosition: Vector3.create(-0.7, 0.25, 0.1),
-      highlightPosition: Vector3.create(-1.1, 0.25, -0.2),
+      defaultPosition: Vector3.create(0, 0.0, 0.1),
+      highlightPosition: Vector3.create(-0.8, 0.4, 0.15),
       defaultScale: Vector3.create(0, 0, 0),
-      highlightScale:  Vector3.create(1, 1, 1),
+      highlightScale:  Vector3.create(1, 1, 0.9),
       animFraction: 0,
       animVeclocity: 0,
       speed: 0.5,
@@ -240,7 +280,9 @@ export class EventMenuItem extends MenuItem {
       parent: this.timePanel
     })
     TextShape.create(this.startTime, {
-      text: _event.next_start_at.substring(11, 16) + '\nUTC'
+      text: _event.next_start_at.substring(11, 16) + '\nUTC',
+      outlineColor: resource.remainingWhite,
+      outlineWidth: 0.1
 
     })
     
@@ -616,6 +658,23 @@ export class EventMenuItem extends MenuItem {
     
 
   }
+  updateItemTime(){
+
+    TextShape.createOrReplace(this.remainingTimeRoot, {
+      //text: monthToString(this.date.getMonth()).toUpperCase(),
+      text: dateToRemainingTime(this.event.next_start_at),
+      fontSize:1,
+      textColor: resource.remainingWhite,      
+      outlineColor: resource.remainingWhite, 
+      outlineWidth: 0.2     
+    })
+
+    if( eventIsSoon(this.event.next_start_at) ){
+      let textMutable = TextShape.getMutable(this.remainingTimeRoot)
+      textMutable.textColor = resource.remainingRed     
+      textMutable.outlineColor= resource.remainingRed 
+    }
+  }
 
   select(_silent:boolean) {
 
@@ -625,6 +684,7 @@ export class EventMenuItem extends MenuItem {
     let highlightRaysInfo = AnimatedItem.getMutable(this.highlightRays)
     let coordsPanelInfo = AnimatedItem.getMutable(this.coordsPanel)
     let timePanelInfo = AnimatedItem.getMutable(this.timePanel)
+    let remainingTimeInfo = AnimatedItem.getMutable(this.remainingTimeRoot)
 
     if (!this.selected) {
       
@@ -654,6 +714,9 @@ export class EventMenuItem extends MenuItem {
 
       timePanelInfo.isHighlighted = true
       timePanelInfo.done = false      
+
+      remainingTimeInfo.isHighlighted = true
+      remainingTimeInfo.done = false      
     }
   }
 
@@ -671,6 +734,7 @@ export class EventMenuItem extends MenuItem {
     let highlightRaysInfo = AnimatedItem.getMutable(this.highlightRays)
     let coordsPanelInfo = AnimatedItem.getMutable(this.coordsPanel)
     let timePanelInfo = AnimatedItem.getMutable(this.timePanel)
+    let remainingTimeInfo = AnimatedItem.getMutable(this.remainingTimeRoot)
 
     rootInfo.isHighlighted = false
     rootInfo.done = false
@@ -690,6 +754,9 @@ export class EventMenuItem extends MenuItem {
     timePanelInfo.isHighlighted = false
     timePanelInfo.done = false  
 
+    remainingTimeInfo.isHighlighted = false
+    remainingTimeInfo.done = false  
+
     // if(!_silent){
     //     sfx.menuDeselectSource.playOnce()
     // }
@@ -705,7 +772,10 @@ export class EventMenuItem extends MenuItem {
       VisibilityComponent.getMutable(this.dateMonthRoot).visible = true
       VisibilityComponent.getMutable(this.dateRoot).visible = true
     }   
+
+
     
+    VisibilityComponent.getMutable(this.remainingTimeRoot).visible = true
     VisibilityComponent.getMutable(this.title).visible = true
     VisibilityComponent.getMutable(this.detailTextPanel).visible = true
     this.thumbNail.show()
@@ -719,6 +789,7 @@ export class EventMenuItem extends MenuItem {
     VisibilityComponent.getMutable(this.dateRoot).visible = false
     VisibilityComponent.getMutable(this.title).visible = false
     VisibilityComponent.getMutable(this.detailTextPanel).visible = false
+    VisibilityComponent.getMutable(this.remainingTimeRoot).visible = false
     this.thumbNail.hide()
     Transform.getMutable(this.entity).scale = Vector3.Zero()
   }
