@@ -296,6 +296,12 @@ export class HorizontalMenu {
 
         
     }
+
+    async updateEventsTimes(){
+      for(let i=0; i < this.items.length; i++){
+        this.items[i].updateItemTime()
+      }
+    }
     
     async updateEventsMenu(_count:number){
 
