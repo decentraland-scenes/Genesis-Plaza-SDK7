@@ -19,6 +19,9 @@ export class MenuItem {
     updateItemInfo(_info:any){
 
     }
+    updateItemTime(){
+        
+    }
            
     select(_silent:boolean){   
         this.selected = true 
