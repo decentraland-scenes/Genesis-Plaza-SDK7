@@ -174,17 +174,9 @@ export function dateToRemainingTime(dateStart:string):string{
   
   let fractionHour = fullSeconds/3600 - fullHours
   let leftoverMinutes = Math.floor(fractionHour * 60)
-
-  // console.log("DATE:")
-  // console.log("EVENT START: " + eventStartTime)
-  // console.log("CURRENT TIM: " + Date.now())  
-  // console.log("DIFF HOURS : " + fullHours)  
-  // console.log("FRAC HOURS : " + fractionHour)  
-  // console.log("DAY        : " + fullDays)  
-
   
   let finalTime = fullHours
-  let finalUnit = "hrs"
+  let finalUnit = "hours"
 
  
   if(fullDays > 1){
@@ -204,11 +196,11 @@ export function dateToRemainingTime(dateStart:string):string{
     }
     if(fullHours == 1){
       finalTime = Math.abs(fullHours)
-      finalUnit = "hr"
+      finalUnit = "hour"
     }    
     if(fullHours > 1 ){
       finalTime = Math.abs(fullHours)
-      finalUnit = "hrs"
+      finalUnit = "hours"
     }
   }
   
@@ -216,12 +208,34 @@ export function dateToRemainingTime(dateStart:string):string{
       
   
 
-  let endString = ("in "+ finalTime + " " + finalUnit)
+  let endString = ("Starts in "+ finalTime + " " + finalUnit)
 
   if( remainingTime < 0){
-    endString = ("started "+ finalTime + " "+ finalUnit + " ago")
+    endString = ("Started "+ finalTime + " "+ finalUnit + " ago")
   }
 
 
   return endString
+}
+
+export function eventIsSoon(dateStart:string):boolean{
+
+  let eventStartTime = Date.parse(dateStart)
+  let currentTime = Date.now()
+
+  //complete remaining time in MILLISECONDS
+  let remainingTime = eventStartTime - currentTime
+
+  //complete remaining time in SECONDS
+  let fullSeconds  =  Math.abs(Math.floor(remainingTime / 1000))
+
+
+  //complete remaining time in HOURS
+  let fullHours = Math.abs(Math.floor(fullSeconds/3600))
+
+  if(fullHours <= 1){
+    return true
+  }
+  return false
+
 }
