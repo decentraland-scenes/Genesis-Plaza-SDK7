@@ -222,21 +222,22 @@ function onLevelConnect(room: Room<clientState.NpcGameRoomState>) {
 
           let emotion = getNpcEmotion(nextPart.emotion)
 
-          if (hasEmotion && emotion.portraitPath) dialog.portrait = { path: emotion.portraitPath }
-          console.log('Emotions', 'Portrait:', dialog.portrait);
-
           if (hasEmotion) {
             //TODO TAG:play-emotion
             console.log("Emotions", "DisplayEmotion", nextPart.emotion.packet.emotions.behavior, "=>", emotion);
             if (CONFIG.EMOTION_DEBUG) ui.createComponent(ui.Announcement, { value: "got emotion 224-\n" + JSON.stringify(nextPart.emotion.packet.emotions), duration: 5, size: 60, color: Color4.White() }).show(5)
           }
 
-          talk(REGISTRY.activeNPC.entity, [nextDialog]);
-          console.log("Emotions", "Dialog", nextDialog);
+          if (nextDialog) {
+            if (hasEmotion && emotion.portraitPath) nextDialog.portrait = { path: emotion.portraitPath }
+            console.log('Emotions', 'Portrait:', nextDialog.portrait);
 
+            talk(REGISTRY.activeNPC.entity, [nextDialog]);
+            console.log("Emotions", "Dialog", nextDialog);
 
-          console.log('Emotions', 'Animation:', emotion.name);
-          if (hasEmotion && emotion.name) playAnimation(REGISTRY.activeNPC.entity, emotion.name, true, emotion.duration)
+            console.log('Emotions', 'Animation:', emotion.name);
+            if (hasEmotion && emotion.name) playAnimation(REGISTRY.activeNPC.entity, emotion.name, true, emotion.duration)
+          }
 
           if (true) {//audio optional
             if (nextPart.audio && nextPart.audio.packet.audio.chunk) {
@@ -326,15 +327,16 @@ function onLevelConnect(room: Room<clientState.NpcGameRoomState>) {
 
       let emotion = getNpcEmotion(nextPart.emotion)
 
-      if (hasEmotion && emotion.portraitPath) dialog.portrait = { path: emotion.portraitPath }
-      console.log('Emotions', 'Portrait:', dialog.portrait);
-
       if (hasEmotion) {
         //TODO TAG:play-emotion 
         console.log("Emotions", "DisplayEmotion", nextPart.emotion.packet.emotions.behavior, "=>", emotion);
         if (CONFIG.EMOTION_DEBUG) ui.createComponent(ui.Announcement, { value: "got emotion 318-\n" + JSON.stringify(nextPart.emotion.packet.emotions), duration: 5, size: 60, color: Color4.White() }).show(5)
       }
+
       if (dialog) {
+        if (hasEmotion && emotion.portraitPath) dialog.portrait = { path: emotion.portraitPath }
+        console.log('Emotions', 'Portrait:', dialog.portrait);
+
         talk(REGISTRY.activeNPC.entity, [dialog]);
         console.log("Emotions", "Dialog", dialog);
 
