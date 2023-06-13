@@ -4,7 +4,7 @@ import { addBuildings } from './modules/buildings'
 //import { placeDoors } from './modules/bar/doors'
 import { barPlatforms } from './modules/platforms'
 import { addCloudLobby } from './lobby/cloudLobby'
-import * as allowedMediaHelper from './utils/allowedMediaHelper'
+import * as sceneDataHelper from './utils/sceneDataHelper'
 import { lowerVolume, outOfBar, placeJukeBox, setBarMusicOff, setBarMusicOn } from './modules/bar/jukebox'
 import { addRepeatTrigger } from './modules/Utils'
 import { log } from './back-ports/backPorts'
@@ -36,7 +36,7 @@ export * from '@dcl/sdk'
 const FILE_NAME = 'game'
 
 //load scene metadata
-allowedMediaHelper.getAndSetSceneMetaData()
+sceneDataHelper.getAndSetSceneMetaData()
 
 
 initRegistery()
@@ -75,9 +75,6 @@ barPlatforms()
 // ADD EVENT CARDS TO BAR
 addTVPanels()
 
-// ADD BASKETBALL GAME
-
-let physicsManager = new PhysicsManager(5)
 
 
 
@@ -299,6 +296,7 @@ utils.triggers.addTrigger(trigger, utils.NO_LAYERS, utils.NO_LAYERS,
 
 
 let areNpcsAdded: boolean = false
+let isBasketballAdded: boolean = false
 function insideBar() {
   const METHOD_NAME = 'insideBar'
   log("lazyLoading",FILE_NAME, METHOD_NAME, "Player Enter")
@@ -316,6 +314,13 @@ function insideBar() {
     initBarNpcs()
 
     areNpcsAdded = true
+  }
+  if (!isBasketballAdded) {
+
+    // ADD BASKETBALL GAME
+
+    let physicsManager = new PhysicsManager(3)
+    isBasketballAdded = true
   }
 }
 

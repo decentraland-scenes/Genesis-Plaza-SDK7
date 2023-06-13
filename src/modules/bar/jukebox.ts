@@ -5,7 +5,7 @@ import * as utils from '@dcl-sdk/utils'
 import { sceneMessageBus } from '../serverHandler'
 import { tutorialRunning } from '../../lobby/beamPortal'
 import { coreBuildingOffset } from '../../lobby/resources/globals'
-import { TrackingElement, trackAction } from '../stats/analyticsComponents'
+import { TrackingElement, getRegisteredAnalyticsEntity, trackAction } from '../stats/analyticsComponents'
 import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES, AnalyticsLogLabel } from '../stats/AnalyticsConfig'
 
 
@@ -47,6 +47,7 @@ let baseJukeBoxLights2 = engine.addEntity()
 TrackingElement.create(baseJukeBox, {
   elementType: ANALYTICS_ELEMENTS_TYPES.interactable,
   elementId: ANALYTICS_ELEMENTS_IDS.jukeBox,
+  parent: getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.bar)
 })
 
 
@@ -265,17 +266,18 @@ export class JukeboxButton {
     })
 
 
-
-    pointerEventsSystem.onPointerDown( 
-        this.entity, 
-        () => {
-            action()
-            this.press(animationName)
-        },
-        {
+    pointerEventsSystem.onPointerDown(
+      {
+        entity:this.entity,
+        opts: {
             button: InputAction.IA_POINTER,
             hoverText: text ? text : 'Press',
         }
+      },
+      (e) => {
+        action()
+        this.press(animationName)
+      }
     )
   }
 

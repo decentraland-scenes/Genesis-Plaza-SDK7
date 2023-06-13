@@ -13,12 +13,38 @@ import { closeCustomUI, openCustomUI } from '../../../utils/customNpcUi/customUi
 import { NpcAnimationNameType, REGISTRY, trtDeactivateNPC } from '../../../registry'
 import { connectNpcToLobby } from '../../../lobby-scene/lobbyScene'
 import { genericPrefinedQuestions } from '../../../utils/customNpcUi/customUIFunctionality'
-import { TrackingElement, trackAction, trackEnd, trackStart } from '../../stats/analyticsComponents'
+import { TrackingElement, generateGUID, getRegisteredAnalyticsEntity, trackAction, trackEnd, trackStart } from '../../stats/analyticsComponents'
 import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES, AnalyticsLogLabel } from '../../stats/AnalyticsConfig'
 
 const LogTag: string = 'barNpcs'
 
 const ANIM_TIME_PADD = .2
+
+const DOGE_NPC_ANIMATIONS: NpcAnimationNameType = {
+  HI: { name: "Hi", duration: 2, autoStart: undefined},
+  IDLE: { name: "Idle", duration: -1},
+  WALK: { name: "Walk", duration: -1 },
+  TALK: { name: "Talk1", duration: 5 },
+  THINKING: { name: "Thinking", duration: 5 },
+  RUN: { name: "Run", duration: -1 },
+  WAVE: { name: "Wave", duration: 4 + ANIM_TIME_PADD },
+  LAUGH: { name: "Laugh", duration: 2, autoStart: undefined},
+  HAPPY: { name: "Happy", duration: 2, autoStart: undefined},
+  SAD: { name: "Sad", duration: 2, autoStart: undefined},
+  SURPRISE: { name: "Surprise", duration: 2, autoStart: undefined},
+} 
+
+const SIMONAS_NPC_ANIMATIONS: NpcAnimationNameType = {
+  HI: { name: "Hi", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/hi1.png" },
+  IDLE: { name: "Idle", duration: 4, autoStart: undefined, portraitPath: "images/portraits/simone/idle1.png" },
+  TALK: { name: "Talking", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/talking1.png" },
+  THINKING: { name: "Thinking", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/interesting1.png" },
+  LOADING: { name: "Loading", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/interesting1.png" },
+  LAUGH: { name: "Laugh", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/laughing1.png" },
+  HAPPY: { name: "Happy", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/happy1.png" },
+  SAD: { name: "Sad", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/sad1.png" },
+  SURPRISE: { name: "Surprise", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/surprise1.png" },
+}
 
 export let octo: Entity
 export let fashionist: Entity
@@ -81,8 +107,10 @@ function createOctopusNpc() {
   )
 
   TrackingElement.create(octo, {
+    guid: generateGUID(),
     elementType: ANALYTICS_ELEMENTS_TYPES.npc,
     elementId: ANALYTICS_ELEMENTS_IDS.octopus,
+    parent: getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.bar)
   })
 
   utils.triggers.addTrigger(octo,
@@ -165,8 +193,10 @@ function createFashionistNpc(): Entity {
   )
 
   TrackingElement.create(fashionist, {
+    guid: generateGUID(),
     elementType: ANALYTICS_ELEMENTS_TYPES.npc,
     elementId: ANALYTICS_ELEMENTS_IDS.fashionist,
+    parent: getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.bar)
   })
 
   return fashionist
@@ -209,8 +239,10 @@ function createBoyArtist(): Entity {
   )
 
   TrackingElement.create(boy, {
+    guid: generateGUID(),
     elementType: ANALYTICS_ELEMENTS_TYPES.npc,
     elementId: ANALYTICS_ELEMENTS_IDS.boyArtist,
+    parent: getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.bar)
   })
 
   npcLib.playAnimation(boy, 'Talk', false)
@@ -248,8 +280,10 @@ function createGirlArtist(): Entity {
   )
 
   TrackingElement.create(girl, {
+    guid: generateGUID(),
     elementType: ANALYTICS_ELEMENTS_TYPES.npc,
     elementId: ANALYTICS_ELEMENTS_IDS.girlArtist,
+    parent: getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.bar)
   })
 
   npcLib.playAnimation(girl, 'Talk', false)
@@ -260,15 +294,6 @@ function createGirlArtist(): Entity {
 //AI POWERED NPCs 
 
 //#region doge
-const DOGE_NPC_ANIMATIONS: NpcAnimationNameType = {
-  IDLE: { name: "Idle", duration: -1 },
-  WALK: { name: "Walk", duration: -1 },
-  TALK: { name: "Talk1", duration: 5 },
-  THINKING: { name: "Thinking", duration: 5 },
-  RUN: { name: "Run", duration: -1 },
-  WAVE: { name: "Wave", duration: 4 + ANIM_TIME_PADD },
-}
-
 function createDogeNpc(): void {
   let dogePathPoints = [
     Vector3.create(166.7 - coreBuildingOffset.x, 0.24, 163. - coreBuildingOffset.z),
@@ -278,8 +303,6 @@ function createDogeNpc(): void {
     Vector3.create(148.1 - coreBuildingOffset.x, 0.24, 156.8 - coreBuildingOffset.z),
     Vector3.create(146.4 - coreBuildingOffset.x, 0.24, 156 - coreBuildingOffset.z),
     Vector3.create(143.1 - coreBuildingOffset.x, 0.24, 153.1 - coreBuildingOffset.z),
-    Vector3.create(143 - coreBuildingOffset.x, 0.24, 152.8 - coreBuildingOffset.z),
-    Vector3.create(143.2 - coreBuildingOffset.x, 0.24, 150.7 - coreBuildingOffset.z),
     Vector3.create(143.26 - coreBuildingOffset.x, 0.24, 147.5 - coreBuildingOffset.z),
     Vector3.create(148.1 - coreBuildingOffset.x, 0.24, 142.3 - coreBuildingOffset.z),
     Vector3.create(151.9 - coreBuildingOffset.x, 0.24, 142.3 - coreBuildingOffset.z),
@@ -305,7 +328,8 @@ function createDogeNpc(): void {
   let dogePath: FollowPathData = {
     path: dogePathPoints,
     loop: true,
-    totalDuration: dogePathPoints.length * 4
+    totalDuration: dogePathPoints.length * 3
+
     // curve: true,
   }
 
@@ -337,7 +361,7 @@ function createDogeNpc(): void {
           closeCustomUI(false)
           hideThinking(doge)
           trtDeactivateNPC(doge)
-          // npcLib.followPath(doge.entity, dogePath)
+          npcLib.followPath(doge.entity, dogePath)
         },
         portrait:
         {
@@ -386,19 +410,6 @@ function createDogeNpc(): void {
 }
 //#endregion
 
-//#region  simone
-const SIMONAS_NPC_ANIMATIONS: NpcAnimationNameType = {
-  HI: { name: "Hi", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/hi1.png" },
-  IDLE: { name: "Idle", duration: 4, autoStart: undefined, portraitPath: "images/portraits/simone/idle1.png" },
-  TALK: { name: "Talking", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/talking1.png" },
-  THINKING: { name: "Thinking", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/interesting1.png" },
-  LOADING: { name: "Loading", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/interesting1.png" },
-  LAUGH: { name: "Laugh", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/laughing1.png" },
-  HAPPY: { name: "Happy", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/happy1.png" },
-  SAD: { name: "Sad", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/sad1.png" },
-  SURPRISE: { name: "Surprise", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/surprise1.png" },
-}
-
 function createSimonas() {
   simonas = new RemoteNpc(
     { resourceName: "workspaces/genesis_city/characters/simone" },
@@ -407,10 +418,10 @@ function createSimonas() {
       npcData: {
         type: npcLib.NPCType.CUSTOM,
         model: {
-            src: simoneModelPath,
-            invisibleMeshesCollisionMask: ColliderLayer.CL_NONE,
-            visibleMeshesCollisionMask: ColliderLayer.CL_POINTER
-            },
+          src: simoneModelPath, //collider not working for Simone_Anim.glb
+          invisibleMeshesCollisionMask: ColliderLayer.CL_POINTER | ColliderLayer.CL_PHYSICS,
+          visibleMeshesCollisionMask: ColliderLayer.CL_NONE
+        },
         onActivate: () => {
           console.log('Simonas.NPC activated!')
 

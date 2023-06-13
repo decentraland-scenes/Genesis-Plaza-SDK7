@@ -1,5 +1,5 @@
 import { Animator, AudioSource, AudioStream, Entity, GltfContainer, InputAction, Material, MeshRenderer, PBAudioStream, TextShape, Transform, VisibilityComponent, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
-import { Color3, Vector3 } from '@dcl/sdk/math'
+import { Color3, Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { BEAM_SCALE_AMOUNT, TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, ParcelCountMaxY, ParcelCountX, ParcelCountZ, coreBuildingOffset, lobbyCenter } from './resources/globals'
 import { lobbyHeight } from './resources/globals'
 import { setBarMusicOff, setBarMusicOn } from '../modules/bar/jukebox'
@@ -17,6 +17,9 @@ import { beamShape } from './resources/resources'
 import { AudioSourceAttachedToPlayer } from '../components'
 import { FIRST_PERSON_VOLUME_ADJ, addAudioSourceAttachedToPlayer, applyAudioStreamWorkAround, setAudioSourceAttachedToPlayerPlaying } from '../modules/soundsAttachedToPlayer'
 import { setMovePlayerInProgress } from '../back-ports/movePlayer'
+import { beamChargeSource, beamChargeSourceVolume, beamFallSource, beamFallSourceVolume, beamFireSource, beamFireSourceVolume, impactHardSource, impactHardSourceVolume, lobbyMusicSource, lobbyMusicSourceVolume } from './resources/sounds'
+import { GetRealmResponse, getRealm } from '~system/Runtime'
+
 
 export const triggerCounter = new CountDownUtil()
 
@@ -34,21 +37,22 @@ Transform.create(ambienceBox, {
 
 // LOBBY MUSIC
 let musicBox = engine.addEntity()
-AudioSource.create(musicBox, {
-  audioClipUrl: 'sounds/lobby_music.mp3',
-  volume: 0.2,
-  loop: true,
-  playing: false
-})
+
 Transform.create(musicBox, {
   position: Vector3.create(0, 2, 0),
   parent: engine.PlayerEntity
 })
 addAudioSourceAttachedToPlayer(musicBox,{
-  id: 'lobby_music',
-  thirdPersonVolume: AudioSource.get(musicBox).volume,
-  firstPersonVolume: AudioSource.get(musicBox).volume + FIRST_PERSON_VOLUME_ADJ
-})
+    id: 'lobby_music',
+    thirdPersonVolume: lobbyMusicSourceVolume,
+    firstPersonVolume: lobbyMusicSourceVolume + FIRST_PERSON_VOLUME_ADJ
+  },
+  {
+    audioClipUrl: lobbyMusicSource,
+    volume: lobbyMusicSourceVolume,
+    loop: true,
+    playing: false
+  })
 
 
 /*
@@ -117,16 +121,46 @@ export class TeleportController {
       
       const host = this
 
+      const triggerUpSpawnArea = { x: (lobbyCenter.x - coreBuildingOffset.x + 5) , y: Math.min(ParcelCountMaxY-2.5,140), z: (lobbyCenter.z - 10 - coreBuildingOffset.z) }
+
+      const spawnRandomX = 2
+      const spawnRandomZ = 1
+      getRealm({}).then(
+        (value:GetRealmResponse) => {
+          if(value.realmInfo?.isPreview){
+              console.log("beamPortal.ts","temp.planes","getRealm is preview, adding planes for spawn and ceiling")
+              //START find the max height, help with visualizing how high we can go
+              let spawnAreaPlane = engine.addEntity()
+              //PUT PARCEL SIZE HERE 4X5 FOR EXAMPLE
+              const parcelMaxHeight = (Math.log((ParcelCountX*ParcelCountZ)) * Math.LOG2E) * 20
+              Transform.create(spawnAreaPlane,{
+                position: { x: triggerUpSpawnArea.x + (spawnRandomX/2) , y: lobbyHeight, z: triggerUpSpawnArea.z + (spawnRandomZ/2)},
+                scale: Vector3.create(spawnRandomX,spawnRandomZ,.1),
+                rotation: Quaternion.fromEulerDegrees(90,0,0)
+              })
+              //MeshCollider.setPlane(findCeilingPlane)
+              MeshRenderer.setPlane(spawnAreaPlane)
+              Material.setPbrMaterial(spawnAreaPlane, {
+                //texture: Material.Texture.,
+                albedoColor: Color4.fromHexString("#00000088"),
+                specularIntensity: 0,
+                metallic: 0,
+                roughness: 1
+              })
+          }
+        }
+      )
 
       const triggerUpOnEnter = () => {
-        console.log(CLASSNAME,"trigger.beamMeUp.enter.called.triggerUpOnEnter", "triggerUpOnEnter")
+        console.log(CLASSNAME,"trigger.beamMeUp.enter.called.triggerUpOnEnter", "triggerUpOnEnter") 
 
-        const movePlayerPosition = { x: lobbyCenter.x - coreBuildingOffset.x + 5, y: Math.min(ParcelCountMaxY-2.5,140), z: lobbyCenter.z - 10 - coreBuildingOffset.z}
+        //using Math.random() to slightly randomize spawn point
+        const movePlayerPosition = { x: triggerUpSpawnArea.x + (Math.random()*spawnRandomX), y: triggerUpSpawnArea.y, z: triggerUpSpawnArea.z + (Math.random()*spawnRandomZ)}
         //debugger
 
         setMovePlayerInProgress(true)
         applyAudioStreamWorkAround('exit')
-        movePlayerTo({  newRelativePosition: movePlayerPosition}).then(() => {
+        movePlayerTo({  newRelativePosition: movePlayerPosition, cameraTarget: Vector3.create(31,lobbyHeight + 8 ,51)}).then(() => {
           setMovePlayerInProgress(false)
         })
         //const playerTransform = Transform.getMutable(engine.PlayerEntity)
@@ -222,7 +256,7 @@ export class TeleportController {
         [{type: "box", position: this.triggerBoxFallCheckPosition, scale: this.triggerBoxFallCheckScale}],
         ()=>{
           console.log(CLASSNAME,"trigger.triggerPlayerFell.enter", "triggerBoxFallCheck")
-
+          //debugger
           setAudioSourceAttachedToPlayerPlaying(this.beamFallSound,true)
         },
         undefined,
@@ -269,76 +303,81 @@ export class TeleportController {
 
       //beam charge sound attached to player
       this.beamChargeSound = engine.addEntity()
-      AudioSource.create(this.beamChargeSound, {
-        audioClipUrl: 'sounds/beam_charge.mp3',
-        volume: 0.5,
-        //loop: true,
-        playing: false
-      })
+      
       Transform.create(this.beamChargeSound,{
         position: Vector3.create(0, 1, 0),
         parent: engine.PlayerEntity
       })
-      addAudioSourceAttachedToPlayer(this.beamChargeSound,{
-        id: 'beam_charge',
-        thirdPersonVolume: AudioSource.get(this.beamChargeSound).volume,
-        firstPersonVolume: AudioSource.get(this.beamChargeSound).volume + FIRST_PERSON_VOLUME_ADJ
-      })
+      addAudioSourceAttachedToPlayer(this.beamChargeSound,
+        {
+          id: 'beam_charge',
+          thirdPersonVolume: beamChargeSourceVolume,
+          firstPersonVolume: beamChargeSourceVolume + FIRST_PERSON_VOLUME_ADJ
+        },
+        {
+          audioClipUrl: beamChargeSource,
+          volume: beamChargeSourceVolume,
+          //loop: true,
+          playing: false
+        })
         
       //beam teleport sound attached to player
       this.beamFireSound = engine.addEntity()
-      AudioSource.create(this.beamFireSound, {
-        audioClipUrl: 'sounds/beam_fire.mp3',
-        volume: 0.5,
-        //loop: true,
-        playing: false
-      })
+      
       Transform.create(this.beamFireSound,{
         position: Vector3.create(0, 1, 0),
         parent: engine.PlayerEntity
       })
       addAudioSourceAttachedToPlayer(this.beamFireSound,{
-        id: 'beam_fire',
-        thirdPersonVolume: AudioSource.get(this.beamFireSound).volume, 
-        firstPersonVolume: AudioSource.get(this.beamFireSound).volume + FIRST_PERSON_VOLUME_ADJ
-      })
+          id: 'beam_fire',
+          thirdPersonVolume: beamFireSourceVolume, 
+          firstPersonVolume: beamFireSourceVolume + FIRST_PERSON_VOLUME_ADJ
+        },
+        {
+          audioClipUrl: beamFireSource,
+          volume: beamFireSourceVolume,
+          //loop: true,
+          playing: false
+        })
   
       //beam fall sound attached to player
       this.beamFallSound = engine.addEntity()
-      AudioSource.create(this.beamFallSound, {
-        audioClipUrl: 'sounds/beam_fall.mp3',
-        volume: 3,
-        //loop: true,
-        playing: false
-      })
+      
       Transform.create(this.beamFallSound,{
         position: Vector3.create(0, 4, 0),
         parent: engine.PlayerEntity
       })
       addAudioSourceAttachedToPlayer(this.beamFallSound,{
-        id: 'beam_fall',
-        thirdPersonVolume: AudioSource.get(this.beamFallSound).volume,
-        firstPersonVolume: AudioSource.get(this.beamFallSound).volume + FIRST_PERSON_VOLUME_ADJ
-      })
+          id: 'beam_fall',
+          thirdPersonVolume: beamFallSourceVolume,
+          firstPersonVolume: beamFallSourceVolume + FIRST_PERSON_VOLUME_ADJ
+        },
+        {
+          audioClipUrl: beamFallSource,
+          volume: beamFallSourceVolume,
+          //loop: true,
+          playing: false
+        })
   
       //impact sound when landing
       this.impactSound = engine.addEntity()
-      AudioSource.create(this.impactSound, {
-        audioClipUrl: 'sounds/impact_hard.mp3',
-        volume: 0.3,
-        //loop: true,
-        playing: false
-      })
+      
       Transform.create(this.impactSound, {
         position: Vector3.create(0, 1, 0),
         parent: engine.PlayerEntity
       })
 
       addAudioSourceAttachedToPlayer(this.impactSound,{
-        id: 'impact_hard',
-        thirdPersonVolume: AudioSource.get(this.impactSound).volume,
-        firstPersonVolume: AudioSource.get(this.impactSound).volume + FIRST_PERSON_VOLUME_ADJ
-      })
+          id: 'impact_hard',
+          thirdPersonVolume: 0.3,
+          firstPersonVolume: 0.3 + FIRST_PERSON_VOLUME_ADJ
+        },
+        {
+          audioClipUrl: impactHardSource,
+          volume: impactHardSourceVolume,
+          //loop: true,
+          playing: false
+        })
     }
 }
 
