@@ -5,6 +5,7 @@ import { NpcQuestionData, sendQuestion } from './customUIFunctionality'
 import { REGISTRY } from '../../registry'
 import { getData, handleWalkAway } from 'dcl-npc-toolkit'
 import { NPCData } from 'dcl-npc-toolkit/dist/types'
+import { TrackingElement, trackAction } from '../../modules/stats/analyticsComponents'
 
 let selectedPredefinedQuestion: NpcQuestionData[] = []
 
@@ -289,6 +290,7 @@ function askQuestion(index: number) {
     return
   }
   console.log('QUESTIONS', 'Asked Question:', selectedPredefinedQuestion[index])
+  trackAction(REGISTRY.activeNPC.entity,"preDefinedQuestion", selectedPredefinedQuestion[index].displayText)
   sendQuestion(selectedPredefinedQuestion[index])
 }
 
@@ -311,6 +313,7 @@ function sendTypeQuestion() {
     return
   }
   console.log('QUESTIONS', 'Asked Question:', typedQuestion)
+  trackAction(REGISTRY.activeNPC.entity, "userDefinedQuestion", typedQuestion)
   sendQuestion(typedQuestion)
 }
 
