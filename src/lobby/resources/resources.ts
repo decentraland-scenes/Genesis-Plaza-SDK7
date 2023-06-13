@@ -64,7 +64,7 @@ export const fashionistModelPath = 'models/core_building/WearableConnoisseurRota
 export const aritst1ModelPath = 'models/core_building/ch1_crowdV5.glb'
 export const aritst2ModelPath = 'models/core_building/ch2_crowdV5.glb'
 export const dogeModelPath = 'models/core_building/dogeNPC_anim4.glb'
-export const simoneModelPath = 'models/core_building/Simone_Anim.glb'
+export const simoneModelPath = 'models/core_building/Simone_Anim_Collider.glb'
 export const robModelPath = 'models/core_building/'
 export const aishaModelPath = 'models/core_building/'
 
