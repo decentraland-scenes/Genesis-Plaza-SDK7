@@ -570,22 +570,17 @@ function createRob() {
 
 //#region AIsha
 const AISHA_NPC_ANIMATIONS: NpcAnimationNameType = {
-  HI: { name: "Hi", duration: 2, autoStart: undefined, portraitPath: "images/portaits/aisha/hi1.png"},
   IDLE: { name: "Idle", duration: 4, autoStart: undefined, portraitPath: "images/portaits/aisha/idle1.png"},
-  TALK: { name: "Talking", duration: 2, autoStart: undefined, portraitPath: "images/portaits/aisha/talking1.png"},
-  THINKING: { name: "Thinking", duration: 2, autoStart: undefined, portraitPath: "images/portaits/aisha/interesting1.png"},
-  LOADING: { name: "Loading", duration: 2, autoStart: undefined, portraitPath: "images/portaits/aisha/interesting1.png"},
-  LAUGH: { name: "Laugh", duration: 2, autoStart: undefined, portraitPath: "images/portaits/aisha/laughing1.png"},
-  HAPPY: { name: "Happy", duration: 2, autoStart: undefined, portraitPath: "images/portaits/aisha/happy1.png"},
-  SAD: { name: "Sad", duration: 2, autoStart: undefined, portraitPath: "images/portaits/aisha/sad1.png"},
-  SURPRISE: { name: "Surprise", duration: 2, autoStart: undefined, portraitPath: "images/portaits/aisha/surprise1.png"},
+  TALK: { name: "Talking", duration: 4, autoStart: undefined, portraitPath: "images/portaits/aisha/talking1.png"},
+  THINKING: { name: "Thinking", duration: 4, autoStart: undefined, portraitPath: "images/portaits/aisha/interesting1.png"},
+  EXCITED: { name: "Excited", duration: 4, autoStart: undefined, portraitPath: "images/portaits/aisha/interesting1.png"},
 }
 
 function createAisha() {
   aisha = new RemoteNpc(
     { resourceName: "workspaces/genesis_city/characters/aisha" },
     {
-      transformData: { position: Vector3.create(3, 0, 3), scale: Vector3.create(1, 1, 1) },
+      transformData: { position: Vector3.create(27.45, 0.28, 47.53), scale: Vector3.create(1, 1, 1), rotation: Quaternion.create(0, 90, 0) },
       npcData: {
         type: npcLib.NPCType.CUSTOM,
         model: aishaModelPath,
@@ -630,7 +625,7 @@ function createAisha() {
         textEnabled: false,
         modelPath: 'models/loading-icon.glb',
         offsetX: 0,
-        offsetY: 2,
+        offsetY: 1,
         offsetZ: 0
       }
       , onEndOfRemoteInteractionStream: () => {
