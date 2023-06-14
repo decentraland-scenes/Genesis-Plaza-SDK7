@@ -583,7 +583,7 @@ const AISHA_NPC_ANIMATIONS: NpcAnimationNameType = {
 
 function createAisha() {
   aisha = new RemoteNpc(
-    { resourceName: "workspaces/genesis_city/characters/" },
+    { resourceName: "workspaces/genesis_city/characters/aisha" },
     {
       transformData: { position: Vector3.create(3, 0, 3), scale: Vector3.create(1, 1, 1) },
       npcData: {
