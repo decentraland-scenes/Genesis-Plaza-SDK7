@@ -119,25 +119,24 @@ function createThinkingEnities(npc: RemoteNpc): void {
       TextShape.createOrReplace(npc.thinkingIconText, {
         text: args.thinking?.text ? args.thinking.text : "Thinking..."
       })
-
-      if (args.thinking?.modelPath) {
-        GltfContainer.createOrReplace(npc.thinkingIcon, {
-          src: args.thinking.modelPath
-        })
-        let iconTransform = Transform.getOrCreateMutable(npc.thinkingIcon)
-        iconTransform.scale = Vector3.create(2, 2, 2)
-        //this.thinkingIcon.addComponent(new KeepRotatingComponent(Quaternion.Euler(0,25,0)))
-      }
-      else {
-        MeshRenderer.setBox(npc.thinkingIcon)
-        infiniteRotation(
-          npc.thinkingIcon,
-          Vector3.create(0, 0, 0),
-          Vector3.create(0, 360, 0),
-          2
-        )
-      }
     }
+    if (args.thinking?.modelPath) {
+      GltfContainer.createOrReplace(npc.thinkingIcon, {
+        src: args.thinking.modelPath
+      })
+      let iconTransform = Transform.getOrCreateMutable(npc.thinkingIcon)
+      iconTransform.scale = Vector3.create(2, 2, 2)
+      //this.thinkingIcon.addComponent(new KeepRotatingComponent(Quaternion.Euler(0,25,0)))
+    } else {
+      MeshRenderer.setBox(npc.thinkingIcon)
+      infiniteRotation(
+        npc.thinkingIcon,
+        Vector3.create(0, 0, 0),
+        Vector3.create(0, 360, 0),
+        2
+      )
+    }
+  
 
     let iconTextTransform = Transform.getMutable(npc.thinkingIconText)
     iconTextTransform.position = args.thinking?.textOffset ? args.thinking.textOffset : Vector3.create(0, TEXT_HEIGHT, 0),

@@ -12,6 +12,7 @@ import { liveSignShape } from './resources/resources'
 import { _openExternalURL, _teleportTo } from '../back-ports/backPorts'
 import { TrackingElement, generateGUID, getRegisteredAnalyticsEntity, trackAction } from '../modules/stats/analyticsComponents'
 import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES } from '../modules/stats/AnalyticsConfig'
+import { displayEventUI, hideEventUI } from '../ui'
 
 let dummyLiveBadge = engine.addEntity()
 Transform.create(dummyLiveBadge, {
@@ -43,8 +44,8 @@ export class EventMenuItem extends MenuItem {
   detailsRoot: Entity
   jumpInButton: Entity  
   jumpButtonText: Entity
-  detailText: Entity
-  detailTextPanel: Entity
+  //detailText: Entity
+  //detailTextPanel: Entity
   highlightRays: Entity
   highlightFrame: Entity
   //detailEventTitle: Entity
@@ -228,11 +229,12 @@ export class EventMenuItem extends MenuItem {
       done: false
     })    
 
+    // main root animation states
     AnimatedItem.create(this.entity, {
       wasClicked:false,
       isHighlighted:false,
       defaultPosition: _transform.position,
-      highlightPosition: Vector3.create(_transform.position.x,_transform.position.y+1, _transform.position.z-0.6),
+      highlightPosition: Vector3.create(_transform.position.x,_transform.position.y, _transform.position.z-0.6),
       defaultScale: Vector3.create(
         this.defaultItemScale.x,
         this.defaultItemScale.y,
@@ -292,7 +294,7 @@ export class EventMenuItem extends MenuItem {
     // TITLE    
     this.title = engine.addEntity()
     Transform.create(this.title, {
-      position: Vector3.create(0, -0.15, -0.01),
+      position: Vector3.create(0, -0.12, -0.01),
       scale: Vector3.create(0.3, 0.3, 0.3),
       parent: this.itemBox
     })
@@ -326,7 +328,7 @@ export class EventMenuItem extends MenuItem {
       wasClicked:false,
       isHighlighted:false,
       defaultPosition: Vector3.create(0, 0.5, 0.3),
-      highlightPosition: Vector3.create(-0.4, -0.75, 0),
+      highlightPosition: Vector3.create(-0.4, -0.25, 0),
       defaultScale:Vector3.create(0.0, 0.0, 0.0),
       highlightScale: Vector3.create(0.5, 0.5, 0.5),
       animFraction: 0,
@@ -373,7 +375,7 @@ export class EventMenuItem extends MenuItem {
       wasClicked:false,
       isHighlighted:false,
       defaultPosition: Vector3.create(0, 0.5, 0.5),
-      highlightPosition:  Vector3.create(0.4, -0.75, 0),
+      highlightPosition:  Vector3.create(0.4, -0.25, 0),
       defaultScale:Vector3.create(0.0, 0.0, 0.0),
       highlightScale: Vector3.create(0.5, 0.5, 0.5),
       animFraction: 0,
@@ -430,27 +432,27 @@ export class EventMenuItem extends MenuItem {
     }
 
     // EVENT DETAILS TEXT PANEL
-    this.detailTextPanel = engine.addEntity()
-    Transform.create(this.detailTextPanel, {
-      position: Vector3.create(0, 0, 0.2),
-        scale: Vector3.create(0.8, 0.8, 0),
-        rotation: Quaternion.fromEulerDegrees(0, 0, 0),
-        parent: this.detailsRoot
-    })
-    GltfContainer.create(this.detailTextPanel, resource.detailsBGShape)    
-    VisibilityComponent.create(this.detailTextPanel, {visible: true})
-    AnimatedItem.create(this.detailTextPanel, {
-      wasClicked:false,
-      isHighlighted:false,
-      defaultPosition:  Vector3.create(0, 0, 0.02),
-      highlightPosition:  Vector3.create(0, -0.35, 0.02),
-      defaultScale: Vector3.create(0.98, 0, 0),
-      highlightScale:  Vector3.create(1, 1, 1),
-      animFraction: 0,
-      animVeclocity: 0,
-      speed: 0.6,
-      done: false
-    }) 
+    // this.detailTextPanel = engine.addEntity()
+    // Transform.create(this.detailTextPanel, {
+    //   position: Vector3.create(0, 0, 0.2),
+    //     scale: Vector3.create(0.8, 0.8, 0),
+    //     rotation: Quaternion.fromEulerDegrees(0, 0, 0),
+    //     parent: this.detailsRoot
+    // })
+    // GltfContainer.create(this.detailTextPanel, resource.detailsBGShape)    
+    // VisibilityComponent.create(this.detailTextPanel, {visible: true})
+    // AnimatedItem.create(this.detailTextPanel, {
+    //   wasClicked:false,
+    //   isHighlighted:false,
+    //   defaultPosition:  Vector3.create(0, 0, 0.02),
+    //   highlightPosition:  Vector3.create(0, -0.35, 0.02),
+    //   defaultScale: Vector3.create(0.98, 0, 0),
+    //   highlightScale:  Vector3.create(1, 1, 1),
+    //   animFraction: 0,
+    //   animVeclocity: 0,
+    //   speed: 0.6,
+    //   done: false
+    // }) 
 
     // EVENT DETAILS TITLE
     // this.detailEventTitle = engine.addEntity()
@@ -472,45 +474,45 @@ export class EventMenuItem extends MenuItem {
    
     
  // EVENT DETAILS TEXT BODY
-    this.detailText = engine.addEntity()
-    Transform.create(this.detailText, {
-      position: Vector3.create(-0.70, 0.15, -0.02),
-        scale: Vector3.create(0.4, 0.4, 0.4),
-        parent: this.detailTextPanel
-    })
-    TextShape.create(this.detailText, {
-      text:  '\n\n' + wordWrap(cleanString(_event.description), 70, 7) + '</cspace>',
-      fontSize: 1,
-      height: 20,
-      width: 2,
-      textColor: Color4.fromHexString("#111111FF"),
-      textAlign: TextAlignMode.TAM_TOP_LEFT,
-      lineSpacing: 0,
-      outlineColor: Color4.fromHexString("#111111FF"),
-      outlineWidth: 0.3
-    })   
+    // this.detailText = engine.addEntity()
+    // Transform.create(this.detailText, {
+    //   position: Vector3.create(-0.70, 0.15, -0.02),
+    //     scale: Vector3.create(0.4, 0.4, 0.4),
+    //     parent: this.detailTextPanel
+    // })
+    // TextShape.create(this.detailText, {
+    //   text:  '\n\n' + wordWrap(cleanString(_event.description), 70, 7) + '</cspace>',
+    //   fontSize: 1,
+    //   height: 20,
+    //   width: 2,
+    //   textColor: Color4.fromHexString("#111111FF"),
+    //   textAlign: TextAlignMode.TAM_TOP_LEFT,
+    //   lineSpacing: 0,
+    //   outlineColor: Color4.fromHexString("#111111FF"),
+    //   outlineWidth: 0.3
+    // })   
 
-    //READ MORE details website button
-    this.readMoreButton = engine.addEntity()
-    Transform.create(this.readMoreButton, {
-      position: Vector3.create(-0.58, -0.33, -0.05),
-      parent: this.detailTextPanel
-    })    
-    GltfContainer.create(this.readMoreButton, resource.readMoreBtnShape) 
+    // //READ MORE details website button
+    // this.readMoreButton = engine.addEntity()
+    // Transform.create(this.readMoreButton, {
+    //   position: Vector3.create(-0.58, -0.33, -0.05),
+    //   parent: this.detailTextPanel
+    // })    
+    // GltfContainer.create(this.readMoreButton, resource.readMoreBtnShape) 
     
-    pointerEventsSystem.onPointerDown(
-      {
-        entity:this.readMoreButton,
-        opts: { hoverText: 'READ MORE', button: InputAction.IA_POINTER }
-      },
-      async (e) => {
-        const url = 'https://events.decentraland.org/en/?event='
-        trackAction(this.itemBox, "button_read_more", url, _event.name)
-        _openExternalURL(
-          url + _event.id
-        )   
-      }
-    )
+    // pointerEventsSystem.onPointerDown(
+    //   {
+    //     entity:this.readMoreButton,
+    //     opts: { hoverText: 'READ MORE', button: InputAction.IA_POINTER }
+    //   },
+    //   async (e) => {
+    //     const url = 'https://events.decentraland.org/en/?event='
+    //     trackAction(this.itemBox, "button_read_more", url, _event.name)
+    //     _openExternalURL(
+    //       url + _event.id
+    //     )   
+    //   }
+    // )
 
     // highlights BG on selection
     this.highlightRays = engine.addEntity()
@@ -537,7 +539,7 @@ export class EventMenuItem extends MenuItem {
     Transform.create(this.highlightFrame, {
       parent: this.highlightRays
     })
-    GltfContainer.create(this.highlightFrame, resource.highlightFrameShape)    
+    GltfContainer.create(this.highlightFrame, resource.highlightFrameFullShape)    
     
   }
 
@@ -639,7 +641,7 @@ export class EventMenuItem extends MenuItem {
     //TextShape.getMutable(this.detailEventTitle).text =  wordWrap(cleanString(_event.name), 45, 3)
 
     //remove non-UTF-8 characters and wrap
-    TextShape.getMutable(this.detailText).text = '\n\n' + wordWrap(cleanString(_event.description), 70, 11) + '</cspace>'
+    //TextShape.getMutable(this.detailText).text = '\n\n' + wordWrap(cleanString(_event.description), 70, 11) + '</cspace>'
     
     //details website button (read more)
     pointerEventsSystem.onPointerDown(
@@ -680,7 +682,7 @@ export class EventMenuItem extends MenuItem {
 
     let rootInfo = AnimatedItem.getMutable(this.entity)
     let jumpInButtonInfo = AnimatedItem.getMutable(this.jumpInButton)
-    let detailTextInfo = AnimatedItem.getMutable(this.detailTextPanel)
+   // let detailTextInfo = AnimatedItem.getMutable(this.detailTextPanel)
     let highlightRaysInfo = AnimatedItem.getMutable(this.highlightRays)
     let coordsPanelInfo = AnimatedItem.getMutable(this.coordsPanel)
     let timePanelInfo = AnimatedItem.getMutable(this.timePanel)
@@ -695,6 +697,7 @@ export class EventMenuItem extends MenuItem {
       
       trackAction(this.itemBox, "select_card", this.event.id, (this.event.coordinates[0] + ',' + this.event.coordinates[1]+":"+ this.event.name))
       
+      displayEventUI(this.event)
       
       this.selected = true
       rootInfo.isHighlighted = true
@@ -703,8 +706,8 @@ export class EventMenuItem extends MenuItem {
       jumpInButtonInfo.isHighlighted = true
       jumpInButtonInfo.done = false
 
-      detailTextInfo.isHighlighted = true
-      detailTextInfo.done = false
+      //detailTextInfo.isHighlighted = true
+      //detailTextInfo.done = false
 
       highlightRaysInfo.isHighlighted = true
       highlightRaysInfo.done = false
@@ -728,9 +731,12 @@ export class EventMenuItem extends MenuItem {
       
       this.selected = false      
     }
+
+    hideEventUI()
+
     let rootInfo = AnimatedItem.getMutable(this.entity)
     let jumpInButtonInfo = AnimatedItem.getMutable(this.jumpInButton)
-    let detailTextInfo = AnimatedItem.getMutable(this.detailTextPanel)
+    //let detailTextInfo = AnimatedItem.getMutable(this.detailTextPanel)
     let highlightRaysInfo = AnimatedItem.getMutable(this.highlightRays)
     let coordsPanelInfo = AnimatedItem.getMutable(this.coordsPanel)
     let timePanelInfo = AnimatedItem.getMutable(this.timePanel)
@@ -742,8 +748,8 @@ export class EventMenuItem extends MenuItem {
     jumpInButtonInfo.isHighlighted = false
     jumpInButtonInfo.done = false
 
-    detailTextInfo.isHighlighted = false
-    detailTextInfo.done = false
+    //detailTextInfo.isHighlighted = false
+    //detailTextInfo.done = false
 
     highlightRaysInfo.isHighlighted = false
     highlightRaysInfo.done = false
@@ -777,7 +783,7 @@ export class EventMenuItem extends MenuItem {
     
     VisibilityComponent.getMutable(this.remainingTimeRoot).visible = true
     VisibilityComponent.getMutable(this.title).visible = true
-    VisibilityComponent.getMutable(this.detailTextPanel).visible = true
+   // VisibilityComponent.getMutable(this.detailTextPanel).visible = true
     this.thumbNail.show()
     Transform.getMutable(this.entity).scale = Vector3.One()
   }
@@ -788,7 +794,7 @@ export class EventMenuItem extends MenuItem {
     VisibilityComponent.getMutable(this.dateMonthRoot).visible = false
     VisibilityComponent.getMutable(this.dateRoot).visible = false
     VisibilityComponent.getMutable(this.title).visible = false
-    VisibilityComponent.getMutable(this.detailTextPanel).visible = false
+    //VisibilityComponent.getMutable(this.detailTextPanel).visible = false
     VisibilityComponent.getMutable(this.remainingTimeRoot).visible = false
     this.thumbNail.hide()
     Transform.getMutable(this.entity).scale = Vector3.Zero()

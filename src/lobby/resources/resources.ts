@@ -59,10 +59,15 @@ export let vortex2Shape:PBGltfContainer=            {src:modelFolder + "vortex2.
 export let divingSignShape:PBGltfContainer=         {src:modelFolder + "diving_sign.glb"}
 
 // BAR NPCs
-export const octopusModel = 'models/core_building/BobOctorossV46.glb'
-export const fashionistModel = 'models/core_building/WearableConnoisseurRotatedV08.glb'
-export const aritst1Model = 'models/core_building/ch1_crowdV5.glb'
-export const aritst2Model = 'models/core_building/ch2_crowdV5.glb'
+export const octopusModelPath = 'models/core_building/BobOctorossV46.glb'
+export const fashionistModelPath = 'models/core_building/WearableConnoisseurRotatedV08.glb'
+export const aritst1ModelPath = 'models/core_building/ch1_crowdV5.glb'
+export const aritst2ModelPath = 'models/core_building/ch2_crowdV5.glb'
+export const dogeModelPath = 'models/core_building/dogeNPC_anim4.glb'
+export const simoneModelPath = 'models/core_building/Simone_Anim_Collider.glb'
+export const robModelPath = 'models/core_building/'
+export const aishaModelPath = 'models/core_building/'
+
 
 //Audio
 export const navigationForwardSfx = `sounds/navigationForward.mp3`

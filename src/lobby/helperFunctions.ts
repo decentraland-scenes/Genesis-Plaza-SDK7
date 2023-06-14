@@ -47,46 +47,58 @@ export function wordWrap(str:string, maxWidth:number, maxLines:number) {
 
   //log("original lines: " + str.split(newLineStr).length)
   
-for( let j=0; j< linesSeparate.length; j++){
-  res = ''
-  done = false 
-  //process each line for linebreaks
-  while (linesSeparate[j].length > maxWidth) {  
-   
-    let found = false;
-    // Inserts new line at first whitespace of the line
-    for (let i = maxWidth - 1; i >= 0; i--) {
-        if (testWhite(linesSeparate[j].charAt(i))) {
-            res = res + [linesSeparate[j].slice(0, i), newLineStr].join('');
-            linesSeparate[j] = linesSeparate[j].slice(i + 1);
-            found = true;            
-            break;
+  if(str.length > maxWidth){
+    for( let j=0; j< linesSeparate.length; j++){
+      res = ''
+      done = false 
+      //process each line for linebreaks
+      while (linesSeparate[j].length > maxWidth) {  
+       
+        let found = false;
+        // Inserts new line at first whitespace of the line
+        for (let i = maxWidth - 1; i >= 0; i--) {
+            if (testWhite(linesSeparate[j].charAt(i))) {
+                res = res + [linesSeparate[j].slice(0, i), newLineStr].join('');
+                linesSeparate[j] = linesSeparate[j].slice(i + 1);
+                found = true;            
+                break;
+            }
         }
-    }
-    // Inserts new line at maxWidth position, the word is too long to wrap
-    if (!found) {
-        res += [linesSeparate[j].slice(0, maxWidth), newLineStr].join('');
-        linesSeparate[j] = linesSeparate[j].slice(maxWidth);        
-    }
-  } 
-
-  lines +=  res + linesSeparate[j] + "\n"
-
-}
+        // Inserts new line at maxWidth position, the word is too long to wrap
+        if (!found) {
+            res += [linesSeparate[j].slice(0, maxWidth), newLineStr].join('');
+            linesSeparate[j] = linesSeparate[j].slice(maxWidth);        
+        }
+      } 
     
+      lines +=  res + linesSeparate[j] + "\n"
+    
+    }
+        
+      
+      //let lines = res + str
+      let finalLines = lines.split('\n') 
+      let croppedResult = ''
+    
+      for(let i=0; i < maxLines && i < finalLines.length; i++){
+        if(i == maxLines - 1 ){
+          croppedResult += finalLines[i] 
+        }
+        else{
+          croppedResult += finalLines[i] + '\n'  
+        }
+      }
+    
+      // if(finalLines.length > maxLines){
+      //   croppedResult += '...'
+      // }
+      return croppedResult;
+  }
+  else {
+    return str
+  }
+
   
-  //let lines = res + str
-  let finalLines = lines.split('\n') 
-  let croppedResult = ''
-
-  for(let i=0; i < maxLines && i < finalLines.length; i++){
-    croppedResult += finalLines[i] + '\n'  
-  }
-  if(finalLines.length > maxLines){
-    croppedResult += '...'
-  }
-
-  return croppedResult;
 }
 
 function testWhite(x:string) {
