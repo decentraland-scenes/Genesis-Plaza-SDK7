@@ -33,12 +33,6 @@
     "dcl-npc-toolkit": "^1.1.2-20230613163627.commit-3dcd550",
     "dcl-ui-toolkit": "^0.9.1"
   },
-  "bundledDependencies": [
-    "@dcl-sdk/npc-utils",
-    "@dcl-sdk/utils",
-    "colyseus.js",
-    "dcl-ui-toolkit"
-  ],
   "bundleDependencies": [
     "@dcl-sdk/npc-utils",
     "@dcl-sdk/utils",
