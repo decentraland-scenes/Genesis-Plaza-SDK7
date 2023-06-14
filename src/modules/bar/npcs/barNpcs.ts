@@ -7,7 +7,7 @@ import { rarestItem, rarityLevel } from './rarity'
 import * as utils from '@dcl-sdk/utils'
 import { coreBuildingOffset } from '../../../lobby/resources/globals'
 import { RemoteNpc, hideThinking } from '../../RemoteNpcs/remoteNpc'
-import { FollowPathData } from 'dcl-npc-toolkit/dist/types'
+import { FollowPathData, NPCData } from 'dcl-npc-toolkit/dist/types'
 import { CONFIG } from '../../../config'
 import { closeCustomUI, openCustomUI } from '../../../utils/customNpcUi/customUi'
 import { NpcAnimationNameType, REGISTRY, trtDeactivateNPC } from '../../../registry'
@@ -21,18 +21,18 @@ const LogTag: string = 'barNpcs'
 const ANIM_TIME_PADD = .2
 
 const DOGE_NPC_ANIMATIONS: NpcAnimationNameType = {
-  HI: { name: "Hi", duration: 2, autoStart: undefined},
-  IDLE: { name: "Idle", duration: -1},
+  HI: { name: "Hi", duration: 2, autoStart: undefined },
+  IDLE: { name: "Idle", duration: -1 },
   WALK: { name: "Walk", duration: -1 },
   TALK: { name: "Talk1", duration: 5 },
   THINKING: { name: "Thinking", duration: 5 },
   RUN: { name: "Run", duration: -1 },
   WAVE: { name: "Wave", duration: 4 + ANIM_TIME_PADD },
-  LAUGH: { name: "Laugh", duration: 2, autoStart: undefined},
-  HAPPY: { name: "Happy", duration: 2, autoStart: undefined},
-  SAD: { name: "Sad", duration: 2, autoStart: undefined},
-  SURPRISE: { name: "Surprise", duration: 2, autoStart: undefined},
-} 
+  LAUGH: { name: "Laugh", duration: 2, autoStart: undefined },
+  HAPPY: { name: "Happy", duration: 2, autoStart: undefined },
+  SAD: { name: "Sad", duration: 2, autoStart: undefined },
+  SURPRISE: { name: "Surprise", duration: 2, autoStart: undefined },
+}
 
 const SIMONAS_NPC_ANIMATIONS: NpcAnimationNameType = {
   HI: { name: "Hi", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/hi1.png" },
@@ -234,7 +234,9 @@ function createBoyArtist(): Entity {
       textBubble: true,
       portrait: {
         path: `images/portraits/ACch2.png`,
-      }
+      },
+      bubbleYOffset: .15,
+      bubbleXOffset: -1
     },
   )
 
@@ -246,6 +248,8 @@ function createBoyArtist(): Entity {
   })
 
   npcLib.playAnimation(boy, 'Talk', false)
+  console.log("CHECK_DATA", npcLib.getData(boy) as NPCData);
+
   return boy
 }
 
@@ -275,7 +279,9 @@ function createGirlArtist(): Entity {
       portrait: {
         path: `images/portraits/ACch2.png`,
         offsetX: -80, offsetY: 10
-      }
+      },
+      bubbleYOffset: .15,
+      bubbleXOffset: 1.15
     }
   )
 
@@ -287,6 +293,8 @@ function createGirlArtist(): Entity {
   })
 
   npcLib.playAnimation(girl, 'Talk', false)
+
+  console.log("CHECK_DATA", npcLib.getData(girl) as NPCData);
   return girl
 }
 //#endregion

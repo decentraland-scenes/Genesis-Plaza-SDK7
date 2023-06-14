@@ -90,8 +90,6 @@ export class Config {
     this.COLYSEUS_ENDPOINT_NON_LOCAL = COLYSEUS_ENDPOINT_URL[env]
     this.COLYSEUS_ENDPOINT_LOCAL = COLYSEUS_ENDPOINT_URL[env]
     this.COLYSEUS_HTTP_ENDPOINT = COLYSEUS_ENDPOINT_URL[env].replace("wss://", "https://").replace("ws://", "http://")
-
-
   }
 }
 
@@ -104,8 +102,6 @@ export function initConfig() {
   isPreviewMode({}).then((val: any) => {
     console.log("IN_PREVIEW", CONFIG.IN_PREVIEW, val)
     CONFIG.IN_PREVIEW = val || CONFIG.FORCE_PREVIEW_ENABLED
-    CONFIG.PATH_DEBUG = CONFIG.IN_PREVIEW && CONFIG.PATH_DEBUG
-    CONFIG.EMOTION_DEBUG = CONFIG.IN_PREVIEW && CONFIG.EMOTION_DEBUG
   })
   return CONFIG
 }
