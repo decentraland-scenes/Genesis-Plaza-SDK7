@@ -7,6 +7,7 @@ import { customNpcUI } from './utils/customNpcUi/customUi'
 import {render} from 'dcl-ui-toolkit'
 
 import * as utils from '@dcl-sdk/utils'
+import { cleanString, wordWrap } from './lobby/helperFunctions'
 
 let teleportUIVisibility: DisplayType = 'none'
 let timeToBeamUp: number = 3
@@ -23,8 +24,13 @@ const originalPos = 50
 let shakePos: PositionUnit = '50%'
 let isScoreEnabled = false
 let scorePositionX: PositionUnit = '0%'
-
+let eventTitleText: string = "Title"
+let eventDetailText: string = "Description"
+let eventDetailVisible: DisplayType = "none"
+let eventThumbnail:string = "images/fallback-scene-thumb.png"
 let scaleScore: number = 0
+let eventAnimatedY: PositionUnit = '0%'
+let eventAnimFactor: number = 0
 
 export function showTeleportUI(isVisible: DisplayType) {
   console.log('showTeleportUI', isVisible)
@@ -34,6 +40,134 @@ export function showTeleportUI(isVisible: DisplayType) {
 export function setTeleportCountdown(_numberString: string) {
   //teleportCountdownText.value = _numberString
 }
+
+const uiEventDettails = () => (
+  <UiEntity
+    //top level root ui div
+    uiTransform={{
+      width: '768',
+      height: '1024',
+
+      // { top: 4, bottom: 4, left: 4, right: 4 },
+      padding: { top: 0, bottom: 0, left: 4, right: 0 },
+      alignContent: 'center',
+      display: eventDetailVisible,
+      flexDirection:'column' , 
+      positionType: 'absolute',
+      position: { top: eventAnimatedY, right: '5%' },
+      flexWrap:'wrap',      
+      justifyContent:'flex-start',
+      //overflow: 'scroll'
+    }}
+    uiBackground={{
+      
+      textureMode: 'nine-slices',
+      texture: {
+        src: 'images/event_ui_bg.png'
+      },
+      textureSlices: {
+        top: 0.32,
+        bottom: 0.32,
+        left: 0.32,
+        right: 0.32
+      },
+      color: Color4.fromHexString("#ffffffbb")
+    }}
+  >
+    <UiEntity
+    //top level root ui div
+    uiTransform={{
+      width: '100%',
+      height: '33%',
+
+      // { top: 4, bottom: 4, left: 4, right: 4 },
+      padding: { top: 0, bottom: 0, left: 4, right: 0 },
+      alignContent: 'center',
+      display: eventDetailVisible,
+      positionType: 'relative',
+      position: { top: '0%', right: '0%' }
+      
+    }}
+    uiBackground={{     
+      textureMode:'stretch',
+      texture: {
+        src: eventThumbnail
+      },      
+    }}
+  ></UiEntity>
+
+<UiEntity
+    //Title container
+    uiTransform={{
+      width: '760',
+      height: '10%',
+
+      // { top: 4, bottom: 4, left: 4, right: 4 },
+      padding: { top: 0, bottom: 0, left:0, right: 0 },
+      alignContent: 'center',
+      display: eventDetailVisible,
+      positionType: 'relative',
+      position: { top: '0%', right: '0%' }
+      
+    }}
+    uiBackground={{     
+      color: Color4.fromHexString("#2a2622ff")      
+    }}
+  >
+    <Label
+      // EVENT TITLE
+      value = {eventTitleText}
+      fontSize={30}
+      color={ Color4.White()}      
+      textAlign='middle-center'
+      uiTransform={{ flexGrow:3 , width: '100%', height: '100%', positionType: 'relative', position: {top: '0%', left: '0%'}}}
+      
+    
+    />
+  </UiEntity>
+
+    <Label
+    // Event DEtails text
+    value= {eventDetailText}
+    color={ Color4.Black()}
+    fontSize={20}
+    textAlign='top-left'
+    
+    
+    uiTransform={{ 
+      width: '100%', 
+      height: '10%', 
+      positionType: 'absolute', 
+      margin: {left: '2%'},
+      position: {top: '40%', left: '2%'},
+      flexWrap:'wrap',
+      flexDirection:'column',
+      justifyContent:'flex-start',
+      //overflow: 'scroll'
+      
+    }}
+        
+  />
+  <Label
+    // PRESS X INSTRUCTION TEXT
+    value= "Press [ X ] to discover more events"
+    color={ Color4.fromHexString("#888888ff")}
+    fontSize={24}
+    textAlign='bottom-center'
+    
+    
+    uiTransform={{ 
+      width: '100%', 
+      height: '10%', 
+      positionType: 'absolute', 
+      margin: {left: '2%'},
+      position: {bottom: '2%'},
+      
+    }}
+    />
+
+  </UiEntity>
+)
 
 const uiOutOfBounds = () => (
   <UiEntity
@@ -300,6 +434,7 @@ const uiComponent = () => [
   uiBasketballPower(),
   uiBasketballScore(),
   uiOutOfBounds(),
+  uiEventDettails(),
   //uiSpawnCube()
   render(),
 ]
@@ -308,6 +443,34 @@ setupUi()
 
 export function setupUi() {
   ReactEcsRenderer.setUiRenderer(uiComponent)
+}
+
+export function displayEventUI(event:any) {
+  eventDetailVisible = 'flex'  
+  
+  let rawTitle: string = event.name  
+  rawTitle = cleanString(rawTitle)
+  rawTitle = wordWrap(rawTitle, 36, 2)
+
+  eventTitleText = rawTitle
+
+  eventDetailText =  '\n\n' + wordWrap(cleanString(event.description),68, 18) + '</cspace>'
+
+  eventThumbnail = event.image
+
+  eventAnimFactor = 0
+  factor =0
+  eventAnimatedY = (-100 + eventAnimFactor * 100 + '%') as PositionUnit
+
+  
+
+}
+export function hideEventUI(){
+  eventDetailVisible = 'none'  
+  eventAnimFactor = 0
+  factor =0
+  eventAnimatedY = (-100 + eventAnimFactor * 100 + '%') as PositionUnit
+  eventAnimatedY = (eventAnimFactor + '%') as PositionUnit
 }
 
 export function displayBasketballUI() {
@@ -379,6 +542,33 @@ let factor = 0
 engine.addSystem((dt: number) => {
   let scoreXNum = 0
   let animTime = 3
+
+  // hide event card ui if player is furhter from the slider menu
+  if(Transform.get(engine.PlayerEntity).position.z > 40){
+
+    if(factor  < 1){
+      factor += dt *4
+      if(factor > 1 ){
+        factor = 1      
+      }
+      
+      eventAnimFactor = utils.interpolate(utils.InterpolationType.EASEOUTQUAD, factor)
+      // eventAnimFactor += dt*5
+  
+      
+  
+      eventAnimatedY = (-100 + eventAnimFactor * 100 + '%') as PositionUnit
+      
+    }
+    else{
+      eventAnimatedY = (0 + '%') as PositionUnit
+    }
+    
+  }
+  else{
+    hideEventUI()
+  }
+  
 
   if (isScoreEnabled) {
     elapsed += dt

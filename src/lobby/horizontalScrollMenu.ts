@@ -7,11 +7,14 @@ import { AudioSource, ColliderLayer, Entity, GltfContainer, InputAction, MeshCol
 import * as resource from "./resources/resources"
 import { AnimatedItem, ProximityScale, SlerpItem } from "./simpleAnimator";
 import { CrowdMenuItem } from "./menuItemCrowd";
+import { MenuManager } from "./menuManager";
 
 
 
 
 export class HorizontalMenu {
+    menuID:number
+    menuManagerRef:MenuManager
     items:MenuItem[]
     itemRoots:Entity[]
     clickBoxes:Entity[]
@@ -29,7 +32,9 @@ export class HorizontalMenu {
     topFrame:Entity
     analyticParent:Entity
 
-    constructor(_position:Vector3, _rotation:Quaternion,_analyticParent:Entity){
+    constructor(_position:Vector3, _rotation:Quaternion,_analyticParent:Entity, _menuManager:MenuManager, _id:number){
+      this.menuID = _id
+      this.menuManagerRef = _menuManager
         this.spacing = 3.3
         this.angleSpacing = 12
         this.items = []
@@ -124,6 +129,7 @@ export class HorizontalMenu {
     selectItem(_itemID: number, _silent:boolean) {
 
         this.deselectAll()
+        this.menuManagerRef.deselectAllMenusExceptID(this.menuID)
         this.items[_itemID].select(_silent)
         //if(_id < this.items.length){
         // this.items[_id].select()
@@ -136,18 +142,18 @@ export class HorizontalMenu {
         // } else {
         //   _item.select()
         // }
-        const transformClickBox = Transform.getMutable(this.clickBoxes[_itemID])
-        transformClickBox.scale.y = 1.58
-        transformClickBox.position.y = -0.25
+        // const transformClickBox = Transform.getMutable(this.clickBoxes[_itemID])
+        // transformClickBox.scale.y = 1.58
+        // transformClickBox.position.y = -0.25
     }
 
     deselectItem(_itemID: number, _silent: boolean) {
       
      
       this.items[_itemID].deselect(_silent)
-      const transformClickBox = Transform.getMutable(this.clickBoxes[_itemID])
-      transformClickBox.scale.y = 0.8
-      transformClickBox.position.y = 0
+      // const transformClickBox = Transform.getMutable(this.clickBoxes[_itemID])
+      // transformClickBox.scale.y = 0.8
+      // transformClickBox.position.y = 0
     }
 
     deselectAll() {
@@ -268,7 +274,7 @@ export class HorizontalMenu {
         pointerEventsSystem.onPointerDown(
           {
             entity:clickBox,
-            opts: { hoverText: 'SELECT', button:InputAction.IA_ANY}
+            opts: { hoverText: 'SELECT', button:InputAction.IA_ANY, maxDistance: 14}
           },
           (e) => {
             if(e.button == InputAction.IA_POINTER){
