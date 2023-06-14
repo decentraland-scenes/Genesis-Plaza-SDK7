@@ -623,9 +623,9 @@ function createAisha() {
       thinking: {
         enabled: true,
         textEnabled: false,
-        modelPath: 'models/loading-icon.glb',
+        modelPath: 'models/core_building/loading-icon.glb',
         offsetX: 0,
-        offsetY: 1,
+        offsetY: 3,
         offsetZ: 0
       }
       , onEndOfRemoteInteractionStream: () => {
