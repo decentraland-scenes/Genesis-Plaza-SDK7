@@ -53,7 +53,7 @@ export function getNpcEmotion(emotion: ChatPart): NpcAnimationNameDef {
     //   break
     // case EmotionBehaviorCode.STONEWALLING:
     //   if(activeNpc.args.npcAnimations.COME_ON) result = activeNpc.args.npcAnimations.COME_ON
-    //   break
+    //   break 
     case EmotionBehaviorCode.HUMOR:
     case EmotionBehaviorCode.TENSE_HUMOR:
       if (activeNpc.args.npcAnimations.LAUGH) result = activeNpc.args.npcAnimations.LAUGH
@@ -66,11 +66,5 @@ export function getNpcEmotion(emotion: ChatPart): NpcAnimationNameDef {
       break
   }
   result = result ? result : defaultEmotion
-  return result;
-}
-
-export function isBeingPlayed(npc: Entity, animation: string): boolean {
-  if (!npc) return false
-  if (!animation) return false
-  return Animator.getClip(npc, animation).playing
+  return result; 
 }

@@ -21,8 +21,10 @@ import { TeleportController } from './beamPortal'
 import { whenAllowedMediaHelperReadyAddCallback } from '../utils/allowedMediaHelper'
 import { HorizontalMenu } from './horizontalScrollMenu'
 import { getRealm,GetRealmResponse } from "~system/Runtime"
+import * as utils from '@dcl-sdk/utils'
 import { getRegisteredAnalyticsEntity } from '../modules/stats/analyticsComponents'
 import { ANALYTICS_ELEMENTS_IDS } from '../modules/stats/AnalyticsConfig'
+import { MenuManager } from './menuManager'
 //import * as sfx from './resources/sounds'
 //import { insideBar } from 'src/game'
 
@@ -188,13 +190,36 @@ getRealm({}).then(
 
 
   whenAllowedMediaHelperReadyAddCallback(()=>{
-    let eventMenu = new HorizontalMenu( Vector3.create(lobbyCenter.x- coreBuildingOffset.x, lobbyHeight + 1.25  , lobbyCenter.z- coreBuildingOffset.z), Quaternion.fromEulerDegrees(0,-54,0), getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.eventsSlider))
+
+    let menuManager = new MenuManager()
+
+    let eventMenu = new HorizontalMenu( 
+      Vector3.create(lobbyCenter.x- coreBuildingOffset.x, lobbyHeight + 1.25  , lobbyCenter.z- coreBuildingOffset.z), 
+      Quaternion.fromEulerDegrees(0,-54,0), 
+      getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.eventsSlider),
+      menuManager,
+      0
+      )
     eventMenu.updateEventsMenu(15)
  
-    let crowdsMenu = new HorizontalMenu( Vector3.create(lobbyCenter.x- coreBuildingOffset.x, lobbyHeight + 3.5 , lobbyCenter.z- coreBuildingOffset.z), Quaternion.fromEulerDegrees(0,-54,0), getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.eventsSlider))  
+    let crowdsMenu = new HorizontalMenu( 
+      Vector3.create(lobbyCenter.x- coreBuildingOffset.x, lobbyHeight + 3.5 , lobbyCenter.z- coreBuildingOffset.z), 
+      Quaternion.fromEulerDegrees(0,-54,0), 
+      getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.eventsSlider),
+      menuManager,
+      1
+      )  
     crowdsMenu.updateCrowdsMenu(10)
+
+    menuManager.addMenu(eventMenu)
+    menuManager.addMenu(crowdsMenu)
+    // refresh remaining time displays every minute (local calculation update, no server fetch)
+    utils.timers.setInterval(()=>{
+      eventMenu.updateEventsTimes()      
+    }, 60000)
   }
   )
+  
 
   /*
   //TODO TAG:PORT-REIMPLEMENT-ME
