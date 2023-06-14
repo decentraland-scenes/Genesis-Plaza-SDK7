@@ -61,6 +61,7 @@ export function initBarNpcs(): void {
   createArtistCouple()
   createDogeNpc()
   createSimonas()
+  createAisha()
 }
 
 //#region octopus
@@ -410,6 +411,7 @@ function createDogeNpc(): void {
 }
 //#endregion
 
+//#region simone
 function createSimonas() {
   simonas = new RemoteNpc(
     { resourceName: "workspaces/genesis_city/characters/simone" },
@@ -564,7 +566,7 @@ function createRob() {
     elementId: ANALYTICS_ELEMENTS_IDS.rob,
   })
 }
-//#endregion
+//#endregion*/
 
 //#region AIsha
 const AISHA_NPC_ANIMATIONS: NpcAnimationNameType = {
@@ -647,7 +649,7 @@ function createAisha() {
   })
 }
 //#endregion
-*/
+
 
 function RotateFashionist(targetPosition: Vector3) {
   let targetRotation = Quaternion.fromLookAt(
