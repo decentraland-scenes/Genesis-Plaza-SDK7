@@ -570,10 +570,10 @@ function createRob() {
 
 //#region AIsha
 const AISHA_NPC_ANIMATIONS: NpcAnimationNameType = {
-  IDLE: { name: "Idle", duration: 4, autoStart: undefined, portraitPath: "images/portaits/aisha/idle1.png"},
-  TALK: { name: "Talking", duration: 4, autoStart: undefined, portraitPath: "images/portaits/aisha/talking1.png"},
-  THINKING: { name: "Thinking", duration: 4, autoStart: undefined, portraitPath: "images/portaits/aisha/interesting1.png"},
-  EXCITED: { name: "Excited", duration: 4, autoStart: undefined, portraitPath: "images/portaits/aisha/interesting1.png"},
+  IDLE: { name: "Idle", duration: 4, autoStart: undefined, portraitPath: "images/portaits/aisha/Idle.png"},
+  TALK: { name: "Talking", duration: 4, autoStart: undefined, portraitPath: "images/portaits/aisha/Talking.png"},
+  THINKING: { name: "Thinking", duration: 4, autoStart: undefined, portraitPath: "images/portaits/aisha/Thinking.png"},
+  EXCITED: { name: "Excited", duration: 4, autoStart: undefined, portraitPath: "images/portaits/aisha/Excited.png"},
 }
 
 function createAisha() {
