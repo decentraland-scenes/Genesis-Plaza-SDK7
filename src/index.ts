@@ -1,6 +1,6 @@
 import * as utils from '@dcl-sdk/utils'
 import { Color3, Color4, Vector3, Quaternion } from '@dcl/sdk/math'
-import { executeTask } from '@dcl/sdk/ecs'
+import { executeTask,GltfContainer } from '@dcl/sdk/ecs'
 
 import { addBuildings } from './modules/buildings'
 //import { placeDoors } from './modules/bar/doors'
@@ -31,6 +31,7 @@ import { initOnCameraModeChangedObservable } from './back-ports/onCameraModeChan
 import { applyAudioStreamWorkAround, initSoundsAttachedToPlayerHandler } from './modules/soundsAttachedToPlayer'
 import { onEnterScene, onLeaveScene } from '@dcl/sdk/observables'
 import { isMovePlayerInProgress } from './back-ports/movePlayer'
+import * as resources from './lobby/resources/resources'
 //import { onEnterScene, onLeaveScene } from '@dcl/sdk/observables'
 
 // export all the functions required to make the scene work
@@ -121,6 +122,44 @@ function start(){
   // ADD EVENT CARDS TO BAR
   addTVPanels()
 
+
+  //eager load bar models so have them downloaded browser cache should the time come to use them
+  const EAGER_LOAD_MODELS_START_DELAY = 10000
+  const EAGER_LOAD_MODELS_DELETE_DELAY = 5000
+  utils.timers.setTimeout(() => { 
+    const METHOD_NAME = "eagerLoadingBarModels"
+    console.log("index.ts", "eagerLoadingBarModels", "eager loading bar models")
+    //npcs + juke box etc.
+    const modelsToLazyLoad = [
+      resources.octopusModelPath
+      ,resources.fashionistModelPath,
+      resources.aritst1ModelPath,
+      resources.aritst2ModelPath,
+      resources.dogeModelPath,
+      resources.simoneModelPath,
+      resources.robModelPath,
+      resources.aishaModelPath]
+    
+    const entList:Entity[] = []
+    for(const model of modelsToLazyLoad){
+      const tempEnt = engine.addEntity() 
+      //out of sight underground
+      Transform.create(tempEnt, { position: Vector3.create(6, 0, 6),scale:Vector3.create(0.01,0.01,0.01) })
+      GltfContainer.create(tempEnt, { src: model})
+
+      entList.push(tempEnt)
+    }
+    //TODO poll loading state to know when done for quicker deletion
+    utils.timers.setTimeout(() => {
+      //delete them now
+      console.log("index.ts", METHOD_NAME, "deleting eager loading bar models")
+      
+      for(const e of entList){
+        engine.removeEntity(e)
+      }
+    },EAGER_LOAD_MODELS_DELETE_DELAY)
+
+  },EAGER_LOAD_MODELS_START_DELAY) //picking time after scene load in hopes it does not cause major hickup
 
 
 
