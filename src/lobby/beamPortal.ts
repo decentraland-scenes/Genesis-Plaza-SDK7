@@ -96,6 +96,7 @@ Transform.create(beam,{
 GltfContainer.createOrReplace(beam, beamShape)
 
 const CLASSNAME = "TeleportController"
+
 export class TeleportController {
     triggerBoxLobby: Entity
     triggerBoxLobbyPosition: Vector3
@@ -125,6 +126,7 @@ export class TeleportController {
 
       const spawnRandomX = 2
       const spawnRandomZ = 1
+
       getRealm({}).then(
         (value:GetRealmResponse) => {
           if(value.realmInfo?.isPreview){
@@ -192,8 +194,8 @@ export class TeleportController {
       // Trigger to handle teleporting the player up to the cloud
       this.triggerBoxUp = engine.addEntity()
       Transform.create(this.triggerBoxUp, {})
-      this.triggerBoxUpPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y, lobbyCenter.z - coreBuildingOffset.z)
-      this.triggerBoxUpScale = Vector3.create(5, 4.5, 5)
+      this.triggerBoxUpPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y+1, lobbyCenter.z - coreBuildingOffset.z)
+      this.triggerBoxUpScale = Vector3.create(5, 2, 5)
       
 
       utils.triggers.addTrigger(this.triggerBoxUp, TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, utils.LAYER_1,  
@@ -221,7 +223,7 @@ export class TeleportController {
       // Trigger that handles landing offset
       this.triggerBoxDown = engine.addEntity()
       Transform.create(this.triggerBoxDown, {})
-      this.triggerBoxDownPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y + 8, lobbyCenter.z - coreBuildingOffset.z)
+      this.triggerBoxDownPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y + 14, lobbyCenter.z - coreBuildingOffset.z)
       this.triggerBoxDownScale = Vector3.create(6, 6, 6)
 
       utils.triggers.addTrigger(this.triggerBoxDown, TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, utils.LAYER_1,  
