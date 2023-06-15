@@ -19,8 +19,8 @@ let selectedTheme: string = AtlasTheme.ATLAS_PATH_DARK
 
 let aIndex = 0
 let bIndex = 1
-
-const modalWidth = 926
+ 
+const modalWidth = 850
 const moreOptionButtonHeight = "40"
 const inputTextWidth = modalWidth - 300
 
@@ -32,7 +32,7 @@ export const customNpcUI = () => {
         positionType: 'absolute',
         width: modalWidth,
         height: 260,
-        position: { bottom: '5%', left: '32%' },
+        position: { bottom: '5%', left: '27%' },
         display: isVisible ? 'flex' : 'none'
       }}
     >
@@ -61,7 +61,7 @@ export const customNpcUI = () => {
           <Label value="<b>Ask Me Anything!</b>" fontSize={30}></Label>
           <Button
             value=""
-            fontSize={40}
+            fontSize={38}
             uiTransform={{
               positionType: 'absolute',
               position: { top: 10, right: 20 },
@@ -204,10 +204,10 @@ export const customNpcUI = () => {
               textureMode: 'stretch',
               uvs: getImageMapping({ ...sourcesComponentsCoordinates.buttons.dark })
             }}
-            fontSize={25}
+            fontSize={20}
             onMouseDown={() => {
               nextQuestion()
-            }}
+            }} 
           ></Button>
         </UiEntity>
         <UiEntity //Footer
@@ -224,9 +224,9 @@ export const customNpcUI = () => {
         uiTransform={{
           display: portraitPath !== '' ? 'flex' : 'none',
           positionType: 'absolute',
-          position: { left: -175 },
-          width: 300,
-          height: 300
+          position: { left: -160 },
+          width: 250,
+          height: 250
         }}
         uiBackground={{
           texture: { src: portraitPath },
