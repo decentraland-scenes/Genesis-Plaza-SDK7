@@ -18,6 +18,7 @@ export type NpcAnimationNameType = {
   THINKING?: NpcAnimationNameDef
   TALK?: NpcAnimationNameDef
   LOADING?: NpcAnimationNameDef
+  EXCITED?: NpcAnimationNameDef
   LAUGH?: NpcAnimationNameDef
   WAVE?: NpcAnimationNameDef
   HEART_WITH_HANDS?: NpcAnimationNameDef
