@@ -18,6 +18,7 @@ import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES, AnalyticsLogLabel } f
 
 const LogTag: string = 'barNpcs'
 
+const aishaSpawnSecondsDelay = 5
 const ANIM_TIME_PADD = .2
 
 const DOGE_NPC_ANIMATIONS: NpcAnimationNameType = {
@@ -62,8 +63,14 @@ export function initBarNpcs(): void {
   createArtistCouple()
   createDogeNpc()
   createSimonas()
-  createAisha()
+  initOutsideNpcs()
 }
+
+function initOutsideNpcs(): void {
+  utils.timers.setTimeout(() => {
+    createAisha()
+  }, aishaSpawnSecondsDelay * 1000)
+} 
 
 //#region octopus
 function createOctopusNpc() {
@@ -579,10 +586,10 @@ function createRob() {
 
 //#region AIsha
 const AISHA_NPC_ANIMATIONS: NpcAnimationNameType = {
-  IDLE: { name: "Idle", duration: 4, autoStart: undefined, portraitPath: "images/portraits/aisha/Idle.png"},
-  TALK: { name: "Talking", duration: 4, autoStart: undefined, portraitPath: "images/portraits/aisha/Talking.png"},
-  THINKING: { name: "Thinking", duration: 4, autoStart: undefined, portraitPath: "images/portraits/aisha/Thinking.png"},
-  EXCITED: { name: "Excited", duration: 4, autoStart: undefined, portraitPath: "images/portraits/aisha/Excited.png"},
+  IDLE: { name: "Idle", duration: 4, autoStart: undefined, portraitPath: "images/portraits/aisha/Idle.png" },
+  TALK: { name: "Talking", duration: 4, autoStart: undefined, portraitPath: "images/portraits/aisha/Talking.png" },
+  THINKING: { name: "Thinking", duration: 4, autoStart: undefined, portraitPath: "images/portraits/aisha/Thinking.png" },
+  EXCITED: { name: "Excited", duration: 4, autoStart: undefined, portraitPath: "images/portraits/aisha/Excited.png" },
 }
 
 function createAisha() {
@@ -633,14 +640,14 @@ function createAisha() {
         enabled: true,
         textEnabled: false,
         modelPath: 'models/core_building/loading-icon.glb',
-        offsetX: 0, 
-        offsetY: 2.2,  
+        offsetX: 0,
+        offsetY: 2.2,
         offsetZ: 0
       }
       , onEndOfRemoteInteractionStream: () => {
         openCustomUI()
       }
-      , onEndOfInteraction: () => {}
+      , onEndOfInteraction: () => { }
     }
   )
   aisha.name = "npc.dclGuide"
