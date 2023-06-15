@@ -38,6 +38,7 @@ const FILE_NAME = 'game'
 
 let areNpcsAdded: boolean = false
 let isBasketballAdded: boolean = false
+let jukeBoxAdded: boolean = false
 function insideBar() {
   const METHOD_NAME = 'insideBar'
   log("lazyLoading",FILE_NAME, METHOD_NAME, "Player Enter")
@@ -56,6 +57,13 @@ function insideBar() {
 
     areNpcsAdded = true
   }
+
+  if (!jukeBoxAdded) {
+    placeJukeBox()
+    jukeBoxAdded = true
+    //setBarMusicOn()
+  }
+
   if (!isBasketballAdded) {
 
     // ADD BASKETBALL GAME
@@ -85,11 +93,7 @@ function start(){
 
   initSoundsAttachedToPlayerHandler()
 
-  placeJukeBox()
-  //setBarMusicOn()
-
-
-
+  
   //// ADD CLOUD LOBBY
 
   addCloudLobby()
