@@ -4,7 +4,7 @@ import { IEvents } from '@dcl/sdk/observables'
 
 export class MessageBusExt extends MessageBus{
   /**if enabled, will skip the msg bus aka the "on" and fire immeidatly when "emit" called */
-  isMultiplayerEnabledAll:boolean = true
+  isMultiplayerEnabledAll:boolean = false
   //TODO define it per message type...
   //isMultiplayerEnabledInst: Record<string,boolean>={}
   cbLookup: Record<any, (value: any, sender: string)=>void> = {}
@@ -18,7 +18,11 @@ export class MessageBusExt extends MessageBus{
   }
   emit(message: string, payload: Record<any, any>){
     if(!this.isMultiplayerEnabledAll){
-      this.cbLookup[message](payload,'me')
+      if(this.cbLookup[message]){
+        this.cbLookup[message](payload,'me')
+      }else{ 
+        console.log('MessageBusExt','WARNING','emit: no callback for message',message)
+      }
     }else{
       super.emit(message,payload)
     }

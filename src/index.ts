@@ -41,7 +41,6 @@ const FILE_NAME = 'game'
 
 let areNpcsAdded: boolean = false
 let isBasketballAdded: boolean = false
-let jukeBoxAdded: boolean = false
 
 //TODO consider making these calls async, one for npc, jukebox, physics, etc
 function insideBar() {
@@ -63,12 +62,8 @@ function insideBar() {
     areNpcsAdded = true
   }
 
-  if (!jukeBoxAdded) {
-    placeJukeBox()
-    jukeBoxAdded = true
-    //setBarMusicOn()
-  }
-
+  placeJukeBox()
+    
   if (!isBasketballAdded) {
 
     // ADD BASKETBALL GAME
