@@ -4,7 +4,7 @@ import { IEvents } from '@dcl/sdk/observables'
 
 export class MessageBusExt extends MessageBus{
   /**if enabled, will skip the msg bus aka the "on" and fire immeidatly when "emit" called */
-  isMultiplayerEnabledAll:boolean = true
+  isMultiplayerEnabledAll:boolean = false
   //TODO define it per message type...
   //isMultiplayerEnabledInst: Record<string,boolean>={}
   cbLookup: Record<any, (value: any, sender: string)=>void> = {}
