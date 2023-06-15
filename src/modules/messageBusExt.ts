@@ -18,7 +18,11 @@ export class MessageBusExt extends MessageBus{
   }
   emit(message: string, payload: Record<any, any>){
     if(!this.isMultiplayerEnabledAll){
-      this.cbLookup[message](payload,'me')
+      if(this.cbLookup[message]){
+        this.cbLookup[message](payload,'me')
+      }else{ 
+        console.log('MessageBusExt','WARNING','emit: no callback for message',message)
+      }
     }else{
       super.emit(message,payload)
     }
