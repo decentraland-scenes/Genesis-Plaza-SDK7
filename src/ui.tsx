@@ -45,8 +45,8 @@ const uiEventDettails = () => (
   <UiEntity
     //top level root ui div
     uiTransform={{
-      width: '768',
-      height: '1024',
+      width: '400',
+      height: '800',
 
       // { top: 4, bottom: 4, left: 4, right: 4 },
       padding: { top: 0, bottom: 0, left: 4, right: 0 },
@@ -54,7 +54,7 @@ const uiEventDettails = () => (
       display: eventDetailVisible,
       flexDirection:'column' , 
       positionType: 'absolute',
-      position: { top: eventAnimatedY, right: '5%' },
+      position: { top: '12%', right: eventAnimatedY },
       flexWrap:'wrap',      
       justifyContent:'flex-start',
       //overflow: 'scroll'
@@ -71,14 +71,15 @@ const uiEventDettails = () => (
         left: 0.32,
         right: 0.32
       },
-      color: Color4.fromHexString("#ffffffbb")
-    }}
+      color: Color4.fromHexString("#ffffffee")
+    }} 
+    
   >
     <UiEntity
     //top level root ui div
     uiTransform={{
       width: '100%',
-      height: '33%',
+      height: '25%',
 
       // { top: 4, bottom: 4, left: 4, right: 4 },
       padding: { top: 0, bottom: 0, left: 4, right: 0 },
@@ -94,65 +95,96 @@ const uiEventDettails = () => (
         src: eventThumbnail
       },      
     }}
-  ></UiEntity>
-
-<UiEntity
-    //Title container
-    uiTransform={{
-      width: '760',
-      height: '10%',
-
-      // { top: 4, bottom: 4, left: 4, right: 4 },
-      padding: { top: 0, bottom: 0, left:0, right: 0 },
-      alignContent: 'center',
-      display: eventDetailVisible,
-      positionType: 'relative',
-      position: { top: '0%', right: '0%' }
-      
-    }}
-    uiBackground={{     
-      color: Color4.fromHexString("#2a2622ff")      
-    }}
   >
     <Label
-      // EVENT TITLE
-      value = {eventTitleText}
-      fontSize={30}
-      color={ Color4.White()}      
-      textAlign='middle-center'
-      uiTransform={{ flexGrow:3 , width: '100%', height: '100%', positionType: 'relative', position: {top: '0%', left: '0%'}}}
+        // CLOSE button
+        value = " Close >>>"
+        fontSize={16}
+        color={ Color4.fromHexString("#bbbbbbff")}      
+        textAlign='top-left'
+        
+        uiTransform={{ margin: {left:-1 }, width: '100.5%', height: '16%', positionType: 'absolute', position: {top: '-15.5%', left: '0%'}}}
+        onMouseDown={ hideEventUI }
+           
+        uiBackground={{
       
-    
-    />
+          textureMode: 'nine-slices',
+          texture: {
+            src: 'images/event_close_tab.png'
+          },
+          textureSlices: {
+            top: 0.50,
+            bottom: 0.0,
+            left: 0.45,
+            right: 0.45
+          },
+          color: Color4.fromHexString("#ffffffff")
+        }} 
+      />
+
+
   </UiEntity>
 
-    <Label
+  <UiEntity
+      //Title container
+      uiTransform={{
+        width: '392',
+        height: '10%',
+
+        // { top: 4, bottom: 4, left: 4, right: 4 },
+        padding: { top: 0, bottom: 0, left:0, right: 0 },
+        alignContent: 'center',
+        display: eventDetailVisible,
+        positionType: 'relative',
+        position: { top: '0%', right: '0%' }
+        
+      }}
+      uiBackground={{     
+        color: Color4.fromHexString("#2a2622ff")      
+      }}
+    >
+      <Label
+        // EVENT TITLE
+        value = {eventTitleText}
+        fontSize={20}
+        color={ Color4.White()}      
+        textAlign='middle-center'
+        uiTransform={{ flexGrow:3 , width: '100%', height: '100%', positionType: 'relative', position: {top: '0%', left: '0%'}}}
+        
+      
+      />
+    </UiEntity>
+
+    <UiEntity
     // Event DEtails text
-    value= {eventDetailText}
-    color={ Color4.Black()}
-    fontSize={20}
-    textAlign='top-left'
-    
+    uiText={{ 
+      value: eventDetailText, 
+      fontSize: 16,
+      font:'sans-serif' ,
+      color: Color4.Black(),
+      textAlign: 'top-left',
+      
+    }}  
+   
     
     uiTransform={{ 
       width: '100%', 
-      height: '10%', 
-      positionType: 'absolute', 
+      height: '57%',      
+      positionType: 'relative', 
       margin: {left: '2%'},
-      position: {top: '40%', left: '2%'},
-      flexWrap:'wrap',
-      flexDirection:'column',
-      justifyContent:'flex-start',
-      //overflow: 'scroll'
+      position: {top: '0%', left: '2%'},
+      flexWrap:'wrap',    
+     
       
     }}
         
-  />
+  ></UiEntity>
+  
   <Label
     // PRESS X INSTRUCTION TEXT
     value= "Press [ X ] to discover more events"
     color={ Color4.fromHexString("#888888ff")}
-    fontSize={24}
+    fontSize={18}
     textAlign='bottom-center'
     
     
@@ -450,17 +482,17 @@ export function displayEventUI(event:any) {
   
   let rawTitle: string = event.name  
   rawTitle = cleanString(rawTitle)
-  rawTitle = wordWrap(rawTitle, 36, 2)
+  rawTitle = wordWrap(rawTitle, 32, 2)
 
   eventTitleText = rawTitle
 
-  eventDetailText =  '\n\n' + wordWrap(cleanString(event.description),68, 18) + '</cspace>'
+  eventDetailText =  '\n\n' + wordWrap(cleanString(event.description),43, 18) + '</cspace>'
 
   eventThumbnail = event.image
 
   eventAnimFactor = 0
   factor =0
-  eventAnimatedY = (-100 + eventAnimFactor * 100 + '%') as PositionUnit
+  eventAnimatedY = ((-100 + eventAnimFactor * 100 + 2) + '%') as PositionUnit
 
   
 
@@ -469,7 +501,7 @@ export function hideEventUI(){
   eventDetailVisible = 'none'  
   eventAnimFactor = 0
   factor =0
-  eventAnimatedY = (-100 + eventAnimFactor * 100 + '%') as PositionUnit
+  //eventAnimatedY =  ((-100 + eventAnimFactor * 100 + 5) + '%') as PositionUnit
   eventAnimatedY = (eventAnimFactor + '%') as PositionUnit
 }
 
@@ -557,11 +589,11 @@ engine.addSystem((dt: number) => {
   
       
   
-      eventAnimatedY = (-100 + eventAnimFactor * 100 + '%') as PositionUnit
+      eventAnimatedY =  ((-100 + eventAnimFactor * 100 + 2) + '%') as PositionUnit
       
     }
     else{
-      eventAnimatedY = (0 + '%') as PositionUnit
+      eventAnimatedY = (2 + '%') as PositionUnit
     }
     
   }
