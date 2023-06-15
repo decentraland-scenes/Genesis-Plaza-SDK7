@@ -59,7 +59,16 @@ export function wordWrap(str:string, maxWidth:number, maxLines:number) {
         for (let i = maxWidth - 1; i >= 0; i--) {
             if (testWhite(linesSeparate[j].charAt(i))) {
                 res = res + [linesSeparate[j].slice(0, i), newLineStr].join('');
-                linesSeparate[j] = linesSeparate[j].slice(i + 1);
+
+                //don't remove slash, but break line
+                if(testSlash(linesSeparate[j].charAt(i))){
+                  linesSeparate[j] = linesSeparate[j].slice(i);
+                }
+                // remove white space completely
+                else{
+                  linesSeparate[j] = linesSeparate[j].slice(i + 1);
+                }
+                
                 found = true;            
                 break;
             }
@@ -101,11 +110,15 @@ export function wordWrap(str:string, maxWidth:number, maxLines:number) {
   
 }
 
-function testWhite(x:string) {
-  var white = new RegExp(/^\s$/);
+function testWhite(x:string):boolean {
+  var white = new RegExp(/^[\s/]+$/);
   return white.test(x.charAt(0));
 }
 
+function testSlash(x:string):boolean{
+  var white = new RegExp(/^[/]+$/);
+  return white.test(x.charAt(0));
+}
 
 export function shortenText(text: string, maxLenght: number) {
   let finalText: string = ''
