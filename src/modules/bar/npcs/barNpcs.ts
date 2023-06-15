@@ -46,6 +46,7 @@ const SIMONAS_NPC_ANIMATIONS: NpcAnimationNameType = {
   SURPRISE: { name: "Surprise", duration: 2, autoStart: undefined, portraitPath: "images/portraits/simone/surprise1.png" },
 }
 
+//FIXME do these need to be exported varaibles?
 export let octo: Entity
 export let fashionist: Entity
 export let boyArtist: Entity
@@ -632,8 +633,8 @@ function createAisha() {
         enabled: true,
         textEnabled: false,
         modelPath: 'models/core_building/loading-icon.glb',
-        offsetX: 0,
-        offsetY: 3,
+        offsetX: 0, 
+        offsetY: 2.2,  
         offsetZ: 0
       }
       , onEndOfRemoteInteractionStream: () => {
