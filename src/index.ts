@@ -1,5 +1,7 @@
 import * as utils from '@dcl-sdk/utils'
 import { Color3, Color4, Vector3, Quaternion } from '@dcl/sdk/math'
+import { executeTask } from '@dcl/sdk/ecs'
+
 import { addBuildings } from './modules/buildings'
 //import { placeDoors } from './modules/bar/doors'
 import { barPlatforms } from './modules/platforms'
@@ -39,6 +41,8 @@ const FILE_NAME = 'game'
 let areNpcsAdded: boolean = false
 let isBasketballAdded: boolean = false
 let jukeBoxAdded: boolean = false
+
+//TODO consider making these calls async, one for npc, jukebox, physics, etc
 function insideBar() {
   const METHOD_NAME = 'insideBar'
   log("lazyLoading",FILE_NAME, METHOD_NAME, "Player Enter")
@@ -191,7 +195,11 @@ function start(){
     (other) => {//onEnter
       console.log("lazyLoading", "OnEnter", "Other", other, "Player", engine.PlayerEntity, "& Cam", engine.CameraEntity);
       if(other === engine.PlayerEntity || other === engine.CameraEntity)
+      executeTask(async () => {
+        //so not thread blocking
         insideBar()
+      })
+      
     },
     (entity: Entity) => {//onExit
       console.log("index.ts", "trigger.bar.exit","triggerParent",barCenter,"entityInteracting", entity)
@@ -275,6 +283,6 @@ function start(){
   )
 
   setupUi()
-}
+}//end start()
 
 start()
