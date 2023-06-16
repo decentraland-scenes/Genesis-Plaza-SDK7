@@ -247,9 +247,13 @@ function start(){
   addRepeatTrigger(
     Vector3.create(160 - coreBuildingOffset.x, 50, 152 - coreBuildingOffset.z),
     Vector3.create(50, 102, 50),
-    (entity: Entity) => {
+    (entity: Entity) => { 
       console.log("index.ts", "trigger.bar2???.enter","triggerParent",undefined,"entityInteracting", entity)
-      setBarMusicOn()
+      //FIXME cannot be set by a trigger when sharing state as it will turn on off for other players. 
+      //disconnect juke box for now????
+      //make sure its created
+      placeJukeBox()
+      setBarMusicOn() 
       log('went in') 
     },
     undefined,
