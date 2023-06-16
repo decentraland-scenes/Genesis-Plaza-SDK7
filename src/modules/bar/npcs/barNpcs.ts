@@ -15,6 +15,7 @@ import { connectNpcToLobby } from '../../../lobby-scene/lobbyScene'
 import { genericPrefinedQuestions } from '../../../utils/customNpcUi/customUIFunctionality'
 import { TrackingElement, generateGUID, getRegisteredAnalyticsEntity, trackAction, trackEnd, trackStart } from '../../stats/analyticsComponents'
 import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES, AnalyticsLogLabel } from '../../stats/AnalyticsConfig'
+import { lowerVolume, raiseVolume } from '../jukebox'
 
 const LogTag: string = 'barNpcs'
 
@@ -86,6 +87,8 @@ function createOctopusNpc() {
         trackAction(octo, "Interact", undefined)
         trackStart(octo)
 
+        lowerVolume()
+
         npcLib.changeIdleAnim(octo, 'TalkLoop')
         npcLib.playAnimation(octo, 'TalkIntro', true, 0.63)
         //npcLib.playAnimation(octo, 'TalkLoop', false)
@@ -99,6 +102,8 @@ function createOctopusNpc() {
         npcLib.playAnimation(octo, 'TalkOutro', true, 0.63)
 
         trackEnd(octo)
+
+        raiseVolume()
       },
       portrait: {
         path: `images/portraits/bartender.png`,
@@ -153,6 +158,8 @@ function createFashionistNpc(): Entity {
         trackAction(fashionist, "Interact", undefined)
         trackStart(fashionist)
 
+        lowerVolume()
+
         let rareItem = await rarestItem(true)
 
         let dialogIndex = fashionistNoneDialog
@@ -186,6 +193,8 @@ function createFashionistNpc(): Entity {
         RotateFashionist(position)
 
         trackEnd(fashionist)
+
+        raiseVolume()
       },
       portrait: {
         path: `images/portraits/WearableConnoisseur.png`,
@@ -226,12 +235,17 @@ function createBoyArtist(): Entity {
       onlyETrigger: true,
       onActivate: () => {
         npcLib.activate(girlArtist)
+
         console.log(AnalyticsLogLabel, "barNpcs.ts", "boyArtist")
         trackAction(boy, "Interact", undefined)
         trackStart(boy)
+
+        lowerVolume()
       },
       onWalkAway: () => {
         trackEnd(boy)
+
+        raiseVolume()
       },
       textBubble: true,
       portrait: {
@@ -272,10 +286,14 @@ function createGirlArtist(): Entity {
         console.log(AnalyticsLogLabel, "barNpcs.ts", "girlArtist")
         trackAction(girl, "Interact", undefined)
         trackStart(girl)
+
+        lowerVolume()
       },
       onWalkAway: () => {
         artistTalkToEachOther(false)
         trackEnd(girl)
+
+        raiseVolume()
       },
       textBubble: true,
       portrait: {
@@ -361,12 +379,16 @@ function createDogeNpc(): void {
           trackAction(doge.entity, "Interact", undefined)
           trackStart(doge.entity)
 
+          lowerVolume()
+
           connectNpcToLobby(REGISTRY.lobbyScene, doge)
         },
         onWalkAway: () => {
           console.log("NPC", doge.name, 'walk away')
 
           trackEnd(doge.entity)
+
+          raiseVolume()
 
           closeCustomUI(false)
           hideThinking(doge)
@@ -440,12 +462,16 @@ function createSimonas() {
           trackAction(simonas.entity, "Interact", undefined)
           trackStart(simonas.entity)
 
+          lowerVolume()
+
           connectNpcToLobby(REGISTRY.lobbyScene, simonas)
         },
         onWalkAway: () => {
           console.log("NPC", simonas.name, 'on walked away')
 
           trackEnd(simonas.entity)
+
+          raiseVolume()
 
           closeCustomUI(false)
           hideThinking(simonas)
@@ -600,12 +626,16 @@ function createAisha() {
           trackAction(aisha.entity, "Interact", undefined)
           trackStart(aisha.entity)
 
+          lowerVolume()
+
           connectNpcToLobby(REGISTRY.lobbyScene, aisha)
         },
         onWalkAway: () => {
           console.log("NPC", aisha.name, 'on walked away')
 
           trackEnd(aisha.entity)
+
+          raiseVolume()
 
           closeCustomUI(false)
           hideThinking(aisha)
