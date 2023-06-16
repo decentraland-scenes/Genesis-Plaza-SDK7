@@ -371,13 +371,14 @@ export function setBarMusicOff() {
 }
 
 export function lowerVolume() {
-  if (isInBar || tutorialRunning) return
+  if (tutorialRunning) return
 
   let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
-  if (radioIsOn && audioStreamRef && !audioStreamRef.playing) {
-    audioStreamRef.playing = true
-  }
+  
   if (audioStreamRef) {
+    if (radioIsOn && !audioStreamRef.playing) {
+      audioStreamRef.playing = true
+    }
     audioStreamRef.volume = DistantVolume
   }
 
