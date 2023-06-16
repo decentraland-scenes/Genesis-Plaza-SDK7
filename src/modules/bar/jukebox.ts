@@ -388,7 +388,7 @@ export function lowerVolume() {
 export function raiseVolume() {
   if (tutorialRunning) return
 
-  isInBar = true
+  //isInBar = true
   let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
 
   if (radioIsOn && audioStreamRef && !audioStreamRef.playing) {
