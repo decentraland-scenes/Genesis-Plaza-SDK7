@@ -133,7 +133,15 @@ function createOctopusNpc() {
       if (engine.PlayerEntity === entity) {
         console.log("DebugSession", "Player Enter Area");
         npcLib.activate(octo)
+        lowerVolume()
+      }
+
+    },
+    (entity) => {
+      if (engine.PlayerEntity === entity) {
+        console.log("DebugSession", "Player ExitArea Area");
         utils.triggers.removeTrigger(octo)
+        raiseVolume()
       }
     }
   )
