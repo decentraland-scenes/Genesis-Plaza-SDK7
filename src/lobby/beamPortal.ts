@@ -197,7 +197,7 @@ export class TeleportController {
       this.triggerBoxUpPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y+1, lobbyCenter.z - coreBuildingOffset.z)
       this.triggerBoxUpScale = Vector3.create(5, 2, 5)
       
-
+ 
       utils.triggers.addTrigger(this.triggerBoxUp, TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, utils.LAYER_1,  
         [{type: "box", position: this.triggerBoxUpPosition, scale: this.triggerBoxUpScale}],
         (entity:Entity)=>{ 
@@ -242,7 +242,13 @@ export class TeleportController {
           applyAudioStreamWorkAround('exit')
           movePlayerTo({  newRelativePosition: Vector3.create(lobbyCenter.x - coreBuildingOffset.x - 5, 0, lobbyCenter.z - coreBuildingOffset.z + 2), cameraTarget: Vector3.create(lobbyCenter.x, 2, lobbyCenter.z - 12)}).then(
             ()=>{
-              setMovePlayerInProgress(false)
+              console.log("setMovePlayerInProgress ended",engine.PlayerEntity,Transform.getOrNull(engine.PlayerEntity));
+              //workaroud is to delay it a tiny bit since position is not registered yet for some reason 
+              //and the landing beamup trigger fire when they should not
+              utils.timers.setTimeout(()=>{
+                console.log("setMovePlayerInProgress timer delay workaround fired",engine.PlayerEntity,Transform.getOrNull(engine.PlayerEntity));
+                setMovePlayerInProgress(false)
+              },200)  
             })
 
           setAudioSourceAttachedToPlayerPlaying(this.impactSound,true)
