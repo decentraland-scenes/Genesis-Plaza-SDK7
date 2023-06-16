@@ -697,7 +697,8 @@ export class EventMenuItem extends MenuItem {
       
       trackAction(this.itemBox, "select_card", this.event.id, (this.event.coordinates[0] + ',' + this.event.coordinates[1]+":"+ this.event.name))
       
-      displayEventUI(this.event)
+      // event UI needs fixing /word-wrapping
+      //displayEventUI(this.event)
       
       this.selected = true
       rootInfo.isHighlighted = true
@@ -732,7 +733,7 @@ export class EventMenuItem extends MenuItem {
       this.selected = false      
     }
 
-    hideEventUI()
+    //hideEventUI()
 
     let rootInfo = AnimatedItem.getMutable(this.entity)
     let jumpInButtonInfo = AnimatedItem.getMutable(this.jumpInButton)

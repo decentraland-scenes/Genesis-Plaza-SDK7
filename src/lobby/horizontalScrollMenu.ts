@@ -3,13 +3,17 @@ import { getEvents, getTrendingScenes } from "./checkApi";
 import { MenuItem } from "./menuItem";
 import * as sfx from './resources/sounds'
 import { Quaternion, Vector3 } from "@dcl/sdk/math";
-import { AudioSource, ColliderLayer, Entity, GltfContainer, InputAction, MeshCollider, MeshRenderer, Transform, VisibilityComponent, engine, pointerEventsSystem } from "@dcl/sdk/ecs";
+import { AudioSource, ColliderLayer, Entity, GltfContainer, InputAction, MeshCollider, MeshRenderer, PointerEventType, PointerEvents, Schemas, Transform, VisibilityComponent, engine, inputSystem, pointerEventsSystem } from "@dcl/sdk/ecs";
 import * as resource from "./resources/resources"
 import { AnimatedItem, ProximityScale, SlerpItem } from "./simpleAnimator";
 import { CrowdMenuItem } from "./menuItemCrowd";
 import { MenuManager } from "./menuManager";
 
 
+export const Clickable = engine.defineComponent('Clickable-id', {    
+  id: Schemas.Number,
+  clicked: Schemas.Boolean   
+})
 
 
 export class HorizontalMenu {
@@ -31,6 +35,8 @@ export class HorizontalMenu {
     visibleItems:number
     topFrame:Entity
     analyticParent:Entity
+    firstAngle:number = 0
+    endAngle:number = 0
 
     constructor(_position:Vector3, _rotation:Quaternion,_analyticParent:Entity, _menuManager:MenuManager, _id:number){
       this.menuID = _id
@@ -78,6 +84,7 @@ export class HorizontalMenu {
           rotation: Quaternion.fromEulerDegrees(0, angle,0),
           parent: this.menuRoot
         })
+        VisibilityComponent.create(this.scrollLeftButton)
         GltfContainer.createOrReplace(this.scrollLeftButton, resource.menuArrowShape ) 
         MeshCollider.setBox(this.scrollLeftButton)
 
@@ -103,6 +110,7 @@ export class HorizontalMenu {
           parent: this.menuRoot
         })
         //MeshRenderer.setBox(this.scrollRightButton)
+        VisibilityComponent.create(this.scrollRightButton)
         GltfContainer.createOrReplace(this.scrollRightButton, resource.menuArrowShape ) 
         MeshCollider.setBox(this.scrollRightButton)
 
@@ -123,6 +131,8 @@ export class HorizontalMenu {
           position: Vector3.scale(Vector3.Forward(), this.radius),          
           parent: this.menuRoot
         })
+
+        
 
     }
 
@@ -180,30 +190,62 @@ export class HorizontalMenu {
         // SCROLL RIGHT
         if(!left){
           angle = -this.angleSpacing
-
-          if (this.currentItem < this.items.length - this.visibleItems) {
+          console.log("SCROLL RIGHT")
+         // if (this.currentItem < this.items.length - this.visibleItems) {
             this.deselectAll()
             this.currentItem += 1
-            //this.selectItem(this.currentItem, true)
+
+            if(this.currentItem > this.items.length){
+              this.currentItem = 0
+            }            //this.selectItem(this.currentItem, true)
+
+            let itemToHide =  this.currentItem -1
+
+            if(itemToHide < 0){
+              itemToHide = this.items.length
+            }
+
+            console.log("CURRENT ITEM: " + this.currentItem)
+            console.log("HIDE ITEM   : " + itemToHide)
+            console.log("-------------" )
 
             //hide the firs item on the left side
-            if(this.currentItem >= 1){    
-              this.hideItem(Math.floor(this.currentItem - 1))
-            }    
+               
+            this.hideItem(itemToHide)
+            this.moveToEnd(itemToHide)
+
+            let itemAtTheEnd = this.currentItem + this.visibleItems -1
+            if(itemAtTheEnd >= this.items.length){
+              itemAtTheEnd = itemAtTheEnd - this.items.length
+            }
+            console.log("END ITEM   : " + itemAtTheEnd)
+
+            this.showItem(itemAtTheEnd)
+              //this.endAngle +=  this.angleSpacing
+               
             //show the last item at the right end
-            if(this.currentItem + this.visibleItems -1 < this.items.length){
-              this.showItem(this.currentItem + this.visibleItems -1)           
-            }   
+            // let nextItem = this.currentItem + this.visibleItems -1
+
+            // if(nextItem >= this.items.length){
+            //       this.currentItem = 0
+            //       this.showItem(this.currentItem)       
+            // }
+            // else{
+            //   this.showItem(nextItem)
+            // }
+             
+           
             //start the smooth rotation of the parent with one unit
             this.scrollTarget = Quaternion.multiply(this.scrollTarget, Quaternion.fromEulerDegrees(0,angle,0))                 
             SlerpItem.createOrReplace(this.scrollerRoot, {
               targetRotation:this.scrollTarget
-            })    
+            }) 
+
             this.playAudio(sfx.menuUpSource, sfx.menuUpSourceVolume)         
-          }
-          else{
-            this.playAudio(sfx.menuScrollEndSource, sfx.menuDeselectSourceVolume)
-          }
+          //}
+          // else{
+          //   this.playAudio(sfx.menuScrollEndSource, sfx.menuDeselectSourceVolume)
+          // }
           
         }
         //SCROLL LEFT
@@ -234,6 +276,23 @@ export class HorizontalMenu {
         }        
     }
     
+    hideScrollButtons(){
+      VisibilityComponent.getMutable(this.scrollLeftButton).visible = false
+      VisibilityComponent.getMutable(this.scrollRightButton).visible = false
+    }
+
+    moveToEnd(_itemID:number){
+      const itemTransform = Transform.getMutable(this.itemRoots[_itemID])      
+     
+      let rotatedPosVector =  Vector3.rotate(Vector3.scale(Vector3.Forward(), this.radius), Quaternion.fromEulerDegrees(0,this.endAngle,0))
+      rotatedPosVector.y = 0
+
+      itemTransform.position = Vector3.create(rotatedPosVector.x, rotatedPosVector.y, rotatedPosVector.z)
+      itemTransform.rotation = Quaternion.fromEulerDegrees(0, this.endAngle,0)
+
+      this.endAngle += this.angleSpacing
+      this.firstAngle -= this.angleSpacing
+    }
     
     addMenuItem(_item: MenuItem) {
 
@@ -241,10 +300,11 @@ export class HorizontalMenu {
         let angle = this.items.length * this.angleSpacing
         let rotatedPosVector =  Vector3.rotate(Vector3.scale(Vector3.Forward(), this.radius), Quaternion.fromEulerDegrees(0,angle,0))
         
+        //this.endAngle = this.itemRoots.length + 1  * this.angleSpacing
         //let pos = Vector3.add(menuCenter, rotatedPosVector)
         rotatedPosVector.y = 0
 
-        console.log("menuCenter: " + menuCenter.x +", " + menuCenter.y + ", " + menuCenter.z)
+       // console.log("menuCenter: " + menuCenter.x +", " + menuCenter.y + ", " + menuCenter.z)
         //console.log("card Position: " + + pos.x +", " + pos.y + ", " + pos.z)
         let itemRoot = engine.addEntity()
         Transform.create(itemRoot, {
@@ -255,7 +315,8 @@ export class HorizontalMenu {
         }) 
         //VisibilityComponent.create(_item.entity, {visible: false})
         
-        this.itemRoots.push(itemRoot)        
+        this.itemRoots.push(itemRoot)    
+        this.endAngle += this.angleSpacing    
           
         //ProximityScale.create(_item.entity, {activeRadius: 10})
         // COLLIDER BOX FOR USER INPUT
@@ -271,10 +332,42 @@ export class HorizontalMenu {
         this.items.push(_item)
         let id = this.items.length -1
         
+        // Clickable.create(clickBox, {
+        //   id: this.items.length -1,
+        //   clicked: false
+        // })
+
+      //   PointerEvents.create(clickBox, {
+      //     pointerEvents: [
+            
+      //       {
+      //         eventType: PointerEventType.PET_DOWN,
+      //         eventInfo: {
+      //           button: InputAction.IA_PRIMARY,
+      //           hoverText: "SCROLL LEFT",
+      //         }
+      //      }, 
+      //      {
+      //       eventType: PointerEventType.PET_DOWN,
+      //       eventInfo: {
+      //         button: InputAction.IA_POINTER,
+      //         hoverText: "SELECT",
+      //       }
+      //     },
+      //       {
+      //         eventType: PointerEventType.PET_DOWN,
+      //         eventInfo: {
+      //           button: InputAction.IA_SECONDARY,
+      //           hoverText: "SCROLL RIGHT",
+      //         }
+      //       }
+      //     ]
+      // })
+
         pointerEventsSystem.onPointerDown(
           {
             entity:clickBox,
-            opts: { hoverText: 'SELECT', button:InputAction.IA_ANY, maxDistance: 14}
+            opts: { hoverText: 'SELECT', button:InputAction.IA_ANY, maxDistance: 20}
           },
           (e) => {
             if(e.button == InputAction.IA_POINTER){
@@ -297,6 +390,8 @@ export class HorizontalMenu {
               
           }
         ) 
+
+        
         this.clickBoxes.push(clickBox)
         
 
@@ -347,7 +442,12 @@ export class HorizontalMenu {
                 //this.items[i].hide()
               }
                 
-            } 
+          } 
+
+          if( this.items.length <= this.visibleItems){
+            this.hideScrollButtons()
+          }
+
             //this.selectItem(0, true)
       } 
     }
@@ -399,6 +499,10 @@ export class HorizontalMenu {
             }
               
           } 
+
+          if( this.items.length <= this.visibleItems){
+            this.hideScrollButtons()
+          }
           //this.selectItem(0, true)
      } 
     
