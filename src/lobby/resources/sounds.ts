@@ -3,7 +3,7 @@
 
 
 
-export const lobbyMusicSource = 'sounds/lobby_music.mp3'
+export const lobbyMusicSource = 'sounds/RAC - Genesis Plaza 1.mp3'
 export const lobbyMusicSourceVolume = 0.2
 
 export const lobbyAmbienceSource = 'sounds/lobby_ambience.mp3'
