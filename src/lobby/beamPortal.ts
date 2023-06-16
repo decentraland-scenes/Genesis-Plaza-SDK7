@@ -16,7 +16,7 @@ import { CountDownUtil } from './countDown'
 import { beamShape } from './resources/resources'
 import { AudioSourceAttachedToPlayer } from '../components'
 import { FIRST_PERSON_VOLUME_ADJ, addAudioSourceAttachedToPlayer, applyAudioStreamWorkAround, setAudioSourceAttachedToPlayerPlaying } from '../modules/soundsAttachedToPlayer'
-import { setMovePlayerInProgress } from '../back-ports/movePlayer'
+import { isMovePlayerInProgress, setMovePlayerInProgress } from '../back-ports/movePlayer'
 import { beamChargeSource, beamChargeSourceVolume, beamFallSource, beamFallSourceVolume, beamFireSource, beamFireSourceVolume, impactHardSource, impactHardSourceVolume, lobbyMusicSource, lobbyMusicSourceVolume } from './resources/sounds'
 import { GetRealmResponse, getRealm } from '~system/Runtime'
 
@@ -197,18 +197,24 @@ export class TeleportController {
       this.triggerBoxUpPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y+1, lobbyCenter.z - coreBuildingOffset.z)
       this.triggerBoxUpScale = Vector3.create(5, 2, 5)
       
-
+ 
       utils.triggers.addTrigger(this.triggerBoxUp, TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, utils.LAYER_1,  
         [{type: "box", position: this.triggerBoxUpPosition, scale: this.triggerBoxUpScale}],
         (entity:Entity)=>{ 
-          console.log(CLASSNAME,"trigger.beamMeUp.enter", "triggerBoxUp", Transform.getOrNull(engine.PlayerEntity),"triggered by",entity,engine.PlayerEntity,engine.CameraEntity)
+          console.log(CLASSNAME,"trigger.beamMeUp.enter", "triggerBoxUp", Transform.getOrNull(engine.PlayerEntity),"triggered by",entity,engine.PlayerEntity,engine.CameraEntity,"isMovePlayerInProgress()",isMovePlayerInProgress())
 
-          showTeleportUI("flex")
-          
-          setAudioSourceAttachedToPlayerPlaying(this.beamChargeSound,true)
-          
-          triggerCounter.start(COUNT_DOWN_TIMER_AMOUNT / 1000)
-          triggerUpOnEnterTimerId = utils.timers.setTimeout(triggerUpOnEnter, COUNT_DOWN_TIMER_AMOUNT)
+          //adding check as sometimes movePlayer is too late and this gets triggered
+          if(!isMovePlayerInProgress()) { 
+            showTeleportUI("flex")
+            
+            setAudioSourceAttachedToPlayerPlaying(this.beamChargeSound,true)
+            
+            triggerCounter.start(COUNT_DOWN_TIMER_AMOUNT / 1000)
+            triggerUpOnEnterTimerId = utils.timers.setTimeout(triggerUpOnEnter, COUNT_DOWN_TIMER_AMOUNT)
+          }else{
+            //ignored because move player is in progress
+            console.log(CLASSNAME,"trigger.beamMeUp.enter", "triggerBoxUp", Transform.getOrNull(engine.PlayerEntity),"triggered by",entity,engine.PlayerEntity,engine.CameraEntity,"IGNORED because move player is in progress")
+          }
         },
         ()=>{
           if(triggerUpOnEnterTimerId !== undefined){
@@ -223,8 +229,9 @@ export class TeleportController {
       // Trigger that handles landing offset
       this.triggerBoxDown = engine.addEntity()
       Transform.create(this.triggerBoxDown, {})
-      this.triggerBoxDownPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y + 14, lobbyCenter.z - coreBuildingOffset.z)
-      this.triggerBoxDownScale = Vector3.create(6, 6, 6)
+      this.triggerBoxDownPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y + 10, lobbyCenter.z - coreBuildingOffset.z)
+      //had to make bigger to avoid risk of low FPS missing it :(
+      this.triggerBoxDownScale = Vector3.create(6, 7, 6)
 
       utils.triggers.addTrigger(this.triggerBoxDown, TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, utils.LAYER_1,  
         [{type: "box", position: this.triggerBoxDownPosition, scale: this.triggerBoxDownScale}],
@@ -235,7 +242,13 @@ export class TeleportController {
           applyAudioStreamWorkAround('exit')
           movePlayerTo({  newRelativePosition: Vector3.create(lobbyCenter.x - coreBuildingOffset.x - 5, 0, lobbyCenter.z - coreBuildingOffset.z + 2), cameraTarget: Vector3.create(lobbyCenter.x, 2, lobbyCenter.z - 12)}).then(
             ()=>{
-              setMovePlayerInProgress(false)
+              console.log("setMovePlayerInProgress ended",engine.PlayerEntity,Transform.getOrNull(engine.PlayerEntity));
+              //workaroud is to delay it a tiny bit since position is not registered yet for some reason 
+              //and the landing beamup trigger fire when they should not
+              utils.timers.setTimeout(()=>{
+                console.log("setMovePlayerInProgress timer delay workaround fired",engine.PlayerEntity,Transform.getOrNull(engine.PlayerEntity));
+                setMovePlayerInProgress(false)
+              },200)  
             })
 
           setAudioSourceAttachedToPlayerPlaying(this.impactSound,true)

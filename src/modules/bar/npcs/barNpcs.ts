@@ -596,7 +596,7 @@ function createAisha() {
   aisha = new RemoteNpc(
     { resourceName: "workspaces/genesis_city/characters/aisha" },
     {
-      transformData: { position: Vector3.create(62, 0, 36), scale: Vector3.create(1, 1, 1), rotation: Quaternion.create(0, 0, 0, 0) },
+      transformData: { position: Vector3.create(62, 0, 36), scale: Vector3.create(1.05, 1.05, 1.05), rotation: Quaternion.create(0, 0, 0, 0) },
       npcData: {
         type: npcLib.NPCType.CUSTOM,
         model: aishaModelPath,

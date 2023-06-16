@@ -30,13 +30,12 @@
     "@dcl-sdk/utils": "^1.1.1",
     "cannon": "github:schteppe/cannon.js",
     "colyseus.js": "^0.14.15-alpha.0",
-    "dcl-npc-toolkit": "^1.1.2-20230614195844.commit-f135f0d",
+    "dcl-npc-toolkit": "^1.1.3-20230615194800.commit-278b488",
     "dcl-ui-toolkit": "^0.9.1"
   },
   "bundleDependencies": [
     "@dcl-sdk/npc-utils",
     "@dcl-sdk/utils",
-    "colyseus.js",
-    "dcl-ui-toolkit"
+    "colyseus.js"
   ]
 }
