@@ -51,8 +51,12 @@ TrackingElement.create(baseJukeBox, {
 })
 
 
+let jukeBoxAdded: boolean = false
 
 export function placeJukeBox() {
+  if(jukeBoxAdded) return
+
+  jukeBoxAdded = true
 
   console.log("jukeBox.ts placeJukeBox has being called")
 

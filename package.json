@@ -13,7 +13,7 @@
     "upgrade-sdk:next": "npm install --save-dev @dcl/sdk@next"
   },
   "devDependencies": {
-    "@dcl/js-runtime": "7.1.18",
+    "@dcl/js-runtime": "7.2.0",
     "@dcl/sdk": "^7.2.0"
   },
   "engines": {
@@ -36,7 +36,6 @@
   "bundleDependencies": [
     "@dcl-sdk/npc-utils",
     "@dcl-sdk/utils",
-    "colyseus.js",
-    "dcl-ui-toolkit"
+    "colyseus.js"
   ]
 }
