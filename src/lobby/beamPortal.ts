@@ -1,59 +1,24 @@
-import { Animator, AudioSource, AudioStream, Entity, GltfContainer, InputAction, Material, MeshRenderer, PBAudioStream, TextShape, Transform, VisibilityComponent, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
+import { AudioSource, Entity, GltfContainer, Material, MeshRenderer, Transform, engine } from '@dcl/sdk/ecs'
 import { Color3, Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
-import { BEAM_SCALE_AMOUNT, TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, ParcelCountMaxY, ParcelCountX, ParcelCountZ, coreBuildingOffset, lobbyCenter } from './resources/globals'
-import { lobbyHeight } from './resources/globals'
-import { setBarMusicOff, setBarMusicOn } from '../modules/bar/jukebox'
 import { movePlayerTo } from "~system/RestrictedActions"
+import { setBarMusicOff, setBarMusicOn } from '../modules/bar/jukebox'
+import { BEAM_SCALE_AMOUNT, ParcelCountMaxY, ParcelCountX, ParcelCountZ, TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, coreBuildingOffset, lobbyCenter, lobbyHeight } from './resources/globals'
 //import { tutorialEnableObservable } from '../modules/tutorialHandler'
 
-import { onEnterSceneObservable, onLeaveSceneObservable} from '@dcl/sdk/observables'
 
 import * as utils from '@dcl-sdk/utils'
 
-import { showTeleportUI } from '../ui'
 import { TimerId } from '@dcl-sdk/utils/dist/timer'
+import { GetRealmResponse, getRealm } from '~system/Runtime'
+import { isMovePlayerInProgress, setMovePlayerInProgress } from '../back-ports/movePlayer'
+import { FIRST_PERSON_VOLUME_ADJ, addAudioSourceAttachedToPlayer, applyAudioStreamWorkAround, setAudioSourceAttachedToPlayerPlaying } from '../modules/soundsAttachedToPlayer'
+import { showTeleportUI } from '../ui'
 import { CountDownUtil } from './countDown'
 import { beamShape } from './resources/resources'
-import { AudioSourceAttachedToPlayer } from '../components'
-import { FIRST_PERSON_VOLUME_ADJ, addAudioSourceAttachedToPlayer, applyAudioStreamWorkAround, setAudioSourceAttachedToPlayerPlaying } from '../modules/soundsAttachedToPlayer'
-import { isMovePlayerInProgress, setMovePlayerInProgress } from '../back-ports/movePlayer'
 import { beamChargeSource, beamChargeSourceVolume, beamFallSource, beamFallSourceVolume, beamFireSource, beamFireSourceVolume, impactHardSource, impactHardSourceVolume, lobbyMusicSource, lobbyMusicSourceVolume } from './resources/sounds'
-import { GetRealmResponse, getRealm } from '~system/Runtime'
 
 
 export const triggerCounter = new CountDownUtil()
-
-// AMBIENT SOUND, WATER + BIRDS
-let ambienceBox = engine.addEntity()
-AudioSource.create(ambienceBox,{
-  audioClipUrl: 'sounds/lobby_ambience.mp3',
-  volume: 1,
-  loop: true,
-  playing: false 
-})
-Transform.create(ambienceBox, {
-  position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyHeight, lobbyCenter.z - coreBuildingOffset.z)
-})
-
-// LOBBY MUSIC
-let musicBox = engine.addEntity()
-
-Transform.create(musicBox, {
-  position: Vector3.create(0, 2, 0),
-  parent: engine.PlayerEntity
-})
-addAudioSourceAttachedToPlayer(musicBox,{
-    id: 'lobby_music',
-    thirdPersonVolume: lobbyMusicSourceVolume,
-    firstPersonVolume: lobbyMusicSourceVolume + FIRST_PERSON_VOLUME_ADJ
-  },
-  {
-    audioClipUrl: lobbyMusicSource,
-    volume: lobbyMusicSourceVolume,
-    loop: true,
-    playing: false
-  })
-
 
 /*
 tutorialEnableObservable.add((tutorialEnabled: boolean) => {
@@ -83,17 +48,52 @@ tutorialEnableObservable.add((tutorialEnabled: boolean) => {
 
 export let tutorialRunning: boolean = false
 
+const ambienceBox = engine.addEntity()
+const musicBox = engine.addEntity()
+
+export function loadLobbySound(){
+  // AMBIENT SOUND, WATER + BIRDS
+  
+  AudioSource.create(ambienceBox,{
+    audioClipUrl: 'sounds/lobby_ambience.mp3',
+    volume: 1,
+    loop: true,
+    playing: false 
+  })
+  Transform.create(ambienceBox, {
+    position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyHeight, lobbyCenter.z - coreBuildingOffset.z)
+  })
+
+  // LOBBY MUSIC
+  
+  Transform.create(musicBox, {
+    position: Vector3.create(0, 2, 0),
+    parent: engine.PlayerEntity
+  })
+  addAudioSourceAttachedToPlayer(musicBox,{
+      id: 'lobby_music',
+      thirdPersonVolume: lobbyMusicSourceVolume,
+      firstPersonVolume: lobbyMusicSourceVolume + FIRST_PERSON_VOLUME_ADJ
+    },
+    {
+      audioClipUrl: lobbyMusicSource,
+      volume: lobbyMusicSourceVolume,
+      loop: true,
+      playing: false
+    })
+}
 
 
 // BEAM MESH
-
-const beanOffsetZ = 1.8
-const  beam = engine.addEntity()
-Transform.create(beam,{
-    position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y, lobbyCenter.z - coreBuildingOffset.z-beanOffsetZ),
-    scale: Vector3.create(1,1 + BEAM_SCALE_AMOUNT,1)
-})
-GltfContainer.createOrReplace(beam, beamShape)
+export function loadBeamMesh(){
+  const beanOffsetZ = 1.8
+  const  beam = engine.addEntity()
+  Transform.create(beam,{
+      position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y, lobbyCenter.z - coreBuildingOffset.z-beanOffsetZ),
+      scale: Vector3.create(1,1 + BEAM_SCALE_AMOUNT,1)
+  })
+  GltfContainer.createOrReplace(beam, beamShape)
+}
 
 const CLASSNAME = "TeleportController"
 
@@ -195,7 +195,7 @@ export class TeleportController {
       this.triggerBoxUp = engine.addEntity()
       Transform.create(this.triggerBoxUp, {})
       this.triggerBoxUpPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y+1, lobbyCenter.z - coreBuildingOffset.z)
-      this.triggerBoxUpScale = Vector3.create(5, 2, 5)
+      this.triggerBoxUpScale = Vector3.create(5, 3, 5)
       
  
       utils.triggers.addTrigger(this.triggerBoxUp, TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, utils.LAYER_1,  
@@ -395,4 +395,3 @@ export class TeleportController {
         })
     }
 }
-
