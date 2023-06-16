@@ -32,6 +32,7 @@ import { applyAudioStreamWorkAround, initSoundsAttachedToPlayerHandler } from '.
 import { onEnterScene, onLeaveScene } from '@dcl/sdk/observables'
 import { isMovePlayerInProgress } from './back-ports/movePlayer'
 import * as resources from './lobby/resources/resources'
+import { loadBeamMesh } from './lobby/beamPortal'
 //import { onEnterScene, onLeaveScene } from '@dcl/sdk/observables'
 
 // export all the functions required to make the scene work
@@ -78,8 +79,9 @@ function exitBar() {
   log(FILE_NAME, METHOD_NAME, "Player Exit")
 }
 
-
-function start(){
+//default method will be auto involked by engine  
+//no need to call it manually
+export function main(){
 
   //load scene metadata
   sceneDataHelper.getAndSetSceneMetaData()
@@ -95,30 +97,30 @@ function start(){
 
   
   //// ADD CLOUD LOBBY
-
+  loadBeamMesh()
   addCloudLobby()
 
+  
+
   //// ADD BUILDINGS
-
+  //download heavy stuff as part of scene load
   addBuildings()
+  //but let light stuff load async
+  executeTask(async () => {
+    placeDoors()
+      
+    barPlatforms()
 
-  placeDoors()
+    // ADD EVENT CARDS TO BAR
+    addTVPanels()
+  })
 
   ///////// BAR STUFF
 
   // BAR DOORS
 
-  /*
-  //TODO TAG:PORT-REIMPLEMENT-ME
-  placeDoors()
-  */
-  barPlatforms()
-
-  // ADD EVENT CARDS TO BAR
-  addTVPanels()
-
-
   //eager load bar models so have them downloaded browser cache should the time come to use them
+  //purposly not in a executeTask as want blocking for condition to consider scene loaded
   const EAGER_LOAD_MODELS_START_DELAY = 10000
   const EAGER_LOAD_MODELS_DELETE_DELAY = 5000
   utils.timers.setTimeout(() => { 
@@ -321,6 +323,6 @@ function start(){
   )
 
   setupUi()
-}//end start()
+}//end main()
 
-start()
+//main()
