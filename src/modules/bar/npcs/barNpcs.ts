@@ -1,7 +1,7 @@
 import * as npcLib from 'dcl-npc-toolkit'
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { aishaModelPath, aritst1ModelPath, aritst2ModelPath, dogeModelPath, fashionistModelPath, navigationForwardSfx, octopusModelPath, robModelPath, simoneModelPath } from '../../../lobby/resources/resources'
-import { Billboard, ColliderLayer, Entity, GltfContainer, MeshRenderer, TextShape, Transform, engine } from '@dcl/sdk/ecs'
+import { Billboard, ColliderLayer, Entity, GltfContainer, MeshCollider, MeshRenderer, TextShape, Transform, engine } from '@dcl/sdk/ecs'
 import { artistRecommendations, fashionistCommonDialog, fashionistEpicDialog, fashionistMythicDialog, fashionistNoneDialog, getFashionistDialog, girlArtistTalk, octopusDialog } from './npcDialogs'
 import { rarestItem, rarityLevel } from './rarity'
 import * as utils from '@dcl-sdk/utils'
@@ -70,7 +70,7 @@ function initOutsideNpcs(): void {
   utils.timers.setTimeout(() => {
     createAisha()
   }, aishaSpawnSecondsDelay * 1000)
-} 
+}
 
 //#region octopus
 function createOctopusNpc() {
@@ -342,7 +342,7 @@ function createDogeNpc(): void {
     createDebugEntity("Position: " + index.toString(), Vector3.add(element, Vector3.create(0, 0.5, 0)))
   }
 
-  let dogePath: FollowPathData = {
+  let dogePathData: FollowPathData = {
     path: dogePathPoints,
     loop: true,
     totalDuration: dogePathPoints.length * 3
@@ -378,7 +378,7 @@ function createDogeNpc(): void {
           closeCustomUI(false)
           hideThinking(doge)
           trtDeactivateNPC(doge)
-          npcLib.followPath(doge.entity, dogePath)
+          npcLib.followPath(doge.entity, dogePathData)
         },
         portrait:
         {
@@ -390,7 +390,7 @@ function createDogeNpc(): void {
         faceUser: true,
         darkUI: true,
         coolDownDuration: 3,
-        pathData: dogePath,
+        pathData: dogePathData,
         walkingAnim: DOGE_NPC_ANIMATIONS.WALK.name,
         hoverText: 'WOW',
         onlyETrigger: true,
@@ -419,6 +419,34 @@ function createDogeNpc(): void {
   doge.predefinedQuestions = genericPrefinedQuestions
   REGISTRY.allNPCs.push(doge)
   npcLib.followPath(doge.entity)
+
+  let debugCube = engine.addEntity()
+  Transform.create(debugCube, {
+    parent: doge.entity,
+    position: Vector3.create(0, 1.5, 1.25),
+    scale: Vector3.create(.5, .5, .5)
+  })
+  utils.triggers.addTrigger(debugCube, utils.LAYER_2, utils.LAYER_1,
+    [
+      {
+        type: 'sphere',
+        radius: 2,
+      }
+    ],
+    (other) => {
+      if (other === engine.PlayerEntity) {
+        console.log("DogeView", "Hit Player Entity");
+        npcLib.stopWalking(doge.entity)
+      }
+    },
+    (other) => {
+      if (other === engine.PlayerEntity) {
+        console.log("DogeView", "Left Player Entity");
+        npcLib.followPath(doge.entity, dogePathData)
+      }
+    },
+    Color4.Green()
+  )
 
   TrackingElement.create(doge.entity, {
     elementType: ANALYTICS_ELEMENTS_TYPES.npc,
