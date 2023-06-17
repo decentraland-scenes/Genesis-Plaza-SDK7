@@ -579,10 +579,14 @@ function createRob() {
 
 //#region AIsha
 const AISHA_NPC_ANIMATIONS: NpcAnimationNameType = {
-  IDLE: { name: "Idle", duration: 4, autoStart: undefined, portraitPath: "images/portraits/aisha/Idle.png"},
-  TALK: { name: "Talking", duration: 4, autoStart: undefined, portraitPath: "images/portraits/aisha/Talking.png"},
-  THINKING: { name: "Thinking", duration: 4, autoStart: undefined, portraitPath: "images/portraits/aisha/Thinking.png"},
-  EXCITED: { name: "Excited", duration: 4, autoStart: undefined, portraitPath: "images/portraits/aisha/Excited.png"},
+  IDLE: { name: "Idle", duration: 4, autoStart: undefined, portraitPath: "images/portraits/aisha/Idle.png" },
+  TALK: { name: "Talking", duration: 4, autoStart: undefined, portraitPath: "images/portraits/aisha/Talking.png" },
+  THINKING: { name: "Thinking", duration: 4, autoStart: undefined, portraitPath: "images/portraits/aisha/Thinking.png" },
+  EXCITED: { name: "Excited", duration: 4, autoStart: undefined, portraitPath: "images/portraits/aisha/Excited.png" },
+  HAPPY: { name: "Excited", duration: 4, autoStart: undefined, portraitPath: "images/portraits/aisha/Excited.png" },
+  LAUGH: { name: "Talking", duration: 4, autoStart: undefined, portraitPath: "images/portraits/aisha/Talking.png" },
+  SAD: { name: "Talking", duration: 4, autoStart: undefined, portraitPath: "images/portraits/aisha/Talking.png" },
+  SURPRISE: { name: "Excited", duration: 4, autoStart: undefined, portraitPath: "images/portraits/aisha/Excited.png" },
 }
 
 function createAisha() {
@@ -633,14 +637,14 @@ function createAisha() {
         enabled: true,
         textEnabled: false,
         modelPath: 'models/core_building/loading-icon.glb',
-        offsetX: 0, 
-        offsetY: 2.2,  
+        offsetX: 0,
+        offsetY: 2.2,
         offsetZ: 0
       }
       , onEndOfRemoteInteractionStream: () => {
         openCustomUI()
       }
-      , onEndOfInteraction: () => {}
+      , onEndOfInteraction: () => { }
     }
   )
   aisha.name = "npc.dclGuide"
