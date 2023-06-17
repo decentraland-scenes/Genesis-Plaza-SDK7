@@ -1,4 +1,3 @@
-import { teleportTo } from "~system/RestrictedActions"
 import * as npcLib from 'dcl-npc-toolkit'
 import type { Dialog } from 'dcl-npc-toolkit'
 import { Entity } from "@dcl/sdk/ecs"
@@ -10,97 +9,94 @@ import { _teleportTo, log } from "../../../back-ports/backPorts";
 const octopusYesDialog = 4
 const octopusEndDialog = 3
 
-export function getOcotDialog(octopus: Entity): Dialog[] {
-  const octoHi = [
-    {
-      text: 'Welcome traveler, how can I help you!',
-      skipable: true,
-    },
-    {
-      text: 'I may look quite busy, but worry not, I still have like 2 free hands and/or tentacles to spare.',
-      skipable: true,
-    },
-    {
-      text: 'Is this your first time here? Do you want some pointers about how you can get around the place?',
-      isQuestion: true,
-      buttons: [
-        {
-          label: 'YES',
-          goToDialog: octopusYesDialog,
-        },
-        { label: 'NO', goToDialog: octopusEndDialog },
-      ],
-    },
-    {
-      name: 'end',
-      text: 'Oh well, if for any reason you need a hand and/or tentacle, I’ll be here!',
-      isEndOfDialog: true,
-      triggeredByNext: () => {
-        //   if (!query(questProg).isTaskCompleted(taskIds.intro)) {
-        //     octopus.talk(OctoQuest, 'questQ')
-        //   } else {
-        console.log('ended conversation')
-        console.log("back to idle animation")
-        //backToIdle()
-        //   }
+export const octopusDialog = [
+  {
+    text: 'Welcome traveler, how can I help you!',
+    skipable: true,
+  },
+  {
+    text: 'I may look quite busy, but worry not, I still have like 2 free hands and/or tentacles to spare.',
+    skipable: true,
+  },
+  {
+    text: 'Is this your first time here? Do you want some pointers about how you can get around the place?',
+    isQuestion: true,
+    buttons: [
+      { label: 'NO', goToDialog: octopusEndDialog },
+      {
+        label: 'YES',
+        goToDialog: octopusYesDialog,
       },
-    },
-    {
-      name: 'yes',
-      text: 'Here you can also find funky characters like myself. Don’t be shy, chat them up, everyone has a story to tell.',
-      skipable: true,
-    },
-    {
-      text: 'You can also take that glowing beam of light back up to the happy place up in the clouds where you started out.',
-
-      skipable: true,
-    },
-    {
-      text: 'There you can find a whole bunch of suggestions of places inside Decentraland you can visit, including <color="red">live events</color> and other highlights.',
-
-      skipable: true,
-    },
-    {
-      text: 'You can also open up the map and <color="red">fast travel</color> anywhere! Just press <color="red">M</color> on your keyboard and explore it. You’ll see it’s pretty damn big!',
-
-      skipable: true,
-    },
-    {
-      text: 'Or you can just walk out the door and keep walking, and see what you run into.',
-
-      skipable: true,
-    },
-    {
-      text: 'Right now we’re in the center of the <color="red">Genesis Plaza</color>, a community-owned space that´s open to everyone. The roads fan out in all directions from here.',
-
-      skipable: true,
-    },
-    {
-      text: 'If you venture out into the world beyond the plaza, you’ll see that the content is created by our growing community. Randomly bumping into things you didn’t expect is half the fun here.',
-
-      skipable: true,
-      triggeredByNext: () => {
-        //   if (!query(questProg).isTaskCompleted(taskIds.intro)) {
-        //     octopus.talk(OctoQuest, 'questQ')
-        //   } else {
-        //npcLib.talk(octopus, octoHi, getDialogIndex('normalEnd', octoHi))
-        //   }
-      },
-    },
-    {
-      name: 'normalEnd',
-      text: 'Well that´s it from me. So what are you waiting for? Go and explore the world!',
-
-      skipable: true,
-      //triggeredByNext: () => {
-      //console.log("back to idle animation")
+    ],
+  },
+  {
+    name: 'end',
+    text: 'Oh well, if for any reason you need a hand and/or tentacle, I’ll be here!',
+    isEndOfDialog: true,
+    triggeredByNext: () => {
+      //   if (!query(questProg).isTaskCompleted(taskIds.intro)) {
+      //     octopus.talk(OctoQuest, 'questQ')
+      //   } else {
+      console.log('ended conversation')
+      console.log("back to idle animation")
       //backToIdle()
-      //},
-      isEndOfDialog: true,
+      //   }
     },
-  ]
-  return octoHi
-}
+  },
+  {
+    name: 'yes',
+    text: 'Here you can also find funky characters like myself. Don’t be shy, chat them up, everyone has a story to tell.',
+    skipable: true,
+  },
+  {
+    text: 'You can also take that glowing beam of light back up to the happy place up in the clouds where you started out.',
+
+    skipable: true,
+  },
+  {
+    text: 'There you can find a whole bunch of suggestions of places inside Decentraland you can visit, including <color="red">live events</color> and other highlights.',
+
+    skipable: true,
+  },
+  {
+    text: 'You can also open up the map and <color="red">fast travel</color> anywhere! Just press <color="red">M</color> on your keyboard and explore it. You’ll see it’s pretty damn big!',
+
+    skipable: true,
+  },
+  {
+    text: 'Or you can just walk out the door and keep walking, and see what you run into.',
+
+    skipable: true,
+  },
+  {
+    text: 'Right now we’re in the center of the <color="red">Genesis Plaza</color>, a community-owned space that´s open to everyone. The roads fan out in all directions from here.',
+
+    skipable: true,
+  },
+  {
+    text: 'If you venture out into the world beyond the plaza, you’ll see that the content is created by our growing community. Randomly bumping into things you didn’t expect is half the fun here.',
+
+    skipable: true,
+    triggeredByNext: () => {
+      //   if (!query(questProg).isTaskCompleted(taskIds.intro)) {
+      //     octopus.talk(OctoQuest, 'questQ')
+      //   } else {
+      //npcLib.talk(octopus, octoHi, getDialogIndex('normalEnd', octoHi))
+      //   }
+    },
+  },
+  {
+    name: 'normalEnd',
+    text: 'Well that´s it from me. So what are you waiting for? Go and explore the world!',
+
+    skipable: true,
+    //triggeredByNext: () => {
+    //console.log("back to idle animation")
+    //backToIdle()
+    //},
+    isEndOfDialog: true,
+  },
+]
 
 export const fashionistNoneDialog: number = 0
 export const fashionistCommonDialog: number = 3
@@ -231,8 +227,8 @@ export let artistRecommendations: Dialog[] = [
     text: 'Hey so you want to find out where you can find good art to admire?',
     isQuestion: true,
     buttons: [
-      { label: 'yes', goToDialog: voltaire },
       { label: 'no', goToDialog: no },
+      { label: 'yes', goToDialog: voltaire },
     ],
   },
   {
@@ -253,6 +249,7 @@ export let artistRecommendations: Dialog[] = [
     text: 'Ok, so first there’s <color="red">Voltaire District</color>, at 55,97. Lots of big players in the crypto art space have spot there.',
     isQuestion: true,
     buttons: [
+      { label: 'More', goToDialog: museum },
       {
         label: 'Visit',
         goToDialog: dummy,
@@ -261,7 +258,6 @@ export let artistRecommendations: Dialog[] = [
           teleportPlayer(55, 97)
         },
       },
-      { label: 'More', goToDialog: museum },
     ],
   },
   {
@@ -269,6 +265,7 @@ export let artistRecommendations: Dialog[] = [
     text: 'There’s the <color="red"> Museum District</color> at 20,80, quite a pioneer of the metaverse.',
     isQuestion: true,
     buttons: [
+      { label: 'More', goToDialog: rapture },
       {
         label: 'Visit',
         goToDialog: 'dummy',
@@ -278,7 +275,6 @@ export let artistRecommendations: Dialog[] = [
           teleportPlayer(20, 80)
         },
       },
-      { label: 'More', goToDialog: rapture },
     ],
   },
   {
@@ -286,6 +282,7 @@ export let artistRecommendations: Dialog[] = [
     text: 'The  <color="red">Rapture Gallery</color> at -88,-65 is also a really hip spot worth visiting',
     isQuestion: true,
     buttons: [
+      { label: 'More', goToDialog: hunderedX },
       {
         label: 'Visit',
         goToDialog: 'dummy',
@@ -295,7 +292,6 @@ export let artistRecommendations: Dialog[] = [
           teleportPlayer(-88, -65)
         },
       },
-      { label: 'More', goToDialog: hunderedX },
     ],
   },
   {
@@ -303,6 +299,7 @@ export let artistRecommendations: Dialog[] = [
     text: 'Also  <color="red">100x Gallery</color>, at 86,-24, there’s a whole bunch of things around that area.',
     isQuestion: true,
     buttons: [
+      { label: 'More', goToDialog: momus },
       {
         label: 'Visit',
         goToDialog: 'dummy',
@@ -312,7 +309,6 @@ export let artistRecommendations: Dialog[] = [
           teleportPlayer(86, -24)
         },
       },
-      { label: 'More', goToDialog: momus },
     ],
   },
   {
@@ -320,6 +316,7 @@ export let artistRecommendations: Dialog[] = [
     text: ' <color="red">Momus Park</color> covers a huge area made up of passages, it’s quite a scenic route. You could start your visti at 8,43.',
     isQuestion: true,
     buttons: [
+      { label: 'More', goToDialog: vegas },
       {
         label: 'Visit',
         goToDialog: 'dummy',
@@ -329,7 +326,6 @@ export let artistRecommendations: Dialog[] = [
           teleportPlayer(8, 43)
         },
       },
-      { label: 'More', goToDialog: vegas },
     ],
   },
   {
@@ -337,6 +333,7 @@ export let artistRecommendations: Dialog[] = [
     text: 'Also the <color="red">Vegas Art Village</color> at -125,100 includes a whole assortment of very creative small museums from the community.',
     isQuestion: true,
     buttons: [
+      { label: 'More', goToDialog: skate },
       {
         label: 'Visit',
         goToDialog: 'dummy',
@@ -346,7 +343,6 @@ export let artistRecommendations: Dialog[] = [
           teleportPlayer(-125, 100)
         },
       },
-      { label: 'More', goToDialog: skate },
     ],
   },
   {
@@ -354,6 +350,7 @@ export let artistRecommendations: Dialog[] = [
     text: 'If you´re looking for a place with a more edgy underground vibe, check out the <color="red">Vegas City Skatepark Gallery</color> at -100,150.',
     isQuestion: true,
     buttons: [
+      { label: 'Done', goToDialog: end },
       {
         label: 'Visit',
         goToDialog: 'dummy',
@@ -363,7 +360,6 @@ export let artistRecommendations: Dialog[] = [
           teleportPlayer(-100, 150)
         },
       },
-      { label: 'Done', goToDialog: end },
     ],
   },
   {
@@ -374,7 +370,7 @@ export let artistRecommendations: Dialog[] = [
     isEndOfDialog: true,
     text: 'Hope you have fun exploring!',
     triggeredByNext: () => {
-      turnOutAritsts(() => {nextGirlDialog(girlFirstDialog)})
+      turnOutAritsts(() => { nextGirlDialog(girlFirstDialog) })
     },
   },
 ]
@@ -501,9 +497,8 @@ export let boyArtistTalk: Dialog[] = [
 
 // Helper Functions
 function teleportPlayer(xCoordinate: number, yCoordinate: number) {
-  teleportTo({
-    worldCoordinates: Vector3.create(xCoordinate * 16, 0, yCoordinate * 16)
-  })
+  console.log("Try teleporting to ", xCoordinate, ',', yCoordinate);
+  _teleportTo(xCoordinate, yCoordinate)
 }
 
 export function girlArtistTalkToUser() {
@@ -525,7 +520,7 @@ function nextBoyDialog(index: number) {
   npcLib.talkBubble(boyArtist, boyArtistTalk, index)
 }
 
-function nextGirlDialog(index: number) : void{
+function nextGirlDialog(index: number): void {
   npcLib.talkBubble(girlArtist, girlArtistTalk, index)
 }
 

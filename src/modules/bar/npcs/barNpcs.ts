@@ -2,7 +2,7 @@ import * as npcLib from 'dcl-npc-toolkit'
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { aishaModelPath, aritst1ModelPath, aritst2ModelPath, dogeModelPath, fashionistModelPath, navigationForwardSfx, octopusModelPath, robModelPath, simoneModelPath } from '../../../lobby/resources/resources'
 import { Billboard, ColliderLayer, Entity, GltfContainer, MeshRenderer, TextShape, Transform, engine } from '@dcl/sdk/ecs'
-import { artistRecommendations, fashionistCommonDialog, fashionistEpicDialog, fashionistMythicDialog, fashionistNoneDialog, getFashionistDialog, getOcotDialog, girlArtistTalk } from './npcDialogs'
+import { artistRecommendations, fashionistCommonDialog, fashionistEpicDialog, fashionistMythicDialog, fashionistNoneDialog, getFashionistDialog, girlArtistTalk, octopusDialog } from './npcDialogs'
 import { rarestItem, rarityLevel } from './rarity'
 import * as utils from '@dcl-sdk/utils'
 import { coreBuildingOffset } from '../../../lobby/resources/globals'
@@ -97,7 +97,7 @@ function createOctopusNpc() {
         npcLib.playAnimation(octo, 'TalkIntro', true, 0.63)
         //npcLib.playAnimation(octo, 'TalkLoop', false)
 
-        npcLib.talk(octo, getOcotDialog(octo))
+        npcLib.talk(octo, octopusDialog)
         //npcLib.talkBubble(octo, getOcotDialog(octo))
       },
       onWalkAway: () => {
