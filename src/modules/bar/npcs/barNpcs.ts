@@ -15,7 +15,12 @@ import { connectNpcToLobby } from '../../../lobby-scene/lobbyScene'
 import { genericPrefinedQuestions } from '../../../utils/customNpcUi/customUIFunctionality'
 import { TrackingElement, generateGUID, getRegisteredAnalyticsEntity, trackAction, trackEnd, trackStart } from '../../stats/analyticsComponents'
 import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES, AnalyticsLogLabel } from '../../stats/AnalyticsConfig'
+import { initDialogs as initWaitingDialog } from '../../../modules/RemoteNpcs/waitingDialog'
+import { LobbyScene, disconnectHost } from '../../../lobby-scene/lobbyScene'
+import { Room } from 'colyseus.js'
+import { onNpcRoomConnect } from '../../../connection/onConnect'
 
+ 
 const LogTag: string = 'barNpcs'
 
 const aishaSpawnSecondsDelay = 5
@@ -57,19 +62,49 @@ export let simonas: RemoteNpc
 export let rob: RemoteNpc
 export let aisha: RemoteNpc
 
+let npcFrameworkAdded: boolean = false
+
+let barNpcsAdded: boolean = false
+
+let outsideNpcAdded: boolean = false
+
+export function initNpcFramework(){
+  if(npcFrameworkAdded) return
+  npcFrameworkAdded = true
+
+  //Quests
+  initWaitingDialog()
+
+  REGISTRY.lobbyScene = new LobbyScene()
+  REGISTRY.onConnectActions = (room: Room<any>, eventName: string) => {
+    //npcConn.onNpcRoomConnect(room)
+    onNpcRoomConnect(room)
+  }
+
+}
 export function initBarNpcs(): void {
+  if(barNpcsAdded) return
+  barNpcsAdded = true
+  
+  initNpcFramework()
+
   createOctopusNpc()
   createFashionistNpc()
   createArtistCouple()
   createDogeNpc()
   createSimonas()
-  initOutsideNpcs()
 }
 
-function initOutsideNpcs(): void {
+export function initOutsideNpcs(delay?:number): void {
+  if(outsideNpcAdded) return
+  
+  outsideNpcAdded = true
+  
+  initNpcFramework()
+
   utils.timers.setTimeout(() => {
     createAisha()
-  }, aishaSpawnSecondsDelay * 1000)
+  }, delay ? delay : aishaSpawnSecondsDelay * 1000)
 } 
 
 //#region octopus
