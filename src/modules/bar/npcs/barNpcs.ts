@@ -456,8 +456,10 @@ function createDogeNpc(): void {
   npcLib.followPath(doge.entity)
 
   TrackingElement.create(doge.entity, {
+    guid: generateGUID(),
     elementType: ANALYTICS_ELEMENTS_TYPES.npc,
     elementId: ANALYTICS_ELEMENTS_IDS.doge,
+    parent: getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.bar)
   })
 }
 //#endregion
@@ -530,8 +532,10 @@ function createSimonas() {
   REGISTRY.allNPCs.push(simonas)
 
   TrackingElement.create(simonas.entity, {
+    guid: generateGUID(),
     elementType: ANALYTICS_ELEMENTS_TYPES.npc,
     elementId: ANALYTICS_ELEMENTS_IDS.simone,
+    parent: getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.bar)
   })
 }
 //#endregion
@@ -690,8 +694,10 @@ function createAisha() {
   REGISTRY.allNPCs.push(aisha)
 
   TrackingElement.create(aisha.entity, {
+    guid: generateGUID(),
     elementType: ANALYTICS_ELEMENTS_TYPES.npc,
     elementId: ANALYTICS_ELEMENTS_IDS.aisha,
+    parent: getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.bar)
   })
 }
 //#endregion

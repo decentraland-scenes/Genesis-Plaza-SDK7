@@ -5,7 +5,7 @@ import * as utils from '@dcl-sdk/utils'
 import { sceneMessageBus } from '../serverHandler'
 import { tutorialRunning } from '../../lobby/beamPortal'
 import { coreBuildingOffset } from '../../lobby/resources/globals'
-import { TrackingElement, getRegisteredAnalyticsEntity, trackAction } from '../stats/analyticsComponents'
+import { TrackingElement, generateGUID, getRegisteredAnalyticsEntity, trackAction } from '../stats/analyticsComponents'
 import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES, AnalyticsLogLabel } from '../stats/AnalyticsConfig'
 
 
@@ -45,6 +45,7 @@ let baseJukeBoxLights2 = engine.addEntity()
 
 
 TrackingElement.create(baseJukeBox, {
+  guid: generateGUID(),
   elementType: ANALYTICS_ELEMENTS_TYPES.interactable,
   elementId: ANALYTICS_ELEMENTS_IDS.jukeBox,
   parent: getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.bar)
