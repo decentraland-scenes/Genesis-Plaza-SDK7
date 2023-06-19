@@ -3,7 +3,6 @@ import { Color3, Color4, Vector3, Quaternion } from '@dcl/sdk/math'
 import { executeTask,GltfContainer } from '@dcl/sdk/ecs'
 
 import { addBuildings } from './modules/buildings'
-//import { placeDoors } from './modules/bar/doors'
 import { barPlatforms } from './modules/platforms'
 import { addCloudLobby } from './lobby/cloudLobby'
 import * as sceneDataHelper from './utils/sceneDataHelper'
@@ -31,7 +30,6 @@ import { isMovePlayerInProgress } from './back-ports/movePlayer'
 import * as resources from './lobby/resources/resources'
 import { getAndSetUserData, getAndSetUserDataIfNullNoWait, getUserDataFromLocal } from './utils/userData'
 import { loadBeamMesh } from './lobby/beamPortal'
-//import { onEnterScene, onLeaveScene } from '@dcl/sdk/observables'
 
 // export all the functions required to make the scene work
 export * from '@dcl/sdk'
