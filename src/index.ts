@@ -11,14 +11,14 @@ import { lowerVolume, outOfBar, placeJukeBox, setBarMusicOff, setBarMusicOn } fr
 import { addRepeatTrigger } from './modules/Utils'
 import { log } from './back-ports/backPorts'
 import { TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, coreBuildingOffset } from './lobby/resources/globals'
-import { initBarNpcs, initNpcFramework, initOutsideNpcs } from './modules/bar/npcs/barNpcs'
+import { initBarNpcs, initOutsideNpcs } from './modules/bar/npcs/barNpcs'
 import { setupUi } from './ui'
 import { placeDoors } from './modules/bar/doors'
 import { getRealm, GetRealmResponse } from "~system/Runtime"
 import { addTVPanels } from './modules/bar/panels'
 import { initRegistery, REGISTRY } from './registry'
 import { initConfig } from './config'
-
+ 
 import "./polyfill/delcares";
 import { PhysicsManager } from './modules/bar/basketball/ball'
 import { initIdleStateChangedObservable, onIdleStateChangedObservable } from './back-ports/onIdleStateChangedObservable'
@@ -30,6 +30,7 @@ import { onEnterScene, onLeaveScene } from '@dcl/sdk/observables'
 import { isMovePlayerInProgress } from './back-ports/movePlayer'
 import * as resources from './lobby/resources/resources'
 import { getAndSetUserData, getAndSetUserDataIfNullNoWait, getUserDataFromLocal } from './utils/userData'
+import { loadBeamMesh } from './lobby/beamPortal'
 //import { onEnterScene, onLeaveScene } from '@dcl/sdk/observables'
 
 // export all the functions required to make the scene work
@@ -68,6 +69,7 @@ function exitBar() {
   log(FILE_NAME, METHOD_NAME, "Player Exit")
 }
 
+
 function addOutsideOfIfPlayerOutsideOnGround(){
   const doIt = ()=>{
     const playerPos = Transform.getOrNull(engine.PlayerEntity)
@@ -91,7 +93,10 @@ function addOutsideOfIfPlayerOutsideOnGround(){
   }, 100); 
   
 }
-function start(){
+
+//default method will be auto involked by engine  
+//no need to call it manually
+export function main(){
 
   //load scene metadata
   sceneDataHelper.getAndSetSceneMetaData()
@@ -108,14 +113,23 @@ function start(){
 
   
   //// ADD CLOUD LOBBY
-
+  loadBeamMesh()
   addCloudLobby()
 
+  
+
   //// ADD BUILDINGS
-
+  //download heavy stuff as part of scene load
   addBuildings()
+  //but let light stuff load async
+  executeTask(async () => {
+    placeDoors()
+      
+    barPlatforms()
 
-  placeDoors()
+    // ADD EVENT CARDS TO BAR
+    addTVPanels()
+  })
 
   addOutsideOfIfPlayerOutsideOnGround()
 
@@ -123,17 +137,8 @@ function start(){
 
   // BAR DOORS
 
-  /*
-  //TODO TAG:PORT-REIMPLEMENT-ME
-  placeDoors()
-  */
-  barPlatforms()
-
-  // ADD EVENT CARDS TO BAR
-  addTVPanels()
-
-
   //eager load bar models so have them downloaded browser cache should the time come to use them
+  //purposly not in a executeTask as want blocking for condition to consider scene loaded
   const EAGER_LOAD_MODELS_START_DELAY = 10000
   const EAGER_LOAD_MODELS_DELETE_DELAY = 5000
   utils.timers.setTimeout(() => { 
@@ -354,6 +359,6 @@ function start(){
   )
 
   setupUi()
-}//end start()
+}//end main()
 
-start() 
+//main()

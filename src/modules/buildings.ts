@@ -188,14 +188,6 @@ export function addBuildings() {
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
 
-     //add arrow_bar
-  let arrow_bar = engine.addEntity()
-  GltfContainer.create(arrow_bar,{src:'models/lobby/arrow_bar.glb'})
-  Transform.create(arrow_bar,{
-      position: Vector3.create(barCenter.x,0 + WELCOME_OFFSET_Y_AMOUNT,barCenter.z),
-      rotation: Quaternion.fromEulerDegrees(0, 180, 0),
-    })
-  
   
  /*
   //add core_art
