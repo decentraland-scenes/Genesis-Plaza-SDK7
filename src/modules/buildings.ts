@@ -330,6 +330,24 @@ export function addBuildings() {
   )
  */
 
+
+  //add eth logos in bar
+  let ethLogos = engine.addEntity()
+  GltfContainer.create(ethLogos,{src:'models/core_building/Eth_Details.glb'})
+  Transform.create(ethLogos,{
+      position: Vector3.create(0 - coreBuildingOffset.x, 0, 0 - coreBuildingOffset.z),
+      rotation: Quaternion.fromEulerDegrees(0, 180, 0),
+    })
+
+
+  let ethLogos_02 = engine.addEntity()
+  GltfContainer.create(ethLogos_02,{src:'models/core_building/Eth_Details_02.glb'})
+  Transform.create(ethLogos_02,{
+      position: Vector3.create(0 - coreBuildingOffset.x, 0, 0 - coreBuildingOffset.z),
+      rotation: Quaternion.fromEulerDegrees(0, 180, 0),
+    })
+
+
 }
 /*
 //add zepellin
@@ -339,20 +357,4 @@ Transform.create(zepellin,{
     rotation: Quaternion.fromEulerDegrees(0, 180, 0),
   })
 */
-
-//add eth logos in bar
-let ethLogos = engine.addEntity()
-GltfContainer.create(ethLogos,{src:'models/core_building/Eth_Details.glb'})
-Transform.create(ethLogos,{
-    position: Vector3.create(0 - coreBuildingOffset.x, 0, 0 - coreBuildingOffset.z),
-    rotation: Quaternion.fromEulerDegrees(0, 180, 0),
-  })
-
-
-let ethLogos_02 = engine.addEntity()
-GltfContainer.create(ethLogos_02,{src:'models/core_building/Eth_Details_02.glb'})
-Transform.create(ethLogos_02,{
-    position: Vector3.create(0 - coreBuildingOffset.x, 0, 0 - coreBuildingOffset.z),
-    rotation: Quaternion.fromEulerDegrees(0, 180, 0),
-  })
 

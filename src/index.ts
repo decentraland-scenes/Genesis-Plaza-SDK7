@@ -10,17 +10,14 @@ import { lowerVolume, outOfBar, placeJukeBox, setBarMusicOff, setBarMusicOn } fr
 import { addRepeatTrigger } from './modules/Utils'
 import { log } from './back-ports/backPorts'
 import { TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, coreBuildingOffset } from './lobby/resources/globals'
-import { initBarNpcs } from './modules/bar/npcs/barNpcs'
+import { initBarNpcs, initOutsideNpcs } from './modules/bar/npcs/barNpcs'
 import { setupUi } from './ui'
 import { placeDoors } from './modules/bar/doors'
 import { getRealm, GetRealmResponse } from "~system/Runtime"
 import { addTVPanels } from './modules/bar/panels'
 import { initRegistery, REGISTRY } from './registry'
 import { initConfig } from './config'
-import { initDialogs as initWaitingDialog } from './modules/RemoteNpcs/waitingDialog'
-import { LobbyScene, disconnectHost } from './lobby-scene/lobbyScene'
-import { Room } from 'colyseus.js'
-import { onNpcRoomConnect } from './connection/onConnect'
+ 
 import "./polyfill/delcares";
 import { PhysicsManager } from './modules/bar/basketball/ball'
 import { initIdleStateChangedObservable, onIdleStateChangedObservable } from './back-ports/onIdleStateChangedObservable'
@@ -31,6 +28,7 @@ import { applyAudioStreamWorkAround, initSoundsAttachedToPlayerHandler } from '.
 import { onEnterScene, onLeaveScene } from '@dcl/sdk/observables'
 import { isMovePlayerInProgress } from './back-ports/movePlayer'
 import * as resources from './lobby/resources/resources'
+import { getAndSetUserData, getAndSetUserDataIfNullNoWait, getUserDataFromLocal } from './utils/userData'
 import { loadBeamMesh } from './lobby/beamPortal'
 
 // export all the functions required to make the scene work
@@ -47,17 +45,9 @@ function insideBar() {
   log("lazyLoading",FILE_NAME, METHOD_NAME, "Player Enter")
 
   if (!areNpcsAdded) {
-    //Quests
-    initWaitingDialog()
-
-    REGISTRY.lobbyScene = new LobbyScene()
-    REGISTRY.onConnectActions = (room: Room<any>, eventName: string) => {
-      //npcConn.onNpcRoomConnect(room)
-      onNpcRoomConnect(room)
-    }
-
     initBarNpcs()
-
+    initOutsideNpcs()
+    
     areNpcsAdded = true
   }
 
@@ -77,6 +67,31 @@ function exitBar() {
   log(FILE_NAME, METHOD_NAME, "Player Exit")
 }
 
+
+function addOutsideOfIfPlayerOutsideOnGround(){
+  const doIt = ()=>{
+    const playerPos = Transform.getOrNull(engine.PlayerEntity)
+    if(playerPos.position.y < 10){
+      console.log("index.ts", "addOutsideOfIfPlayerOutsideOnGround", "player on ground, init anything outside ground level")
+      const spawnDealy = 1000
+      initOutsideNpcs(spawnDealy)
+    }else{
+      console.log("index.ts", "addOutsideOfIfPlayerOutsideOnGround", "player not on ground")
+    }  
+  }
+  //use timer to wait for player data
+  const timerId = utils.timers.setInterval(() => {
+    const playerPos = Transform.getOrNull(engine.PlayerEntity)
+    if(playerPos){
+      utils.timers.clearInterval(timerId)
+      doIt()
+    }else{
+      console.log("index.ts", "addOutsideOfIfPlayerOutsideOnGround", "waiting for player data")
+    }
+  }, 100); 
+  
+}
+
 //default method will be auto involked by engine  
 //no need to call it manually
 export function main(){
@@ -84,6 +99,7 @@ export function main(){
   //load scene metadata
   sceneDataHelper.getAndSetSceneMetaData()
 
+  getAndSetUserData()
 
   initRegistery()
   initConfig()
@@ -112,6 +128,8 @@ export function main(){
     // ADD EVENT CARDS TO BAR
     addTVPanels()
   })
+
+  addOutsideOfIfPlayerOutsideOnGround()
 
   ///////// BAR STUFF
 
@@ -271,12 +289,30 @@ export function main(){
 
   onEnterScene.add((player) => { 
     console.log("onEnterScene", "player", player,"isMovePlayerInProgress()",isMovePlayerInProgress())
-    applyAudioStreamWorkAround('enter')
+    //FIXME me need to check this player!!!
+    const localData = getUserDataFromLocal()
+    if(!localData){ 
+      console.log("onEnterScene", "WARN no player data",localData, player,"isMovePlayerInProgress()",isMovePlayerInProgress())
+    }
+    if(localData && player.userId === localData.userId){
+      console.log("onEnterScene", "this player",localData, player,"isMovePlayerInProgress()",isMovePlayerInProgress())
+      applyAudioStreamWorkAround('enter')
+    }
+
+    initOutsideNpcs()
   })
   
   onLeaveScene.add((player) => {
     console.log("onLeaveScene", "player", player,"isMovePlayerInProgress()",isMovePlayerInProgress())
-    applyAudioStreamWorkAround('exit')
+    
+    const localData = getUserDataFromLocal()
+    if(!localData){
+      console.log("onLeaveScene", "WARN no player data",localData, player,"isMovePlayerInProgress()",isMovePlayerInProgress())
+    }
+    if(localData && player.userId === localData.userId){
+      console.log("onLeaveScene", "this player",localData, player,"isMovePlayerInProgress()",isMovePlayerInProgress())
+      applyAudioStreamWorkAround('exit')
+    }
   })
 
 
