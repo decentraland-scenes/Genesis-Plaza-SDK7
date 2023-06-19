@@ -230,8 +230,8 @@ function createBoyArtist(): Entity {
       type: npcLib.NPCType.CUSTOM,
       model: aritst1ModelPath,
       dialogSound: navigationForwardSfx,
-      // onlyETrigger: true,
-      onlyExternalTrigger: true,
+      onlyETrigger: true,
+      // onlyExternalTrigger: true,
       onActivate: () => {
         npcLib.activate(girlArtist)
         console.log(AnalyticsLogLabel, "barNpcs.ts", "boyArtist")
@@ -273,8 +273,8 @@ function createGirlArtist(): Entity {
       type: npcLib.NPCType.CUSTOM,
       model: aritst2ModelPath,
       dialogSound: navigationForwardSfx,
-      // onlyETrigger: true,
-      onlyExternalTrigger: true,
+      onlyETrigger: true,
+      //onlyExternalTrigger: true,
       onActivate: () => {
         activateArtists()
 

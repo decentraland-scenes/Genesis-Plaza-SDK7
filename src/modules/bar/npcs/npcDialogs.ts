@@ -247,7 +247,7 @@ export let artistRecommendations: Dialog[] = [
   {
     name: 'voltaire',
     text: 'Ok, so first there’s <color="red">Voltaire District</color>, at 55,97. Lots of big players in the crypto art space have spot there.',
-    isQuestion: true,
+    // isQuestion: true,
     //   buttons: [
     //     { label: 'More', goToDialog: museum },
     //     {
@@ -263,7 +263,7 @@ export let artistRecommendations: Dialog[] = [
   {
     name: 'museum',
     text: 'There’s the <color="red"> Museum District</color> at 20,80, quite a pioneer of the metaverse.',
-    isQuestion: true,
+    // isQuestion: true,
     // buttons: [
     //   { label: 'More', goToDialog: rapture },
     //   {
@@ -280,7 +280,7 @@ export let artistRecommendations: Dialog[] = [
   {
     name: 'rapture',
     text: 'The  <color="red">Rapture Gallery</color> at -88,-65 is also a really hip spot worth visiting',
-    isQuestion: true,
+    // isQuestion: true,
     // buttons: [
     //   { label: 'More', goToDialog: hunderedX },
     //   {
@@ -297,7 +297,7 @@ export let artistRecommendations: Dialog[] = [
   {
     name: '100x',
     text: 'Also  <color="red">100x Gallery</color>, at 86,-24, there’s a whole bunch of things around that area.',
-    isQuestion: true,
+    // isQuestion: true,
     // buttons: [
     //   { label: 'More', goToDialog: momus },
     //   {
@@ -314,7 +314,7 @@ export let artistRecommendations: Dialog[] = [
   {
     name: 'momus',
     text: ' <color="red">Momus Park</color> covers a huge area made up of passages, it’s quite a scenic route. You could start your visti at 8,43.',
-    isQuestion: true,
+    // isQuestion: true,
     // buttons: [
     //   { label: 'More', goToDialog: vegas },
     //   {
@@ -331,7 +331,7 @@ export let artistRecommendations: Dialog[] = [
   {
     name: 'vegas',
     text: 'Also the <color="red">Vegas Art Village</color> at -125,100 includes a whole assortment of very creative small museums from the community.',
-    isQuestion: true,
+    // isQuestion: true,
     // buttons: [
     //   { label: 'More', goToDialog: skate },
     //   {
@@ -348,7 +348,7 @@ export let artistRecommendations: Dialog[] = [
   {
     name: 'skate',
     text: 'If you´re looking for a place with a more edgy underground vibe, check out the <color="red">Vegas City Skatepark Gallery</color> at -100,150.',
-    isQuestion: true,
+    // isQuestion: true,
     // buttons: [
     //   { label: 'Done', goToDialog: end },
     //   {
