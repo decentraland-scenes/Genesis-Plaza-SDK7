@@ -500,9 +500,11 @@ export let canvasInfo = {
   devicePixelRatio: 1
 }
 
-const setupUiInfoEngineAlready = false
+let setupUiInfoEngineAlready = false
 export function setupUiInfoEngine() {
   if(setupUiInfoEngineAlready) return
+
+  setupUiInfoEngineAlready = true
 
   engine.addSystem((deltaTime) => {
     const uiCanvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
