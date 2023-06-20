@@ -1,6 +1,6 @@
 import { Color4 } from '@dcl/ecs-math'
 import ReactEcs, { Button, DisplayType, Label, ReactEcsRenderer, UiEntity, PositionUnit } from '@dcl/sdk/react-ecs'
-import { triggerCounter } from './lobby/beamPortal'
+import { triggerCounter } from './beamPortal'
 
 let teleportUIVisibility: DisplayType = 'none'
 let timeToBeamUp: number = 3

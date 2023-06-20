@@ -4,8 +4,6 @@ import { colliderData } from "./colliderData"
 import * as CANNON from 'cannon/build/cannon'
 import { ballBounceMaterial } from "./physicsWorld"
 import { realDistance } from "./utilFunctions"
-import { hideOOB, showOOB } from "../../../ui"
-import * as utils from "@dcl-sdk/utils"
 
 
 

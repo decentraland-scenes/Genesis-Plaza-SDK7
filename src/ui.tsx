@@ -3,9 +3,9 @@ import ReactEcs, { ReactEcsRenderer } from '@dcl/sdk/react-ecs'
 import { NpcUtilsUi, setupNPCUiScaling } from 'dcl-npc-toolkit/dist/ui'
 import { customNpcUI, setupCustomNPCUiScaling } from './utils/customNpcUi/customUi'
 import { render } from 'dcl-ui-toolkit'
-import { setupEventDetailsUIScaling, uiEventDettails } from './eventDetailsUI'
-import { uiBeamMeUp } from './beamUpUI'
-import { uiBasketballPower, uiBasketballScore, uiOutOfBounds } from './basketbakkUI'
+import { setupEventDetailsUIScaling, uiEventDettails } from './lobby/eventDetailsUI'
+import { uiBeamMeUp } from './lobby/beamUpUI'
+import { uiBasketballPower, uiBasketballScore, uiOutOfBounds } from './modules/bar/basketball/basketballUI'
 
 let tieredModalScale = 1
 let tieredFontScale = 1

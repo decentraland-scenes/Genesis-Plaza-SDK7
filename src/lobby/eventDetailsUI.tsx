@@ -3,7 +3,7 @@ import { Color4 } from '@dcl/sdk/math'
 import ReactEcs, { Button, DisplayType, Label, ReactEcsRenderer, UiEntity, PositionUnit } from '@dcl/sdk/react-ecs'
 
 import * as utils from '@dcl-sdk/utils'
-import { cleanString, wordWrap } from './lobby/helperFunctions'
+import { cleanString, wordWrap } from './helperFunctions'
 
 let eventTitleText: string = 'Title'
 let eventDetailText: string = 'Description'
