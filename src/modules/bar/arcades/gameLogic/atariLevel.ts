@@ -2,47 +2,57 @@ import { Brick } from "../gameObjects/brick"
 import { Wall } from "../gameObjects/wall"
 import { Background } from "../gameObjects/background"
 import { GameManager } from "../gameManager"
+import { Entity, GltfContainer, Transform, VisibilityComponent, engine } from "@dcl/sdk/ecs"
+import { Color3, Color4, Vector3 } from "@dcl/sdk/math"
 
 // Ready player one
-const readyPlayerOne = new Entity()
-readyPlayerOne.addComponent(new GLTFShape("models/readyPlayerOne.glb"))
-readyPlayerOne.addComponent(new Transform({ position: new Vector3(16, 1, 16) }))
+const readyPlayerOne = engine.addEntity()
+GltfContainer.create(readyPlayerOne, {src: "models/readyPlayerOne.glb"})
+Transform.create(readyPlayerOne,{
+  position: Vector3.create(16, 1, 16)
+})
+VisibilityComponent.create(readyPlayerOne, {visible: true})
 
 // Brick
-const colorRed = Color3.FromInts(255, 127, 0)
-const colorGreen = Color3.FromInts(127, 255, 127)
+const colorRed = Color4.Red()
+const colorGreen = Color3.fromInts(127, 255, 127)
 const gameElements: Entity[] = []
 
 // Load level
 export function loadAtariLevel(parent: Entity): void {
-  readyPlayerOne.setParent(parent)
+
+  Transform.getMutableOrNull(readyPlayerOne),parent = parent
 
   // Wall
   const wallLeft = new Wall(
-    new Transform({ position: new Vector3(3.5, GameManager.PLANE_HEIGHT + 0.1, 16), scale: new Vector3(2, 0.1, 32) }),
-    new Vector3(1, 0, 0),
-    Color3.White(),
+    Vector3.create(3.5, GameManager.PLANE_HEIGHT + 0.1, 16),
+    Vector3.create(2, 0.1, 32),
+    Vector3.create(1, 0, 0),
+    Color4.White(),
     parent
   )
   const wallTop = new Wall(
-    new Transform({ position: new Vector3(16, GameManager.PLANE_HEIGHT + 0.1, 31.5), scale: new Vector3(27, 0.1, 2) }),
-    new Vector3(0, 0, -1),
-    Color3.White(),
+    Vector3.create(16, GameManager.PLANE_HEIGHT + 0.1, 31.5),
+    Vector3.create(27, 0.1, 2),
+    Vector3.create(0, 0, -1),
+    Color4.White(),
     parent
   )
   const wallRight = new Wall(
-    new Transform({ position: new Vector3(28.5, GameManager.PLANE_HEIGHT + 0.1, 16), scale: new Vector3(2, 0.1, 32) }),
-    new Vector3(-1, 0, 0),
-    Color3.White(),
+    Vector3.create(28.5, GameManager.PLANE_HEIGHT + 0.1, 16),
+    Vector3.create(2, 0.1, 32),
+    Vector3.create(-1, 0, 0),
+    Color4.White(),
     parent
   )
 
   // Background
-  const background = new Background(new Transform({ position: new Vector3(16, GameManager.PLANE_HEIGHT - 0.1, 16), scale: new Vector3(26, 0.01, 32) }), parent)
+  const background = new Background(Vector3.create(16, GameManager.PLANE_HEIGHT - 0.1, 16), Vector3.create(26, 0.01, 32), parent)
 }
 
 export function loadAtariBricks(parent: Entity): void {
-  readyPlayerOne.getComponent(GLTFShape).visible = false
+
+  VisibilityComponent.getMutableOrNull(readyPlayerOne).visible = false
 
   // Red bricks
   let brickPosX = 6
@@ -50,8 +60,9 @@ export function loadAtariBricks(parent: Entity): void {
   for (let i = 0; i < 3; i++) {
     for (let j = 0; j < 9; j++) {
       const brick = new Brick(
-        new Transform({ position: new Vector3(brickPosX, GameManager.PLANE_HEIGHT, redBrickPosZ), scale: new Vector3(2, 0.1, 1) }),
-        colorRed,
+        Vector3.create(brickPosX, GameManager.PLANE_HEIGHT, redBrickPosZ),
+        Vector3.create(2, 0.1, 1),
+        Color4.Red(),
         parent
       )
       brickPosX += 2.5
@@ -66,8 +77,9 @@ export function loadAtariBricks(parent: Entity): void {
   for (let i = 0; i < 3; i++) {
     for (let j = 0; j < 9; j++) {
       const brick = new Brick(
-        new Transform({ position: new Vector3(brickPosX, GameManager.PLANE_HEIGHT, greenBrickPosZ), scale: new Vector3(2, 0.1, 1) }),
-        colorGreen,
+        Vector3.create(brickPosX, GameManager.PLANE_HEIGHT, greenBrickPosZ),
+        Vector3.create(2, 0.1, 1),
+        Color4.Green(),
         parent
       )
       brickPosX += 2.5
@@ -79,7 +91,8 @@ export function loadAtariBricks(parent: Entity): void {
 }
 
 export function unloadAtariBricks(): void {
-  readyPlayerOne.getComponent(GLTFShape).visible = true
+  VisibilityComponent.getMutableOrNull(readyPlayerOne).visible = true
+
   while (gameElements.length) {
     let gameElement = gameElements.pop()
     engine.removeEntity(gameElement)
