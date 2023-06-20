@@ -10,14 +10,15 @@ export class Wall {
   public normal: Vector3
   entity: Entity
 
-  constructor(transform: Transform, normal: Vector3, color: Color4, parent: Entity) {
+  constructor(position: Vector3, scale: Vector3, normal: Vector3, color: Color4, parent: Entity) {
 
     let _entity = engine.addEntity()
     this.entity = _entity
     this.normal = normal
 
     Transform.create(this.entity,{
-      position: transform.position,
+      position: position,
+      scale: scale,
       parent: parent
     })
     MeshRenderer.setBox(this.entity)
