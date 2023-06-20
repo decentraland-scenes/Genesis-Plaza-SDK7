@@ -1,4 +1,4 @@
-import { engine, Transform, UiCanvasInformation } from '@dcl/sdk/ecs'
+import { engine, PBUiCanvasInformation, Transform, UiCanvasInformation } from '@dcl/sdk/ecs'
 import { Color4 } from '@dcl/sdk/math'
 import ReactEcs, { Button, DisplayType, Label, ReactEcsRenderer, UiEntity, PositionUnit } from '@dcl/sdk/react-ecs'
 import { triggerCounter } from './lobby/beamPortal'
@@ -38,18 +38,19 @@ let tieredModalScale = 1
 let tieredModalTextWrapScale = 1
 
 let devicePixelRatioScale:number = 1
-export function setDevicePixelRatioScale(_scale: number){
+export function updateUIScalingWithCanvasInfo(canvasInfo: PBUiCanvasInformation){
   
   //higher res go bigger
   //threshhold???
   ///(1920/1080)/1.35 = 1.3
   ///(1920/1080)/1.1 = 1.6
-  devicePixelRatioScale = (1920/1080) / _scale
+  devicePixelRatioScale = (1920/1080) / canvasInfo.devicePixelRatio
 
-  //console.log("setDevicePixelRatioScale", _scale,devicePixelRatioScale)
-
-  tieredModalScale = devicePixelRatioScale>1.25 ? 2 : 1
-  tieredModalTextWrapScale = devicePixelRatioScale>1.25 ? 1.08 : 1
+  //console.log("updateUIScalingWithCanvasInfo", canvasInfo,"devicePixelRatioScale",devicePixelRatioScale)
+ 
+  const THREADHOLD = 1.2
+  tieredModalScale = devicePixelRatioScale>THREADHOLD ? 2 : 1
+  tieredModalTextWrapScale = devicePixelRatioScale>THREADHOLD ? 1.08 : 1
   
 }
 
@@ -494,10 +495,11 @@ const uiComponent = () => [
 
 setupUi()
 
-export let canvasInfo = {
+export let canvasInfo:PBUiCanvasInformation = {
   width: 0,
   height: 0,
-  devicePixelRatio: 1
+  devicePixelRatio: 1,
+  interactableArea: undefined
 }
 
 let setupUiInfoEngineAlready = false
@@ -506,20 +508,28 @@ export function setupUiInfoEngine() {
 
   setupUiInfoEngineAlready = true
 
+  let maxWarningCount = 20
+  let warningCount = 0
   engine.addSystem((deltaTime) => {
     const uiCanvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
 
     if (!uiCanvasInfo){
-      console.log('--------------' +
-     '\nscreen width: ' + "null")
+      warningCount++
+      if(warningCount < maxWarningCount ){
+        console.log("setupUiInfoEngine","WARNING ",warningCount , 'screen data missing: ' , uiCanvasInfo)
+      }
       return
+    }else if(maxWarningCount > 0){
+      maxWarningCount = 0
+      console.log("setupUiInfoEngine","FIXED " + 'screen data resolved: ',uiCanvasInfo)
     }
 
     canvasInfo.width = uiCanvasInfo.width
     canvasInfo.height = uiCanvasInfo.height
     canvasInfo.devicePixelRatio = uiCanvasInfo.devicePixelRatio
+    canvasInfo.interactableArea = uiCanvasInfo.interactableArea
     
-    setDevicePixelRatioScale(uiCanvasInfo.devicePixelRatio)
+    updateUIScalingWithCanvasInfo(canvasInfo)
 
      /*console.log("setupUiInfoEngine",'--------------' ,
      '\nscreen width: ' + uiCanvasInfo.width ,
