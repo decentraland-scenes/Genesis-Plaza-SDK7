@@ -1,12 +1,22 @@
-const background = new Entity()
-export class Background extends Entity {
+import { Entity, GltfContainer, Material, MeshRenderer, Transform, engine } from "@dcl/sdk/ecs"
+import { Color4 } from "@dcl/sdk/math"
+
+export class Background  {
+  entity: Entity
+
   constructor(transform: Transform, parent: Entity) {
-    super()
-    this.addComponent(transform)
-    this.addComponent(new BoxShape())
-    this.addComponent(new Material())
-    this.getComponent(Material).albedoColor = Color3.Black()
-    this.getComponent(Material).roughness = 0.9
-    this.setParent(parent)
+
+    let _entity = engine.addEntity()
+    this.entity = _entity
+
+    Transform.create(this.entity,{
+      position: transform.position,
+      parent: parent
+    })
+    MeshRenderer.setBox(this.entity)
+    Material.setPbrMaterial(this.entity, {
+      albedoColor: Color4.Black(),
+      roughness: 0.9
+    })
   }
 }

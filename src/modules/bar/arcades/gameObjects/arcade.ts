@@ -1,18 +1,31 @@
-import * as utils from "@dcl/ecs-scene-utils"
+import { Vector3 } from "@dcl/sdk/math"
+import { AudioSource, Entity, GltfContainer, Material, MeshRenderer, Transform, engine } from '@dcl/sdk/ecs'
 
-export class Arcade extends Entity {
-  public knob: Entity = new Entity()
-  constructor(model: GLTFShape, transform: Transform, knob: boolean = true) {
-    super()
-    engine.addEntity(this)
-    this.addComponent(model)
-    this.addComponent(transform)
+
+export class Arcade {
+  entity: Entity
+  knob: Entity
+
+  constructor(modelUrl: string, transform: Transform, knob: boolean = true) {
+
+    let _entity = engine.addEntity()
+    this.entity = _entity
+
+    GltfContainer.create(this.entity, {src: "models/core_building/knob.glb"})
+    Transform.create(this.entity,{
+      position: transform.position
+    })
 
     if (knob) {
-      this.knob.addComponent(new GLTFShape("models/core_building/knob.glb"))
-      this.knob.addComponent(new Transform({ position: new Vector3(0, 1.383, -0.397) }))
-      this.knob.getComponent(Transform).rotate(Vector3.Left(), 11.6)
-      this.knob.setParent(this)
+      this.knob = engine.addEntity()
+      GltfContainer.create(this.knob, {src: "models/core_building/knob.glb"})
+      Transform.create(this.knob,{
+        position: Vector3.create(0, 1.383, -0.397),
+        parent: this.entity
+      })
+
+
+      Transform.getMutableOrNull(this.knob) //rotate(Vector3.Left(), 11.6)
     }
   }
   controlStop() {

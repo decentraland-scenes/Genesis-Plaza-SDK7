@@ -1,24 +1,35 @@
-export class Sound extends Entity {
-  constructor(audio: AudioClip, loop: boolean = false, transform?: Vector3) {
-    super()
-    engine.addEntity(this)
-    this.addComponent(new AudioSource(audio))
-    this.getComponent(AudioSource).loop = loop
-    this.addComponent(new Transform())
-    if (transform) {
-      this.getComponent(Transform).position = transform
+
+import { AudioSource, Entity, GltfContainer, Material, MeshRenderer, Transform, engine } from "@dcl/sdk/ecs"
+import { Color4 } from "@dcl/sdk/math"
+import { Quaternion, Vector3 } from '@dcl/sdk/math'
+import { CollisionFlag } from "../gameLogic/collision"
+
+export class Sound {
+  entity: Entity
+  constructor(audioUrl: string, loop: boolean = false, position?: Vector3) {
+
+    let _entity = engine.addEntity()
+    this.entity = _entity
+
+    AudioSource.create(this.entity, {audioClipUrl: audioUrl, loop: loop})
+
+    Transform.create(this.entity)
+
+    if (position) {
+      Transform.getMutableOrNull(this.entity).position = position
+  
     } else {
-      this.setParent(Attachable.AVATAR)
+      Transform.getMutableOrNull(this.entity).parent = engine.PlayerEntity
     }
   }
 
-  playAudioOnceAtPos(transform: Vector3): void {
-    this.getComponent(Transform).position = transform
-    this.getComponent(AudioSource).playOnce()
+  playAudioOnceAtPos(position: Vector3): void {
+    Transform.getMutableOrNull(this.entity).position = position
+    AudioSource.getMutableOrNull(this.entity).playing = true //NEED PLAY ONCE
   }
 
-  playAudioAtPos(transform: Vector3): void {
-    this.getComponent(Transform).position = transform
-    this.getComponent(AudioSource).playing = true
+  playAudioAtPos(position: Vector3): void {
+    Transform.getMutableOrNull(this.entity).position = position
+    AudioSource.getMutableOrNull(this.entity).playing = true
   }
 }

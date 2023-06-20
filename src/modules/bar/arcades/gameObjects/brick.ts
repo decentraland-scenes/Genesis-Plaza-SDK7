@@ -1,20 +1,30 @@
 import { CollisionFlag } from "../gameLogic/collision"
+import { Entity, GltfContainer, Material, MeshRenderer, Transform, engine } from "@dcl/sdk/ecs"
+import { Color4 } from "@dcl/sdk/math"
 
 @Component("brickFlag")
 export class BrickFlag {}
 
-export class Brick extends Entity {
-  constructor(transform: Transform, color: Color3, parent: Entity) {
-    super()
-    engine.addEntity(this)
-    this.addComponent(transform)
+export class Brick {
+  entity: Entity
+
+  constructor(transform: Transform, color: Color4, parent: Entity) {
+
+    let _entity = engine.addEntity()
+    this.entity = _entity
+
+    Transform.create(this.entity,{
+      position: transform.position,
+      parent: parent
+    })
+    MeshRenderer.setBox(this.entity)
+    Material.setPbrMaterial(this.entity, {
+      albedoColor: color,
+      emissiveColor: color,
+      emissiveIntensity: 0.95
+    })
+
     this.addComponent(new BrickFlag())
     this.addComponent(new CollisionFlag())
-    this.addComponent(new BoxShape())
-    this.addComponent(new Material())
-    this.getComponent(Material).albedoColor = color
-    this.getComponent(Material).emissiveColor = color
-    this.getComponent(Material).emissiveIntensity = 0.95
-    this.setParent(parent)
   }
 }

@@ -1,16 +1,23 @@
+import { Entity, MeshRenderer, MeshCollider, Transform, engine } from "@dcl/sdk/ecs"
+import { Vector3 } from "@dcl/sdk/math"
+
 @Component("ballFlag")
 export class BallFlag {}
 
-export class Ball extends Entity {
+export class Ball {
+  entity: Entity
   public direction: Vector3
+
   constructor(transform: Transform, direction: Vector3, parent: Entity) {
-    super()
-    engine.addEntity(this)
-    this.setParent(parent)
-    this.addComponent(transform)
-    this.addComponent(new BallFlag())
-    this.addComponent(new BoxShape())
-    this.getComponent(BoxShape).withCollisions = false
+    let _entity = engine.addEntity()
+    this.entity = _entity
     this.direction = direction
+    
+    Transform.create(this.entity,{
+      position: transform.position,
+      parent: parent
+    })
+    this.addComponent(new BallFlag())
+    MeshRenderer.setBox(this.entity)
   }
 }
