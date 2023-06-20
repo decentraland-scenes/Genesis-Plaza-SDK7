@@ -1,4 +1,4 @@
-import { engine, Transform } from '@dcl/sdk/ecs'
+import { engine, PBUiCanvasInformation, Transform, UiCanvasInformation } from '@dcl/sdk/ecs'
 import { Color4 } from '@dcl/sdk/math'
 import ReactEcs, { Button, DisplayType, Label, ReactEcsRenderer, UiEntity, PositionUnit } from '@dcl/sdk/react-ecs'
 import { triggerCounter } from './lobby/beamPortal'
@@ -32,6 +32,28 @@ let scaleScore: number = 0
 let eventAnimatedY: PositionUnit = '0%'
 let eventAnimFactor: number = 0
 
+
+  
+let tieredModalScale = 1
+let tieredModalTextWrapScale = 1
+
+let devicePixelRatioScale:number = 1
+export function updateUIScalingWithCanvasInfo(canvasInfo: PBUiCanvasInformation){
+  
+  //higher res go bigger
+  //threshhold???
+  ///(1920/1080)/1.35 = 1.3
+  ///(1920/1080)/1.1 = 1.6
+  devicePixelRatioScale = (1920/1080) / canvasInfo.devicePixelRatio
+
+  //console.log("updateUIScalingWithCanvasInfo", canvasInfo,"devicePixelRatioScale",devicePixelRatioScale)
+ 
+  const THREADHOLD = 1.2
+  tieredModalScale = devicePixelRatioScale>THREADHOLD ? 2 : 1
+  tieredModalTextWrapScale = devicePixelRatioScale>THREADHOLD ? 1.08 : 1
+  
+}
+
 export function showTeleportUI(isVisible: DisplayType) {
   console.log('showTeleportUI', isVisible)
   //debugger
@@ -45,8 +67,8 @@ const uiEventDettails = () => (
   <UiEntity
     //top level root ui div
     uiTransform={{
-      width: '400',
-      height: '800',
+      width: `${400*tieredModalScale}`,
+      height: `${800*tieredModalScale}`,
 
       // { top: 4, bottom: 4, left: 4, right: 4 },
       padding: { top: 0, bottom: 0, left: 4, right: 0 },
@@ -99,7 +121,7 @@ const uiEventDettails = () => (
     <Label
         // CLOSE button
         value = " Close >>>"
-        fontSize={16}
+        fontSize={16*tieredModalScale}
         color={ Color4.fromHexString("#bbbbbbff")}      
         textAlign='top-left'
         
@@ -128,7 +150,7 @@ const uiEventDettails = () => (
   <UiEntity
       //Title container
       uiTransform={{
-        width: '392',
+        width: '99.5%',
         height: '10%',
 
         // { top: 4, bottom: 4, left: 4, right: 4 },
@@ -146,7 +168,7 @@ const uiEventDettails = () => (
       <Label
         // EVENT TITLE
         value = {eventTitleText}
-        fontSize={20}
+        fontSize={20*tieredModalScale}
         color={ Color4.White()}      
         textAlign='middle-center'
         uiTransform={{ flexGrow:3 , width: '100%', height: '100%', positionType: 'relative', position: {top: '0%', left: '0%'}}}
@@ -159,7 +181,7 @@ const uiEventDettails = () => (
     // Event DEtails text
     uiText={{ 
       value: eventDetailText, 
-      fontSize: 16,
+      fontSize: 16*tieredModalScale,
       font:'sans-serif' ,
       color: Color4.Black(),
       textAlign: 'top-left',
@@ -184,7 +206,7 @@ const uiEventDettails = () => (
     // PRESS X INSTRUCTION TEXT
     value= "Press [ X ] to discover more events"
     color={ Color4.fromHexString("#888888ff")}
-    fontSize={18}
+    fontSize={18*tieredModalScale}
     textAlign='bottom-center'
     
     
@@ -473,20 +495,65 @@ const uiComponent = () => [
 
 setupUi()
 
+export let canvasInfo:PBUiCanvasInformation = {
+  width: 0,
+  height: 0,
+  devicePixelRatio: 1,
+  interactableArea: undefined
+}
+
+let setupUiInfoEngineAlready = false
+export function setupUiInfoEngine() {
+  if(setupUiInfoEngineAlready) return
+
+  setupUiInfoEngineAlready = true
+
+  let maxWarningCount = 20
+  let warningCount = 0
+  engine.addSystem((deltaTime) => {
+    const uiCanvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
+
+    if (!uiCanvasInfo){
+      warningCount++
+      if(warningCount < maxWarningCount ){
+        console.log("setupUiInfoEngine","WARNING ",warningCount , 'screen data missing: ' , uiCanvasInfo)
+      }
+      return
+    }else if(maxWarningCount > 0){
+      maxWarningCount = 0
+      console.log("setupUiInfoEngine","FIXED " + 'screen data resolved: ',uiCanvasInfo)
+    }
+
+    canvasInfo.width = uiCanvasInfo.width
+    canvasInfo.height = uiCanvasInfo.height
+    canvasInfo.devicePixelRatio = uiCanvasInfo.devicePixelRatio
+    canvasInfo.interactableArea = uiCanvasInfo.interactableArea
+    
+    updateUIScalingWithCanvasInfo(canvasInfo)
+
+     /*console.log("setupUiInfoEngine",'--------------' ,
+     '\nscreen width: ' + uiCanvasInfo.width ,
+       '\nscreen height: ' + uiCanvasInfo.height ,
+       '\nscreen pixel ratio: ' + uiCanvasInfo.devicePixelRatio ,
+       '\n--------------')*/
+  })
+
+}
 export function setupUi() {
+  setupUiInfoEngine()
   ReactEcsRenderer.setUiRenderer(uiComponent)
 }
 
 export function displayEventUI(event:any) {
   eventDetailVisible = 'flex'  
-  
+
   let rawTitle: string = event.name  
   rawTitle = cleanString(rawTitle)
-  rawTitle = wordWrap(rawTitle, 32, 2)
+  rawTitle = wordWrap(rawTitle, 32 * tieredModalTextWrapScale, 2) 
 
   eventTitleText = rawTitle
 
-  eventDetailText =  '\n\n' + wordWrap(cleanString(event.description),43, 18) + '</cspace>'
+  eventDetailText =  '\n\n' + wordWrap(cleanString(event.description),43 * tieredModalTextWrapScale, 18) + '</cspace>'
 
   eventThumbnail = event.image
 
