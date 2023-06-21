@@ -2,8 +2,8 @@ import { CollisionFlag } from "../gameLogic/collision"
 import { Entity, GltfContainer, Material, MeshRenderer, Transform, engine } from "@dcl/sdk/ecs"
 import { Color4, Vector3 } from "@dcl/sdk/math"
 
-@Component("brickFlag")
-export class BrickFlag {}
+
+export const BrickFlag = engine.defineComponent('brickFlag', {})
 
 export class Brick {
   entity: Entity
@@ -25,7 +25,8 @@ export class Brick {
       emissiveIntensity: 0.95
     })
 
-    this.addComponent(new BrickFlag())
+    BrickFlag.create
+    this.entity.addComponent(new BrickFlag())
     this.addComponent(new CollisionFlag())
   }
 }

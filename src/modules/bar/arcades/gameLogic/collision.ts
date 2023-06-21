@@ -1,27 +1,28 @@
-import { Ball, BallFlag } from '../gameObjects/ball'
+import { Ball, BallFlag, BallFlagType } from '../gameObjects/ball'
 import { BrickFlag } from '../gameObjects/brick'
 import { PaddleFlag } from '../gameObjects/paddle'
 import { Sound } from '../gameObjects/sound'
-import { Wall, WallFlag } from '../gameObjects/wall'
+import { WallFlag } from '../gameObjects/wall'
 import { AudioSource, Transform, engine } from '@dcl/sdk/ecs'
 import { Vector3 } from '@dcl/sdk/math'
 
-@Component('collisionFlag')
-export class CollisionFlag {}
+export const CollisionFlag = engine.defineComponent('collisionFlag', {})
 
 const hitSound = new Sound('sounds/hit.mp3')
 
 // Collision detection
 class CollisionDetection {
-  private ballGroup = engine.getComponentGroup(BallFlag)
-  private collisionGroup = engine.getComponentGroup(CollisionFlag)
   update(dt: number) {
-    for (let ballEntity of this.ballGroup.entities as Ball[]) {
-      for (let hitEntity of this.collisionGroup.entities as Wall[]) {
-        let ballPos = Transform.getMutableOrNull(ballEntity).position
-        let brickPos = Transform.getMutableOrNull(hitEntity).position
-        let ballSize = Transform.getMutableOrNull(ballEntity).scale
-        let brickSize = Transform.getMutableOrNull(hitEntity).scale
+
+    const ballGroup = engine.getEntitiesWith(BallFlag, Transform) 
+    const collisionGroup = engine.getEntitiesWith(CollisionFlag, Transform) 
+
+    for (const [ballEntity, ballFlag, ballTransformRO] of ballGroup){
+      for (const [hitEntity, collisionFlag, hitTransformRO] of collisionGroup){
+        let ballPos = ballTransformRO.position
+        let brickPos = hitTransformRO.position
+        let ballSize = ballTransformRO.scale
+        let brickSize = hitTransformRO.scale
         let ballPosX = ballPos.x - ballSize.x / 2
         let ballPosZ = ballPos.z + ballSize.z / 2
         let brickPosX = brickPos.x - brickSize.x / 2
@@ -48,7 +49,7 @@ class CollisionDetection {
           let isWall = hitEntity.hasComponent(WallFlag)
           isWall
             ? (collisionNorm = hitEntity.normal)
-            : (collisionNorm = collisionNormal(ballEntity, hitEntity))
+            : (collisionNorm = collisionNormal(ballEntity, ballFlag, hitEntity))
           ballEntity.direction = reflectVector(
             ballEntity.direction,
             collisionNorm,
@@ -95,7 +96,7 @@ function reflectVector(
   return Vector3.Normalize(reflected)
 }
 
-function collisionNormal(ballEntity: Ball, hitEntity: IEntity): Vector3 {
+function collisionNormal(ballEntity: Ball, ballFlag: BallFlagType, hitEntity: IEntity): Vector3 {
   let ballPosition = ballEntity.getComponent(Transform).position
   let hitEntityPosition = hitEntity.getComponent(Transform).position
   let hitEntityWidth = hitEntity.getComponent(Transform).scale.x
@@ -117,7 +118,7 @@ function collisionNormal(ballEntity: Ball, hitEntity: IEntity): Vector3 {
     if (delta.x >= hitEntityWidth / 2 && ballEntity.direction.x > 0)
       normal.set(1, 0, 1)
 
-    return Vector3.Normalize(normal) // Normalize the vector first to maintain constant ball speed
+    return Vector3.normalize(normal) // Normalize the vector first to maintain constant ball speed
   } else {
     if (delta.x <= -hitEntityWidth / 2 || delta.x >= hitEntityWidth / 2)
       normal.set(1, 0, 0)
@@ -128,5 +129,5 @@ function collisionNormal(ballEntity: Ball, hitEntity: IEntity): Vector3 {
     if (delta.x >= hitEntityWidth / 2 && ballEntity.direction.x > 0)
       normal.set(0, 0, 1)
   }
-  return Vector3.Normalize(normal)
+  return Vector3.normalize(normal)
 }
