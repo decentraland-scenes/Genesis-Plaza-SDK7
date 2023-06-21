@@ -19,19 +19,52 @@ let selectedTheme: string = AtlasTheme.ATLAS_PATH_DARK
 
 let aIndex = 0
 let bIndex = 1
- 
+
 const modalWidth = 850
-const moreOptionButtonHeight = "40"
+const modalHeight = 260
+const moreOptionButtonHeight = 40
 const inputTextWidth = modalWidth - 300
+
+let modalScale = 1
+let modalFontSizeScale = 1
+let modalTextWrapScale = 1
+
+export function setupCustomNPCUiScaling(inScale: number, inFontSize: number, inTextWrapScale: number) {
+  if (modalScale === inScale && modalFontSizeScale === inFontSize && modalTextWrapScale === inTextWrapScale) return
+  console.log(
+    'CustomNPCUI',
+    'resolution is changed',
+    'Scale:',
+    inScale,
+    'FontSize:',
+    inFontSize,
+    'TextWrapScale:',
+    inTextWrapScale
+  )
+  modalScale = inScale
+  modalFontSizeScale = inFontSize
+  modalTextWrapScale = inTextWrapScale
+}
+
+function getScaledSize(size: number): number {
+  return size * modalScale
+}
+
+function getScaledFontSize(size: number): number {
+  return size * modalFontSizeScale
+}
+
+function getTextWrapSize(size: number): number {
+  return size * modalTextWrapScale
+}
 
 export const customNpcUI = () => {
   return (
-
     <UiEntity //Invisible Parent
       uiTransform={{
         positionType: 'absolute',
-        width: modalWidth,
-        height: 260,
+        width: getScaledSize(modalWidth),
+        height: getScaledSize(modalHeight),
         position: { bottom: '5%', left: '27%' },
         display: isVisible ? 'flex' : 'none'
       }}
@@ -55,18 +88,22 @@ export const customNpcUI = () => {
         }}
       >
         <UiEntity //TOP
-          uiTransform={{ width: '100%', height:60, margin:{bottom:2}, justifyContent: 'center' }}
-
+          uiTransform={{
+            width: '100%',
+            height: getScaledSize(60),
+            margin: { bottom: getScaledSize(2) },
+            justifyContent: 'center'
+          }}
         >
-          <Label value="<b>Ask Me Anything!</b>" fontSize={30}></Label>
+          <Label value="<b>Ask Me Anything!</b>" fontSize={getScaledFontSize(30)}></Label>
           <Button
             value=""
-            fontSize={38}
+            fontSize={getScaledFontSize(38)}
             uiTransform={{
               positionType: 'absolute',
-              position: { top: 10, right: 20 },
-              width: 45,
-              height: 45
+              position: { top: getScaledSize(10), right: getScaledSize(20) },
+              width: getScaledSize(45),
+              height: getScaledSize(45)
             }}
             onMouseDown={() => {
               closeCustomUI(true)
@@ -80,27 +117,26 @@ export const customNpcUI = () => {
           ></Button>
         </UiEntity>
         <UiEntity //Input
-          uiTransform={{ height: 50,width: '100%', justifyContent: 'flex-start' }}
-
+          uiTransform={{ height: getScaledSize(50), width: '100%', justifyContent: 'flex-start' }}
         >
           <UiEntity
             uiTransform={{
-              width: inputTextWidth + 5,
-              height: "100%",
+              width: getScaledSize(inputTextWidth + 5),
+              height: '100%',
               alignItems: 'center',
               justifyContent: 'center',
-              margin: { left: 85 }
+              margin: { left: getScaledSize(85) }
             }}
             uiBackground={{
               color: Color4.White()
             }}
           >
             <Input
-              uiTransform={{ width: inputTextWidth, height: '94%' }}
+              uiTransform={{ width: getScaledSize(inputTextWidth), height: '94%' }}
               uiBackground={{
                 color: Color4.Black()
               }}
-              fontSize={20}
+              fontSize={getScaledFontSize(20)}
               placeholder={placeHolderText}
               color={Color4.White()}
               placeholderColor={Color4.White()}
@@ -112,8 +148,8 @@ export const customNpcUI = () => {
           <Button
             value="<b>Send</b>"
             uiTransform={{
-              position: { right: -20 },
-              width: '120',
+              position: { right: getScaledSize(-20) },
+              width: getScaledSize(120),
               height: '100%',
               alignSelf: 'center'
             }}
@@ -125,7 +161,7 @@ export const customNpcUI = () => {
               textureMode: 'stretch',
               uvs: getImageMapping({ ...sourcesComponentsCoordinates.buttons.dark })
             }}
-            fontSize={22}
+            fontSize={getScaledFontSize(22)}
             onMouseDown={() => {
               sendTypeQuestion()
             }}
@@ -134,23 +170,22 @@ export const customNpcUI = () => {
         <UiEntity //Options' Buttons
           uiTransform={{
             width: '100%',
-            height: 60,
+            height: getScaledSize(60),
             display: 'flex',
             alignItems: 'center',
             flexDirection: 'row',
             justifyContent: 'space-around',
-            
-            alignContent: 'space-between',
-            padding: { left: 80, right: 80, top: 10 }
-          }}
 
+            alignContent: 'space-between',
+            padding: { left: getScaledSize(80), right: getScaledSize(80), top: getScaledSize(10) }
+          }}
         >
           <Button
             value={selectedPredefinedQuestion?.length >= 2 ? selectedPredefinedQuestion[aIndex].displayText : 'option1'}
             uiTransform={{
               display: selectedPredefinedQuestion?.length > 0 ? 'flex' : 'none',
               width: '32%',
-              height: moreOptionButtonHeight
+              height: getScaledSize(moreOptionButtonHeight)
             }}
             uiBackground={{
               texture: {
@@ -160,7 +195,7 @@ export const customNpcUI = () => {
               textureMode: 'stretch',
               uvs: getImageMapping({ ...sourcesComponentsCoordinates.buttons.dark })
             }}
-            fontSize={20}
+            fontSize={getScaledFontSize(20)}
             onMouseDown={() => {
               askQuestion(aIndex)
             }}
@@ -174,7 +209,7 @@ export const customNpcUI = () => {
             uiTransform={{
               display: bIndex >= selectedPredefinedQuestion?.length ? 'none' : 'flex',
               width: '32%',
-              height: moreOptionButtonHeight
+              height: getScaledSize(moreOptionButtonHeight)
             }}
             uiBackground={{
               texture: {
@@ -184,7 +219,7 @@ export const customNpcUI = () => {
               textureMode: 'stretch',
               uvs: getImageMapping({ ...sourcesComponentsCoordinates.buttons.dark })
             }}
-            fontSize={20}
+            fontSize={getScaledFontSize(20)}
             onMouseDown={() => {
               askQuestion(bIndex)
             }}
@@ -194,7 +229,7 @@ export const customNpcUI = () => {
             uiTransform={{
               display: selectedPredefinedQuestion?.length > 0 ? 'flex' : 'none',
               width: '32%',
-              height: moreOptionButtonHeight
+              height: getScaledSize(moreOptionButtonHeight)
             }}
             uiBackground={{
               texture: {
@@ -204,18 +239,18 @@ export const customNpcUI = () => {
               textureMode: 'stretch',
               uvs: getImageMapping({ ...sourcesComponentsCoordinates.buttons.dark })
             }}
-            fontSize={20}
+            fontSize={getScaledFontSize(20)}
             onMouseDown={() => {
               nextQuestion()
-            }} 
+            }}
           ></Button>
         </UiEntity>
         <UiEntity //Footer
-          uiTransform={{ width: '100%', height:70, justifyContent: 'center' }}
+          uiTransform={{ width: '100%', height: getScaledSize(70), justifyContent: 'center' }}
         >
           <Label
             value="<b>Disclaimer: Beta. Power by a 3rd party AI. You may receive inaccurate information which is not \nendorsed by the Foundation or the Decentraland community.  Do not share personal information.</b>"
-            fontSize={13}
+            fontSize={getScaledFontSize(13)}
           ></Label>
         </UiEntity>
       </UiEntity>
@@ -224,9 +259,9 @@ export const customNpcUI = () => {
         uiTransform={{
           display: portraitPath !== '' ? 'flex' : 'none',
           positionType: 'absolute',
-          position: { left: -160 },
-          width: 250,
-          height: 250
+          position: { left: getScaledSize(-160) },
+          width: getScaledSize(250),
+          height: getScaledSize(250)
         }}
         uiBackground={{
           texture: { src: portraitPath },
@@ -240,7 +275,6 @@ export const customNpcUI = () => {
 function setVisibility(status: boolean): void {
   isVisible = status
 }
-
 
 export function openCustomUI() {
   let questions = REGISTRY.activeNPC.predefinedQuestions
@@ -290,7 +324,7 @@ function askQuestion(index: number) {
     return
   }
   console.log('QUESTIONS', 'Asked Question:', selectedPredefinedQuestion[index])
-  trackAction(REGISTRY.activeNPC.entity,"preDefinedQuestion", selectedPredefinedQuestion[index].displayText)
+  trackAction(REGISTRY.activeNPC.entity, 'preDefinedQuestion', selectedPredefinedQuestion[index].displayText)
   sendQuestion(selectedPredefinedQuestion[index])
 }
 
@@ -313,7 +347,7 @@ function sendTypeQuestion() {
     return
   }
   console.log('QUESTIONS', 'Asked Question:', typedQuestion)
-  trackAction(REGISTRY.activeNPC.entity, "userDefinedQuestion", typedQuestion)
+  trackAction(REGISTRY.activeNPC.entity, 'userDefinedQuestion', typedQuestion)
   sendQuestion(typedQuestion)
 }
 
