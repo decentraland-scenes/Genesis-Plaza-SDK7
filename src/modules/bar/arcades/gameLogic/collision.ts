@@ -2,13 +2,14 @@ import { Ball, BallFlag } from '../gameObjects/ball'
 import { BrickFlag } from '../gameObjects/brick'
 import { PaddleFlag } from '../gameObjects/paddle'
 import { Sound } from '../gameObjects/sound'
-import * as utils from '@dcl/ecs-scene-utils'
 import { Wall, WallFlag } from '../gameObjects/wall'
+import { AudioSource, Transform, engine } from '@dcl/sdk/ecs'
+import { Vector3 } from '@dcl/sdk/math'
 
 @Component('collisionFlag')
 export class CollisionFlag {}
 
-const hitSound = new Sound(new AudioClip('sounds/hit.mp3'))
+const hitSound = new Sound('sounds/hit.mp3')
 
 // Collision detection
 class CollisionDetection {
@@ -17,10 +18,10 @@ class CollisionDetection {
   update(dt: number) {
     for (let ballEntity of this.ballGroup.entities as Ball[]) {
       for (let hitEntity of this.collisionGroup.entities as Wall[]) {
-        let ballPos = ballEntity.getComponent(Transform).position
-        let brickPos = hitEntity.getComponent(Transform).position
-        let ballSize = ballEntity.getComponent(Transform).scale
-        let brickSize = hitEntity.getComponent(Transform).scale
+        let ballPos = Transform.getMutableOrNull(ballEntity).position
+        let brickPos = Transform.getMutableOrNull(hitEntity).position
+        let ballSize = Transform.getMutableOrNull(ballEntity).scale
+        let brickSize = Transform.getMutableOrNull(hitEntity).scale
         let ballPosX = ballPos.x - ballSize.x / 2
         let ballPosZ = ballPos.z + ballSize.z / 2
         let brickPosX = brickPos.x - brickSize.x / 2
@@ -33,7 +34,7 @@ class CollisionDetection {
           ballPosZ - ballSize.z <= brickPosZ &&
           ballPosZ >= brickPosZ - brickSize.z
         ) {
-          hitSound.getComponent(AudioSource).playOnce()
+          AudioSource.getMutableOrNull(hitSound).playing = true
 
           // HACK: Temporary disable collisions on entity that's already been hit
           hitEntity.removeComponent(CollisionFlag)

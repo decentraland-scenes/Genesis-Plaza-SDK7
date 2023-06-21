@@ -8,13 +8,14 @@ export class Ball {
   entity: Entity
   public direction: Vector3
 
-  constructor(transform: Transform, direction: Vector3, parent: Entity) {
+  constructor(position: Vector3, scale: Vector3, direction: Vector3, parent: Entity) {
     let _entity = engine.addEntity()
     this.entity = _entity
     this.direction = direction
     
     Transform.create(this.entity,{
-      position: transform.position,
+      position: position,
+      scale: scale,
       parent: parent
     })
     this.addComponent(new BallFlag())

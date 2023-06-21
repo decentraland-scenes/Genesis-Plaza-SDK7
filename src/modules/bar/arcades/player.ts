@@ -2,6 +2,8 @@ import { Paddle } from "./gameObjects/paddle"
 import { Ball } from "./gameObjects/ball"
 import { GameManager } from "./gameManager"
 import { Arcade } from "./gameObjects/arcade"
+import { Entity, Transform, engine } from "@dcl/sdk/ecs"
+import { Color4, Vector3 } from "@dcl/sdk/math"
 
 // Intermediate variables
 const input = Input.instance
@@ -19,7 +21,7 @@ export function loadPlayer(parent: Entity, arcade: Arcade): void {
   GameManager.hasGameLoaded = true
 
   // Paddle
-  paddle = new Paddle(new Transform({ position: new Vector3(16, GameManager.PLANE_HEIGHT, 4), scale: new Vector3(2, 0.01, 1) }), Color3.FromInts(127, 127, 255), activeParent)
+  paddle = new Paddle(Vector3.create(16, GameManager.PLANE_HEIGHT, 4), Vector3.create(2, 0.01, 1), Color4.Blue(), activeParent)
   playerElements.push(paddle)
 
   // Fire a ball
@@ -51,7 +53,7 @@ export function loadPlayer(parent: Entity, arcade: Arcade): void {
   // Calculate paddle position above all else
   class ButtonChecker {
     update(dt: number) {
-      let transform = paddle.getComponent(Transform)
+      let transform = Transform.getMutableOrNull(paddle)
       let increment = Vector3.Right().scale(dt * GameManager.PADDLE_SPEED)
 
       if (!GameManager.isEKeyPressed && !GameManager.isFKeyPressed) arcade.controlStop()
@@ -70,9 +72,9 @@ export function loadPlayer(parent: Entity, arcade: Arcade): void {
   buttonSystem = engine.addSystem(new ButtonChecker(), 0)
 
   function shoot(direction: Vector3): void {
-    let paddlePosition = paddle.getComponent(Transform).position
-    let spawnPosition = new Vector3(paddlePosition.x, GameManager.PLANE_HEIGHT, paddlePosition.z + 1)
-    const ball = new Ball(new Transform({ position: spawnPosition, scale: new Vector3(0.3, 0.1, 0.4) }), direction, activeParent)
+    let paddlePosition = Transform.getMutableOrNull(paddle).position
+    let spawnPosition = Vector3.create(paddlePosition.x, GameManager.PLANE_HEIGHT, paddlePosition.z + 1)
+    const ball = new Ball(spawnPosition, Vector3.create(0.3, 0.1, 0.4), direction, activeParent)
     playerElements.push(ball)
   }
 }
