@@ -65,7 +65,8 @@ export const customNpcUI = () => {
         positionType: 'absolute',
         width: getScaledSize(modalWidth),
         height: getScaledSize(modalHeight),
-        position: { bottom: '5%', left: '27%' },
+        position: { bottom: '10%', left: '50%' },
+        margin: { left: -getScaledSize(modalWidth) / 2 },
         display: isVisible ? 'flex' : 'none'
       }}
     >

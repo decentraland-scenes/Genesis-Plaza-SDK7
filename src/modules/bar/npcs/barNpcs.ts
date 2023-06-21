@@ -20,7 +20,7 @@ import { LobbyScene, disconnectHost } from '../../../lobby-scene/lobbyScene'
 import { Room } from 'colyseus.js'
 import { onNpcRoomConnect } from '../../../connection/onConnect'
 
- 
+
 const LogTag: string = 'barNpcs'
 
 const aishaSpawnSecondsDelay = 5
@@ -68,8 +68,8 @@ let barNpcsAdded: boolean = false
 
 let outsideNpcAdded: boolean = false
 
-export function initNpcFramework(){
-  if(npcFrameworkAdded) return
+export function initNpcFramework() {
+  if (npcFrameworkAdded) return
   npcFrameworkAdded = true
 
   //Quests
@@ -83,9 +83,9 @@ export function initNpcFramework(){
 
 }
 export function initBarNpcs(): void {
-  if(barNpcsAdded) return
+  if (barNpcsAdded) return
   barNpcsAdded = true
-  
+
   initNpcFramework()
 
   createOctopusNpc()
@@ -95,17 +95,17 @@ export function initBarNpcs(): void {
   createSimonas()
 }
 
-export function initOutsideNpcs(delay?:number): void {
-  if(outsideNpcAdded) return
-  
+export function initOutsideNpcs(delay?: number): void {
+  if (outsideNpcAdded) return
+
   outsideNpcAdded = true
-  
+
   initNpcFramework()
 
   utils.timers.setTimeout(() => {
     createAisha()
   }, delay ? delay : aishaSpawnSecondsDelay * 1000)
-} 
+}
 
 //#region octopus
 function createOctopusNpc() {
@@ -120,6 +120,7 @@ function createOctopusNpc() {
       type: npcLib.NPCType.CUSTOM,
       model: octopusModelPath,
       dialogSound: navigationForwardSfx,
+      continueOnWalkAway: false,
       onlyETrigger: true,
       onActivate: () => {
         console.log(LogTag, "Hi! Octopus!")
@@ -224,6 +225,7 @@ function createFashionistNpc(): Entity {
         RotateFashionist(targetPosition)
       },
       onWalkAway: () => {
+        console.log('NPC', 'fashionist', 'walk away');
         npcLib.playAnimation(fashionist, `Idle`, false)
         RotateFashionist(position)
 
@@ -274,6 +276,7 @@ function createBoyArtist(): Entity {
         trackStart(boy)
       },
       onWalkAway: () => {
+        console.log('NPC', 'ARTIST', 'walk away');
         trackEnd(boy)
       },
       textBubble: true,
@@ -318,6 +321,7 @@ function createGirlArtist(): Entity {
         trackStart(girl)
       },
       onWalkAway: () => {
+        console.log('NPC', 'ARTIST', 'walk away');
         artistTalkToEachOther(false)
         trackEnd(girl)
       },
@@ -348,6 +352,7 @@ function createGirlArtist(): Entity {
 //AI POWERED NPCs 
 
 //#region doge
+let isActive: boolean = false
 function createDogeNpc(): void {
   let dogePathPoints = [
     Vector3.create(166.7 - coreBuildingOffset.x, 0.24, 163. - coreBuildingOffset.z),
@@ -400,6 +405,7 @@ function createDogeNpc(): void {
         model: dogeModelPath,
         onActivate: () => {
           console.log('doge.Ai_NPC activated!')
+          isActive = true
 
           console.log(AnalyticsLogLabel, "barNpcs.ts", "Doge")
           trackAction(doge.entity, "Interact", undefined)
@@ -408,6 +414,7 @@ function createDogeNpc(): void {
           connectNpcToLobby(REGISTRY.lobbyScene, doge)
         },
         onWalkAway: () => {
+          isActive = false
           console.log("NPC", doge.name, 'walk away')
 
           trackEnd(doge.entity)
@@ -457,6 +464,7 @@ function createDogeNpc(): void {
   REGISTRY.allNPCs.push(doge)
   npcLib.followPath(doge.entity)
 
+
   let debugCube = engine.addEntity()
   Transform.create(debugCube, {
     parent: doge.entity,
@@ -472,12 +480,14 @@ function createDogeNpc(): void {
     ],
     (other) => {
       if (other === engine.PlayerEntity) {
-        console.log("DogeView", "Hit Player Entity");
+        if (isActive) return
+        console.log("DogeView", "Hit Player Entity"); 
         npcLib.stopWalking(doge.entity)
       }
     },
     (other) => {
       if (other === engine.PlayerEntity) {
+        if (isActive) return
         console.log("DogeView", "Left Player Entity");
         npcLib.followPath(doge.entity, dogePathData)
       }
