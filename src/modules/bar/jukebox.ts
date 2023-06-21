@@ -177,7 +177,7 @@ export function placeJukeBox() {
     let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
     if (audioStreamRef && e.state === audioStreamRef.playing) return
     if (e.state) {
-      barRadioOn()
+      barRadioOn(barCurrentRadio)
       radioIsOn = true
     } else {
       barRadioOff()
