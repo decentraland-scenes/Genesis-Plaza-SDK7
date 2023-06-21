@@ -13,9 +13,9 @@ import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES, AnalyticsLogLabel } f
 export enum Radios {
   RAVE = 'https://icecast.ravepartyradio.org/ravepartyradio-192.mp3',
   DELTA = 'https://cdn.instream.audio/:9069/stream?_=171cd6c2b6e',
-  GRAFFITI = 'https://n07.radiojar.com/2qm1fc5kb.m4a?1617129761=&rj-tok=AAABeIR7VqwAilDFeUM39SDjmw&rj-ttl=5',
+  //GRAFFITI = 'https://n07.radiojar.com/2qm1fc5kb.m4a?1617129761=&rj-tok=AAABeIR7VqwAilDFeUM39SDjmw&rj-ttl=5',
   SIGNS = 'https://edge.singsingmusic.net/MC2.mp3',
-  JAZZ = 'https://live.vegascity.fm/radio/8010/the_flamingos.mp3',
+  //JAZZ = 'https://live.vegascity.fm/radio/8010/the_flamingos.mp3',
 }
 
 let FullVolume = 0.1
@@ -31,7 +31,7 @@ let defaultStartStream: PBAudioStream = {
   volume:FullVolume
 }
 let barCurrentRadioIndex: number = 0
-let radioCount = 4
+let radioCount = 2
 let radioIsOn: boolean = true
 
 let JukeBoxText: Entity
@@ -196,13 +196,13 @@ export function placeJukeBox() {
       case 1:
         newRadio = Radios.DELTA
         break
-      case 2:
+      /*case 2:
         newRadio = Radios.GRAFFITI
         break
       case 3:
         newRadio = Radios.JAZZ
-        break
-      case 4:
+        break*/
+      case 2:
         newRadio = Radios.SIGNS
         break
       default:
@@ -418,13 +418,13 @@ function getRadioName(radio: number) {
     case 1:
       radioName = 'Delta'
       break
-    case 2:
+    /*case 2:
       radioName = 'Graffiti Kings'
       break
     case 3:
       radioName = 'Vegas Jazz FM'
-      break
-    case 4:
+      break*/
+    case 2:
       radioName = 'Signs'
       break
     case null:
