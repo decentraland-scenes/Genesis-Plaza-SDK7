@@ -3,7 +3,7 @@ import { Wall } from "../gameObjects/wall"
 import { Background } from "../gameObjects/background"
 import { GameManager } from "../gameManager"
 import { Entity, GltfContainer, Transform, VisibilityComponent, engine } from "@dcl/sdk/ecs"
-import { Color3, Color4, Vector3 } from "@dcl/sdk/math"
+import { Color4, Vector3 } from "@dcl/sdk/math"
 
 // Ready player one
 const readyPlayerOne = engine.addEntity()
@@ -14,14 +14,12 @@ Transform.create(readyPlayerOne,{
 VisibilityComponent.create(readyPlayerOne, {visible: true})
 
 // Brick
-const colorRed = Color4.Red()
-const colorGreen = Color3.fromInts(127, 255, 127)
 const gameElements: Entity[] = []
 
 // Load level
 export function loadAtariLevel(parent: Entity): void {
 
-  Transform.getMutableOrNull(readyPlayerOne),parent = parent
+  Transform.getMutableOrNull(readyPlayerOne).parent = parent
 
   // Wall
   const wallLeft = new Wall(
