@@ -64,7 +64,7 @@ export function loadAtariBricks(parent: Entity): void {
         parent
       )
       brickPosX += 2.5
-      gameElements.push(brick)
+      gameElements.push(brick.entity)
     }
     redBrickPosZ -= 1.5
     brickPosX = 6

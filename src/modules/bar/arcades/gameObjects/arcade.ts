@@ -1,19 +1,20 @@
 import { Vector3 } from "@dcl/sdk/math"
-import { AudioSource, Entity, GltfContainer, Material, MeshRenderer, Transform, engine } from '@dcl/sdk/ecs'
+import { Entity, GltfContainer, Transform, engine } from '@dcl/sdk/ecs'
 
 
 export class Arcade {
   entity: Entity
   knob: Entity
 
-  constructor(modelUrl: string, transform: Transform, knob: boolean = true) {
+  constructor(position: Vector3, scale: Vector3, knob: boolean = true) {
 
     let _entity = engine.addEntity()
     this.entity = _entity
 
     GltfContainer.create(this.entity, {src: "models/core_building/knob.glb"})
     Transform.create(this.entity,{
-      position: transform.position
+      position: position,
+      scale: scale
     })
 
     if (knob) {

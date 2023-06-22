@@ -7,17 +7,19 @@ import { AudioSource, Transform, engine } from "@dcl/sdk/ecs"
 const missSound = new Sound("sounds/miss.mp3")
 
 class BallTranslatorSystem {
-  private ballGroup = engine.getComponentGroup(BallFlag)
+  private ballGroup = engine.getEntitiesWith(BallFlag, Transform)
 
   update(dt: number) {
-    for (let entity of this.ballGroup.entities as Ball[]) {
-      let transform = Transform.getMutableOrNull(entity)
-      let increment = Transform.getMutableOrNull(entity).scale(dt * GameManager.BALL_SPEED)
-      transform.translate(increment)
+
+    for(const [ballEntity, ballFlag, ballTransformRO] of this.ballGroup){
+      let transform = ballTransformRO
+      let scale = ballTransformRO.scale
+      let increment = scale(dt * GameManager.BALL_SPEED)
+
       if (transform.position.z <= GameManager.OUT_OF_BOUNDS) {
         GameManager.isBallAlive = false
-        AudioSource.getMutableOrNull(missSound).playing = true
-        engine.removeEntity(entity)
+        AudioSource.getMutableOrNull(missSound.entity).playing = true
+        engine.removeEntity()
       }
       if (transform.position.x < 0 || transform.position.x > 32 || transform.position.z < 0 || transform.position.z > 32) {
         GameManager.isBallAlive = false
@@ -27,4 +29,4 @@ class BallTranslatorSystem {
   }
 }
 
-engine.addSystem(new BallTranslatorSystem(), 1)
+engine.addSystem(new BallTranslatorSystem())

@@ -35,7 +35,7 @@ class CollisionDetection {
           ballPosZ - ballSize.z <= brickPosZ &&
           ballPosZ >= brickPosZ - brickSize.z
         ) {
-          AudioSource.getMutableOrNull(hitSound).playing = true
+          AudioSource.getMutableOrNull(hitSound.entity).playing = true
 
           // HACK: Temporary disable collisions on entity that's already been hit
           hitEntity.removeComponent(CollisionFlag)

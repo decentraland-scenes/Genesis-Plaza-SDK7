@@ -1,4 +1,4 @@
-import { Entity, GltfContainer, Material, MeshRenderer, Transform, engine } from "@dcl/sdk/ecs"
+import { Entity, Material, MeshRenderer, Transform, engine } from "@dcl/sdk/ecs"
 import { Color4, Vector3 } from "@dcl/sdk/math"
 
 export class Background  {

@@ -1,14 +1,9 @@
-import { Arcade } from 'gameObjects/arcade'
-import { loadPlayer, unloadPlayer } from 'player'
-import {
-  loadAtariLevel,
-  loadAtariBricks,
-  unloadAtariBricks,
-} from 'gameLogic/atariLevel'
-import { GameManager } from 'gameManager'
-import * as utils from '@dcl/ecs-scene-utils'
+
 import { Entity, GltfContainer, Transform, engine } from '@dcl/sdk/ecs'
 import { Vector3, Quaternion } from '@dcl/sdk/math'
+import { Arcade } from './gameObjects/arcade'
+import { Utils } from 'cannon/build/cannon'
+import { loadAtariLevel } from './gameLogic/atariLevel'
 // import { scene } from "./scene"
 
 export function addArcades() {
@@ -58,9 +53,9 @@ export function addArcades() {
     Transform.create(atariGameTransform, {position: Vector3.create(-0.48, 1.38, -0.155), scale: Vector3.create(.3, .3, .3), parent: arcadeCabinetAtari})
     
 
-    atariGameTransform.getComponent(Transform).rotate(Vector3.Left(), 75)
+    Transform.getMutableOrNull(atariGameTransform).rotate(Vector3.Left(), 75)
 
-    let arcadeCabinetAtariTrigger = new utils.TriggerBoxShape(
+    let arcadeCabinetAtariTrigger = new Utils.TriggerBoxShape(
       Vector3.create(3, 3, 3),
       arcadeAtariTriggerPos[i]
     )

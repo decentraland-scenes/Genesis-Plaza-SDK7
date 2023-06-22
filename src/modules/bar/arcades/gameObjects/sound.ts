@@ -1,8 +1,6 @@
-
 import { AudioSource, Entity, GltfContainer, Material, MeshRenderer, Transform, engine } from "@dcl/sdk/ecs"
-import { Color4 } from "@dcl/sdk/math"
-import { Quaternion, Vector3 } from '@dcl/sdk/math'
-import { CollisionFlag } from "../gameLogic/collision"
+import { Vector3 } from '@dcl/sdk/math'
+
 
 export class Sound {
   entity: Entity

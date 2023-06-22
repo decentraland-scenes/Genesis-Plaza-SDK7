@@ -22,7 +22,7 @@ export function loadPlayer(parent: Entity, arcade: Arcade): void {
 
   // Paddle
   paddle = new Paddle(Vector3.create(16, GameManager.PLANE_HEIGHT, 4), Vector3.create(2, 0.01, 1), Color4.Blue(), activeParent)
-  playerElements.push(paddle)
+  playerElements.push(paddle.entity)
 
   // Fire a ball
   input.subscribe("BUTTON_DOWN", ActionButton.POINTER, false, () => {
@@ -30,7 +30,7 @@ export function loadPlayer(parent: Entity, arcade: Arcade): void {
       GameManager.isBallAlive = true
       let forwardVector = Vector3.Forward()
       forwardVector.y = 0 // Ignore y-axis
-      shoot(Vector3.Normalize(forwardVector))
+      shoot(Vector3.normalize(forwardVector))
     }
   })
 
@@ -53,7 +53,7 @@ export function loadPlayer(parent: Entity, arcade: Arcade): void {
   // Calculate paddle position above all else
   class ButtonChecker {
     update(dt: number) {
-      let transform = Transform.getMutableOrNull(paddle)
+      let transform = Transform.getMutableOrNull(paddle.entity)
       let increment = Vector3.Right().scale(dt * GameManager.PADDLE_SPEED)
 
       if (!GameManager.isEKeyPressed && !GameManager.isFKeyPressed) arcade.controlStop()
@@ -72,10 +72,10 @@ export function loadPlayer(parent: Entity, arcade: Arcade): void {
   buttonSystem = engine.addSystem(new ButtonChecker(), 0)
 
   function shoot(direction: Vector3): void {
-    let paddlePosition = Transform.getMutableOrNull(paddle).position
+    let paddlePosition = Transform.getMutableOrNull(paddle.entity).position
     let spawnPosition = Vector3.create(paddlePosition.x, GameManager.PLANE_HEIGHT, paddlePosition.z + 1)
     const ball = new Ball(spawnPosition, Vector3.create(0.3, 0.1, 0.4), direction, activeParent)
-    playerElements.push(ball)
+    playerElements.push(ball.entity)
   }
 }
 

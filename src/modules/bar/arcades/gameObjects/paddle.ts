@@ -2,8 +2,8 @@ import { Entity, GltfContainer, Material, MeshRenderer, Transform, engine } from
 import { Color4, Vector3 } from "@dcl/sdk/math"
 import { CollisionFlag } from "../gameLogic/collision"
 
-@Component("paddleFlag")
-export class PaddleFlag {}
+
+export const PaddleFlag = engine.defineComponent('paddleFlag', {})
 
 export class Paddle{
   entity: Entity
@@ -23,7 +23,7 @@ export class Paddle{
       albedoColor: color
     })
 
-    this.addComponent(new PaddleFlag())
-    this.addComponent(new CollisionFlag())
+    PaddleFlag.create(this.entity)
+    CollisionFlag.create(this.entity)
   }
 }

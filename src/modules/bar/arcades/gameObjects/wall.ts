@@ -1,10 +1,9 @@
-import { Entity, GltfContainer, Material, MeshRenderer, Transform, engine } from "@dcl/sdk/ecs"
+import { Entity, Material, MeshRenderer, Transform, engine } from "@dcl/sdk/ecs"
 import { Color4 } from "@dcl/sdk/math"
-import { Quaternion, Vector3 } from '@dcl/sdk/math'
+import { Vector3 } from '@dcl/sdk/math'
 import { CollisionFlag } from "../gameLogic/collision"
 
-@Component("wallFlag")
-export class WallFlag {}
+export const WallFlag = engine.defineComponent('wallFlag', {})
 
 export class Wall {
   public normal: Vector3
@@ -26,7 +25,7 @@ export class Wall {
       albedoColor: color
     })
 
-    this.addComponent(new WallFlag())
-    this.addComponent(new CollisionFlag())
+    WallFlag.create(this.entity)
+    CollisionFlag.create(this.entity)
   }
 }
