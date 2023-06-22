@@ -1,3 +1,4 @@
+import { Entity } from "@dcl/ecs";
 import * as serverStateSpec from "../../connection/state/server-state-spec";
 import * as serverState from "../../connection/state/server-state-spec";
 import * as npc from 'dcl-npc-toolkit'
@@ -99,6 +100,7 @@ export class StreamedMessages {
   streamedMessagesMapById = new Map<string, ChatInteraction>()
   streamedMessages: ChatPart[] = []
   streamedInteractions: ChatInteraction[] = []
+  loadedAudios: Map<string, Entity> = new Map<string, Entity>()
 
   started: boolean = false
   waitingForMore: boolean = false
@@ -131,8 +133,9 @@ export function resetMessages(message: StreamedMessages): void {
   message.streamedMessages = []
   message.streamedInteractions = []
   message.streamedMessagesMapById = new Map<string, ChatInteraction>()
+  message.loadedAudios = new Map<string, Entity>()
 
-  message.messageIndex = 0
+  message.messageIndex = 0 
   message.interactionIndex = 0
 }
 
@@ -194,6 +197,10 @@ function hasNextAudioNText(message: StreamedMessages, _startIndex?: number): boo
 
 export function next(message: StreamedMessages): ChatNext {
   return _next(message, true)
+}
+
+export function getHypotheticalNext(message: StreamedMessages): ChatNext {
+  return _next(message, false)
 }
 //fixme this is hacky, need a better way to organized streamed data and keep updating scene in real time
 //for now the workaround is let it query again later to see if more came through

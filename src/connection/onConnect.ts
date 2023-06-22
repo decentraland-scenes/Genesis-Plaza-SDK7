@@ -14,10 +14,10 @@ import { closeCustomUI } from "../utils/customNpcUi/customUi";
 import { Dialog, playAnimation, talk } from "dcl-npc-toolkit";
 import { ButtonData } from 'dcl-npc-toolkit/dist/types'
 //import resources, { setSection } from "src/dcl-scene-ui-workaround/resources";
-import { ChatNext, ChatPart, streamedMsgs } from "../modules/RemoteNpcs/streamedMsgs";
+import { ChatNext, ChatPart, getHypotheticalNext, streamedMsgs } from "../modules/RemoteNpcs/streamedMsgs";
 import { closeAllInteractions, createMessageObject, sendMsgToAI } from "../utils/connectionUtils/connectedUtils";
 import { Color4 } from "@dcl/sdk/math";
-import { Animator, AudioStream, executeTask } from "@dcl/sdk/ecs";
+import { Animator, AudioStream, Entity, executeTask } from "@dcl/sdk/ecs";
 import { onConnectHost } from "../lobby-scene/lobbyScene";
 import { endOfRemoteInteractionStream, goodBye, hideThinking } from "../modules/RemoteNpcs/remoteNpc";
 import { getNpcEmotion } from "../modules/RemoteNpcs/npcHelper";
@@ -73,14 +73,31 @@ export function onDisconnect(room: Room, code?: number) {
 
 }
 
+// let loadedAudios: Map<string, Entity> = new Map<string, Entity>()
 
 //function convertAndPlayAudio(sourceName:string,payloadId:string,base64Audio:string){
 function convertAndPlayAudio(packet: serverStateSpec.ChatPacket) {
+
+  const loadedAudios = streamedMsgs.loadedAudios
+
   const sourceName = packet.routing.source.name
   const payloadId = packet.packetId.packetId
   const base64Audio = packet.audio.chunk
   console.log("convertAndPlayAudio", payloadId)
 
+  console.log('AUDIO-Debug', 'Start Loading Audio', payloadId);
+
+  if (loadedAudios.has(payloadId)) {
+    console.log('AUDIO-Debug', 'Play From Cache', payloadId);
+
+    const soundEntity: Entity = loadedAudios.get(payloadId)
+    let audiStream = AudioStream.getMutableOrNull(soundEntity)
+    if (audiStream) audiStream.playing = true
+    REGISTRY.activeNPCSound.set(sourceName, soundEntity)
+    return
+  }
+
+  console.log('AUDIO-Debug', 'Download on the spot', payloadId);
   executeTask(async () => {
     //base64 is too big, passing payloadId and server will look it up and convert it
     //const soundClip = new AudioStream()
@@ -94,11 +111,25 @@ function convertAndPlayAudio(packet: serverStateSpec.ChatPacket) {
       volume: 1
     })
     REGISTRY.activeNPCSound.set(sourceName, soundEntity)
+
+    console.log('AUDIO-Debug', 'Await', payloadId);
   })
+  console.log('AUDIO-Debug', 'Exit Method', payloadId);
+}
+
+function loadAudio(packet: serverStateSpec.ChatPacket) {
+  const loadedAudios = streamedMsgs.loadedAudios
+  const payloadId = packet.packetId.packetId
+  const soundEntity = createEntityForSound("npcSound")//createEntitySound("npcSound", soundClip, AUDIO_VOLUME, loop)
+  AudioStream.create(soundEntity, {
+    url: CONFIG.COLYSEUS_HTTP_ENDPOINT + "/audio-base64-binary?payloadId=" + encodeURIComponent(payloadId),
+    playing: false,
+    volume: 1
+  })
+  loadedAudios.set(payloadId, soundEntity)
 }
 
 //start fresh
-
 
 function onLevelConnect(room: Room<clientState.NpcGameRoomState>) {
   //initLevelData(room.state.levelData)
@@ -243,7 +274,10 @@ function onLevelConnect(room: Room<clientState.NpcGameRoomState>) {
             if (nextPart.audio && nextPart.audio.packet.audio.chunk) {
               console.log("onMessage.structuredMsg.audio", nextPart.audio);
               convertAndPlayAudio(nextPart.audio.packet)
-              //npcDialogAudioPacket.push( msg )
+              let nextMessage = getHypotheticalNext(streamedMsgs)
+              if (nextMessage && nextMessage.audio)
+                loadAudio(nextMessage.audio.packet)
+              //npcDialogAudioPacket.push( msg ) 
             }
           }
         } else {
@@ -348,8 +382,11 @@ function onLevelConnect(room: Room<clientState.NpcGameRoomState>) {
 
       if (true) {//if(npcDialog.length ==1){
         if (nextPart.audio && nextPart.audio.packet.audio.chunk) {
-          console.log("onMessage.structuredMsg.audio", msg);
+          console.log("onMessage.structuredMsg.audio", msg)
           convertAndPlayAudio(nextPart.audio.packet)
+          let nextMessage = getHypotheticalNext(streamedMsgs)
+          if (nextMessage && nextMessage.audio)
+            loadAudio(nextMessage.audio.packet)
           //npcDialogAudioPacket.push( msg ) 
         }
       }

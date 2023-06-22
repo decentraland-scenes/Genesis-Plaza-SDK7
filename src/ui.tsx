@@ -77,7 +77,6 @@ const uiComponent = () => [
   uiBasketballScore(),
   uiOutOfBounds(),
   uiEventDettails(),
-  //uiSpawnCube()
   render()
 ]
 
