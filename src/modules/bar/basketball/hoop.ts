@@ -2,12 +2,12 @@ import { AudioSource, Entity, GltfContainer, MeshRenderer, PBGltfContainer, Tran
 import * as utils from "@dcl-sdk/utils"
 import { Color3, Vector3, Quaternion } from "@dcl/sdk/math";
 import * as CANNON from 'cannon/build/cannon'
-import { scoreDisplay } from "../../../ui";
 import { ToRadian, flatDistance } from "./utilFunctions";
 import { scoreSource, scoreVolume } from "./sounds";
 import { hoopContactMaterial } from "./physicsWorld";
 import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES } from '../../stats/AnalyticsConfig'
 import { trackAction } from "../../stats/analyticsComponents";
+import { scoreDisplay } from "./basketballUI";
 
 const hoopShape:PBGltfContainer =  {src:"models/basketball/basketball_hoop.glb"}
 const sparksShape:PBGltfContainer =  {src:"models/basketball/sparks.glb"}

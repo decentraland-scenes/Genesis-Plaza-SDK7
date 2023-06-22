@@ -28,7 +28,7 @@ export async function _openExternalURL(url: string) {
 export function _teleportTo(parcelX: number, parcelZ: number) {
   //sdk needs to prompt but this works
   //const split 
-  log("_teleportTo", parcelX, parcelZ)
+  log("_teleportTo - Coordinates:", parcelX, parcelZ)
   teleportTo({
     worldCoordinates: { x: parcelX, y: parcelZ }
   })

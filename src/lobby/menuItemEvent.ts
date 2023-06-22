@@ -12,7 +12,7 @@ import { liveSignShape } from './resources/resources'
 import { _openExternalURL, _teleportTo } from '../back-ports/backPorts'
 import { TrackingElement, generateGUID, getRegisteredAnalyticsEntity, trackAction } from '../modules/stats/analyticsComponents'
 import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES } from '../modules/stats/AnalyticsConfig'
-import { displayEventUI, hideEventUI } from '../ui'
+import { displayEventUI, hideEventUI } from './eventDetailsUI'
 
 let dummyLiveBadge = engine.addEntity()
 Transform.create(dummyLiveBadge, {

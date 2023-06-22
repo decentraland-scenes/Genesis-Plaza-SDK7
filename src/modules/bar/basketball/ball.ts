@@ -3,7 +3,6 @@ import { Animator, AudioSource, AvatarAnchorPointType, AvatarAttach, CameraMode,
 import { Vector3, Quaternion, Color3, Color4 } from "@dcl/sdk/math"
 import { addPhysicsConstraints } from './physicsConstraints'
 import * as utils from "@dcl-sdk/utils"
-import { displayBasketballUI, hideBarHighlight, hideBasketballUI, hideOOB, hideStrenghtBar, scoreDisplay, setStrengthBar, showBarHighlight, showOOB } from '../../../ui'
 import { BasketballHoop } from './hoop'
 import { PhysicsWorldStatic, ballBounceMaterial } from './physicsWorld'
 import { ballDropSource, ballDropVolume, bounceSource, bounceVolume, chargeThrowSource, chargeThrowVolume, pickupSource, pickupVolume, throwBallSource, throwBallVolume } from './sounds'
@@ -13,6 +12,7 @@ import { barCenter } from '../../../lobby/resources/globals'
 import { TrackingElement, generateGUID, getRegisteredAnalyticsEntity, trackAction } from '../../stats/analyticsComponents'
 import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES } from '../../stats/AnalyticsConfig'
 import { util } from 'protobufjs'
+import { displayBasketballUI, hideBarHighlight, hideBasketballUI, hideOOB, hideStrenghtBar, setStrengthBar, showBarHighlight, showOOB } from './basketballUI'
 
 export const Throwable = engine.defineComponent('throwable-id', {
     index: Schemas.Number,

@@ -1,9 +1,11 @@
-import { Animator, Entity, Transform } from "@dcl/sdk/ecs";
+import { Animator, Billboard, Entity, TextShape, Transform, engine } from "@dcl/sdk/ecs";
 import * as npcLib from "dcl-npc-toolkit";
 import { NPCData } from "dcl-npc-toolkit/dist/types";
 import { EmotionBehaviorCode } from "../../connection/state/server-state-spec";
 import { NpcAnimationNameDef, REGISTRY } from "../../registry";
 import { ChatPart } from "./streamedMsgs";
+import { CONFIG } from "../../config";
+import { Color4, Vector3 } from "@dcl/sdk/math";
 
 export class NpcCreationArgs {
   transformData: any
@@ -66,5 +68,19 @@ export function getNpcEmotion(emotion: ChatPart): NpcAnimationNameDef {
       break
   }
   result = result ? result : defaultEmotion
-  return result; 
+  return result;
+}
+
+export function createDebugEntity(text: string, position: Vector3) {
+  if (!CONFIG.PATH_DEBUG) return
+  let test = engine.addEntity()
+  Transform.create(test, {
+    position: position,
+    scale: Vector3.create(.25, .25, .25)
+  })
+  TextShape.create(test, {
+    text: text,
+    textColor: Color4.Black()
+  })
+  Billboard.create(test)
 }

@@ -12,10 +12,10 @@ import { TimerId } from '@dcl-sdk/utils/dist/timer'
 import { GetRealmResponse, getRealm } from '~system/Runtime'
 import { isMovePlayerInProgress, setMovePlayerInProgress } from '../back-ports/movePlayer'
 import { FIRST_PERSON_VOLUME_ADJ, addAudioSourceAttachedToPlayer, applyAudioStreamWorkAround, setAudioSourceAttachedToPlayerPlaying } from '../modules/soundsAttachedToPlayer'
-import { showTeleportUI } from '../ui'
 import { CountDownUtil } from './countDown'
 import { beamShape } from './resources/resources'
 import { beamChargeSource, beamChargeSourceVolume, beamFallSource, beamFallSourceVolume, beamFireSource, beamFireSourceVolume, impactHardSource, impactHardSourceVolume, lobbyMusicSource, lobbyMusicSourceVolume } from './resources/sounds'
+import { showTeleportUI } from './beamUpUI'
 
 
 export const triggerCounter = new CountDownUtil()
