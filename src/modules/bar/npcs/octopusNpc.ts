@@ -67,12 +67,12 @@ export function createOctopusNpc() {
     [{
       type: 'sphere',
       radius: 3,
-      position: Vector3.create(0, 0, 0)
+      position: Vector3.create(0, 1, 0)
     }],
     (entity) => {
       // console.log("DebugSession", "Octpus-OnTriggerEnter"); 
       if (engine.PlayerEntity === entity) {
-        console.log("DebugSession", "Player Enter Area");
+        console.log(LogTag, "Player Enter Area");
         npcLib.activate(octo, octo)
         utils.triggers.removeTrigger(octo)
       }
