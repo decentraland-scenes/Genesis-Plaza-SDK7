@@ -65,7 +65,8 @@ export const customNpcUI = () => {
         positionType: 'absolute',
         width: getScaledSize(modalWidth),
         height: getScaledSize(modalHeight),
-        position: { bottom: '5%', left: '27%' },
+        position: { bottom: '10%', left: '50%' },
+        margin: { left: -getScaledSize(modalWidth) / 2 },
         display: isVisible ? 'flex' : 'none'
       }}
     >
@@ -303,7 +304,7 @@ export function closeCustomUI(triggerWalkAway: boolean) {
   if (!triggerWalkAway) return
   if (REGISTRY.activeNPC) {
     console.log('DebugSession', 'CLOSEUI => walked away')
-    handleWalkAway(REGISTRY.activeNPC.entity)
+    handleWalkAway(REGISTRY.activeNPC.entity, undefined)
   }
 }
 

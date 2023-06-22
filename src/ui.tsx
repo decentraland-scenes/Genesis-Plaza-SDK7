@@ -4,8 +4,13 @@ import { NpcUtilsUi, setupNPCUiScaling } from 'dcl-npc-toolkit/dist/ui'
 import { customNpcUI, setupCustomNPCUiScaling } from './utils/customNpcUi/customUi'
 import { render } from 'dcl-ui-toolkit'
 import { setupEventDetailsUIScaling, uiEventDettails } from './lobby/eventDetailsUI'
-import { uiBeamMeUp } from './lobby/beamUpUI'
-import { uiBasketballPower, uiBasketballScore, uiOutOfBounds } from './modules/bar/basketball/basketballUI'
+import { setupBeamUiScaling, uiBeamMeUp } from './lobby/beamUpUI'
+import {
+  setupBasketballUiScaling,
+  uiBasketballPower,
+  uiBasketballScore,
+  uiOutOfBounds
+} from './modules/bar/basketball/basketballUI'
 
 let tieredModalScale = 1
 let tieredFontScale = 1
@@ -58,7 +63,9 @@ export function updateUIScalingWithCanvasInfo(canvasInfo: PBUiCanvasInformation)
   )
   const scale = canvasInfo.height / 1080
   setupCustomNPCUiScaling(scale, scale, scale)
+  setupBeamUiScaling(scale, scale, scale)
   setupNPCUiScaling(scale, scale, scale)
+  setupBasketballUiScaling(scale, scale, scale)
   setupEventDetailsUIScaling(scale, scale, scale)
 }
 

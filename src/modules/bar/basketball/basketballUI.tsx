@@ -19,15 +19,48 @@ let scorePositionX: PositionUnit = '0%'
 
 let scaleScore: number = 0
 
+let modalScale = 1
+let modalFontSizeScale = 1
+let modalTextWrapScale = 1
+
+export function setupBasketballUiScaling(inScale: number, inFontSize: number, inTextWrapScale: number) {
+  if (modalScale === inScale && modalFontSizeScale === inFontSize && modalTextWrapScale === inTextWrapScale) return
+  console.log(
+    'CustomNPCUI',
+    'resolution is changed',
+    'Scale:',
+    inScale,
+    'FontSize:',
+    inFontSize,
+    'TextWrapScale:',
+    inTextWrapScale
+  )
+  modalScale = inScale
+  modalFontSizeScale = inFontSize
+  modalTextWrapScale = inTextWrapScale
+}
+
+function getScaledSize(size: number): number {
+  return size * modalScale
+}
+
+function getScaledFontSize(size: number): number {
+  return size * modalFontSizeScale
+}
+
+function getTextWrapSize(size: number): number {
+  return size * modalTextWrapScale
+}
+
 export const uiOutOfBounds = () => (
   <UiEntity
     //top level root ui div
     uiTransform={{
-      width: 400,
-      height: 400,
+      width: getScaledSize(400),
+      height: getScaledSize(400),
 
       // { top: 4, bottom: 4, left: 4, right: 4 },
-      padding: 4,
+      padding: getScaledSize(4),
       alignContent: 'center',
       display: outOfBoundsVisible,
       positionType: 'absolute',
@@ -37,7 +70,7 @@ export const uiOutOfBounds = () => (
     <Label
       // OUT OF BOUNDS MESSAGE
       value={outOfBoundsText}
-      fontSize={32}
+      fontSize={getScaledFontSize(32)}
       textAlign="middle-center"
       uiTransform={{ width: '100%', height: '30%', positionType: 'absolute', position: { left: '-50%' } }}
       uiBackground={{
@@ -63,7 +96,7 @@ export const uiBasketballScore = () => (
       height: '30%',
 
       // { top: 4, bottom: 4, left: 4, right: 4 },
-      padding: 4,
+      padding: getScaledSize(4),
       alignContent: 'center',
       display: basketUIVisible,
       positionType: 'absolute',
@@ -80,15 +113,15 @@ export const uiBasketballScore = () => (
         alignSelf: 'center',
         display: scoreUIVisible,
         positionType: 'absolute',
-        width: scaleScore,
-        height: scaleScore / 2,
-        position: { top: scorePositionX, left: -scaleScore / 2 }
+        width: getScaledSize(scaleScore),
+        height: getScaledSize(scaleScore) / 2,
+        position: { top: scorePositionX, left: -getScaledSize(scaleScore) / 2 }
       }}
     >
       <Label
         // SCORE popup image
         value=""
-        fontSize={60}
+        fontSize={getScaledFontSize(60)}
         uiTransform={{ width: '100%', height: '100%', positionType: 'relative' }}
         uiBackground={{
           textureMode: 'stretch',
@@ -108,7 +141,7 @@ export const uiBasketballPower = () => (
       height: '30%',
 
       // { top: 4, bottom: 4, left: 4, right: 4 },
-      padding: 4,
+      padding: getScaledSize(4),
       alignContent: 'center',
       display: basketUIVisible,
       positionType: 'absolute',
@@ -129,11 +162,11 @@ export const uiBasketballPower = () => (
         uiTransform={{
           width: '100%',
           height: '30%',
-          minHeight: '100',
+          minHeight: getScaledSize(100),
           alignItems: 'center',
           alignSelf: 'center',
           positionType: 'absolute',
-          position: { left: '-50%', top: '50%' },
+          position: { left: '-50%', top: '70%' },
           display: strengthBarVisible
         }}
       >
@@ -214,7 +247,7 @@ export const uiBasketballPower = () => (
           <Label
             // Instructions text for power bar
             value="        Press and hold       to set throw power"
-            fontSize={20}
+            fontSize={getScaledFontSize(20)}
             uiTransform={{
               width: '100%',
               height: '100%',
