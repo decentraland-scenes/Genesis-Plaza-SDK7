@@ -2,9 +2,9 @@ import * as npcLib from 'dcl-npc-toolkit'
 import type { Dialog } from 'dcl-npc-toolkit'
 import { Entity } from "@dcl/sdk/ecs"
 import { Vector3 } from '@dcl/sdk/math';
-import { boyArtist, girlArtist } from './barNpcs';
 import * as utils from '@dcl-sdk/utils'
 import { _teleportTo, log } from "../../../back-ports/backPorts";
+import { boyArtist, girlArtist } from './artistCoupleNpcs';
 
 const octopusYesDialog = 4
 const octopusEndDialog = 3
