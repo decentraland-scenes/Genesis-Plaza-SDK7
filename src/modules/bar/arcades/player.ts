@@ -2,8 +2,9 @@ import { Paddle } from "./gameObjects/paddle"
 import { Ball } from "./gameObjects/ball"
 import { GameManager } from "./gameManager"
 import { Arcade } from "./gameObjects/arcade"
-import { Entity, Transform, engine } from "@dcl/sdk/ecs"
+import { Entity, InputAction, PointerEventType, Transform, engine, inputSystem } from "@dcl/sdk/ecs"
 import { Color4, Vector3 } from "@dcl/sdk/math"
+import { Input } from "@dcl/sdk/react-ecs"
 
 // Intermediate variables
 const input = Input.instance
@@ -25,7 +26,7 @@ export function loadPlayer(parent: Entity, arcade: Arcade): void {
   playerElements.push(paddle.entity)
 
   // Fire a ball
-  input.subscribe("BUTTON_DOWN", ActionButton.POINTER, false, () => {
+  input.subscribe("BUTTON_DOWN", InputAction.IA_POINTER, false, () => {
     if (GameManager.hasGameLoaded && !GameManager.isBallAlive) {
       GameManager.isBallAlive = true
       let forwardVector = Vector3.Forward()
@@ -34,19 +35,30 @@ export function loadPlayer(parent: Entity, arcade: Arcade): void {
     }
   })
 
+  engine.addSystem(() => {
+    const cmd = inputSystem.getInputCommand(
+      InputAction.IA_POINTER,
+      PointerEventType.PET_DOWN
+    )
+    if (cmd) {
+      console.log(cmd.hit.entityId)
+    }
+  })
+  inputSystem.getInputCommand(InputAction.IA_POINTER, PointerEventType.PET_DOWN)
   // E Key
-  input.subscribe("BUTTON_DOWN", ActionButton.PRIMARY, false, () => {
+  
+  input.subscribe("BUTTON_DOWN", InputAction.IA_PRIMARY, false, () => {
     GameManager.isEKeyPressed = true
   })
-  input.subscribe("BUTTON_UP", ActionButton.PRIMARY, false, () => {
+  input.subscribe("BUTTON_UP", InputAction.IA_PRIMARY, false, () => {
     GameManager.isEKeyPressed = false
   })
 
   // F Key
-  input.subscribe("BUTTON_DOWN", ActionButton.SECONDARY, false, () => {
+  input.subscribe("BUTTON_DOWN", InputAction.IA_SECONDARY, false, () => {
     GameManager.isFKeyPressed = true
   })
-  input.subscribe("BUTTON_UP", ActionButton.SECONDARY, false, () => {
+  input.subscribe("BUTTON_UP", InputAction.IA_SECONDARY, false, () => {
     GameManager.isFKeyPressed = false
   })
 

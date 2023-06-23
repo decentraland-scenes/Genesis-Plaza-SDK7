@@ -1,17 +1,18 @@
-import { Vector3 } from "@dcl/sdk/math"
+import { Vector3, Quaternion } from "@dcl/sdk/math"
 import { Entity, GltfContainer, Transform, engine } from '@dcl/sdk/ecs'
+
 
 
 export class Arcade {
   entity: Entity
   knob: Entity
 
-  constructor(position: Vector3, scale: Vector3, knob: boolean = true) {
+  constructor(src: string, position: Vector3, scale: Vector3, knob: boolean = true) {
 
     let _entity = engine.addEntity()
     this.entity = _entity
 
-    GltfContainer.create(this.entity, {src: "models/core_building/knob.glb"})
+    GltfContainer.create(this.entity, {src: src})
     Transform.create(this.entity,{
       position: position,
       scale: scale
@@ -33,9 +34,9 @@ export class Arcade {
     if (this.knob.hasComponent(utils.KeepRotatingComponent)) this.knob.removeComponent(utils.KeepRotatingComponent)
   }
   controlLeft() {
-    this.knob.addComponentOrReplace(new utils.KeepRotatingComponent(Quaternion.Euler(0, -90, 0)))
+    this.knob.addComponentOrReplace(new utils.KeepRotatingComponent(Quaternion.fromEulerDegrees(0, -90, 0)))
   }
   controlRight() {
-    this.knob.addComponentOrReplace(new utils.KeepRotatingComponent(Quaternion.Euler(0, 90, 0)))
+    this.knob.addComponentOrReplace(new utils.KeepRotatingComponent(Quaternion.fromEulerDegrees(0, 90, 0)))
   }
 }

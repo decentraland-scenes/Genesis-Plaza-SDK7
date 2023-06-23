@@ -1,9 +1,10 @@
+import * as utils from '@dcl-sdk/utils'
 import { Ball, BallFlag, BallFlagType } from '../gameObjects/ball'
 import { BrickFlag } from '../gameObjects/brick'
 import { PaddleFlag } from '../gameObjects/paddle'
 import { Sound } from '../gameObjects/sound'
-import { WallFlag } from '../gameObjects/wall'
-import { AudioSource, Transform, engine } from '@dcl/sdk/ecs'
+import { Wall, WallFlag } from '../gameObjects/wall'
+import { AudioSource, Entity, Transform, engine } from '@dcl/sdk/ecs'
 import { Vector3 } from '@dcl/sdk/math'
 
 export const CollisionFlag = engine.defineComponent('collisionFlag', {})
@@ -17,8 +18,9 @@ class CollisionDetection {
     const ballGroup = engine.getEntitiesWith(BallFlag, Transform) 
     const collisionGroup = engine.getEntitiesWith(CollisionFlag, Transform) 
 
-    for (const [ballEntity, ballFlag, ballTransformRO] of ballGroup){
+    for (const [ballEntity, ballFlagRO, ballTransformRO] of ballGroup){
       for (const [hitEntity, collisionFlag, hitTransformRO] of collisionGroup){
+        const ballFlag = BallFlag.getMutableOrNull(ballEntity)
         let ballPos = ballTransformRO.position
         let brickPos = hitTransformRO.position
         let ballSize = ballTransformRO.scale
@@ -38,31 +40,33 @@ class CollisionDetection {
           AudioSource.getMutableOrNull(hitSound.entity).playing = true
 
           // HACK: Temporary disable collisions on entity that's already been hit
-          hitEntity.removeComponent(CollisionFlag)
-          hitEntity.addComponentOrReplace(
-            new utils.Delay(100, () => {
-              hitEntity.addComponent(new CollisionFlag())
-            })
+          CollisionFlag.deleteFrom(hitEntity)
+          utils.timers.setTimeout(
+            function() {
+              CollisionFlag.create(hitEntity)
+            },
+            100
           )
 
-          let isPaddle = hitEntity.hasComponent(PaddleFlag)
-          let isWall = hitEntity.hasComponent(WallFlag)
-          isWall
-            ? (collisionNorm = hitEntity.normal)
-            : (collisionNorm = collisionNormal(ballEntity, ballFlag, hitEntity))
-          ballEntity.direction = reflectVector(
-            ballEntity.direction,
+
+          let isPaddle = PaddleFlag.getMutableOrNull(hitEntity)
+          let isWall = WallFlag.getMutableOrNull(hitEntity)
+          isWall ? (collisionNorm = hitEntity.normal) : (collisionNorm = collisionNormal(ballFlag as BallFlagType, ballTransformRO.position, hitEntity, hitTransformRO.position, hitTransformRO.scale))
+          ballFlag.direction = reflectVector(
+            ballFlag.direction,
             collisionNorm,
             isPaddle,
             isWall
           )
 
           // If it's a brick then remove it
-          if (
-            hitEntity.hasComponent(BrickFlag) &&
-            !hitEntity.hasComponent(utils.ExpireIn)
-          ) {
-            hitEntity.addComponent(new utils.ExpireIn(100))
+          let brick = BrickFlag.getMutableOrNull(hitEntity) 
+          if ( brick && !brick.removed){
+            brick.removed = true
+            utils.timers.setTimeout(
+              function() { engine.removeEntity(hitEntity)},
+              100
+            )
           }
         }
       }
@@ -77,7 +81,7 @@ function reflectVector(
   isPaddle: boolean,
   isWall: boolean
 ): Vector3 {
-  let dot = 2 * Vector3.Dot(incident, normal)
+  let dot = 2 * Vector3.dot(incident, normal)
   let reflected = incident.subtract(normal.multiplyByFloats(dot, dot, dot))
 
   // HACKS: Collision issues
@@ -93,18 +97,18 @@ function reflectVector(
   if (reflected.z >= 0 && reflected.z <= 0.25) reflected.z = 0.35
   if (reflected.z <= 0 && reflected.z >= -0.25) reflected.z = -0.35
 
-  return Vector3.Normalize(reflected)
+  return Vector3.normalize(reflected)
 }
 
-function collisionNormal(ballEntity: Ball, ballFlag: BallFlagType, hitEntity: IEntity): Vector3 {
-  let ballPosition = ballEntity.getComponent(Transform).position
-  let hitEntityPosition = hitEntity.getComponent(Transform).position
-  let hitEntityWidth = hitEntity.getComponent(Transform).scale.x
+function collisionNormal(ballFlag: BallFlagType, ballPositionRO: Vector3, hitEntity: Entity, hitPositionRo: Vector3, hitScaleRo: Vector3): Vector3 {
+  let ballPosition = ballPositionRO
+  let hitEntityPosition = hitPositionRo
+  let hitEntityWidth = hitScaleRo.x
   let delta = ballPosition.subtract(hitEntityPosition)
-  let normal = new Vector3(0, 0, 1)
+  let normal = Vector3.create(0, 0, 1)
 
   // If the ball hits a paddle
-  if (hitEntity.hasComponent(PaddleFlag)) {
+  if (PaddleFlag.getMutableOrNull(hitEntity)) {
     // Paddle normal logic
     normal.x = delta.x / 2
 
@@ -113,20 +117,20 @@ function collisionNormal(ballEntity: Ball, ballFlag: BallFlagType, hitEntity: IE
       normal.set(1, 0, 0)
 
     // Corner cases
-    if (delta.x <= -hitEntityWidth / 2 && ballEntity.direction.x < 0)
+    if (delta.x <= -hitEntityWidth / 2 && ballFlag.direction.x < 0)
       normal.set(-1, 0, 1)
-    if (delta.x >= hitEntityWidth / 2 && ballEntity.direction.x > 0)
+    if (delta.x >= hitEntityWidth / 2 && ballFlag.direction.x > 0)
       normal.set(1, 0, 1)
 
     return Vector3.normalize(normal) // Normalize the vector first to maintain constant ball speed
   } else {
     if (delta.x <= -hitEntityWidth / 2 || delta.x >= hitEntityWidth / 2)
-      normal.set(1, 0, 0)
+      Vector3.copyFromFloats(1, 0, 0, normal)
 
     // Corner cases
-    if (delta.x <= -hitEntityWidth / 2 && ballEntity.direction.x < 0)
+    if (delta.x <= -hitEntityWidth / 2 && ballFlag.direction.x < 0)
       normal.set(0, 0, 1)
-    if (delta.x >= hitEntityWidth / 2 && ballEntity.direction.x > 0)
+    if (delta.x >= hitEntityWidth / 2 && ballFlag.direction.x > 0)
       normal.set(0, 0, 1)
   }
   return Vector3.normalize(normal)
