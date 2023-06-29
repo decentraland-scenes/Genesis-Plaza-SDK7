@@ -12,6 +12,9 @@
 		"name": "SDK",
 		"email": ""
 	},
+		"worldConfiguration" : {
+		  "name": "shibu.dcl.eth"
+		},
 	"main": "bin/index.js",
 	"tags": [],
 	"scene": {
@@ -64,6 +67,7 @@
 			}
 		}
 	],
+	
 	"requiredPermissions": [
 		"ALLOW_TO_TRIGGER_AVATAR_EMOTE",
 		"ALLOW_TO_MOVE_PLAYER_INSIDE_SCENE",
