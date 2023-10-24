@@ -210,7 +210,7 @@ export function main(){
     (value: GetRealmResponse) => {
       if (value.realmInfo?.isPreview) {
         console.log("index.ts", "utils.triggers.enableDebugDraw", "getRealm is preview, activating debug draw")
-        utils.triggers.enableDebugDraw(true)
+        utils.triggers.enableDebugDraw(false)
       } else {
         console.log("index.ts", "utils.triggers.enableDebugDraw", "getRealm is NOT preview, NO debug draw")
       }

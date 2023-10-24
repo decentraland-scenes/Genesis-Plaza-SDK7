@@ -45,13 +45,11 @@ export class Door  {
     Animator.create(this.entity, {
       states:[
         {
-          name: animationOpen,
           clip: animationOpen,
           playing: false,
           loop: false
         },
         {
-          name: animationClose,
           clip: animationClose,
           playing: false,
           loop: false

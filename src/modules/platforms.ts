@@ -39,7 +39,6 @@ export class Platform  {
 
      Animator.create(this.entity, {
       states:[{
-          name: animation,
           clip: animation,
           playing: false,
           loop: false
