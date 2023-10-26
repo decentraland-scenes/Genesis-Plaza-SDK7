@@ -294,7 +294,7 @@ export function main() {
 		if (!localData) {
 			console.log("onEnterScene", "WARN no player data", localData, player, "isMovePlayerInProgress()", isMovePlayerInProgress())
 		}
-		if (localData && player.userId === localData.userId) {
+		if (localData && player && player.userId === localData.userId) {
 			console.log("onEnterScene", "this player", localData, player, "isMovePlayerInProgress()", isMovePlayerInProgress())
 			applyAudioStreamWorkAround('enter')
 		}
@@ -309,7 +309,7 @@ export function main() {
 		if (!localData) {
 			console.log("onLeaveScene", "WARN no player data", localData, player, "isMovePlayerInProgress()", isMovePlayerInProgress())
 		}
-		if (localData && player.userId === localData.userId) {
+		if (localData && player && player.userId === localData.userId) {
 			console.log("onLeaveScene", "this player", localData, player, "isMovePlayerInProgress()", isMovePlayerInProgress())
 			applyAudioStreamWorkAround('exit')
 		}
