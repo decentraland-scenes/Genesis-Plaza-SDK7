@@ -1,5 +1,5 @@
 {
-  "name": "dcl-project",
+  "name": "genesis-plaza",
   "version": "1.0.0",
   "description": "SDK7 Template scene",
   "scripts": {
@@ -13,8 +13,8 @@
     "upgrade-sdk:next": "npm install --save-dev @dcl/sdk@next"
   },
   "devDependencies": {
-    "@dcl/js-runtime": "7.3.23",
-    "@dcl/sdk": "^7.3.23"
+    "@dcl/js-runtime": "7.3.25",
+    "@dcl/sdk": "latest"
   },
   "engines": {
     "node": ">=16.0.0",
@@ -27,16 +27,13 @@
     "trailingComma": "none"
   },
   "dependencies": {
-    "@dcl-sdk/utils": "^1.1.1",
-    "cannon": "github:schteppe/cannon.js",
+    "@dcl-sdk/utils": "latest",
+    "cannon": "latest",
     "colyseus.js": "^0.14.15-alpha.0",
-    "dcl-npc-toolkit": "^1.1.4",
-    "dcl-ui-toolkit": "^0.9.1"
+    "dcl-npc-toolkit": "latest",
+    "dcl-ui-toolkit": "latest"
   },
   "bundleDependencies": [
-    "@dcl-sdk/npc-utils",
-    "@dcl-sdk/utils",
-    "colyseus.js",
-    "dcl-ui-toolkit"
+    "colyseus.js"
   ]
 }
