@@ -132,6 +132,7 @@ export class HorizontalMenu {
           parent: this.menuRoot
         })
 
+        this.firstAngle = -this.angleSpacing
         
 
     }
@@ -202,7 +203,7 @@ export class HorizontalMenu {
             let itemToHide =  this.currentItem -1
 
             if(itemToHide < 0){
-              itemToHide = this.items.length
+              itemToHide = this.items.length -1
             }
 
             console.log("CURRENT ITEM: " + this.currentItem)
@@ -249,30 +250,88 @@ export class HorizontalMenu {
           
         }
         //SCROLL LEFT
-        else{        
-          if (this.currentItem > 0) {
-            this.deselectAll()
-            this.currentItem -= 1
-           // this.selectItem(this.currentItem, true)            
+        else{    
+          
+          console.log("SCROLL LEFT")
+          this.deselectAll()
+          this.currentItem -= 1
 
-           // show the first item on the left end
-            if(Math.floor(this.currentItem ) >= 0){    
-              this.showItem(this.currentItem  )
-            }    
-            // hide the last item on the right end
-            if(this.currentItem + this.visibleItems < this.items.length){
-              this.hideItem(this.currentItem + this.visibleItems)           
-            }
+          if(this.currentItem < 0){
+            this.currentItem = this.items.length-1
+          }            //this.selectItem(this.currentItem, true)
+
+          let itemToShow =  this.currentItem + this.items.length  
+
+          if(itemToShow >= this.items.length){
+            itemToShow = itemToShow - this.items.length         
+          }
+
+
          
-            this.scrollTarget = Quaternion.multiply(this.scrollTarget, Quaternion.fromEulerDegrees(0,angle,0))      
-            SlerpItem.createOrReplace(this.scrollerRoot, {
-              targetRotation:this.scrollTarget
-            })
-            this.playAudio(sfx.menuDownSource, sfx.menuDownSourceVolume)
+
+          console.log("CURRENT ITEM: " + this.currentItem)
+          console.log("HIDE ITEM   : " + itemToShow)
+          console.log("-------------" )
+
+          //hide the firs item on the left side
+             
+         // this.hideItem(itemToHide)
+          this.moveToFront(itemToShow)
+          this.showItem(itemToShow)
+
+          let itemAtTheEnd = this.currentItem + this.visibleItems
+
+          if(itemAtTheEnd >= this.items.length){
+            itemAtTheEnd = itemAtTheEnd - this.items.length
           }
-          else{
-            this.playAudio(sfx.menuScrollEndSource, sfx.menuDeselectSourceVolume)
-          }
+
+          this.hideItem(itemAtTheEnd)
+
+          
+            //this.endAngle +=  this.angleSpacing
+             
+          //show the last item at the right end
+          // let nextItem = this.currentItem + this.visibleItems -1
+
+          // if(nextItem >= this.items.length){
+          //       this.currentItem = 0
+          //       this.showItem(this.currentItem)       
+          // }
+          // else{
+          //   this.showItem(nextItem)
+          // }
+           
+         
+          //start the smooth rotation of the parent with one unit
+          this.scrollTarget = Quaternion.multiply(this.scrollTarget, Quaternion.fromEulerDegrees(0,angle,0))                 
+          SlerpItem.createOrReplace(this.scrollerRoot, {
+            targetRotation:this.scrollTarget
+          }) 
+
+          this.playAudio(sfx.menuUpSource, sfx.menuUpSourceVolume)  
+          // if (this.currentItem > 0) {
+          //   this.deselectAll()
+          //   this.currentItem -= 1
+          //  // this.selectItem(this.currentItem, true)            
+
+          //  // show the first item on the left end
+          //   if(Math.floor(this.currentItem ) >= 0){    
+          //     this.showItem(this.currentItem  )
+          //   }    
+          //   // hide the last item on the right end
+          //   if(this.currentItem + this.visibleItems < this.items.length){
+          //     this.hideItem(this.currentItem + this.visibleItems)           
+          //   }
+         
+          //   this.scrollTarget = Quaternion.multiply(this.scrollTarget, Quaternion.fromEulerDegrees(0,angle,0))      
+          //   SlerpItem.createOrReplace(this.scrollerRoot, {
+          //     targetRotation:this.scrollTarget
+          //   })
+          //   this.playAudio(sfx.menuDownSource, sfx.menuDownSourceVolume)
+          // }
+          // else{
+          //   this.playAudio(sfx.menuScrollEndSource, sfx.menuDeselectSourceVolume)
+          // }
         }        
     }
     
@@ -291,7 +350,23 @@ export class HorizontalMenu {
       itemTransform.rotation = Quaternion.fromEulerDegrees(0, this.endAngle,0)
 
       this.endAngle += this.angleSpacing
+      this.firstAngle += this.angleSpacing
+    }
+
+    moveToFront(_itemID:number){
+      const itemTransform = Transform.getMutable(this.itemRoots[_itemID])      
+     
+      let rotatedPosVector =  Vector3.rotate(Vector3.scale(Vector3.Forward(), this.radius), Quaternion.fromEulerDegrees(0,this.firstAngle,0))
+      rotatedPosVector.y = 0
+
+      itemTransform.position = Vector3.create(rotatedPosVector.x, rotatedPosVector.y, rotatedPosVector.z)
+      itemTransform.rotation = Quaternion.fromEulerDegrees(0, this.firstAngle,0)
+
+      console.log("MOVING ITEM " + _itemID + " TO FRONT")
+
+      this.endAngle -= this.angleSpacing
       this.firstAngle -= this.angleSpacing
+
     }
     
     addMenuItem(_item: MenuItem) {
@@ -438,7 +513,7 @@ export class HorizontalMenu {
                 this.showItem(i)             
               }
               else{
-                this.hideItem(i)
+               // this.hideItem(i)
                 //this.items[i].hide()
               }
                 

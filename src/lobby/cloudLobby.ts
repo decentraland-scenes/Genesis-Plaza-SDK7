@@ -200,7 +200,7 @@ getRealm({}).then(
       menuManager,
       0
       )
-    eventMenu.updateEventsMenu(15)
+    eventMenu.updateEventsMenu(25)
  
     let crowdsMenu = new HorizontalMenu( 
       Vector3.create(lobbyCenter.x- coreBuildingOffset.x, lobbyHeight + 3.5 , lobbyCenter.z- coreBuildingOffset.z), 
