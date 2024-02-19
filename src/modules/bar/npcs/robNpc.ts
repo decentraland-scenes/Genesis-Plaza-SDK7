@@ -49,12 +49,12 @@ function createRob() {
           hideThinking(rob)
           trtDeactivateNPC(rob)
         },
-        portrait:
-        {
-          path: ROB_NPC_ANIMATIONS.IDLE.portraitPath, height: 300, width: 300
-          , offsetX: -100, offsetY: 0
-          , section: { sourceHeight: 256, sourceWidth: 256 }
-        },
+        // portrait:
+        // {
+        //   path: ROB_NPC_ANIMATIONS.IDLE.portraitPath, height: 300, width: 300
+        //   , offsetX: -100, offsetY: 0
+        //   , section: { sourceHeight: 256, sourceWidth: 256 }
+        // },
         idleAnim: ROB_NPC_ANIMATIONS.IDLE.name,
         hoverText: 'Hello',
         faceUser: true,

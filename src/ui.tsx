@@ -1,6 +1,6 @@
 import { engine, PBUiCanvasInformation, UiCanvasInformation } from '@dcl/sdk/ecs'
 import ReactEcs, { ReactEcsRenderer } from '@dcl/sdk/react-ecs'
-import { NpcUtilsUi, setupNPCUiScaling } from 'dcl-npc-toolkit/dist/ui'
+import { NpcUtilsUi,  } from 'dcl-npc-toolkit/dist/ui'
 import { customNpcUI, setupCustomNPCUiScaling } from './utils/customNpcUi/customUi'
 import { render } from 'dcl-ui-toolkit'
 import { setupEventDetailsUIScaling, uiEventDettails } from './lobby/eventDetailsUI'
@@ -64,7 +64,7 @@ export function updateUIScalingWithCanvasInfo(canvasInfo: PBUiCanvasInformation)
   const scale = canvasInfo.height / 1080
   setupCustomNPCUiScaling(scale, scale, scale)
   setupBeamUiScaling(scale, scale, scale)
-  setupNPCUiScaling(scale, scale, scale)
+  //setupNPCUiScaling(scale, scale, scale)
   setupBasketballUiScaling(scale, scale, scale)
   setupEventDetailsUIScaling(scale, scale, scale)
 }

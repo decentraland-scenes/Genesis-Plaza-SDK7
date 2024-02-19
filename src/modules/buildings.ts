@@ -23,7 +23,7 @@ export function addBuildings() {
   
   //TODO TAG:PORT-REIMPLEMENT-ME
   //TODO TAG:OUTSIDE-AREA
-  /*  
+ 
   // AGORA BUILDING
 
   // add agora
@@ -76,77 +76,66 @@ export function addBuildings() {
 
   //add MoonTower_Action_Cosmos
   let MoonTower_Action_Cosmos = engine.addEntity()
-  MoonTower_Action_Cosmos.addComponent(
-    new GLTFShape('models/MoonTower_Action_Cosmos.glb')
-  )
-  MoonTower_Action_Cosmos.addComponent(
-    new Transform({
+  GltfContainer.create(MoonTower_Action_Cosmos,{src:'models/MoonTower_Action_Cosmos.glb'})
+  
+  Transform.create(MoonTower_Action_Cosmos,{
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
-  )
-  engine.addEntity(MoonTower_Action_Cosmos)
+  
+ 
 
   //add MoonTower_Action_Moon
-  let MoonTower_Action_Moon = engine.addEntity()
-  MoonTower_Action_Moon.addComponent(
-    new GLTFShape('models/MoonTower_Action_Moon.glb')
-  )
-  MoonTower_Action_Moon.addComponent(
-    new Transform({
-      rotation: Quaternion.fromEulerDegrees(0, 180, 0),
-    })
-  )
-  const MoonTower_Action_MoonAnimator = new Animator()
-  MoonTower_Action_Moon.addComponent(MoonTower_Action_MoonAnimator)
-  let playMoonTower_Action_Moon = new AnimationState(
-    'MoonTower_Action_MoonDark.001'
-  )
-  MoonTower_Action_MoonAnimator.addClip(playMoonTower_Action_Moon)
-  playMoonTower_Action_Moon.play()
-  engine.addEntity(MoonTower_Action_Moon)
+  // let MoonTower_Action_Moon = engine.addEntity()
+  // MoonTower_Action_Moon.addComponent(
+  //   new GLTFShape('models/MoonTower_Action_Moon.glb')
+  // )
+  // MoonTower_Action_Moon.addComponent(
+  //   new Transform({
+  //     rotation: Quaternion.fromEulerDegrees(0, 180, 0),
+  //   })
+  // )
+  // const MoonTower_Action_MoonAnimator = new Animator()
+  // MoonTower_Action_Moon.addComponent(MoonTower_Action_MoonAnimator)
+  // let playMoonTower_Action_Moon = new AnimationState(
+  //   'MoonTower_Action_MoonDark.001'
+  // )
+  // MoonTower_Action_MoonAnimator.addClip(playMoonTower_Action_Moon)
+  // playMoonTower_Action_Moon.play()
+  
 
   //add MoonTower_Action_Ringu
   let MoonTower_Action_Ringu = engine.addEntity()
-  MoonTower_Action_Ringu.addComponent(
-    new GLTFShape('models/MoonTower_Action_Ringu.glb')
-  )
-  MoonTower_Action_Ringu.addComponent(
-    new Transform({
+  GltfContainer.create(MoonTower_Action_Ringu,{src:'models/MoonTower_Action_Ringu.glb'})
+  Transform.create(MoonTower_Action_Ringu,{
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
-  )
-  engine.addEntity(MoonTower_Action_Ringu)
-
+  
+ 
+  
   //add Text_A
   let Text_A = engine.addEntity()
-  Text_A.addComponent(new GLTFShape('models/Text_A.glb'))
-  Text_A.addComponent(
-    new Transform({
+  GltfContainer.create(Text_A,{src:'models/Text_A.glb'})
+  Transform.create(Text_A,{
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
-  )
-  engine.addEntity(Text_A)
+  
 
   //add Text_B
   let Text_B = engine.addEntity()
-  Text_B.addComponent(new GLTFShape('models/Text_B.glb'))
-  Text_B.addComponent(
-    new Transform({
+  GltfContainer.create(Text_B,{src:'models/Text_B.glb'})
+  Transform.create(Text_B,{
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
-  )
-  engine.addEntity(Text_B)
+  
+
 
   //add Text_C
   let Text_C = engine.addEntity()
-  Text_C.addComponent(new GLTFShape('models/Text_C.glb'))
-  Text_C.addComponent(
-    new Transform({
+  GltfContainer.create(Text_C,{src:'models/Text_C.glb'})
+  Transform.create(Text_C,{
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
-  )
-  engine.addEntity(Text_C)
-  */
+  
  
   /*
   let ethLogos = engine.addEntity()
@@ -154,20 +143,21 @@ export function addBuildings() {
   Transform.create(ethLogos,{
     rotation: Quaternion.fromEulerDegrees(0, 180, 0),
   })
+     */
   //add flare
   let flare = engine.addEntity()
   GltfContainer.create(flare,{src:'models/flare.glb'})
   Transform.create(flare,{
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
-  
+
   //add TheWhale_Action_Sculpture
   let TheWhale_Action_Sculpture = engine.addEntity()
   GltfContainer.create(TheWhale_Action_Sculpture,{src:'models/TheWhale_Action_Sculpture.glb'})
   Transform.create(TheWhale_Action_Sculpture,{
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
-  */
+ 
 
   //CORE BUILDING
 
@@ -189,7 +179,7 @@ export function addBuildings() {
     })
 
   
- /*
+ 
   //add core_art
   let core_art = engine.addEntity()
   GltfContainer.create(core_art,{src:'models/core_art.glb'})
@@ -197,93 +187,84 @@ export function addBuildings() {
       position: Vector3.create(0 - coreBuildingOffset.x, 0, 0 - coreBuildingOffset.z),
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
-  */
+ 
   
   //TODO TAG:PORT-REIMPLEMENT-ME
   //TODO TAG:OUTSIDE-AREA
-  /*
+  
   // THE GARDEN (CREATORS BUILDING)
 
   //add garden
   let garden = engine.addEntity()
-  garden.addComponent(new GLTFShape('models/garden.glb'))
-  garden.addComponent(
-    new Transform({
+  GltfContainer.create(garden, {src:'models/garden.glb'})
+  Transform.create(garden,{  
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
-  )
+  
 
   //CONFERENCE BUILDING
 
   //add auditorium
   let auditorium = engine.addEntity()
-  auditorium.addComponent(new GLTFShape('models/auditorium.glb'))
-  auditorium.addComponent(
-    new Transform({
+  GltfContainer.create(auditorium, {src:'models/auditorium.glb'})
+  Transform.create(auditorium,{
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
-  )
+  
 
   // SHALE BUILDING
 
   //add shell_building
   let shell = engine.addEntity()
-  shell.addComponent(new GLTFShape('models/shell.glb'))
-  shell.addComponent(
-    new Transform({
+  GltfContainer.create(shell, {src:'models/shell.glb'})
+  Transform.create(shell,{  
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
-  )
+  
 
   //add shoe_prop
   let shoe_prop = engine.addEntity()
-  shoe_prop.addComponent(new GLTFShape('models/shoe_prop.glb'))
-  shoe_prop.addComponent(
-    new Transform({
+  GltfContainer.create(shoe_prop, {src:'models/shoe_prop.glb'})
+  Transform.create(shoe_prop,{ 
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
-  )
+  
 
   //add tshirt_prop
   let tshirt_prop = engine.addEntity()
-  tshirt_prop.addComponent(new GLTFShape('models/tshirt_prop.glb'))
-  tshirt_prop.addComponent(
-    new Transform({
+  GltfContainer.create(tshirt_prop, {src:'models/tshirt_prop.glb'})
+  Transform.create(tshirt_prop,{
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
-  )
+  
 
   //WHALE BUILDING (WEARABLES NFTs)
 
   //add whale
   let whale = engine.addEntity()
-  whale.addComponent(new GLTFShape('models/whale.glb'))
-  whale.addComponent(
-    new Transform({
+  GltfContainer.create(whale, {src:'models/whale.glb'})
+  Transform.create(whale,{  
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
-  )
-  engine.addEntity(whale)
 
+ 
   // TRADING CENTER
 
   //add trading_center
   let trading_center = engine.addEntity()
-  trading_center.addComponent(new GLTFShape('models/trading_center.glb'))
-  trading_center.addComponent(
-    new Transform({
+  GltfContainer.create(trading_center, {src:'models/trading_center.glb'})
+  Transform.create(trading_center,{      
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
-  )
+  
 
   //add trading_land
   let trading_land = engine.addEntity()
-  trading_land.addComponent(new GLTFShape('models/trading_land.glb'))
-  trading_land.addComponent(
-    new Transform({
+  GltfContainer.create(trading_land, {src:'models/trading_land.glb'})
+  Transform.create(trading_land,{   
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
-  )
+  
 
   //add trading_crypto
   let trading_crypto = engine.addEntity()
@@ -299,19 +280,18 @@ export function addBuildings() {
   Transform.create(trading_wearables,{
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
-  */
+
 
   //STREET MESH
 
-  /*
+ 
   //add street
-  let street = engine.addEntity()
-  GltfContainer.create(street,{src:'models/street.glb'})
+  let street = engine.addEntity() 
   Transform.create(street,{
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
-  
- */
+  GltfContainer.create(street,{src:'models/street_cutoutVersion.glb'})
+
 
 /*
  //add vogu_pod
@@ -349,12 +329,12 @@ export function addBuildings() {
 
 
 }
-/*
+
 //add zepellin
 let zepellin = engine.addEntity()
 GltfContainer.create(zepellin,{src:'models/zepellin.glb'})
 Transform.create(zepellin,{
     rotation: Quaternion.fromEulerDegrees(0, 180, 0),
   })
-*/
+
 

@@ -67,7 +67,7 @@ export async function addTVPanels() {
           events[0].image, 
           "images/rounded_alpha.png", 
           {
-            position: Vector3.create(160 - 128, 4.65, 140.4 - 112),
+            position: Vector3.create(160 , 4.65, 140.4),
             rotation: Quaternion.fromEulerDegrees(-33, 180, 0),
             scale: Vector3.create(2.8, 1.55, 1.55)
           },
@@ -82,7 +82,7 @@ export async function addTVPanels() {
         events[1].image, 
         "images/rounded_alpha.png", 
         {
-          position: Vector3.create(157.4-128, 4.65, 137.8-112),
+          position: Vector3.create(157.4, 4.65, 137.8),
           rotation: Quaternion.fromEulerDegrees(-33, 90, 0),
           scale: Vector3.create(2.8, 1.55, 1.55),
         },
@@ -97,7 +97,7 @@ export async function addTVPanels() {
         events[2].image, 
         "images/rounded_alpha.png", 
         {
-          position: Vector3.create(160 -128, 4.65, 135.25 - 112),
+          position: Vector3.create(160, 4.65, 135.25),
           rotation: Quaternion.fromEulerDegrees(-33, 0, 0),
           scale: Vector3.create(2.8, 1.55, 1.55),
         },
@@ -112,7 +112,7 @@ export async function addTVPanels() {
         events[3].image, 
         "images/rounded_alpha.png", 
         {
-          position: Vector3.create(162.6 - 128, 4.65, 137.8 - 112),
+          position: Vector3.create(162.6, 4.65, 137.8),
           rotation: Quaternion.fromEulerDegrees(-33, 270, 0),
           scale: Vector3.create(2.8, 1.55, 1.55),
         },

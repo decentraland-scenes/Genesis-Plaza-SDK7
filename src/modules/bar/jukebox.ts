@@ -263,6 +263,7 @@ export class JukeboxButton {
 
     Animator.createOrReplace(this.entity, {
         states:[{
+          name: 'animation',
             clip: animationName,
             loop: false,
             playing: false

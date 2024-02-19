@@ -262,6 +262,7 @@ export class PhysicsManager {
     
     Animator.create(this.puff, {
       states:[{
+          name: 'puff',
           clip: "Animation",
           playing: true,
           loop: false
