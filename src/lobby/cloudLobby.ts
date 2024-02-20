@@ -50,7 +50,7 @@ export function addCloudLobby(){
     const arrow_bar = engine.addEntity()
     GltfContainer.create(arrow_bar,{src:'models/lobby/arrow_bar.glb'})
     Transform.create(arrow_bar,{
-        position: Vector3.create(barCenter.x,0 + WELCOME_OFFSET_Y_AMOUNT,barCenter.z),
+        position: Vector3.create(barCenter.x,32 ,barCenter.z),
         rotation: Quaternion.fromEulerDegrees(0, 180, 0),
       })
     

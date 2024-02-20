@@ -43,7 +43,7 @@ export let playerCounterBGShape:PBGltfContainer =   {src:modelFolder + "player_c
 export let refreshShape:PBGltfContainer =           {src:modelFolder + "refresh_button.glb"}
 export let loadMoreShape:PBGltfContainer =          {src:modelFolder + "load_more_btn.glb"}
 export let menuArrowShape:PBGltfContainer =         {src:modelFolder + "menu_arrow.glb"}
-export let remainingBGShape:PBGltfContainer =         {src:modelFolder + "remaining_time_bg.glb"}
+export let remainingBGShape:PBGltfContainer =       {src:modelFolder + "remaining_time_bg.glb"}
 
 // CLOUDS
 export let cloudDissolveShape:PBGltfContainer=      {src:modelFolder + "cloud_dissolve.glb"}
@@ -51,6 +51,7 @@ export let cloudPuffShape:PBGltfContainer=          {src:modelFolder + "cloud_pu
 export let cloudSmallShape:PBGltfContainer=         {src:modelFolder + "clouds_small.glb"}
 export let cloudSmall2Shape:PBGltfContainer=        {src:modelFolder + "clouds_small2.glb"}
 export let cloudBigShape:PBGltfContainer=           {src:modelFolder + "clouds_big_cutout.glb"}//{src:modelFolder + "clouds_big.glb"}
+export let cloudSpiralShape:PBGltfContainer=        {src:modelFolder + "cloud_spirals.glb"}
 
 
 // PLATFORM

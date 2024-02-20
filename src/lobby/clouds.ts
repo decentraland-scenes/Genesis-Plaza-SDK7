@@ -55,7 +55,7 @@ export function initClouds(){
       addClouds(
         16, 
         20, 
-        Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyHeight - lobbyHeightLegacy, lobbyCenter.z - coreBuildingOffset.z)
+        Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyHeight, lobbyCenter.z - coreBuildingOffset.z)
       )
 
 
@@ -86,15 +86,26 @@ export function initClouds(){
       let cloudsBig = engine.addEntity()
       
       //have to lower because when scaled down gets in way of models
-      const bigCloudOffset = 2.5
+      const bigCloudOffset = -1
       Transform.create(cloudsBig,{
             position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x ,lobbyHeight + bigCloudOffset ,lobbyCenter.z - coreBuildingOffset.z),
+            rotation: Quaternion.fromEulerDegrees(0, 0, 0),          
+            //scale: Vector3.create(.45,.45,.45)
+            scale: Vector3.create(1.5,1.5,1.5)
+        })
+      
+      GltfContainer.create(cloudsBig, resource.cloudBigShape)
+
+      let cloudSpiral = engine.addEntity()      
+      
+      Transform.create(cloudSpiral,{
+            position: Vector3.create(lobbyCenter.x  ,lobbyHeight +5  ,lobbyCenter.z),
             rotation: Quaternion.fromEulerDegrees(0, 0, 0),          
             //scale: Vector3.create(.45,.45,.45)
             scale: Vector3.create(1,1,1)
         })
       
-      GltfContainer.create(cloudsBig, resource.cloudBigShape)
+      GltfContainer.create(cloudSpiral, resource.cloudSpiralShape)
       //FIXME //cannot rotate these for now due to shape of parcel and shape of clouds. maybe ping pong them for now?
       //addCloudRotate(cloudsBig,true,1)
 

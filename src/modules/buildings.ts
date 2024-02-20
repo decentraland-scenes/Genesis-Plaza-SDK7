@@ -1,7 +1,7 @@
 import { ColliderLayer, engine, executeTask, GltfContainer, InputAction, Material, pointerEventsSystem, Transform } from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { _openExternalURL, log } from '../back-ports/backPorts'
-import { barCenter, coreBuildingOffset, lobbyHeight, lobbyHeightLegacy, WELCOME_OFFSET_Y_AMOUNT } from '../lobby/resources/globals'
+import { barCenter, coreBuildingOffset, lobbyCenter, lobbyHeight, lobbyHeightLegacy, WELCOME_OFFSET_Y_AMOUNT } from '../lobby/resources/globals'
 
 
 export function addBuildings() {
@@ -16,8 +16,8 @@ export function addBuildings() {
       , invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS
     })
   Transform.create(lobby,{
-      //position: Vector3.create(0 - coreBuildingOffset.x, lobbyHeight - lobbyHeightLegacy, 0 - coreBuildingOffset.z),
-      position: Vector3.create(barCenter.x,0-2.3,barCenter.z),
+      position: Vector3.create(barCenter.x, 30.35 , barCenter.z),
+      //position: Vector3.create(barCenter.x,0-2.3,barCenter.z),
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
   
@@ -53,7 +53,6 @@ export function addBuildings() {
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
   
-
   // THE MOUNTAINS (TUTORIAL SPACE)
 
   //add mountains
@@ -162,10 +161,17 @@ export function addBuildings() {
   //CORE BUILDING
 
   //add core_building
+  let island =  engine.addEntity()
+  GltfContainer.create(island,{src:'models/island_cutoutVersion.glb'})
+  Transform.create(island,{
+      rotation: Quaternion.fromEulerDegrees(0, 180, 0),
+    })
+  
+  //add core_building
   let core_building = engine.addEntity()
-  GltfContainer.create(core_building,{src:'models/core_building_cutoutVersion.glb'})
+  GltfContainer.create(core_building,{src:'models/core_building.glb'})
   Transform.create(core_building,{
-      position: Vector3.create(barCenter.x,0,barCenter.z),
+      
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     }) 
   
@@ -290,7 +296,7 @@ export function addBuildings() {
   Transform.create(street,{
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
     })
-  GltfContainer.create(street,{src:'models/street_cutoutVersion.glb'})
+  GltfContainer.create(street,{src:'models/street.glb'})
 
 
 /*

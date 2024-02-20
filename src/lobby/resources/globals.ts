@@ -18,9 +18,9 @@ export const ParcelCountZ = 19
 export const ParcelCountMaxY = (Math.log((ParcelCountX*ParcelCountZ)) * Math.LOG2E) * 20
 export const barCenter = Vector3.create((ParcelCountX*16)/2,0,(ParcelCountZ*16)/2)
 //export const lobbyCenter = Vector3.create(160,0,150.22)
-export const lobbyCenter = Vector3.create((ParcelCountX*16)/2,0,(ParcelCountZ*16)/2 - 1.7)
+export const lobbyCenter = Vector3.create((ParcelCountX*16)/2 + 0.02,0,(ParcelCountZ*16)/2 - 1.83)
 export const lobbyHeightLegacy = 104.73
-export const lobbyHeight = 72 //shorten trees by 6 meters
+export const lobbyHeight = 104.73 //shorten trees by 6 meters 72
 export const lobbyRadius = 14.8
 
 export interface NoArgCallBack {
