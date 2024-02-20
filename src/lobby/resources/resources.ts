@@ -18,7 +18,7 @@ export let twitterShape:PBGltfContainer =           {src:modelFolder + "icons/tw
 
 //BEAM
 export let portalSpiralShape:PBGltfContainer =      {src:modelFolder + "portal_lift_spiral.glb"}
-export let beamShape:PBGltfContainer =              {src:modelFolder + "beam_cutout.glb"}//{src:modelFolder + "beam.glb"}
+export let beamShape:PBGltfContainer =              {src:modelFolder + "beam.glb"}
 
 //MENU
 export let menuPillarsShape:PBGltfContainer =       {src:modelFolder + "menu_pillars.glb"}

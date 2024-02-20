@@ -43,7 +43,7 @@ export function addCloudLobby(){
   loadLobbySound()
 
   const menuScale = 1.2
-  const center = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, (lobbyHeight + 1.5) - lobbyHeightLegacy, lobbyCenter.z - coreBuildingOffset.z)
+  const center = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, (lobbyHeight + 1.5), lobbyCenter.z - coreBuildingOffset.z)
 
 
     //add arrow_bar
@@ -172,16 +172,16 @@ export function addCloudLobby(){
   )
 
   //DIVING SIGN
-  let divingSign = engine.addEntity()
-  Transform.create(divingSign,{
-    position: Vector3.create(
-      center.x - 1.2,
-      center.y - 0.5,
-      center.z - 6.4
-    ),
-  })
+  // let divingSign = engine.addEntity()
+  // Transform.create(divingSign,{
+  //   position: Vector3.create(
+  //     center.x - 1.2,
+  //     center.y - 0.5,
+  //     center.z - 6.4
+  //   ),
+  // })
 
-  GltfContainer.create(divingSign,resource.divingSignShape)
+  // GltfContainer.create(divingSign,resource.divingSignShape)
 
 
   // WATER VORTEXES

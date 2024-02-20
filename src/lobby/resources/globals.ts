@@ -22,6 +22,7 @@ export const lobbyCenter = Vector3.create((ParcelCountX*16)/2 + 0.02,0,(ParcelCo
 export const lobbyHeightLegacy = 104.73
 export const lobbyHeight = 104.73 //shorten trees by 6 meters 72
 export const lobbyRadius = 14.8
+export const barOffset = Vector3.create(128, 0, 112)
 
 export interface NoArgCallBack {
 	() : void;

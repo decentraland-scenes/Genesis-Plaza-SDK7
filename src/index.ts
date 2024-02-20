@@ -9,7 +9,7 @@ import * as sceneDataHelper from './utils/sceneDataHelper'
 import { lowerVolume, outOfBar, placeJukeBox, setBarMusicOff, setBarMusicOn } from './modules/bar/jukebox'
 import { addRepeatTrigger } from './modules/Utils'
 import { log } from './back-ports/backPorts'
-import { TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, coreBuildingOffset } from './lobby/resources/globals'
+import { TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, barOffset, coreBuildingOffset } from './lobby/resources/globals'
 import { initBarNpcs, initOutsideNpcs } from './modules/bar/npcs/barNpcs'
 import { setupUi } from './ui'
 import { placeDoors } from './modules/bar/doors'
@@ -228,7 +228,7 @@ export function main(){
 
   let barCenter = engine.addEntity()
   Transform.create(barCenter, {
-    position: Vector3.create(32, 0, 38)
+    position: Vector3.create(barOffset.x + 32, 0, barOffset.z +38)
   })
   utils.triggers.addTrigger(
     barCenter, 

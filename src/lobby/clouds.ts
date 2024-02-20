@@ -91,7 +91,7 @@ export function initClouds(){
             position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x ,lobbyHeight + bigCloudOffset ,lobbyCenter.z - coreBuildingOffset.z),
             rotation: Quaternion.fromEulerDegrees(0, 0, 0),          
             //scale: Vector3.create(.45,.45,.45)
-            scale: Vector3.create(1.5,1.5,1.5)
+            scale: Vector3.create(1.2,1.2,1.2)
         })
       
       GltfContainer.create(cloudsBig, resource.cloudBigShape)
