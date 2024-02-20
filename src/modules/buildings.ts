@@ -294,7 +294,7 @@ export function addBuildings() {
   //add street
   let street = engine.addEntity() 
   Transform.create(street,{
-      rotation: Quaternion.fromEulerDegrees(0, 180, 0),
+      rotation: Quaternion.fromEulerDegrees(0, 0, 0),
     })
   GltfContainer.create(street,{src:'models/street.glb'})
 
