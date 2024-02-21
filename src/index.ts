@@ -3,7 +3,7 @@ import { Color3, Color4, Vector3, Quaternion } from '@dcl/sdk/math'
 import { executeTask,GltfContainer } from '@dcl/sdk/ecs'
 
 import { addBuildings } from './modules/buildings'
-import { barPlatforms } from './modules/platforms'
+import { barPlatforms, placePlatforms } from './modules/platforms'
 import { addCloudLobby } from './lobby/cloudLobby'
 import * as sceneDataHelper from './utils/sceneDataHelper'
 import { lowerVolume, outOfBar, placeJukeBox, setBarMusicOff, setBarMusicOn } from './modules/bar/jukebox'
@@ -75,6 +75,7 @@ function addOutsideOfIfPlayerOutsideOnGround(){
       console.log("index.ts", "addOutsideOfIfPlayerOutsideOnGround", "player on ground, init anything outside ground level")
       const spawnDealy = 1000
       initOutsideNpcs(spawnDealy)
+      placePlatforms()
     }else{
       console.log("index.ts", "addOutsideOfIfPlayerOutsideOnGround", "player not on ground")
     }  
