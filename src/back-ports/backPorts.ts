@@ -41,7 +41,7 @@ export function _teleportToString(coords:string) {
   log("_teleportTo - Coordinates:", coords)
   let separator = ","  
   let coordsArray = coords.split(separator)
-  log("_Converted - Coordinates: X:", coordsArray[0] + " Y: " + coordsArray[1])
+  //log("_Converted - Coordinates: X:", coordsArray[0] + " Y: " + coordsArray[1])
   teleportTo({
     worldCoordinates: { x: parseInt(coordsArray[0]) , y: parseInt(coordsArray[1]) }
   })

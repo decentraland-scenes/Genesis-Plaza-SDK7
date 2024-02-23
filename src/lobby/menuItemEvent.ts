@@ -243,7 +243,7 @@ export class EventMenuItem extends MenuItem {
       highlightScale: Vector3.create(2.3, 2.3, 2.3),
       animFraction: 0,
       animVeclocity: 0,
-      speed: 0.5,
+      speed: 0.7,
       done: false
     })    
 
