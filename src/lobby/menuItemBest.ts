@@ -8,7 +8,7 @@ import { lobbyCenter } from './resources/globals'
 import { getCurrentTime, getTimeStamp } from './checkApi'
 import { AudioSource, Entity, GltfContainer, InputAction, TextAlignMode, TextShape, Transform, TransformType, TransformTypeWithOptionals, VisibilityComponent, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
-import { _openExternalURL, _teleportTo } from '../back-ports/backPorts'
+import { _openExternalURL, _teleportToString } from '../back-ports/backPorts'
 import { getImageOrFallback } from '../utils/allowedMediaHelper'
 import { TrackingElement, generateGUID, getRegisteredAnalyticsEntity, trackAction } from '../modules/stats/analyticsComponents'
 import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES } from '../modules/stats/AnalyticsConfig'
@@ -229,7 +229,7 @@ export class BestMenuItem extends MenuItem {
           opts: { hoverText: 'YOU ARE HERE', button: InputAction.IA_POINTER }
         },
         (e) => {
-          //_teleportTo(_scene.baseCoords[0], _scene.baseCoords[1])      
+          //__teleportToString(_scene.baseCoords[0], _scene.baseCoords[1])      
         }
       )
     }
@@ -241,7 +241,7 @@ export class BestMenuItem extends MenuItem {
         },
         (e) => {
           trackAction(this.itemBox, "button_go_there", _scene.base_position, _scene.name)
-          teleportTo(_scene.base_position)      
+          _teleportToString(_scene.base_position)      
         }
       )
     }
@@ -307,7 +307,7 @@ export class BestMenuItem extends MenuItem {
           opts: { hoverText: 'YOU ARE HERE', button: InputAction.IA_POINTER }
         },
         (e) => {
-          //_teleportTo(_scene.baseCoords[0], _scene.baseCoords[1])      
+          //__teleportToString(_scene.baseCoords[0], _scene.baseCoords[1])      
         }
       )    
     }
@@ -320,7 +320,7 @@ export class BestMenuItem extends MenuItem {
         },
         (e) => {
           trackAction(this.itemBox, "button_jump_in", _scene.base_position, _scene.name)
-          teleportTo(_scene.base_position)       
+          _teleportToString(_scene.base_position)       
         }
       )
     }
@@ -394,7 +394,7 @@ export class BestMenuItem extends MenuItem {
           opts: { hoverText: 'YOU ARE HERE', button: InputAction.IA_POINTER }
         },
         (e) => {
-          //_teleportTo(_scene.baseCoords[0], _scene.baseCoords[1])      
+          //__teleportToString(_scene.baseCoords[0], _scene.baseCoords[1])      
         }
       )
 
@@ -405,7 +405,7 @@ export class BestMenuItem extends MenuItem {
           opts: { hoverText: 'YOU ARE HERE', button: InputAction.IA_POINTER }
         },
         (e) => {
-          //_teleportTo(_scene.baseCoords[0], _scene.baseCoords[1])      
+          //__teleportToString(_scene.baseCoords[0], _scene.baseCoords[1])      
         }
       )
     }
@@ -417,7 +417,7 @@ export class BestMenuItem extends MenuItem {
         },
         (e) => {
           trackAction(this.itemBox, "button_go_there", _scene.base_position, _scene.name)
-          teleportTo(_scene.base_position)      
+          _teleportToString(_scene.base_position)      
         }
       )
 
@@ -429,7 +429,7 @@ export class BestMenuItem extends MenuItem {
         },
         (e) => {
           trackAction(this.itemBox, "button_jump_in", _scene.base_position, _scene.name)
-          teleportTo(_scene.base_position)      
+          _teleportToString(_scene.base_position)      
         }
       )
     }
