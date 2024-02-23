@@ -1,5 +1,5 @@
 import { EventMenuItem } from "./menuItemEvent";
-import { getEvents, getTrendingScenes } from "./checkApi";
+import { getBestPlaces, getEvents, getTrendingScenes } from "./checkApi";
 import { MenuItem } from "./menuItem";
 import * as sfx from './resources/sounds'
 import { Quaternion, Vector3 } from "@dcl/sdk/math";
@@ -8,6 +8,7 @@ import * as resource from "./resources/resources"
 import { AnimatedItem, ProximityScale, SlerpItem } from "./simpleAnimator";
 import { CrowdMenuItem } from "./menuItemCrowd";
 import { MenuManager } from "./menuManager";
+import { BestMenuItem } from "./menuItemBest";
 
 
 
@@ -403,6 +404,57 @@ export class HorizontalMenu {
      } 
     
   }
+  async updateBestMenu(_count:number){
+
+    let scenes = await getBestPlaces(10)
+    console.log("Best  "+ scenes.length + "  SCENES:    " + scenes)
+    if(scenes){
+      if (scenes.length <= 0) {
+        console.log("NO BEST")
+        return
+      }
+    
+     
+     // console.log("scene:length: " + scenes.length)
+      console.log("best items:length: " + this.items.length)   
+      for(let i=0; i < scenes.length; i++){
+        console.log("imageURL:  " + scenes[i].image)
+        if (i < this.items.length){                 
+          this.items[i].updateItemInfo(scenes[i])
+        }
+        else{
+         
+         // console.log(scenes[i])
+          console.log("ADDING BEST SCENE")
+          this.addMenuItem(new BestMenuItem({ 
+              position: Vector3.create(0,0,0),
+              rotation: Quaternion.Zero(),   
+              scale: Vector3.create(2,2,2)
+            },        
+            "images/rounded_alpha.png",
+            this.analyticParent,
+            scenes[i]
+          ))
+          
+        }    
+      }
+
+      for(let i=0; i < this.items.length; i++){         
+        
+          if(i < this.visibleItems ){
+            //this.items[i].show()
+            this.showItem(i)             
+          }
+          else{
+            this.hideItem(i)
+            //this.items[i].hide()
+          }
+            
+        } 
+        //this.selectItem(0, true)
+   } 
+  
+}
     playAudio(sourceUrl:string, volume:number){
       AudioSource.createOrReplace(this.audioRoot, {
         audioClipUrl: sourceUrl,

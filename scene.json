@@ -431,6 +431,7 @@
 	],
 	"allowedMediaHostnames": [
 		"decentraland.org",
+		"places.decentraland.org",
 		"events-assets-099ac00.decentraland.org",
 		"peer.decentraland.org",
 		"icecast.ravepartyradio.org",

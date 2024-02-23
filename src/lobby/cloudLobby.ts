@@ -216,17 +216,33 @@ export function addCloudLobby(){
       )
     eventMenu.updateEventsMenu(15)
  
-    let crowdsMenu = new HorizontalMenu( 
+    // let crowdsMenu = new HorizontalMenu( 
+    //   Vector3.create(lobbyCenter.x- coreBuildingOffset.x, lobbyHeight + 3.5 , lobbyCenter.z- coreBuildingOffset.z), 
+    //   Quaternion.fromEulerDegrees(0,-54,0), 
+    //   getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.eventsSlider),
+    //   menuManager,
+    //   1
+    //   )  
+    // crowdsMenu.updateCrowdsMenu(10)
+
+    // menuManager.addMenu(eventMenu)
+    // menuManager.addMenu(crowdsMenu)
+    // // refresh remaining time displays every minute (local calculation update, no server fetch)
+    // utils.timers.setInterval(()=>{
+    //   eventMenu.updateEventsTimes()      
+    // }, 60000)
+    let bestMenu = new HorizontalMenu( 
       Vector3.create(lobbyCenter.x- coreBuildingOffset.x, lobbyHeight + 3.5 , lobbyCenter.z- coreBuildingOffset.z), 
       Quaternion.fromEulerDegrees(0,-54,0), 
       getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.eventsSlider),
       menuManager,
       1
       )  
-    crowdsMenu.updateCrowdsMenu(10)
+      bestMenu.updateBestMenu(10)
 
     menuManager.addMenu(eventMenu)
-    menuManager.addMenu(crowdsMenu)
+    menuManager.addMenu(bestMenu)
+
     // refresh remaining time displays every minute (local calculation update, no server fetch)
     utils.timers.setInterval(()=>{
       eventMenu.updateEventsTimes()      

@@ -44,6 +44,7 @@ export let refreshShape:PBGltfContainer =           {src:modelFolder + "refresh_
 export let loadMoreShape:PBGltfContainer =          {src:modelFolder + "load_more_btn.glb"}
 export let menuArrowShape:PBGltfContainer =         {src:modelFolder + "menu_arrow.glb"}
 export let remainingBGShape:PBGltfContainer =       {src:modelFolder + "remaining_time_bg.glb"}
+export let likeCounterBGShape:PBGltfContainer =       {src:modelFolder + "like_counter_bg.glb"}
 
 // CLOUDS
 export let cloudDissolveShape:PBGltfContainer=      {src:modelFolder + "cloud_dissolve.glb"}
