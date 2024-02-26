@@ -42,7 +42,7 @@ export class HorizontalMenu {
         this.itemRoots = []
         this.clickBoxes = []
         this.radius = 16
-        this.visibleItems = 10
+        this.visibleItems = 4
         this.analyticParent = _analyticParent
 
         this.menuRoot = engine.addEntity()
