@@ -208,7 +208,7 @@ export function addCloudLobby(){
     let menuManager = new MenuManager()
 
     let eventMenu = new HorizontalMenu( 
-      Vector3.create(lobbyCenter.x- coreBuildingOffset.x, lobbyHeight + 1.0  , lobbyCenter.z- coreBuildingOffset.z), 
+      Vector3.create(lobbyCenter.x- coreBuildingOffset.x, lobbyHeight   , lobbyCenter.z- coreBuildingOffset.z), 
       // Quaternion.fromEulerDegrees(0,-54,0), 
       Quaternion.fromEulerDegrees(0,-82,0), 
       getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.eventsSlider),
@@ -218,7 +218,7 @@ export function addCloudLobby(){
     eventMenu.updateEventsMenu(15)
  
     let crowdsMenu = new HorizontalMenu( 
-      Vector3.create(lobbyCenter.x- coreBuildingOffset.x, lobbyHeight + 1.0 , lobbyCenter.z- coreBuildingOffset.z), 
+      Vector3.create(lobbyCenter.x- coreBuildingOffset.x, lobbyHeight  , lobbyCenter.z- coreBuildingOffset.z), 
       Quaternion.fromEulerDegrees(0,-18,0), 
       getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.eventsSlider),
       menuManager,
@@ -233,7 +233,7 @@ export function addCloudLobby(){
     //   eventMenu.updateEventsTimes()      
     // }, 60000)
     let bestMenu = new HorizontalMenu( 
-      Vector3.create(lobbyCenter.x- coreBuildingOffset.x, lobbyHeight + 1.0 , lobbyCenter.z- coreBuildingOffset.z), 
+      Vector3.create(lobbyCenter.x- coreBuildingOffset.x, lobbyHeight , lobbyCenter.z- coreBuildingOffset.z), 
       Quaternion.fromEulerDegrees(0,46,0), 
       getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.eventsSlider),
       menuManager,

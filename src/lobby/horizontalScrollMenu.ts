@@ -262,7 +262,7 @@ export class HorizontalMenu {
         // COLLIDER BOX FOR USER INPUT
         let clickBox = engine.addEntity()
         Transform.create(clickBox,{
-          scale: Vector3.create(1.6,0.8,0.02),
+          scale: Vector3.create(3,3.6,0.02),
             parent: _item.entity,
         })
         //GltfContainer.create(clickBox, resource.shelfShape)

@@ -73,7 +73,7 @@ export class EventMenuItem extends MenuItem {
     // event card root
     this.itemBox = engine.addEntity()
     Transform.create(this.itemBox, {
-      position: Vector3.create(0, 0, 0),
+      position: Vector3.create(0, 0.0, 0),
       scale: Vector3.create(1, 1, 1),
     })    
     GltfContainer.createOrReplace(this.itemBox, resource.menuTitleBGShape )    
@@ -90,18 +90,18 @@ export class EventMenuItem extends MenuItem {
     })
 
 
-    this.defaultItemScale = Vector3.create(2, 2, 2)
-    this.scale = Vector3.create(1, 0.5, 1)
+    this.defaultItemScale = Vector3.create(1,1,1)
+    this.scale = Vector3.create(1, 1, 1)
     this.scaleMultiplier = 1.2
 
     
     this.thumbNail = new ThumbnailPlane(
       _event.image,
       {
-        position: Vector3.create(0.25, 0.27, 0),
+        position: Vector3.create(0.0, 3.6-27/16 *0.5, 0),
         rotation: Quaternion.Zero(),
-        scale: Vector3.create(1.1, 0.55, 1),
-        parent: this.entity
+        scale: Vector3.create(3, 27/16, 1),
+        parent: this.itemBox
       },
       _alphaTexture
     )  
@@ -109,8 +109,8 @@ export class EventMenuItem extends MenuItem {
 
     this.leftDetailsRoot = engine.addEntity()
     
-    Transform.create( this.leftDetailsRoot, {      
-        position: Vector3.create(-0.32, 0.28, -0.02),
+    Transform.create( this.leftDetailsRoot, {       
+        position: Vector3.create(-0.32, 1, -0.02),
         rotation: Quaternion.Zero(),
         scale: Vector3.create(0.9, 0.9, 0.9),    
         parent: this.itemBox  
@@ -121,8 +121,9 @@ export class EventMenuItem extends MenuItem {
     this.liveSign = engine.addEntity()
 
     Transform.create(this.liveSign, {
-      position: Vector3.create(-0.25, 0, 0),
-      scale: Vector3.create(0.5, 0.5, 0.5),
+      position: Vector3.create(-0.8, -0.1, 0),
+      scale: Vector3.create(1, 1, 1),
+      parent:this.itemBox
     })   
     VisibilityComponent.create(this.liveSign, {visible: true})
     GltfContainer.createOrReplace(this.liveSign, resource.liveSignShape )   
@@ -135,8 +136,9 @@ export class EventMenuItem extends MenuItem {
    
     this.dateBG = engine.addEntity()
     Transform.create(this.dateBG, {
-      position: Vector3.create(-0.25, 0, 0),
-      scale: Vector3.create(0.4, 0.4, 0.4),
+      position: Vector3.create(-0.8, -0.1, 0),
+      scale: Vector3.create(0.8, 0.8, 0.8),
+      parent: this.itemBox
     })       
     VisibilityComponent.create(this.dateBG, {visible: true})
     GltfContainer.createOrReplace(this.dateBG, resource.dateBGShape)    
@@ -219,7 +221,7 @@ export class EventMenuItem extends MenuItem {
     AnimatedItem.create(this.remainingTimeRoot, {
       wasClicked:false,
       isHighlighted:false,
-      defaultPosition: Vector3.create(0, -0.65, 0.05),
+      defaultPosition: Vector3.create(0, -0.65, -0.2),
       highlightPosition: Vector3.create(0, -0.65, -0.05),
       defaultScale: Vector3.create(1.0, 1.0, 1.5),
       highlightScale: Vector3.create(1.6, 1.6, 1.5),
@@ -240,7 +242,7 @@ export class EventMenuItem extends MenuItem {
         this.defaultItemScale.y,
         this.defaultItemScale.z
       ),
-      highlightScale: Vector3.create(2.3, 2.3, 2.3),
+      highlightScale: Vector3.scale(this.defaultItemScale,this.scaleMultiplier),
       animFraction: 0,
       animVeclocity: 0,
       speed: 0.7,
@@ -294,7 +296,7 @@ export class EventMenuItem extends MenuItem {
     // TITLE    
     this.title = engine.addEntity()
     Transform.create(this.title, {
-      position: Vector3.create(0, -0.12, -0.01),
+      position: Vector3.create(0, 1.6, -0.01),
       scale: Vector3.create(0.3, 0.3, 0.3),
       parent: this.itemBox
     })
@@ -307,7 +309,7 @@ export class EventMenuItem extends MenuItem {
       text: rawText,
       height: 20,
       width: 2,
-      fontSize: 2,      
+      fontSize: 4,      
       textColor: Color4.White(),
       outlineColor: Color4.White(),
       outlineWidth: 0.2,
@@ -514,14 +516,18 @@ export class EventMenuItem extends MenuItem {
     //   }
     // )
 
-    // highlights BG on selection
-    this.highlightRays = engine.addEntity()
-    Transform.create(this.highlightRays, {
+    
+    
+     
+   
+
+    this.highlightFrame = engine.addEntity()
+    Transform.create(this.highlightFrame, {
       parent: this.detailsRoot
     })
-    GltfContainer.create(this.highlightRays, resource.highlightRaysShape) 
-    
-    AnimatedItem.create(this.highlightRays, {
+    GltfContainer.create(this.highlightFrame, resource.highlightFrameFullShape)    
+
+    AnimatedItem.create(this.highlightFrame, {
       wasClicked:false,
       isHighlighted:false,
       defaultPosition: Vector3.create(0, 0, 0.05),
@@ -532,15 +538,15 @@ export class EventMenuItem extends MenuItem {
       animVeclocity: 0,
       speed: 0.9,
       done: false
-    })     
-   
-
-    this.highlightFrame = engine.addEntity()
-    Transform.create(this.highlightFrame, {
-      parent: this.highlightRays
+    })    
+    // highlights BG on selection
+    this.highlightRays = engine.addEntity()
+    Transform.create(this.highlightRays, {
+      position: Vector3.create(0,1.8,0),
+      scale: Vector3.create(3,3,3),
+      parent: this.highlightFrame
     })
-    GltfContainer.create(this.highlightFrame, resource.highlightFrameFullShape)    
-    
+    GltfContainer.create(this.highlightRays, resource.highlightRaysShape) 
   }
 
   updateItemInfo(_event: any) {
@@ -683,7 +689,7 @@ export class EventMenuItem extends MenuItem {
     let rootInfo = AnimatedItem.getMutable(this.entity)
     let jumpInButtonInfo = AnimatedItem.getMutable(this.jumpInButton)
    // let detailTextInfo = AnimatedItem.getMutable(this.detailTextPanel)
-    let highlightRaysInfo = AnimatedItem.getMutable(this.highlightRays)
+    let highlightFrameInfo = AnimatedItem.getMutable(this.highlightFrame)
     let coordsPanelInfo = AnimatedItem.getMutable(this.coordsPanel)
     let timePanelInfo = AnimatedItem.getMutable(this.timePanel)
     let remainingTimeInfo = AnimatedItem.getMutable(this.remainingTimeRoot)
@@ -709,8 +715,8 @@ export class EventMenuItem extends MenuItem {
       //detailTextInfo.isHighlighted = true
       //detailTextInfo.done = false
 
-      highlightRaysInfo.isHighlighted = true
-      highlightRaysInfo.done = false
+      highlightFrameInfo.isHighlighted = true
+      highlightFrameInfo.done = false
 
       coordsPanelInfo.isHighlighted = true
       coordsPanelInfo.done = false
@@ -737,7 +743,7 @@ export class EventMenuItem extends MenuItem {
     let rootInfo = AnimatedItem.getMutable(this.entity)
     let jumpInButtonInfo = AnimatedItem.getMutable(this.jumpInButton)
     //let detailTextInfo = AnimatedItem.getMutable(this.detailTextPanel)
-    let highlightRaysInfo = AnimatedItem.getMutable(this.highlightRays)
+    let highlightFrameInfo = AnimatedItem.getMutable(this.highlightFrame)
     let coordsPanelInfo = AnimatedItem.getMutable(this.coordsPanel)
     let timePanelInfo = AnimatedItem.getMutable(this.timePanel)
     let remainingTimeInfo = AnimatedItem.getMutable(this.remainingTimeRoot)
@@ -751,8 +757,8 @@ export class EventMenuItem extends MenuItem {
     //detailTextInfo.isHighlighted = false
     //detailTextInfo.done = false
 
-    highlightRaysInfo.isHighlighted = false
-    highlightRaysInfo.done = false
+    highlightFrameInfo.isHighlighted = false
+    highlightFrameInfo.done = false
 
     coordsPanelInfo.isHighlighted = false
     coordsPanelInfo.done = false
