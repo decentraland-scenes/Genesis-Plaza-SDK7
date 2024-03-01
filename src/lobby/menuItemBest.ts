@@ -72,18 +72,29 @@ export class BestMenuItem extends MenuItem {
     })
 
 
-    this.defaultItemScale = Vector3.create(2, 2, 2)
-    this.scale = Vector3.create(1, 0.5, 1)
+    this.defaultItemScale = Vector3.create(1, 1, 1)
+    this.scale = Vector3.create(1, 1, 1)
     this.scaleMultiplier = 1.2
 
     
+    // this.thumbNail = new ThumbnailPlane(
+    //   getImageOrFallback(_scene.image,"images/fallback-scene-thumb.png"),
+    //   {
+    //     position: Vector3.create(0.25, 0.27, 0),
+    //     rotation: Quaternion.Zero(),
+    //     scale: Vector3.create(1.1, 0.55, 1),
+    //     parent: this.entity
+    //   },
+    //   _alphaTexture
+    // )  
+
     this.thumbNail = new ThumbnailPlane(
       getImageOrFallback(_scene.image,"images/fallback-scene-thumb.png"),
       {
-        position: Vector3.create(0.25, 0.27, 0),
+        position: Vector3.create(0.0, 3.6-27/16 *0.5, 0),
         rotation: Quaternion.Zero(),
-        scale: Vector3.create(1.1, 0.55, 1),
-        parent: this.entity
+        scale: Vector3.create(3, 27/16, 1),
+        parent: this.itemBox
       },
       _alphaTexture
     )  
@@ -98,6 +109,7 @@ export class BestMenuItem extends MenuItem {
         parent: this.itemBox  
     })    
 
+    // main root animation states
     AnimatedItem.create(this.entity, {
       wasClicked:false,
       isHighlighted:false,
@@ -108,10 +120,10 @@ export class BestMenuItem extends MenuItem {
         this.defaultItemScale.y,
         this.defaultItemScale.z
       ),
-      highlightScale: Vector3.create(2.3, 2.3, 2.3),
+      highlightScale: Vector3.scale(this.defaultItemScale,this.scaleMultiplier),
       animFraction: 0,
       animVeclocity: 0,
-      speed: 0.5,
+      speed: 0.7,
       done: false
     })    
 

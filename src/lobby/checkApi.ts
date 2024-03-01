@@ -28,7 +28,7 @@ export async function getEvents(_count:number) {
     let response = await fetch(url)
     let json = await response.json()
 
-   // log(json)
+    log(json)
 
     for (let event of json.data) {
      

@@ -1,5 +1,5 @@
 import { ThumbnailPlane } from './subItems/thumbnail'
-import { cleanString, dateToRemainingTime, eventIsSoon, monthToString, wordWrap } from './helperFunctions'
+import { cleanString, dateToRemainingTime, eventIsSoon, monthToString, timeToTwelveHours, wordWrap } from './helperFunctions'
 import { AnimatedItem, ProximityScale } from './simpleAnimator'
 import * as resource from './resources/resources'
 import { MenuItem } from './menuItem'
@@ -122,7 +122,7 @@ export class EventMenuItem extends MenuItem {
 
     Transform.create(this.liveSign, {
       position: Vector3.create(-0.8, -0.1, 0),
-      scale: Vector3.create(1, 1, 1),
+      scale: Vector3.create(0.8, 0.8, 0.8),
       parent:this.itemBox
     })   
     VisibilityComponent.create(this.liveSign, {visible: true})
@@ -137,7 +137,7 @@ export class EventMenuItem extends MenuItem {
     this.dateBG = engine.addEntity()
     Transform.create(this.dateBG, {
       position: Vector3.create(-0.8, -0.1, 0),
-      scale: Vector3.create(0.8, 0.8, 0.8),
+      scale: Vector3.create(0.6, 0.6, 0.6),
       parent: this.itemBox
     })       
     VisibilityComponent.create(this.dateBG, {visible: true})
@@ -196,9 +196,9 @@ export class EventMenuItem extends MenuItem {
     // remaining time
     this.remainingTimeRoot = engine.addEntity()
     Transform.create(this.remainingTimeRoot, {
-      position: Vector3.create(0, -0.65, 0.05),
-      scale: Vector3.create(1.2, 1.2, 1.5),
-      parent: this.dateBG
+      position: Vector3.create(0.5, 1.1, -0.05),
+      scale: Vector3.create(1.5, 1.5, 1.5),
+      parent: this.itemBox
     })   
     GltfContainer.create(this.remainingTimeRoot, resource.remainingBGShape)
     VisibilityComponent.create(this.remainingTimeRoot, {visible: true})   
@@ -218,18 +218,18 @@ export class EventMenuItem extends MenuItem {
       textMutable.outlineColor= resource.remainingRed 
     }
 
-    AnimatedItem.create(this.remainingTimeRoot, {
-      wasClicked:false,
-      isHighlighted:false,
-      defaultPosition: Vector3.create(0, -0.65, -0.2),
-      highlightPosition: Vector3.create(0, -0.65, -0.05),
-      defaultScale: Vector3.create(1.0, 1.0, 1.5),
-      highlightScale: Vector3.create(1.6, 1.6, 1.5),
-      animFraction: 0,
-      animVeclocity: 0,
-      speed: 0.5,
-      done: false
-    })    
+    // AnimatedItem.create(this.remainingTimeRoot, {
+    //   wasClicked:false,
+    //   isHighlighted:false,
+    //   defaultPosition: Vector3.create(0, -0.65, -0.2),
+    //   highlightPosition: Vector3.create(0, -0.65, -0.05),
+    //   defaultScale: Vector3.create(1.0, 1.0, 1.5),
+    //   highlightScale: Vector3.create(1.6, 1.6, 1.5),
+    //   animFraction: 0,
+    //   animVeclocity: 0,
+    //   speed: 0.5,
+    //   done: false
+    // })    
 
     // main root animation states
     AnimatedItem.create(this.entity, {
@@ -258,24 +258,10 @@ export class EventMenuItem extends MenuItem {
 
     this.timePanel = engine.addEntity()
     Transform.create(this.timePanel, {
-      position: Vector3.create(-0.4, 0, -0.2),
+      position: Vector3.create(-1.05,0.3, -0.03),
       rotation: Quaternion.fromEulerDegrees(0, 0, 0),
-      parent: this.remainingTimeRoot
-    })
-    GltfContainer.createOrReplace(this.timePanel, resource.timePanelShape)    
-
-    AnimatedItem.create(this.timePanel, {
-      wasClicked:false,
-      isHighlighted:false,
-      defaultPosition: Vector3.create(0, 0.0, 0.1),
-      highlightPosition: Vector3.create(-0.8, 0.4, 0.15),
-      defaultScale: Vector3.create(0, 0, 0),
-      highlightScale:  Vector3.create(1, 1, 0.9),
-      animFraction: 0,
-      animVeclocity: 0,
-      speed: 0.5,
-      done: false
-    })   
+      parent: this.itemBox
+    })    
 
     this.startTime = engine.addEntity()
 
@@ -284,11 +270,13 @@ export class EventMenuItem extends MenuItem {
       parent: this.timePanel
     })
     TextShape.create(this.startTime, {
-      text: _event.next_start_at.substring(11, 16) + '\nUTC',
+      text: timeToTwelveHours(_event.next_start_at.substring(11, 16)) + '\nUTC',
       outlineColor: resource.remainingWhite,
-      outlineWidth: 0.1
+      outlineWidth: 0.1,
+      textAlign: TextAlignMode.TAM_BOTTOM_CENTER
 
     })
+    VisibilityComponent.create(this.startTime, {visible:true})
     
     //this.startTimeText.font = new Font(Fonts.SanFrancisco_Heavy)
    
@@ -321,23 +309,24 @@ export class EventMenuItem extends MenuItem {
     this.coordsPanel = engine.addEntity()
 
     Transform.create(this.coordsPanel, {
-      position: Vector3.create(-0.3, 0, 0),
-        scale: Vector3.create(0.4, 0.4, 0.4),
+      position: Vector3.create(0.1 , 0.9, 0),
+        scale: Vector3.create(0.6, 0.6, 0.6),
         parent: this.detailsRoot
     })
     GltfContainer.create(this.coordsPanel, resource.coordsPanelShape)
-    AnimatedItem.create(this.coordsPanel, {
-      wasClicked:false,
-      isHighlighted:false,
-      defaultPosition: Vector3.create(0, 0.5, 0.3),
-      highlightPosition: Vector3.create(-0.4, -0.25, 0),
-      defaultScale:Vector3.create(0.0, 0.0, 0.0),
-      highlightScale: Vector3.create(0.5, 0.5, 0.5),
-      animFraction: 0,
-      animVeclocity: 0,
-      speed: 0.4,
-      done: false
-    })  
+    VisibilityComponent.create(this.coordsPanel, {visible: true})
+    // AnimatedItem.create(this.coordsPanel, {
+    //   wasClicked:false,
+    //   isHighlighted:false,
+    //   defaultPosition: Vector3.create(0, 0.5, 0.3),
+    //   highlightPosition: Vector3.create(-0.4, -0.25, 0),
+    //   defaultScale:Vector3.create(0.0, 0.0, 0.0),
+    //   highlightScale: Vector3.create(0.5, 0.5, 0.5),
+    //   animFraction: 0,
+    //   animVeclocity: 0,
+    //   speed: 0.4,
+    //   done: false
+    // })  
 
     pointerEventsSystem.onPointerDown(
       {
@@ -362,29 +351,30 @@ export class EventMenuItem extends MenuItem {
       outlineColor: Color4.fromHexString('#111111FF'),
       outlineWidth: 0.1
     })      
+    VisibilityComponent.create(this.coords, {visible:true})
     
 
     // -- JUMP IN BUTTON
     this.jumpInButton = engine.addEntity()
     Transform.create(this.jumpInButton, {
-      position: Vector3.create(0, -0.2, 0),
-      scale: Vector3.create(0.4, 0.4, 0.4),
+      position: Vector3.create(1, 0.9, 0),
+      scale: Vector3.create(0.6, 0.6, 0.6),
       parent: this.detailsRoot
     })
     GltfContainer.create(this.jumpInButton, resource.jumpInButtonShape)
-    
-    AnimatedItem.create(this.jumpInButton, {
-      wasClicked:false,
-      isHighlighted:false,
-      defaultPosition: Vector3.create(0, 0.5, 0.5),
-      highlightPosition:  Vector3.create(0.4, -0.25, 0),
-      defaultScale:Vector3.create(0.0, 0.0, 0.0),
-      highlightScale: Vector3.create(0.5, 0.5, 0.5),
-      animFraction: 0,
-      animVeclocity: 0,
-      speed: 0.4,
-      done: false
-    })     
+    VisibilityComponent.create(this.jumpInButton, {visible:true})
+    // AnimatedItem.create(this.jumpInButton, {
+    //   wasClicked:false,
+    //   isHighlighted:false,
+    //   defaultPosition: Vector3.create(0, 0.5, 0.5),
+    //   highlightPosition:  Vector3.create(0.4, -0.25, 0),
+    //   defaultScale:Vector3.create(0.0, 0.0, 0.0),
+    //   highlightScale: Vector3.create(0.5, 0.5, 0.5),
+    //   animFraction: 0,
+    //   animVeclocity: 0,
+    //   speed: 0.4,
+    //   done: false
+    // })     
 
     this.jumpButtonText = engine.addEntity()
     Transform.create( this.jumpButtonText, {
@@ -398,7 +388,8 @@ export class EventMenuItem extends MenuItem {
       textAlign: TextAlignMode.TAM_MIDDLE_CENTER,
       outlineColor: Color4.White(),
       outlineWidth: 0.2
-    })      
+    })     
+    VisibilityComponent.create(this.jumpButtonText, {visible:true}) 
 
     if (this.live) {
       TextShape.getMutable(this.jumpButtonText).text = 'JUMP IN'
@@ -562,6 +553,7 @@ export class EventMenuItem extends MenuItem {
      VisibilityComponent.getMutable(this.dateBG).visible = false 
      VisibilityComponent.getMutable(this.dateMonthRoot).visible = false 
      VisibilityComponent.getMutable(this.dateRoot).visible = false 
+     VisibilityComponent.getMutable(this.startTime).visible = false 
 
       //update jump in button
       TextShape.getMutable(this.jumpButtonText).text = 'JUMP IN'
@@ -587,6 +579,7 @@ export class EventMenuItem extends MenuItem {
       VisibilityComponent.getMutable(this.dateBG).visible = true
        VisibilityComponent.getMutable(this.dateMonthRoot).visible = true 
      VisibilityComponent.getMutable(this.dateRoot).visible = true 
+     VisibilityComponent.getMutable(this.startTime).visible = true 
 
       //update jump in button to sign up button
       TextShape.getMutable(this.jumpButtonText).text = 'SIGN UP'
@@ -687,19 +680,14 @@ export class EventMenuItem extends MenuItem {
   select(_silent:boolean) {
 
     let rootInfo = AnimatedItem.getMutable(this.entity)
-    let jumpInButtonInfo = AnimatedItem.getMutable(this.jumpInButton)
-   // let detailTextInfo = AnimatedItem.getMutable(this.detailTextPanel)
     let highlightFrameInfo = AnimatedItem.getMutable(this.highlightFrame)
-    let coordsPanelInfo = AnimatedItem.getMutable(this.coordsPanel)
-    let timePanelInfo = AnimatedItem.getMutable(this.timePanel)
-    let remainingTimeInfo = AnimatedItem.getMutable(this.remainingTimeRoot)
+   
 
     if (!this.selected) {
       
       if(!_silent){
         this.playAudio(sfx.menuSelectSource, sfx.menuSelectSourceVolume)
       }
-
       
       trackAction(this.itemBox, "select_card", this.event.id, (this.event.coordinates[0] + ',' + this.event.coordinates[1]+":"+ this.event.name))
       
@@ -709,23 +697,9 @@ export class EventMenuItem extends MenuItem {
       rootInfo.isHighlighted = true
       rootInfo.done = false
 
-      jumpInButtonInfo.isHighlighted = true
-      jumpInButtonInfo.done = false
-
-      //detailTextInfo.isHighlighted = true
-      //detailTextInfo.done = false
-
       highlightFrameInfo.isHighlighted = true
       highlightFrameInfo.done = false
-
-      coordsPanelInfo.isHighlighted = true
-      coordsPanelInfo.done = false
-
-      timePanelInfo.isHighlighted = true
-      timePanelInfo.done = false      
-
-      remainingTimeInfo.isHighlighted = true
-      remainingTimeInfo.done = false      
+    
     }
   }
 
@@ -740,43 +714,24 @@ export class EventMenuItem extends MenuItem {
 
     hideEventUI()
 
-    let rootInfo = AnimatedItem.getMutable(this.entity)
-    let jumpInButtonInfo = AnimatedItem.getMutable(this.jumpInButton)
-    //let detailTextInfo = AnimatedItem.getMutable(this.detailTextPanel)
-    let highlightFrameInfo = AnimatedItem.getMutable(this.highlightFrame)
-    let coordsPanelInfo = AnimatedItem.getMutable(this.coordsPanel)
-    let timePanelInfo = AnimatedItem.getMutable(this.timePanel)
-    let remainingTimeInfo = AnimatedItem.getMutable(this.remainingTimeRoot)
+    let rootInfo = AnimatedItem.getMutable(this.entity)   
+    let highlightFrameInfo = AnimatedItem.getMutable(this.highlightFrame)   
 
     rootInfo.isHighlighted = false
     rootInfo.done = false
 
-    jumpInButtonInfo.isHighlighted = false
-    jumpInButtonInfo.done = false
-
-    //detailTextInfo.isHighlighted = false
-    //detailTextInfo.done = false
-
     highlightFrameInfo.isHighlighted = false
     highlightFrameInfo.done = false
 
-    coordsPanelInfo.isHighlighted = false
-    coordsPanelInfo.done = false
-
-    timePanelInfo.isHighlighted = false
-    timePanelInfo.done = false  
-
-    remainingTimeInfo.isHighlighted = false
-    remainingTimeInfo.done = false  
-
-    // if(!_silent){
-    //     sfx.menuDeselectSource.playOnce()
-    // }
   }
   
   show() {
     VisibilityComponent.getMutable(this.itemBox).visible = true
-    
+    VisibilityComponent.getMutable(this.startTime).visible = true 
+    VisibilityComponent.getMutable(this.coordsPanel).visible = true 
+    VisibilityComponent.getMutable(this.jumpInButton).visible = true 
+    VisibilityComponent.getMutable(this.coords).visible = true 
+    VisibilityComponent.getMutable(this.jumpButtonText).visible = true 
     if(this.live){
       VisibilityComponent.getMutable(this.liveSign).visible = true
     }else{
@@ -784,7 +739,6 @@ export class EventMenuItem extends MenuItem {
       VisibilityComponent.getMutable(this.dateMonthRoot).visible = true
       VisibilityComponent.getMutable(this.dateRoot).visible = true
     }   
-
 
     
     VisibilityComponent.getMutable(this.remainingTimeRoot).visible = true
@@ -800,8 +754,12 @@ export class EventMenuItem extends MenuItem {
     VisibilityComponent.getMutable(this.dateMonthRoot).visible = false
     VisibilityComponent.getMutable(this.dateRoot).visible = false
     VisibilityComponent.getMutable(this.title).visible = false
-    //VisibilityComponent.getMutable(this.detailTextPanel).visible = false
+    VisibilityComponent.getMutable(this.startTime).visible = false 
     VisibilityComponent.getMutable(this.remainingTimeRoot).visible = false
+    VisibilityComponent.getMutable(this.coordsPanel).visible = false 
+    VisibilityComponent.getMutable(this.jumpInButton).visible = false 
+    VisibilityComponent.getMutable(this.coords).visible = false 
+    VisibilityComponent.getMutable(this.jumpButtonText).visible = false 
     this.thumbNail.hide()
     Transform.getMutable(this.entity).scale = Vector3.Zero()
   }

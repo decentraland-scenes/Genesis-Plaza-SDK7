@@ -70,7 +70,7 @@ export class HorizontalMenu {
         let menuCenter = Transform.get(this.menuRoot).position
         let angle = -this.angleSpacing*0.75
         let rotatedPosVector =  Vector3.rotate(Vector3.scale(Vector3.Forward(), this.radius), Quaternion.fromEulerDegrees(0,angle,0))
-        rotatedPosVector.y = 0.35
+        rotatedPosVector.y = 1.8
         
         //scroll left button
         this.scrollLeftButton = engine.addEntity()
@@ -95,7 +95,7 @@ export class HorizontalMenu {
         //scroll right
         angle = this.visibleItems* this.angleSpacing - this.angleSpacing/4
         rotatedPosVector =  Vector3.rotate(Vector3.scale(Vector3.Forward(), this.radius), Quaternion.fromEulerDegrees(0,angle,0))
-        rotatedPosVector.y = 0.35
+        rotatedPosVector.y = 1.8
         this.scrollRightButton = engine.addEntity()
         Transform.create(this.scrollRightButton, {
           position: rotatedPosVector,
