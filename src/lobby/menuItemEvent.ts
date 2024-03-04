@@ -98,7 +98,7 @@ export class EventMenuItem extends MenuItem {
     this.thumbNail = new ThumbnailPlane(
       _event.image,
       {
-        position: Vector3.create(0.0, 3.6-27/16 *0.5, 0),
+        position: Vector3.create(0.0, 3.3 - (27/16 *0.5), 0),
         rotation: Quaternion.Zero(),
         scale: Vector3.create(3, 27/16, 1),
         parent: this.itemBox
@@ -121,7 +121,7 @@ export class EventMenuItem extends MenuItem {
     this.liveSign = engine.addEntity()
 
     Transform.create(this.liveSign, {
-      position: Vector3.create(-0.8, -0.1, 0),
+      position: Vector3.create(-0.8, -0.5, 0),
       scale: Vector3.create(0.8, 0.8, 0.8),
       parent:this.itemBox
     })   
@@ -136,7 +136,7 @@ export class EventMenuItem extends MenuItem {
    
     this.dateBG = engine.addEntity()
     Transform.create(this.dateBG, {
-      position: Vector3.create(-0.8, -0.1, 0),
+      position: Vector3.create(-0.8, -0.4, 0),
       scale: Vector3.create(0.6, 0.6, 0.6),
       parent: this.itemBox
     })       
@@ -196,7 +196,7 @@ export class EventMenuItem extends MenuItem {
     // remaining time
     this.remainingTimeRoot = engine.addEntity()
     Transform.create(this.remainingTimeRoot, {
-      position: Vector3.create(0.5, 1.1, -0.05),
+      position: Vector3.create(0.0, 3.5, -0.05),
       scale: Vector3.create(1.5, 1.5, 1.5),
       parent: this.itemBox
     })   
@@ -258,22 +258,24 @@ export class EventMenuItem extends MenuItem {
 
     this.timePanel = engine.addEntity()
     Transform.create(this.timePanel, {
-      position: Vector3.create(-1.05,0.3, -0.03),
+      position: Vector3.create(-1.3,0.15, -0.03),
       rotation: Quaternion.fromEulerDegrees(0, 0, 0),
       parent: this.itemBox
     })    
 
+    //start time
     this.startTime = engine.addEntity()
-
     Transform.create(this.startTime, {
-      scale: Vector3.create(0.1, 0.1, 0.1),
-      parent: this.timePanel
+      position: Vector3.create(0.45,-0.8,-0.02),
+      scale: Vector3.create(0.2, 0.2, 0.2),
+      parent: this.dateBG
     })
     TextShape.create(this.startTime, {
-      text: timeToTwelveHours(_event.next_start_at.substring(11, 16)) + '\nUTC',
-      outlineColor: resource.remainingWhite,
+      text: timeToTwelveHours(_event.next_start_at.substring(11, 16)),
+      textColor: Color4.Black(),
+      outlineColor: Color4.Black(),
       outlineWidth: 0.1,
-      textAlign: TextAlignMode.TAM_BOTTOM_CENTER
+      textAlign: TextAlignMode.TAM_BOTTOM_RIGHT
 
     })
     VisibilityComponent.create(this.startTime, {visible:true})
@@ -284,7 +286,7 @@ export class EventMenuItem extends MenuItem {
     // TITLE    
     this.title = engine.addEntity()
     Transform.create(this.title, {
-      position: Vector3.create(0, 1.6, -0.01),
+      position: Vector3.create(0, 1.3, -0.01),
       scale: Vector3.create(0.3, 0.3, 0.3),
       parent: this.itemBox
     })
@@ -309,7 +311,7 @@ export class EventMenuItem extends MenuItem {
     this.coordsPanel = engine.addEntity()
 
     Transform.create(this.coordsPanel, {
-      position: Vector3.create(0.1 , 0.9, 0),
+      position: Vector3.create(0.9 , 0.5, 0),
         scale: Vector3.create(0.6, 0.6, 0.6),
         parent: this.detailsRoot
     })
@@ -357,8 +359,8 @@ export class EventMenuItem extends MenuItem {
     // -- JUMP IN BUTTON
     this.jumpInButton = engine.addEntity()
     Transform.create(this.jumpInButton, {
-      position: Vector3.create(1, 0.9, 0),
-      scale: Vector3.create(0.6, 0.6, 0.6),
+      position: Vector3.create(0.77, 1, 0),
+      scale: Vector3.create(0.8, 0.8, 0.8), 
       parent: this.detailsRoot
     })
     GltfContainer.create(this.jumpInButton, resource.jumpInButtonShape)
@@ -393,7 +395,7 @@ export class EventMenuItem extends MenuItem {
 
     if (this.live) {
       TextShape.getMutable(this.jumpButtonText).text = 'JUMP IN'
-      
+      VisibilityComponent.getMutable(this.startTime).visible = false
       pointerEventsSystem.onPointerDown(
         {
           entity:this.jumpInButton,
@@ -407,7 +409,7 @@ export class EventMenuItem extends MenuItem {
     } 
     else {
       TextShape.getMutable(this.jumpButtonText).text = 'SIGN UP'
-
+      VisibilityComponent.getMutable(this.startTime).visible = true 
       pointerEventsSystem.onPointerDown(
         {
           entity:this.jumpInButton,
@@ -727,7 +729,7 @@ export class EventMenuItem extends MenuItem {
   
   show() {
     VisibilityComponent.getMutable(this.itemBox).visible = true
-    VisibilityComponent.getMutable(this.startTime).visible = true 
+   
     VisibilityComponent.getMutable(this.coordsPanel).visible = true 
     VisibilityComponent.getMutable(this.jumpInButton).visible = true 
     VisibilityComponent.getMutable(this.coords).visible = true 
@@ -738,6 +740,7 @@ export class EventMenuItem extends MenuItem {
       VisibilityComponent.getMutable(this.dateBG).visible = true
       VisibilityComponent.getMutable(this.dateMonthRoot).visible = true
       VisibilityComponent.getMutable(this.dateRoot).visible = true
+      VisibilityComponent.getMutable(this.startTime).visible = true 
     }   
 
     

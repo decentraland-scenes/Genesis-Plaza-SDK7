@@ -38,6 +38,10 @@ export function cleanString(input:string) {
   return output;
 }
 
+// export const wrap = (s:string, w:number) => s.replace(
+//   new RegExp(`(?![^\\n]{1,${w}}$)([^\\n]{1,${w}})\\s`, 'g'), '$1\n'
+// );
+
 export function wordWrap(str:string, maxWidth:number, maxLines:number) {
   let newLineStr = "\n"
   let done = false 

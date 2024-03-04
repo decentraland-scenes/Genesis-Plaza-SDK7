@@ -198,7 +198,8 @@ export class HorizontalMenu {
             //start the smooth rotation of the parent with one unit
             this.scrollTarget = Quaternion.multiply(this.scrollTarget, Quaternion.fromEulerDegrees(0,angle,0))                 
             SlerpItem.createOrReplace(this.scrollerRoot, {
-              targetRotation:this.scrollTarget
+              targetRotation:this.scrollTarget,
+              
             })    
             this.playAudio(sfx.menuUpSource, sfx.menuUpSourceVolume)         
           }
