@@ -1,5 +1,5 @@
 import { ThumbnailPlane } from './subItems/thumbnail'
-import { cleanString, dateToRemainingTime, eventIsSoon, monthToString, timeToTwelveHours, wordWrap } from './helperFunctions'
+import { cleanString, dateToRemainingTime, eventIsSoon, getTitleFontSize, monthToString, timeToTwelveHours, wordWrap } from './helperFunctions'
 import { AnimatedItem, ProximityScale } from './simpleAnimator'
 import * as resource from './resources/resources'
 import { MenuItem } from './menuItem'
@@ -299,7 +299,7 @@ export class EventMenuItem extends MenuItem {
       text: rawText,
       height: 20,
       width: 2,
-      fontSize: 4,      
+      fontSize: getTitleFontSize(rawText),      
       textColor: Color4.White(),
       outlineColor: Color4.White(),
       outlineWidth: 0.2,

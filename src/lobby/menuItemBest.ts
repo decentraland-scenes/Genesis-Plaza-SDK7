@@ -1,5 +1,5 @@
 import { ThumbnailPlane } from './subItems/thumbnail'
-import { cleanString, monthToString, wordWrap } from './helperFunctions'
+import { cleanString, getTitleFontSize, monthToString, wordWrap } from './helperFunctions'
 import { AnimatedItem } from './simpleAnimator'
 import * as resource from './resources/resources'
 import { MenuItem } from './menuItem'
@@ -204,7 +204,7 @@ export class BestMenuItem extends MenuItem {
       text: rawText,
       height: 20,
       width: 2,
-      fontSize: 4,      
+      fontSize: getTitleFontSize(rawText),      
       textColor: Color4.White(),
       outlineColor: Color4.White(),
       outlineWidth: 0.2,
@@ -330,14 +330,13 @@ export class BestMenuItem extends MenuItem {
           
 
    
-    // highlights BG on selection
-    this.highlightRays = engine.addEntity()
-    Transform.create(this.highlightRays, {
+    this.highlightFrame = engine.addEntity()
+    Transform.create(this.highlightFrame, {
       parent: this.detailsRoot
     })
-    GltfContainer.create(this.highlightRays, resource.highlightRaysShape) 
-    
-    AnimatedItem.create(this.highlightRays, {
+    GltfContainer.create(this.highlightFrame, resource.highlightFrameFullShape)    
+
+    AnimatedItem.create(this.highlightFrame, {
       wasClicked:false,
       isHighlighted:false,
       defaultPosition: Vector3.create(0, 0, 0.05),
@@ -348,14 +347,15 @@ export class BestMenuItem extends MenuItem {
       animVeclocity: 0,
       speed: 0.9,
       done: false
-    })     
-   
-
-    this.highlightFrame = engine.addEntity()
-    Transform.create(this.highlightFrame, {
-      parent: this.highlightRays
+    })    
+    // highlights BG on selection
+    this.highlightRays = engine.addEntity()
+    Transform.create(this.highlightRays, {
+      position: Vector3.create(0,1.8,0),
+      scale: Vector3.create(3,3,3),
+      parent: this.highlightFrame
     })
-    GltfContainer.create(this.highlightFrame, resource.highlightFrameFullShape)    
+    GltfContainer.create(this.highlightRays, resource.highlightRaysShape) 
     
   }
 
@@ -442,7 +442,7 @@ export class BestMenuItem extends MenuItem {
   select(_silent:boolean) {
 
     let rootInfo = AnimatedItem.getMutable(this.entity)     
-    let highlightRaysInfo = AnimatedItem.getMutable(this.highlightRays)
+    let highlightFrameInfo = AnimatedItem.getMutable(this.highlightFrame)
       
        
 
@@ -458,8 +458,8 @@ export class BestMenuItem extends MenuItem {
       rootInfo.isHighlighted = true
       rootInfo.done = false
 
-      highlightRaysInfo.isHighlighted = true
-      highlightRaysInfo.done = false
+      highlightFrameInfo.isHighlighted = true
+      highlightFrameInfo.done = false
 
 
     }
@@ -474,13 +474,13 @@ export class BestMenuItem extends MenuItem {
       this.selected = false      
     }
     let rootInfo = AnimatedItem.getMutable(this.entity)      
-    let highlightRaysInfo = AnimatedItem.getMutable(this.highlightRays)   
+    let highlightFrameInfo = AnimatedItem.getMutable(this.highlightFrame)   
 
     rootInfo.isHighlighted = false
     rootInfo.done = false
 
-    highlightRaysInfo.isHighlighted = false
-    highlightRaysInfo.done = false   
+    highlightFrameInfo.isHighlighted = false
+    highlightFrameInfo.done = false   
 
 
     // if(!_silent){

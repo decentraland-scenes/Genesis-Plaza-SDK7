@@ -1,5 +1,5 @@
 import { ThumbnailPlane } from './subItems/thumbnail'
-import { cleanString, monthToString, wordWrap } from './helperFunctions'
+import { cleanString, getTitleFontSize, monthToString, wordWrap } from './helperFunctions'
 import { AnimatedItem } from './simpleAnimator'
 import * as resource from './resources/resources'
 import { MenuItem } from './menuItem'
@@ -194,7 +194,7 @@ export class CrowdMenuItem extends MenuItem {
       text: rawText,
       height: 20,
       width: 2,
-      fontSize: 4,      
+      fontSize: getTitleFontSize(rawText),
       textColor: Color4.White(),
       outlineColor: Color4.White(),
       outlineWidth: 0.2,

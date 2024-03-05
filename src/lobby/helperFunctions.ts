@@ -42,6 +42,15 @@ export function cleanString(input:string) {
 //   new RegExp(`(?![^\\n]{1,${w}}$)([^\\n]{1,${w}})\\s`, 'g'), '$1\n'
 // );
 
+export function getTitleFontSize(string:string):number{
+
+  if(string.length < 30){
+    return 6
+  }
+
+  return 4
+}
+
 export function wordWrap(str:string, maxWidth:number, maxLines:number) {
   let newLineStr = "\n"
   let done = false 
