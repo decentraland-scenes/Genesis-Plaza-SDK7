@@ -24,11 +24,11 @@ let DistantVolume = 0.03
 //this has to be set false and triggered inside Index.ts see: https://github.com/nobodysGitHub/Genesis-Plaza/blob/master/src/game.ts#L92
 export let isInBar: boolean = false
 
-let barCurrentRadio: Radios | null = Radios.RAVE 
+let barCurrentRadio: Radios | null = Radios.RAVE
 let defaultStartStream: PBAudioStream = {
   url: barCurrentRadio,
-  playing:false,
-  volume:FullVolume
+  playing: false,
+  volume: FullVolume
 }
 let barCurrentRadioIndex: number = 0
 let radioCount = 4
@@ -55,38 +55,38 @@ TrackingElement.create(baseJukeBox, {
 let jukeBoxAdded: boolean = false
 
 export function placeJukeBox() {
-  if(jukeBoxAdded) return
+  if (jukeBoxAdded) return
 
   jukeBoxAdded = true
 
   console.log("jukeBox.ts placeJukeBox has being called")
 
-  AudioStream.createOrReplace(audioStreamEntity,  defaultStartStream)
+  AudioStream.createOrReplace(audioStreamEntity, defaultStartStream)
 
-  
+
   GltfContainer.createOrReplace(baseJukeBox, {
-    src: 'models/core_building/jukebox/Jukebox_Base.glb' 
+    src: 'models/core_building/jukebox/Jukebox_Base.glb'
   })
 
   Transform.createOrReplace(baseJukeBox, {
-    position: Vector3.create(179 - coreBuildingOffset.x, 0, 144 - coreBuildingOffset.z), 
+    position: Vector3.create(179 - coreBuildingOffset.x, 0, 144 - coreBuildingOffset.z),
     rotation: Quaternion.fromEulerDegrees(0, -45, 0),
     scale: Vector3.create(0.75, 0.75, 0.75),
   })
 
-  GltfContainer.createOrReplace(baseJukeBoxLights1,{
-    src:'models/core_building/jukebox/Lights_01.glb'
+  GltfContainer.createOrReplace(baseJukeBoxLights1, {
+    src: 'models/core_building/jukebox/Lights_01.glb'
   })
-  VisibilityComponent.createOrReplace(baseJukeBoxLights1, {visible: false})
+  VisibilityComponent.createOrReplace(baseJukeBoxLights1, { visible: false })
 
   Transform.createOrReplace(baseJukeBoxLights1, {
     parent: baseJukeBox
   })
 
-  GltfContainer.createOrReplace(baseJukeBoxLights2,{
-    src:'models/core_building/jukebox/Lights_02.glb',
+  GltfContainer.createOrReplace(baseJukeBoxLights2, {
+    src: 'models/core_building/jukebox/Lights_02.glb',
   })
-  VisibilityComponent.createOrReplace(baseJukeBoxLights2, {visible: false})
+  VisibilityComponent.createOrReplace(baseJukeBoxLights2, { visible: false })
 
   Transform.createOrReplace(baseJukeBoxLights2, {
     parent: baseJukeBox
@@ -97,34 +97,34 @@ export function placeJukeBox() {
   JukeBoxText = engine.addEntity()
 
   Transform.createOrReplace(JukeBoxText, {
-    parent:JukeboxScreen
+    parent: JukeboxScreen
   })
-  
+
   Transform.createOrReplace(JukeboxScreen, {
     position: Vector3.create(0, 2.55, 0.25),
     rotation: Quaternion.create(0, 180, 0),
-    parent:baseJukeBox
+    parent: baseJukeBox
   })
 
-  TextShape.createOrReplace(JukeBoxText,{
+  TextShape.createOrReplace(JukeBoxText, {
     text: 'Radio:\nRave Party',
     fontSize: 1
   })
 
-  let onButton =  new JukeboxButton(
-    'models/core_building/jukebox/Button_On.glb', 
+  let onButton = new JukeboxButton(
+    'models/core_building/jukebox/Button_On.glb',
     'Button_On',
     () => {
-      console.log("jukebox.ts","press.onButton","ENTRY")
+      console.log("jukebox.ts", "press.onButton", "ENTRY")
 
       let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
       let musicState = audioStreamRef && audioStreamRef.playing
-      
+
       sceneMessageBus.emit('BarRadioToggle', {
         state: !musicState
       })
 
-      console.log(AnalyticsLogLabel, "JukeBoxButton","Button_On")
+      console.log(AnalyticsLogLabel, "JukeBoxButton", "Button_On")
       let boxState = !musicState ? "ON" : "OFF"
       trackAction(baseJukeBox, "button_on_off", boxState)
     },
@@ -132,7 +132,7 @@ export function placeJukeBox() {
   )
 
   let nextButton = new JukeboxButton(
-    'models/core_building/jukebox/ButtonForward.glb', 
+    'models/core_building/jukebox/ButtonForward.glb',
     'Button_Forward',
     () => {
       barCurrentRadioIndex += 1
@@ -143,10 +143,10 @@ export function placeJukeBox() {
       if (audioStreamRef && audioStreamRef.playing) {
         sceneMessageBus.emit('setBarRadio', {
           index: barCurrentRadioIndex
-        })        
+        })
       }
 
-      console.log(AnalyticsLogLabel, "JukeBoxButton","Button_Forward")
+      console.log(AnalyticsLogLabel, "JukeBoxButton", "Button_Forward")
       trackAction(baseJukeBox, "button_forward", undefined)
     },
     'Next'
@@ -164,17 +164,17 @@ export function placeJukeBox() {
       if (audioStreamRef && audioStreamRef.playing) {
         sceneMessageBus.emit('setBarRadio', {
           index: barCurrentRadioIndex,
-        }) 
+        })
       }
 
-      console.log(AnalyticsLogLabel, "JukeBoxButton","Button_Preview")
+      console.log(AnalyticsLogLabel, "JukeBoxButton", "Button_Preview")
       trackAction(baseJukeBox, "previous_button", undefined)
     },
     'Previous'
   )
 
   sceneMessageBus.on('BarRadioToggle', (e) => {
-    console.log("jukebox.ts","onBarRadioToggle","ENTRY")
+    console.log("jukebox.ts", "onBarRadioToggle", "ENTRY")
     let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
     if (audioStreamRef && e.state === audioStreamRef.playing) return
     if (e.state) {
@@ -183,7 +183,7 @@ export function placeJukeBox() {
     } else {
       barRadioOff()
       radioIsOn = false
-    } 
+    }
   })
 
   sceneMessageBus.on('setBarRadio', (e) => {
@@ -242,41 +242,40 @@ export function placeJukeBox() {
 
 export class JukeboxButton {
   entity: Entity
-  
+
   constructor(modelUrl: string, animationName: string, action: () => void, text?: string) {
-    
+
     let _entity = engine.addEntity()
     this.entity = _entity
 
     GltfContainer.createOrReplace(this.entity, {
-        src: modelUrl
+      src: modelUrl
     })
     Transform.createOrReplace(this.entity, {
-        parent:baseJukeBox
+      parent: baseJukeBox
     })
-    
+
     AudioSource.createOrReplace(this.entity, {
-        audioClipUrl: 'sounds/click.mp3',
-        loop: false,
-        playing: false,
+      audioClipUrl: 'sounds/click.mp3',
+      loop: false,
+      playing: false,
     })
 
     Animator.createOrReplace(this.entity, {
-        states:[{
-          name: 'animation',
-            clip: animationName,
-            loop: false,
-            playing: false
-        }]
+      states: [{
+        clip: animationName,
+        loop: false,
+        playing: false
+      }]
     })
 
 
     pointerEventsSystem.onPointerDown(
       {
-        entity:this.entity,
+        entity: this.entity,
         opts: {
-            button: InputAction.IA_POINTER,
-            hoverText: text ? text : 'Press',
+          button: InputAction.IA_POINTER,
+          hoverText: text ? text : 'Press',
         }
       },
       (e) => {
@@ -295,31 +294,31 @@ export class JukeboxButton {
     adioSource.playing = true
   }
 }
-let barRadioOnTimeoutId:number|undefined = undefined
+let barRadioOnTimeoutId: number | undefined = undefined
 
 function barRadioOn(station?: Radios) {
   if (tutorialRunning) return
 
-  console.log("jukebox.ts","barRadioOn","ENTRY",station)
+  console.log("jukebox.ts", "barRadioOn", "ENTRY", station)
 
   TextShape.getMutable(JukeBoxText).text = 'Radio:\n' + getRadioName(barCurrentRadioIndex)
 
   if (isInBar) {
     console.log("jukebox.ts ButtonOn has been pressed")
-    if(barRadioOnTimeoutId)utils.timers.clearTimeout(barRadioOnTimeoutId) 
-    barRadioOnTimeoutId = utils.timers.setTimeout(() =>{
-      console.log("jukebox.ts","barRadioOn","timer.fired",station)
+    if (barRadioOnTimeoutId) utils.timers.clearTimeout(barRadioOnTimeoutId)
+    barRadioOnTimeoutId = utils.timers.setTimeout(() => {
+      console.log("jukebox.ts", "barRadioOn", "timer.fired", station)
       //debugger
       AudioStream.createOrReplace(audioStreamEntity, {
         url: station ? station : Radios.RAVE
-        ,playing:true
-        ,volume:FullVolume 
+        , playing: true
+        , volume: FullVolume
       })
 
       VisibilityComponent.getMutable(baseJukeBoxLights1).visible = true
       VisibilityComponent.getMutable(baseJukeBoxLights2).visible = true
     },
-    100
+      100
     )
   }
   radioIsOn = true
@@ -346,7 +345,7 @@ export function setBarMusicOn() {
   sceneMessageBus.emit('enteredRadioRange', {
     radio: barCurrentRadioIndex,
   })
-  
+
 
   isInBar = true
   if (audioStreamRef) {
@@ -395,7 +394,7 @@ export function raiseVolume() {
     audioStreamRef.playing = true
   }
 
-  if(audioStreamRef != null) audioStreamRef.volume = FullVolume
+  if (audioStreamRef != null) audioStreamRef.volume = FullVolume
 }
 
 export function setStreamVolume(vol: number) {
@@ -403,7 +402,7 @@ export function setStreamVolume(vol: number) {
 
   let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
 
-  if(audioStreamRef != null){
+  if (audioStreamRef != null) {
     audioStreamRef.playing = true
     audioStreamRef.volume = vol
   }
