@@ -32,7 +32,8 @@ function createBoyArtist(): Entity {
       onlyETrigger: true,
       // onlyExternalTrigger: true,
       onActivate: () => {
-        npcLib.activate(girlArtist, boy)
+       // npcLib.activate(girlArtist, boy)
+        npcLib.activate(girlArtist)
         console.log(AnalyticsLogLabel, "barNpcs.ts", "boyArtist")
         trackAction(boy, "Interact", undefined)
         trackStart(boy)

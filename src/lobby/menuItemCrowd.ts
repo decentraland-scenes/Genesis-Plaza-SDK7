@@ -1,5 +1,5 @@
 import { ThumbnailPlane } from './subItems/thumbnail'
-import { cleanString, monthToString, wordWrap } from './helperFunctions'
+import { cleanString, getTitleFontSize, monthToString, wordWrap } from './helperFunctions'
 import { AnimatedItem } from './simpleAnimator'
 import * as resource from './resources/resources'
 import { MenuItem } from './menuItem'
@@ -69,21 +69,32 @@ export class CrowdMenuItem extends MenuItem {
     })
 
 
-    this.defaultItemScale = Vector3.create(2, 2, 2)
-    this.scale = Vector3.create(1, 0.5, 1)
+    this.defaultItemScale = Vector3.create(1, 1, 1)
+    this.scale = Vector3.create(1, 1, 1)
     this.scaleMultiplier = 1.2
 
-    
+
     this.thumbNail = new ThumbnailPlane(
       getImageOrFallback(_scene.thumbnail,"images/fallback-scene-thumb.png"),
       {
-        position: Vector3.create(0.25, 0.27, 0),
+        position: Vector3.create(0.0, 3.3-(27/16 *0.5), 0),
         rotation: Quaternion.Zero(),
-        scale: Vector3.create(1.1, 0.55, 1),
-        parent: this.entity
+        scale: Vector3.create(3, 27/16, 1),
+        parent: this.itemBox
       },
       _alphaTexture
     )  
+    
+    // this.thumbNail = new ThumbnailPlane(
+    //   getImageOrFallback(_scene.thumbnail,"images/fallback-scene-thumb.png"),
+    //   {
+    //     position: Vector3.create(0.25, 0.27, 0),
+    //     rotation: Quaternion.Zero(),
+    //     scale: Vector3.create(1.1, 0.55, 1),
+    //     parent: this.entity
+    //   },
+    //   _alphaTexture
+    // )  
        
 
     this.leftDetailsRoot = engine.addEntity()
@@ -95,7 +106,8 @@ export class CrowdMenuItem extends MenuItem {
         parent: this.itemBox  
     })    
 
-    AnimatedItem.create(this.entity, {
+     // main root animation states
+     AnimatedItem.create(this.entity, {
       wasClicked:false,
       isHighlighted:false,
       defaultPosition: _transform.position,
@@ -105,18 +117,18 @@ export class CrowdMenuItem extends MenuItem {
         this.defaultItemScale.y,
         this.defaultItemScale.z
       ),
-      highlightScale: Vector3.create(2.3, 2.3, 2.3),
+      highlightScale: Vector3.scale(this.defaultItemScale,this.scaleMultiplier),
       animFraction: 0,
       animVeclocity: 0,
-      speed: 0.5,
+      speed: 0.7,
       done: false
     })    
 
     // -- USER COUNTER PANEL
     this.playerCounterBG = engine.addEntity()
     Transform.create(this.playerCounterBG, {
-        position: Vector3.create(-0.25, 0, 0),
-        scale: Vector3.create(0.45, 0.45, 0.45),
+        position: Vector3.create(-0.6, 0.38, 0),
+        scale: Vector3.create(0.9, 0.9, 0.9),
         parent:this.leftDetailsRoot
     })
     GltfContainer.createOrReplace(this.playerCounterBG, resource.playerCounterBGShape )    
@@ -143,12 +155,13 @@ export class CrowdMenuItem extends MenuItem {
 
     this.usersTitleRoot = engine.addEntity()
     Transform.create(this.usersTitleRoot, {
-        position: Vector3.create(0, -0.12, 0.05),
+        position: Vector3.create(0, -0.12, -0.01),
         scale: Vector3.create(0.8, 0.8, 0.8),
         parent: this.playerCounterBG
     })  
     TextShape.create(this.usersTitleRoot,{
-        text: 'PLAYERS:',
+       // text: 'PLAYERS:',
+        text: '',
         fontSize: 2,
         textAlign: TextAlignMode.TAM_MIDDLE_CENTER,
         textColor: Color4.White(),
@@ -167,7 +180,7 @@ export class CrowdMenuItem extends MenuItem {
     // TITLE    
     this.title = engine.addEntity()
     Transform.create(this.title, {
-      position: Vector3.create(0, -0.15, -0.01),
+      position: Vector3.create(0, 1.3, -0.01),
       scale: Vector3.create(0.3, 0.3, 0.3),
       parent: this.itemBox
     })
@@ -181,7 +194,7 @@ export class CrowdMenuItem extends MenuItem {
       text: rawText,
       height: 20,
       width: 2,
-      fontSize: 2,      
+      fontSize: getTitleFontSize(rawText),
       textColor: Color4.White(),
       outlineColor: Color4.White(),
       outlineWidth: 0.2,
@@ -193,23 +206,13 @@ export class CrowdMenuItem extends MenuItem {
     this.coordsPanel = engine.addEntity()
 
     Transform.create(this.coordsPanel, {
-      position: Vector3.create(-0.3, 0, 0),
-        scale: Vector3.create(0.4, 0.4, 0.4),
+      position: Vector3.create(0.9 , 0.5, 0),
+        scale: Vector3.create(0.6, 0.6, 0.6),
         parent: this.detailsRoot
     })
     GltfContainer.create(this.coordsPanel, resource.coordsPanelShape)
-    AnimatedItem.create(this.coordsPanel, {
-      wasClicked:false,
-      isHighlighted:false,
-      defaultPosition: Vector3.create(0, 0.5, 0.3),
-      highlightPosition: Vector3.create(-0.4, -0.25, 0),
-      defaultScale:Vector3.create(0.0, 0.0, 0.0),
-      highlightScale: Vector3.create(0.5, 0.5, 0.5),
-      animFraction: 0,
-      animVeclocity: 0,
-      speed: 0.4,
-      done: false
-    })  
+    VisibilityComponent.create(this.coordsPanel, {visible: true})
+    
 
     if(_scene.baseCoords[0] == -9 && _scene.baseCoords[1] == -9){
       pointerEventsSystem.onPointerDown(
@@ -248,29 +251,30 @@ export class CrowdMenuItem extends MenuItem {
       outlineColor: Color4.fromHexString('#111111FF'),
       outlineWidth: 0.1
     })      
-    
+    VisibilityComponent.create(this.coords, {visible: true})
 
     // -- JUMP IN BUTTON
     this.jumpInButton = engine.addEntity()
     Transform.create(this.jumpInButton, {
-      position: Vector3.create(0, -0.2, 0),
-      scale: Vector3.create(0.4, 0.4, 0.4),
+      position: Vector3.create(0.77, 1, 0),
+      scale: Vector3.create(0.8, 0.8, 0.8), 
       parent: this.detailsRoot
     })
     GltfContainer.create(this.jumpInButton, resource.jumpInButtonShape)
+    VisibilityComponent.create(this.jumpInButton, {visible:true})
     
-    AnimatedItem.create(this.jumpInButton, {
-      wasClicked:false,
-      isHighlighted:false,
-      defaultPosition: Vector3.create(0, 0.5, 0.5),
-      highlightPosition:  Vector3.create(0.4, -0.25, 0),
-      defaultScale:Vector3.create(0.0, 0.0, 0.0),
-      highlightScale: Vector3.create(0.5, 0.5, 0.5),
-      animFraction: 0,
-      animVeclocity: 0,
-      speed: 0.4,
-      done: false
-    })     
+    // AnimatedItem.create(this.jumpInButton, {
+    //   wasClicked:false,
+    //   isHighlighted:false,
+    //   defaultPosition: Vector3.create(0, 0.5, 0.5),
+    //   highlightPosition:  Vector3.create(0.4, -0.25, 0),
+    //   defaultScale:Vector3.create(0.0, 0.0, 0.0),
+    //   highlightScale: Vector3.create(0.5, 0.5, 0.5),
+    //   animFraction: 0,
+    //   animVeclocity: 0,
+    //   speed: 0.4,
+    //   done: false
+    // })     
 
     this.jumpButtonText = engine.addEntity()
     Transform.create( this.jumpButtonText, {
@@ -285,6 +289,7 @@ export class CrowdMenuItem extends MenuItem {
       outlineColor: Color4.White(),
       outlineWidth: 0.2
     })      
+    VisibilityComponent.create(this.jumpButtonText, {visible:true}) 
 
     //skip genesis plaza
     if(_scene.baseCoords[0] == -9 && _scene.baseCoords[1] == -9){
@@ -428,9 +433,9 @@ export class CrowdMenuItem extends MenuItem {
   select(_silent:boolean) {
 
     let rootInfo = AnimatedItem.getMutable(this.entity)
-    let jumpInButtonInfo = AnimatedItem.getMutable(this.jumpInButton)    
+   // let jumpInButtonInfo = AnimatedItem.getMutable(this.jumpInButton)    
     let highlightRaysInfo = AnimatedItem.getMutable(this.highlightRays)
-    let coordsPanelInfo = AnimatedItem.getMutable(this.coordsPanel)    
+    //let coordsPanelInfo = AnimatedItem.getMutable(this.coordsPanel)    
        
 
     if (!this.selected) {
@@ -445,14 +450,14 @@ export class CrowdMenuItem extends MenuItem {
       rootInfo.isHighlighted = true
       rootInfo.done = false
 
-      jumpInButtonInfo.isHighlighted = true
-      jumpInButtonInfo.done = false
+     // jumpInButtonInfo.isHighlighted = true
+     // jumpInButtonInfo.done = false
 
       highlightRaysInfo.isHighlighted = true
       highlightRaysInfo.done = false
 
-      coordsPanelInfo.isHighlighted = true
-      coordsPanelInfo.done = false
+     // coordsPanelInfo.isHighlighted = true
+      //coordsPanelInfo.done = false
 
     }
   }
@@ -466,22 +471,22 @@ export class CrowdMenuItem extends MenuItem {
       this.selected = false      
     }
     let rootInfo = AnimatedItem.getMutable(this.entity)
-    let jumpInButtonInfo = AnimatedItem.getMutable(this.jumpInButton)    
+   // let jumpInButtonInfo = AnimatedItem.getMutable(this.jumpInButton)    
     let highlightRaysInfo = AnimatedItem.getMutable(this.highlightRays)
-    let coordsPanelInfo = AnimatedItem.getMutable(this.coordsPanel)
+    //let coordsPanelInfo = AnimatedItem.getMutable(this.coordsPanel)
    
 
     rootInfo.isHighlighted = false
     rootInfo.done = false
 
-    jumpInButtonInfo.isHighlighted = false
-    jumpInButtonInfo.done = false 
+   // jumpInButtonInfo.isHighlighted = false
+   // jumpInButtonInfo.done = false 
 
     highlightRaysInfo.isHighlighted = false
     highlightRaysInfo.done = false
 
-    coordsPanelInfo.isHighlighted = false
-    coordsPanelInfo.done = false
+    //coordsPanelInfo.isHighlighted = false
+    //coordsPanelInfo.done = false
 
 
     // if(!_silent){
@@ -494,6 +499,10 @@ export class CrowdMenuItem extends MenuItem {
     VisibilityComponent.getMutable(this.playerCounterBG).visible = true
     VisibilityComponent.getMutable(this.userCountRoot).visible = true
     VisibilityComponent.getMutable(this.usersTitleRoot).visible = true
+    VisibilityComponent.getMutable(this.coordsPanel).visible = true 
+    VisibilityComponent.getMutable(this.jumpInButton).visible = true 
+    VisibilityComponent.getMutable(this.coords).visible = true 
+    VisibilityComponent.getMutable(this.jumpButtonText).visible = true 
     this.thumbNail.show()
     Transform.getMutable(this.entity).scale = Vector3.One()
   }
@@ -502,7 +511,11 @@ export class CrowdMenuItem extends MenuItem {
     VisibilityComponent.getMutable(this.title).visible = false    
     VisibilityComponent.getMutable(this.playerCounterBG).visible = false    
     VisibilityComponent.getMutable(this.userCountRoot).visible = false    
-    VisibilityComponent.getMutable(this.usersTitleRoot).visible = false    
+    VisibilityComponent.getMutable(this.usersTitleRoot).visible = false  
+    VisibilityComponent.getMutable(this.coordsPanel).visible = false 
+    VisibilityComponent.getMutable(this.jumpInButton).visible = false 
+    VisibilityComponent.getMutable(this.coords).visible = false 
+    VisibilityComponent.getMutable(this.jumpButtonText).visible = false   
     this.thumbNail.hide()
     Transform.getMutable(this.entity).scale = Vector3.Zero()
   }

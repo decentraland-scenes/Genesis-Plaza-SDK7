@@ -14,7 +14,7 @@ export class MenuItem {
     constructor(){
         this.entity = engine.addEntity()
         
-        this.defaultItemScale = Vector3.create(2,2,2)
+        this.defaultItemScale = Vector3.create(1,1,1)
     }
     updateItemInfo(_info:any){
 

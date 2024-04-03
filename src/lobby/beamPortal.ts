@@ -86,10 +86,10 @@ export function loadLobbySound(){
 
 // BEAM MESH
 export function loadBeamMesh(){
-  const beanOffsetZ = 1.8
+ // const beanOffsetZ = 1.8
   const  beam = engine.addEntity()
   Transform.create(beam,{
-      position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y, lobbyCenter.z - coreBuildingOffset.z-beanOffsetZ),
+      position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y +0, lobbyCenter.z - coreBuildingOffset.z),
       scale: Vector3.create(1,1 + BEAM_SCALE_AMOUNT,1)
   })
   GltfContainer.createOrReplace(beam, beamShape)

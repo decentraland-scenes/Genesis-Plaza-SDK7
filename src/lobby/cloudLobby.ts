@@ -43,14 +43,14 @@ export function addCloudLobby(){
   loadLobbySound()
 
   const menuScale = 1.2
-  const center = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, (lobbyHeight + 1.5) - lobbyHeightLegacy, lobbyCenter.z - coreBuildingOffset.z)
+  const center = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, (lobbyHeight + 1.5), lobbyCenter.z - coreBuildingOffset.z)
 
 
     //add arrow_bar
     const arrow_bar = engine.addEntity()
     GltfContainer.create(arrow_bar,{src:'models/lobby/arrow_bar.glb'})
     Transform.create(arrow_bar,{
-        position: Vector3.create(barCenter.x,0 + WELCOME_OFFSET_Y_AMOUNT,barCenter.z),
+        position: Vector3.create(barCenter.x,32 ,barCenter.z),
         rotation: Quaternion.fromEulerDegrees(0, 180, 0),
       })
     
@@ -172,16 +172,16 @@ export function addCloudLobby(){
   )
 
   //DIVING SIGN
-  let divingSign = engine.addEntity()
-  Transform.create(divingSign,{
-    position: Vector3.create(
-      center.x - 1.2,
-      center.y - 0.5,
-      center.z - 6.4
-    ),
-  })
+  // let divingSign = engine.addEntity()
+  // Transform.create(divingSign,{
+  //   position: Vector3.create(
+  //     center.x - 1.2,
+  //     center.y - 0.5,
+  //     center.z - 6.4
+  //   ),
+  // })
 
-  GltfContainer.create(divingSign,resource.divingSignShape)
+  // GltfContainer.create(divingSign,resource.divingSignShape)
 
 
   // WATER VORTEXES
@@ -207,26 +207,47 @@ export function addCloudLobby(){
 
     let menuManager = new MenuManager()
 
+    let bestMenu = new HorizontalMenu( 
+      Vector3.create(lobbyCenter.x- coreBuildingOffset.x, lobbyHeight , lobbyCenter.z- coreBuildingOffset.z), 
+      Quaternion.fromEulerDegrees(0,-82,0), 
+      getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.eventsSlider),
+      menuManager,
+      1
+      )  
+    bestMenu.updateBestMenu(10)
+
     let eventMenu = new HorizontalMenu( 
-      Vector3.create(lobbyCenter.x- coreBuildingOffset.x, lobbyHeight + 1.25  , lobbyCenter.z- coreBuildingOffset.z), 
-      Quaternion.fromEulerDegrees(0,-54,0), 
+      Vector3.create(lobbyCenter.x- coreBuildingOffset.x, lobbyHeight   , lobbyCenter.z- coreBuildingOffset.z), 
+      // Quaternion.fromEulerDegrees(0,-54,0), 
+      Quaternion.fromEulerDegrees(0,-18,0), 
       getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.eventsSlider),
       menuManager,
       0
       )
     eventMenu.updateEventsMenu(15)
- 
+
     let crowdsMenu = new HorizontalMenu( 
-      Vector3.create(lobbyCenter.x- coreBuildingOffset.x, lobbyHeight + 3.5 , lobbyCenter.z- coreBuildingOffset.z), 
-      Quaternion.fromEulerDegrees(0,-54,0), 
+      Vector3.create(lobbyCenter.x- coreBuildingOffset.x, lobbyHeight  , lobbyCenter.z- coreBuildingOffset.z), 
+      Quaternion.fromEulerDegrees(0,46,0), 
       getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.eventsSlider),
       menuManager,
       1
       )  
     crowdsMenu.updateCrowdsMenu(10)
 
+    
+    // menuManager.addMenu(eventMenu)
+     
+    // // refresh remaining time displays every minute (local calculation update, no server fetch)
+    // utils.timers.setInterval(()=>{
+    //   eventMenu.updateEventsTimes()      
+    // }, 60000)
+    
+
     menuManager.addMenu(eventMenu)
     menuManager.addMenu(crowdsMenu)
+    menuManager.addMenu(bestMenu)
+
     // refresh remaining time displays every minute (local calculation update, no server fetch)
     utils.timers.setInterval(()=>{
       eventMenu.updateEventsTimes()      

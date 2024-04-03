@@ -120,7 +120,7 @@ export function ItemAnimationSystem(dt: number) {
 
         if(Quaternion.angle(transformReadonly.rotation, slerpReadOnly.targetRotation) > 1){
             const transform = Transform.getMutable(entity)
-            transform.rotation = Quaternion.slerp(transform.rotation, slerpReadOnly.targetRotation, 0.5)
+            transform.rotation = Quaternion.slerp(transform.rotation, slerpReadOnly.targetRotation, 0.4)
         }
         else{
             const transform = Transform.getMutable(entity)

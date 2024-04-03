@@ -39,6 +39,7 @@ export class Platform  {
 
      Animator.create(this.entity, {
       states:[{
+          name: 'animation',
           clip: animation,
           playing: false,
           loop: false
@@ -94,8 +95,8 @@ export class Platform  {
 }
 
 //not exporting as these are all outside models
-/*
-function placePlatforms() {
+
+export function placePlatforms() {
   //ARTICHOKE ELEVATOR
 
   let artichoke_Elevator = new Platform(
@@ -188,7 +189,7 @@ function placePlatforms() {
     'Train_Action',
     'trainActivated'
   )
-    
+
   sceneMessageBus.on('artichokeElevatorActivated', (e) => {
     artichoke_Elevator.activate()
     log('artichoke elevator')
@@ -231,6 +232,7 @@ function placePlatforms() {
     
   })
 
+
   sceneMessageBus.on('trainActivated', (e) => {
     if (trainIsMoving) {
       log('train was already in movement')
@@ -249,7 +251,7 @@ function placePlatforms() {
 
   })
   
-}*/
+}
 
 export let upstairsLoaded: boolean = false
 

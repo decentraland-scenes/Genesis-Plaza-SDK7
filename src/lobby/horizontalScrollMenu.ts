@@ -1,5 +1,5 @@
 import { EventMenuItem } from "./menuItemEvent";
-import { getEvents, getTrendingScenes } from "./checkApi";
+import { getBestPlaces, getEvents, getTrendingScenes } from "./checkApi";
 import { MenuItem } from "./menuItem";
 import * as sfx from './resources/sounds'
 import { Quaternion, Vector3 } from "@dcl/sdk/math";
@@ -8,6 +8,7 @@ import * as resource from "./resources/resources"
 import { AnimatedItem, ProximityScale, SlerpItem } from "./simpleAnimator";
 import { CrowdMenuItem } from "./menuItemCrowd";
 import { MenuManager } from "./menuManager";
+import { BestMenuItem } from "./menuItemBest";
 
 
 
@@ -41,7 +42,7 @@ export class HorizontalMenu {
         this.itemRoots = []
         this.clickBoxes = []
         this.radius = 16
-        this.visibleItems = 10
+        this.visibleItems = 4
         this.analyticParent = _analyticParent
 
         this.menuRoot = engine.addEntity()
@@ -69,7 +70,7 @@ export class HorizontalMenu {
         let menuCenter = Transform.get(this.menuRoot).position
         let angle = -this.angleSpacing*0.75
         let rotatedPosVector =  Vector3.rotate(Vector3.scale(Vector3.Forward(), this.radius), Quaternion.fromEulerDegrees(0,angle,0))
-        rotatedPosVector.y = 0.35
+        rotatedPosVector.y = 1.8
         
         //scroll left button
         this.scrollLeftButton = engine.addEntity()
@@ -94,7 +95,7 @@ export class HorizontalMenu {
         //scroll right
         angle = this.visibleItems* this.angleSpacing - this.angleSpacing/4
         rotatedPosVector =  Vector3.rotate(Vector3.scale(Vector3.Forward(), this.radius), Quaternion.fromEulerDegrees(0,angle,0))
-        rotatedPosVector.y = 0.35
+        rotatedPosVector.y = 1.8
         this.scrollRightButton = engine.addEntity()
         Transform.create(this.scrollRightButton, {
           position: rotatedPosVector,
@@ -197,7 +198,8 @@ export class HorizontalMenu {
             //start the smooth rotation of the parent with one unit
             this.scrollTarget = Quaternion.multiply(this.scrollTarget, Quaternion.fromEulerDegrees(0,angle,0))                 
             SlerpItem.createOrReplace(this.scrollerRoot, {
-              targetRotation:this.scrollTarget
+              targetRotation:this.scrollTarget,
+              
             })    
             this.playAudio(sfx.menuUpSource, sfx.menuUpSourceVolume)         
           }
@@ -261,7 +263,8 @@ export class HorizontalMenu {
         // COLLIDER BOX FOR USER INPUT
         let clickBox = engine.addEntity()
         Transform.create(clickBox,{
-          scale: Vector3.create(1.6,0.8,0.02),
+          position: Vector3.create(0,1.65,0),
+          scale: Vector3.create(3,3.3,0.02),
             parent: _item.entity,
         })
         //GltfContainer.create(clickBox, resource.shelfShape)
@@ -403,6 +406,57 @@ export class HorizontalMenu {
      } 
     
   }
+  async updateBestMenu(_count:number){
+
+    let scenes = await getBestPlaces(10)
+    console.log("Best  "+ scenes.length + "  SCENES:    " + scenes)
+    if(scenes){
+      if (scenes.length <= 0) {
+        console.log("NO BEST")
+        return
+      }
+    
+     
+     // console.log("scene:length: " + scenes.length)
+      console.log("best items:length: " + this.items.length)   
+      for(let i=0; i < scenes.length; i++){
+        console.log("imageURL:  " + scenes[i].image)
+        if (i < this.items.length){                 
+          this.items[i].updateItemInfo(scenes[i])
+        }
+        else{
+         
+         // console.log(scenes[i])
+          console.log("ADDING BEST SCENE")
+          this.addMenuItem(new BestMenuItem({ 
+              position: Vector3.create(0,0,0),
+              rotation: Quaternion.Zero(),   
+              scale: Vector3.create(2,2,2)
+            },        
+            "images/rounded_alpha.png",
+            this.analyticParent,
+            scenes[i]
+          ))
+          
+        }    
+      }
+
+      for(let i=0; i < this.items.length; i++){         
+        
+          if(i < this.visibleItems ){
+            //this.items[i].show()
+            this.showItem(i)             
+          }
+          else{
+            this.hideItem(i)
+            //this.items[i].hide()
+          }
+            
+        } 
+        //this.selectItem(0, true)
+   } 
+  
+}
     playAudio(sourceUrl:string, volume:number){
       AudioSource.createOrReplace(this.audioRoot, {
         audioClipUrl: sourceUrl,

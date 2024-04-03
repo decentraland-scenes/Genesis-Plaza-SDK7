@@ -33,3 +33,16 @@ export function _teleportTo(parcelX: number, parcelZ: number) {
     worldCoordinates: { x: parcelX, y: parcelZ }
   })
 }
+
+export function _teleportToString(coords:string) {
+  //sdk needs to prompt but this works
+
+  //const split 
+  log("_teleportTo - Coordinates:", coords)
+  let separator = ","  
+  let coordsArray = coords.split(separator)
+  //log("_Converted - Coordinates: X:", coordsArray[0] + " Y: " + coordsArray[1])
+  teleportTo({
+    worldCoordinates: { x: parseInt(coordsArray[0]) , y: parseInt(coordsArray[1]) }
+  })
+}

@@ -38,6 +38,19 @@ export function cleanString(input:string) {
   return output;
 }
 
+// export const wrap = (s:string, w:number) => s.replace(
+//   new RegExp(`(?![^\\n]{1,${w}}$)([^\\n]{1,${w}})\\s`, 'g'), '$1\n'
+// );
+
+export function getTitleFontSize(string:string):number{
+
+  if(string.length < 30){
+    return 6
+  }
+
+  return 4
+}
+
 export function wordWrap(str:string, maxWidth:number, maxLines:number) {
   let newLineStr = "\n"
   let done = false 
@@ -241,6 +254,34 @@ export function dateToRemainingTime(dateStart:string):string{
 
 
   return endString
+}
+
+export function timeToTwelveHours(time:string):string{
+
+  let result = time
+
+  let hours = parseInt(time.substring(0, 2))
+  let minutes = parseInt(time.substring(3, 5))
+
+  let ampm = "PM"
+  let minutesPrefix = ""
+
+  if(hours > 12){
+    hours -= 12
+    ampm = "PM"
+  }
+  else{
+    ampm = "AM"
+  }
+
+  if(minutes < 10){
+    minutesPrefix = "0" 
+  }
+
+  result = hours + ":" + minutesPrefix + minutes + " " + ampm
+  return result
+
+
 }
 
 export function eventIsSoon(dateStart:string):boolean{

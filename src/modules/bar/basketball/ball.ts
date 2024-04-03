@@ -8,7 +8,7 @@ import { PhysicsWorldStatic, ballBounceMaterial } from './physicsWorld'
 import { ballDropSource, ballDropVolume, bounceSource, bounceVolume, chargeThrowSource, chargeThrowVolume, pickupSource, pickupVolume, throwBallSource, throwBallVolume } from './sounds'
 import { Perimeter } from './perimeter'
 import { moveLineBetween, realDistance } from './utilFunctions'
-import { barCenter } from '../../../lobby/resources/globals'
+import { barCenter, barOffset } from '../../../lobby/resources/globals'
 import { TrackingElement, generateGUID, getRegisteredAnalyticsEntity, trackAction } from '../../stats/analyticsComponents'
 import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES } from '../../stats/AnalyticsConfig'
 import { util } from 'protobufjs'
@@ -118,7 +118,7 @@ export class PhysicsManager {
     this.strengthHold = false
     this.forceMultiplier = 20
     
-    this.ballZoneCenter = Vector3.create(32,0,38)
+    this.ballZoneCenter = Vector3.create( barOffset.x + 32,0, barOffset.z + 38)
    
     this.world = new CANNON.World()
     this.world.quatNormalizeSkip = 0
@@ -149,12 +149,12 @@ export class PhysicsManager {
     //this.world.addBody(this.playerCollider) 
     
     //add perimeter
-    this.perimeter = new Perimeter(Vector3.create(32,0,38), PHYSICS_RADIUS, this.world)
+    this.perimeter = new Perimeter(Vector3.create(barOffset.x +32,0, barOffset.z +38), PHYSICS_RADIUS, this.world)
 
 
     //add initial balls
     for(let i=0; i< ballCount; i++){
-      this.addObject(Vector3.create(24+Math.random()*2,4 + Math.random()*4,35+Math.random()*8))
+      this.addObject(Vector3.create( barOffset.x + 24 + Math.random()*2, 4 + Math.random()*4 , barOffset.z + 35 + Math.random()*8))
     }
 
     // add soundbox attached to player for sfx
@@ -199,9 +199,9 @@ export class PhysicsManager {
     })
 
     //set up the hoops
-    this.hoops.push(new BasketballHoop(this.world, Vector3.create(32, 6, 30.4), Quaternion.fromEulerDegrees(0,0,0)))
-    this.hoops.push(new BasketballHoop(this.world, Vector3.create(41.6, 5.2, 40), Quaternion.fromEulerDegrees(0,-90,0)))
-    this.hoops.push(new BasketballHoop(this.world, Vector3.create(22.4, 5.2, 40), Quaternion.fromEulerDegrees(0,90,0)))
+    this.hoops.push(new BasketballHoop(this.world, Vector3.create( barOffset.x + 32, 6,  barOffset.z +30.4), Quaternion.fromEulerDegrees(0,0,0)))
+    this.hoops.push(new BasketballHoop(this.world, Vector3.create(barOffset.x + 41.6, 5.2,barOffset.z + 40), Quaternion.fromEulerDegrees(0,-90,0)))
+    this.hoops.push(new BasketballHoop(this.world, Vector3.create(barOffset.x +22.4, 5.2,barOffset.z + 40), Quaternion.fromEulerDegrees(0,90,0)))
 
    
     // add imported static cannon colliders
@@ -262,6 +262,7 @@ export class PhysicsManager {
     
     Animator.create(this.puff, {
       states:[{
+          name: 'puff',
           clip: "Animation",
           playing: true,
           loop: false

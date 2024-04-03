@@ -3,13 +3,13 @@ import { Color3, Color4, Vector3, Quaternion } from '@dcl/sdk/math'
 import { executeTask,GltfContainer } from '@dcl/sdk/ecs'
 
 import { addBuildings } from './modules/buildings'
-import { barPlatforms } from './modules/platforms'
+import { barPlatforms, placePlatforms } from './modules/platforms'
 import { addCloudLobby } from './lobby/cloudLobby'
 import * as sceneDataHelper from './utils/sceneDataHelper'
 import { lowerVolume, outOfBar, placeJukeBox, setBarMusicOff, setBarMusicOn } from './modules/bar/jukebox'
 import { addRepeatTrigger } from './modules/Utils'
 import { log } from './back-ports/backPorts'
-import { TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, coreBuildingOffset } from './lobby/resources/globals'
+import { TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, barOffset, coreBuildingOffset } from './lobby/resources/globals'
 import { initBarNpcs, initOutsideNpcs } from './modules/bar/npcs/barNpcs'
 import { setupUi } from './ui'
 import { placeDoors } from './modules/bar/doors'
@@ -75,6 +75,7 @@ function addOutsideOfIfPlayerOutsideOnGround(){
       console.log("index.ts", "addOutsideOfIfPlayerOutsideOnGround", "player on ground, init anything outside ground level")
       const spawnDealy = 1000
       initOutsideNpcs(spawnDealy)
+      placePlatforms()
     }else{
       console.log("index.ts", "addOutsideOfIfPlayerOutsideOnGround", "player not on ground")
     }  
@@ -228,7 +229,7 @@ export function main(){
 
   let barCenter = engine.addEntity()
   Transform.create(barCenter, {
-    position: Vector3.create(32, 0, 38)
+    position: Vector3.create(barOffset.x + 32, 0, barOffset.z +38)
   })
   utils.triggers.addTrigger(
     barCenter, 

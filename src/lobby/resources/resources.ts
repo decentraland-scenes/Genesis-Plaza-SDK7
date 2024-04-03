@@ -18,7 +18,7 @@ export let twitterShape:PBGltfContainer =           {src:modelFolder + "icons/tw
 
 //BEAM
 export let portalSpiralShape:PBGltfContainer =      {src:modelFolder + "portal_lift_spiral.glb"}
-export let beamShape:PBGltfContainer =              {src:modelFolder + "beam_cutout.glb"}//{src:modelFolder + "beam.glb"}
+export let beamShape:PBGltfContainer =              {src:modelFolder + "beam.glb"}
 
 //MENU
 export let menuPillarsShape:PBGltfContainer =       {src:modelFolder + "menu_pillars.glb"}
@@ -42,15 +42,17 @@ export let scrollInstructionShape:PBGltfContainer = {src:modelFolder + "scroll_i
 export let playerCounterBGShape:PBGltfContainer =   {src:modelFolder + "player_counter_bg.glb"}
 export let refreshShape:PBGltfContainer =           {src:modelFolder + "refresh_button.glb"}
 export let loadMoreShape:PBGltfContainer =          {src:modelFolder + "load_more_btn.glb"}
-export let menuArrowShape:PBGltfContainer =         {src:modelFolder + "menu_arrow.glb"}
-export let remainingBGShape:PBGltfContainer =         {src:modelFolder + "remaining_time_bg.glb"}
+export let menuArrowShape:PBGltfContainer =         {src:modelFolder + "menu_arrow_long.glb"}
+export let remainingBGShape:PBGltfContainer =       {src:modelFolder + "remaining_time_bg.glb"}
+export let likeCounterBGShape:PBGltfContainer =       {src:modelFolder + "like_counter_bg.glb"}
 
 // CLOUDS
 export let cloudDissolveShape:PBGltfContainer=      {src:modelFolder + "cloud_dissolve.glb"}
 export let cloudPuffShape:PBGltfContainer=          {src:modelFolder + "cloud_puff.glb"}
 export let cloudSmallShape:PBGltfContainer=         {src:modelFolder + "clouds_small.glb"}
 export let cloudSmall2Shape:PBGltfContainer=        {src:modelFolder + "clouds_small2.glb"}
-export let cloudBigShape:PBGltfContainer=           {src:modelFolder + "clouds_big_cutout.glb"}//{src:modelFolder + "clouds_big.glb"}
+export let cloudBigShape:PBGltfContainer=           {src:modelFolder + "clouds_big.glb"}
+export let cloudSpiralShape:PBGltfContainer=        {src:modelFolder + "cloud_spirals.glb"}
 
 
 // PLATFORM

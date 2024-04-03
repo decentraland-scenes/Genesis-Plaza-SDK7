@@ -8,6 +8,7 @@ import { connectNpcToLobby } from '../../../lobby-scene/lobbyScene'
 import { genericPrefinedQuestions } from '../../../utils/customNpcUi/customUIFunctionality'
 import { TrackingElement, generateGUID, getRegisteredAnalyticsEntity, trackAction, trackEnd, trackStart } from '../../stats/analyticsComponents'
 import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES, AnalyticsLogLabel } from '../../stats/AnalyticsConfig'
+import { barOffset } from '../../../lobby/resources/globals'
 
 export let aisha: RemoteNpc
 
@@ -26,7 +27,7 @@ export function createAisha() {
   aisha = new RemoteNpc(
     { resourceName: "workspaces/genesis_city/characters/aisha" },
     {
-      transformData: { position: Vector3.create(62, 0, 36), scale: Vector3.create(1.05, 1.05, 1.05), rotation: Quaternion.create(0, 0, 0, 0) },
+      transformData: { position: Vector3.create(161.5, 0.2, 164.5), scale: Vector3.create(1.05, 1.05, 1.05), rotation: Quaternion.fromEulerDegrees(0, 180, 0)  },
       npcData: {
         type: npcLib.NPCType.CUSTOM,
         model: aishaModelPath,

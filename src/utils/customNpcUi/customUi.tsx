@@ -304,7 +304,7 @@ export function closeCustomUI(triggerWalkAway: boolean) {
   if (!triggerWalkAway) return
   if (REGISTRY.activeNPC) {
     console.log('DebugSession', 'CLOSEUI => walked away')
-    handleWalkAway(REGISTRY.activeNPC.entity, undefined)
+    handleWalkAway(REGISTRY.activeNPC.entity)
   }
 }
 
