@@ -12,6 +12,9 @@
 		"name": "SDK",
 		"email": ""
 	},
+	"worldConfiguration" : {
+		"name": "dclexperience.dcl.eth"
+	   },
 	"main": "bin/index.js",
 	"tags": [],
 	"scene": {
