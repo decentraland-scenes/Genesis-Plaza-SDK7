@@ -9,6 +9,8 @@ import { TrackingElement, trackAction } from '../../modules/stats/analyticsCompo
 import { engine } from '@dcl/sdk/ecs'
 import { getImageAtlasMapping } from 'dcl-npc-toolkit/dist/dialog'
 import { wrapText } from './uiHelper'
+import * as npcLib from 'dcl-npc-toolkit'
+import { endInteraction } from '../../modules/RemoteNpcs/remoteNpc'
 
 let selectedPredefinedQuestion: NpcQuestionData[] = []
 
@@ -381,8 +383,13 @@ export function closeAskNpcAiUi(triggerWalkAway: boolean) {
   disclaimerVisible = false
   if (!triggerWalkAway) return
   if (REGISTRY.activeNPC) {
-    console.log('DebugSession', 'CLOSEUI => walked away')
-    handleWalkAway(REGISTRY.activeNPC.entity, engine.PlayerEntity)
+    console.log('DebugSession', 'CLOSEUI => walked away', REGISTRY.activeNPC.name)
+    // handleWalkAway(REGISTRY.activeNPC.entity, REGISTRY.activeNPC.entity)
+    // endInteraction(REGISTRY.activeNPC)
+    if(REGISTRY.activeNPC){
+        let npcData = getData(REGISTRY.activeNPC.entity)as NPCData
+        npcData.onWalkAway(engine.PlayerEntity)
+    }
   }
 }
 
