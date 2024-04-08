@@ -11,6 +11,7 @@ import { REGISTRY } from "../../registry";
 import { RemoteNpc, endInteraction, startThinking } from '../../modules/RemoteNpcs/remoteNpc';
 import * as ui from 'dcl-ui-toolkit';
 import { Color4 } from "@dcl/sdk/math";
+import { closeAskNpcAiUi } from "../customNpcUi_v2/npcCustomUi";
 
 const FILE_NAME = "connectedUtils.ts"
 
@@ -43,9 +44,10 @@ export function sendMsgToAI(msg: serverStateSpec.ChatMessage) {
   }
   console.log(FILE_NAME, METHOD_NAME, "Message to Send", msg)
   //hide input
-  closeCustomUI(false)
+//   closeCustomUI(false)
+  closeAskNpcAiUi(false)
   //mark waiting for reply
-  startThinking(REGISTRY.activeNPC, [REGISTRY.askWaitingForResponse])
+  if(REGISTRY.activeNPC) startThinking(REGISTRY.activeNPC, [REGISTRY.askWaitingForResponse])
   //wrap it in object
   if (GAME_STATE.gameRoom) GAME_STATE.gameRoom.send("message", msg)
 }

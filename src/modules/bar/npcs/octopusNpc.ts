@@ -8,6 +8,7 @@ import * as utils from '@dcl-sdk/utils'
 import { navigationForwardSfx, octopusModelPath } from "../../../lobby/resources/resources";
 import { LogTag } from "./barNpcs";
 import { octopusDialog } from "./npcDialogs";
+import { REGISTRY } from "../../../registry";
 
 let octo: Entity
 
@@ -31,7 +32,7 @@ export function createOctopusNpc() {
         console.log(AnalyticsLogLabel, "barNpcs.ts", "Octopus")
         trackAction(octo, "Interact", undefined)
         trackStart(octo)
-
+        
         npcLib.changeIdleAnim(octo, 'TalkLoop')
         npcLib.playAnimation(octo, 'TalkIntro', true, 0.63)
         //npcLib.playAnimation(octo, 'TalkLoop', false)
@@ -71,10 +72,10 @@ export function createOctopusNpc() {
     }],
     (entity) => {
       // console.log("DebugSession", "Octpus-OnTriggerEnter"); 
-      if (engine.PlayerEntity === entity) {
+      if (engine.PlayerEntity === entity && !REGISTRY.activeNPC) {
         console.log(LogTag, "Player Enter Area");
        // npcLib.activate(octo, octo)
-        npcLib.activate(octo)
+        npcLib.activate(octo, engine.PlayerEntity)
         utils.triggers.removeTrigger(octo)
       }
     }

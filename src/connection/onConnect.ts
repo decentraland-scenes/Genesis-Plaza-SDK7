@@ -21,6 +21,8 @@ import { Animator, AudioStream, executeTask } from "@dcl/sdk/ecs";
 import { onConnectHost } from "../lobby-scene/lobbyScene";
 import { endOfRemoteInteractionStream, goodBye, hideThinking } from "../modules/RemoteNpcs/remoteNpc";
 import { getNpcEmotion } from "../modules/RemoteNpcs/npcHelper";
+import { setDialogNpcText } from "../utils/customNpcUi_v2/npcDialogUi";
+import { streamedMsgsUiControl } from "../modules/RemoteNpcs/streamedMsgsUIcontrol";
 
 //const canvas = ui.canvas
 
@@ -55,6 +57,7 @@ function updateDebugText(player: serverStateSpec.PlayerState) {
 }
 
 export async function onNpcRoomConnect(room: Room) {
+  console.log('onConnect.', room)
   GAME_STATE.setGameRoom(room);
 
   GAME_STATE.setGameConnected("connected");
@@ -75,7 +78,7 @@ export function onDisconnect(room: Room, code?: number) {
 
 
 //function convertAndPlayAudio(sourceName:string,payloadId:string,base64Audio:string){
-function convertAndPlayAudio(packet: serverStateSpec.ChatPacket) {
+export function convertAndPlayAudio(packet: serverStateSpec.ChatPacket) {
   const sourceName = packet.routing.source.name
   const payloadId = packet.packetId.packetId
   const base64Audio = packet.audio.chunk
@@ -101,8 +104,9 @@ function convertAndPlayAudio(packet: serverStateSpec.ChatPacket) {
 
 
 function onLevelConnect(room: Room<clientState.NpcGameRoomState>) {
+  console.log('On Level Connect. Register room onMessage.')
   //initLevelData(room.state.levelData)
-
+  
   //REGISTRY.npcScene.onConnect( room )
   onConnectHost(REGISTRY.lobbyScene, room)
 
@@ -181,102 +185,104 @@ function onLevelConnect(room: Room<clientState.NpcGameRoomState>) {
   }
 
 
-  function createDialog(chatPart: ChatNext) {
-    console.log("createDialog", "ENTRY", chatPart)
-    //debugger    
+//   function createDialog(chatPart: ChatNext) {
+//     console.log("createDialog", "ENTRY", chatPart)
+//     //debugger    
 
-    if (chatPart.text === undefined) {
-      //if got here too late, order is messed up
-      console.log("createDialog", "chatPart.end?", chatPart, "did not have text. waiting for more")
-      //debugger
-      streamedMsgs.waitingForMore = true
-      return;
-    }
-    const dialog = chatPart.text.createNPCDialog()
+//     if (chatPart.text === undefined) {
+//       //if got here too late, order is messed up
+//       console.log("createDialog", "chatPart.end?", chatPart, "did not have text. waiting for more")
+//       //debugger
+//       streamedMsgs.waitingForMore = true
+//       return;
+//     }
+//     const dialog = chatPart.text.createNPCDialog()
 
-    closeCustomUI(false)
+//     closeCustomUI(false)
 
-    dialog.triggeredByNext = () => {
-      const NO_LOOP = true
-      console.log("DebugSession", "Play Animation", REGISTRY.activeNPC.npcAnimations.TALK.name, "for", REGISTRY.activeNPC.name);
-      playAnimation(REGISTRY.activeNPC.entity, REGISTRY.activeNPC.npcAnimations.TALK.name, NO_LOOP, REGISTRY.activeNPC.npcAnimations.TALK.duration)
+//     // dialog.triggeredByNext = () => {
+//     //   const NO_LOOP = true
+//     //   console.log("DebugSession", "Play Animation", REGISTRY.activeNPC.npcAnimations.TALK.name, "for", REGISTRY.activeNPC.name);
+//     //   playAnimation(REGISTRY.activeNPC.entity, REGISTRY.activeNPC.npcAnimations.TALK.name, NO_LOOP, REGISTRY.activeNPC.npcAnimations.TALK.duration)
 
-      //FIXME WORKAROUND, need to string dialogs together
-      //or this workaround lets it end, then start a new one
-      //REGISTRY.activeNPC.dialog.closeDialogWindow() //does not work
-      closeAllInteractions({ exclude: REGISTRY.activeNPC })
-      utils.timers.setTimeout(() => {
-        if (!chatPart.endOfInteraction && !streamedMsgs.hasNextAudioNText()) {
-          console.log("createDialog", "chatPart.end.hasNext?", chatPart, ". waiting for more")
-          streamedMsgs.waitingForMore = true
-          return;
-        }
-        const nextPart = streamedMsgs.next()
-        //debugger 
-        if (nextPart.text) {
+//     //   //FIXME WORKAROUND, need to string dialogs together
+//     //   //or this workaround lets it end, then start a new one
+//     //   //REGISTRY.activeNPC.dialog.closeDialogWindow() //does not work
+//     //   closeAllInteractions({ exclude: REGISTRY.activeNPC })
+//     //   utils.timers.setTimeout(() => {
+//     //     if (!chatPart.endOfInteraction && !streamedMsgs.hasNextAudioNText()) {
+//     //       console.log("createDialog", "chatPart.end.hasNext?", chatPart, ". waiting for more")
+//     //       streamedMsgs.waitingForMore = true
+//     //       return;
+//     //     }
+//     //     const nextPart = streamedMsgs.next()
+//     //     console.log("structuredMsg check", streamedMsgs.lastUtteranceId, streamedMsgs.messageIndex, streamedMsgs.interactionIndex)
+//     //     //debugger 
+//     //     if (nextPart.text) {
 
-          const nextDialog = createDialog(nextPart)
+//     //       const nextDialog = createDialog(nextPart)
 
-          let hasEmotion = nextPart.emotion ? true : false
-          console.log("Emotions", "Do we have emotions?", hasEmotion, ':', nextPart);
+//     //       let hasEmotion = nextPart.emotion ? true : false
+//     //       console.log("Emotions", "Do we have emotions?", hasEmotion, ':', nextPart);
 
-          let emotion = getNpcEmotion(nextPart.emotion)
+//     //       let emotion = getNpcEmotion(nextPart.emotion)
 
-          if (hasEmotion) {
-            //TODO TAG:play-emotion
-            console.log("Emotions", "DisplayEmotion", nextPart.emotion.packet.emotions.behavior, "=>", emotion);
-            if (CONFIG.EMOTION_DEBUG) ui.createComponent(ui.Announcement, { value: "got emotion 224-\n" + JSON.stringify(nextPart.emotion.packet.emotions), duration: 5, size: 60, color: Color4.White() }).show(5)
-          }
+//     //       if (hasEmotion) {
+//     //         //TODO TAG:play-emotion
+//     //         console.log("Emotions", "DisplayEmotion", nextPart.emotion.packet.emotions.behavior, "=>", emotion);
+//     //         if (CONFIG.EMOTION_DEBUG) ui.createComponent(ui.Announcement, { value: "got emotion 224-\n" + JSON.stringify(nextPart.emotion.packet.emotions), duration: 5, size: 60, color: Color4.White() }).show(5)
+//     //       }
 
-          if (nextDialog) {
-            if (hasEmotion && emotion.portraitPath) nextDialog.portrait = { path: emotion.portraitPath }
-            console.log('Emotions', 'Portrait:', nextDialog.portrait);
+//     //       if (nextDialog) {
+//     //         if (hasEmotion && emotion.portraitPath) nextDialog.portrait = { path: emotion.portraitPath }
+//     //         console.log('Emotions', 'Portrait:', nextDialog.portrait);
 
-            talk(REGISTRY.activeNPC.entity, [nextDialog]);
-            console.log("Emotions", "Dialog", nextDialog);
+//     //         talk(REGISTRY.activeNPC.entity, [nextDialog]);
 
-            console.log('Emotions', 'Animation:', emotion.name);
-            if (hasEmotion && emotion.name) playAnimation(REGISTRY.activeNPC.entity, emotion.name, true, emotion.duration)
-          }
+//     //         console.log("Emotions", "Dialog", nextDialog);
 
-          if (true) {//audio optional
-            if (nextPart.audio && nextPart.audio.packet.audio.chunk) {
-              console.log("onMessage.structuredMsg.audio", nextPart.audio);
-              convertAndPlayAudio(nextPart.audio.packet)
-              //npcDialogAudioPacket.push( msg )
-            }
-          }
-        } else {
-          //check to see if this interaction id has an ending we didn't find before
-          //if its part of same interactionId but not the utterace
-          const checkRes = streamedMsgs._next(false, chatPart.indexStart)
-          if (!chatPart.endOfInteraction && checkRes.endOfInteraction) {
-            console.log("createDialog", "chatPart.end.checkRes", "thought it was not end but it is after checking latest packets")
-          }
-          if (chatPart.endOfInteraction || checkRes.endOfInteraction) {
-            console.log("createDialog", "chatPart.end", chatPart, "end of dialog", dialog)
-            //TODO find better way to detect reset
-            streamedMsgs.started = false
-            streamedMsgs.waitingForMore = false
+//     //         console.log('Emotions', 'Animation:', emotion.name);
+//     //         if (hasEmotion && emotion.name) playAnimation(REGISTRY.activeNPC.entity, emotion.name, true, emotion.duration)
+//     //       }
 
-            //GETTING TRIGGERED on race condition i think, audio came through but not text?
-            //show input box 
-            endOfRemoteInteractionStream(REGISTRY.activeNPC)
-            //debugger
-            //REGISTRY.activeNPC.talk([askWhatCanIHelpYouWithDialog,REGISTRY.askWaitingForResponse]);
-          } else {
-            streamedMsgs.waitingForMore = true
-            //still waiting for more from server
-            console.log("createDialog", "chatPart.end?", chatPart, "not end of chat but end of values to display. waiting for more", dialog)
-          }
-        }
-      }, 200)
-    }
+//     //       if (true) {//audio optional
+//     //         if (nextPart.audio && nextPart.audio.packet.audio.chunk) {
+//     //           console.log("onMessage.structuredMsg.audio", nextPart.audio);
+//     //           convertAndPlayAudio(nextPart.audio.packet)
+//     //           //npcDialogAudioPacket.push( msg )
+//     //         }
+//     //       }
+//     //     } else {
+//     //       //check to see if this interaction id has an ending we didn't find before
+//     //       //if its part of same interactionId but not the utterace
+//     //       const checkRes = streamedMsgs._next(false, chatPart.indexStart)
+//     //       if (!chatPart.endOfInteraction && checkRes.endOfInteraction) {
+//     //         console.log("createDialog", "chatPart.end.checkRes", "thought it was not end but it is after checking latest packets")
+//     //       }
+//     //       if (chatPart.endOfInteraction || checkRes.endOfInteraction) {
+//     //         console.log("createDialog", "chatPart.end", chatPart, "end of dialog", dialog)
+//     //         //TODO find better way to detect reset
+//     //         streamedMsgs.started = false
+//     //         streamedMsgs.waitingForMore = false
 
-    console.log("createDialog", "RETURN", "chatPart", chatPart, "dialog", dialog)
+//     //         //GETTING TRIGGERED on race condition i think, audio came through but not text?
+//     //         //show input box 
+//     //         endOfRemoteInteractionStream(REGISTRY.activeNPC)
+//     //         //debugger
+//     //         //REGISTRY.activeNPC.talk([askWhatCanIHelpYouWithDialog,REGISTRY.askWaitingForResponse]);
+//     //       } else {
+//     //         streamedMsgs.waitingForMore = true
+//     //         //still waiting for more from server
+//     //         console.log("createDialog", "chatPart.end?", chatPart, "not end of chat but end of values to display. waiting for more", dialog)
+//     //       }
+//     //     }
+//     //   }, 200)
+//     // }
 
-    return dialog
-  }
+//     console.log("createDialog", "RETURN", "chatPart", chatPart, "dialog", dialog)
+
+//     return dialog
+//   }
 
 
   room.state.players.onAdd = (_player: serverStateSpec.PlayerState, sessionId: string) => {
@@ -315,49 +321,56 @@ function onLevelConnect(room: Room<clientState.NpcGameRoomState>) {
 
     //TODO find better way to detect reset like when last stream msg was at last?
     if (REGISTRY.activeNPC && (streamedMsgs.started == false || streamedMsgs.waitingForMore) && streamedMsgs.hasNextAudioNText()) {
+      console.log("structuredMsg", "createDialog", "chatPart.onmsg", "check:", streamedMsgs.started, "waitingForMore:", streamedMsgs.waitingForMore, "hasNextAudioNText", streamedMsgs.hasNextAudioNText())
       console.log("structuredMsg", "createDialog", "chatPart.start", chatPart)
       const nextPart = streamedMsgs.next()
-
+      console.log("structuredMsg check", streamedMsgs.interactionIndex, streamedMsgs.lastUtteranceId, streamedMsgs.streamedMessagesMapById)
+      
       streamedMsgs.started = true
       streamedMsgs.waitingForMore = false
-      const dialog = createDialog(nextPart)
+      
+      streamedMsgsUiControl.start()
+      streamedMsgsUiControl.showNextText(nextPart)
 
-      let hasEmotion = nextPart.emotion ? true : false
-      console.log("Emotions", "Do we have emotions?", hasEmotion, ":", nextPart);
+    //   const dialog = createDialog(nextPart)
+    //   let hasEmotion = nextPart.emotion ? true : false
+    //   console.log("Emotions", "Do we have emotions?", hasEmotion, ":", nextPart);
 
-      let emotion = getNpcEmotion(nextPart.emotion)
+    //   let emotion = getNpcEmotion(nextPart.emotion)
 
-      if (hasEmotion) {
-        //TODO TAG:play-emotion 
-        console.log("Emotions", "DisplayEmotion", nextPart.emotion.packet.emotions.behavior, "=>", emotion);
-        if (CONFIG.EMOTION_DEBUG) ui.createComponent(ui.Announcement, { value: "got emotion 318-\n" + JSON.stringify(nextPart.emotion.packet.emotions), duration: 5, size: 60, color: Color4.White() }).show(5)
-      }
+    //   if (hasEmotion) {
+    //     //TODO TAG:play-emotion 
+    //     console.log("Emotions", "DisplayEmotion", nextPart.emotion.packet.emotions.behavior, "=>", emotion);
+    //     if (CONFIG.EMOTION_DEBUG) ui.createComponent(ui.Announcement, { value: "got emotion 318-\n" + JSON.stringify(nextPart.emotion.packet.emotions), duration: 5, size: 60, color: Color4.White() }).show(5)
+    //   }
 
-      if (dialog) {
-        if (hasEmotion && emotion.portraitPath) dialog.portrait = { path: emotion.portraitPath }
-        console.log('Emotions', 'Portrait:', dialog.portrait);
+    //   if (dialog) {
+    //     if (hasEmotion && emotion.portraitPath) dialog.portrait = { path: emotion.portraitPath }
+    //     console.log('Emotions', 'Portrait:', dialog.portrait);
 
-        talk(REGISTRY.activeNPC.entity, [dialog]);
-        console.log("Emotions", "Dialog", dialog);
+    //     console.log("onMessage.structuredMsg", "npc talk", dialog);
+    //     // talk(REGISTRY.activeNPC.entity, [dialog]);
+    //     console.log("Emotions", "Dialog", dialog);
 
-        console.log('Emotions', 'Animation', dialog.name);
-        if (hasEmotion && emotion.name) playAnimation(REGISTRY.activeNPC.entity, emotion.name, true, emotion.duration)
-      } else {
-        console.log("structuredMsg", "createDialog", "no dialog to show,probably just a control msg", dialog, "chatPart", chatPart, "nextPart", nextPart)
-      }
-
-      if (true) {//if(npcDialog.length ==1){
-        if (nextPart.audio && nextPart.audio.packet.audio.chunk) {
-          console.log("onMessage.structuredMsg.audio", msg);
-          convertAndPlayAudio(nextPart.audio.packet)
-          //npcDialogAudioPacket.push( msg ) 
-        }
-      }
+    //     console.log('Emotions', 'Animation', dialog.name);
+    //     if (hasEmotion && emotion.name) playAnimation(REGISTRY.activeNPC.entity, emotion.name, true, emotion.duration)
+    //   } else {
+    //     console.log("structuredMsg", "createDialog", "no dialog to show,probably just a control msg", dialog, "chatPart", chatPart, "nextPart", nextPart)
+    //   }
+      
+    //   if (true) {//if(npcDialog.length ==1){
+    //     if (nextPart.audio && nextPart.audio.packet.audio.chunk) {
+    //       console.log("onMessage.structuredMsg.audio", msg);
+    //       convertAndPlayAudio(nextPart.audio.packet)
+    //       //npcDialogAudioPacket.push( msg ) 
+    //     }
+    //   }
     } else {
       console.log("structuredMsg", "createDialog", "chatPart.onmsg", "started:", streamedMsgs.started, "waitingForMore:", streamedMsgs.waitingForMore, "hasNextAudioNText", streamedMsgs.hasNextAudioNText())
     }
     // 
 
+    console.log("onMessage.structuredMsg. streamedMsgs.streamedInteractions", streamedMsgs.streamedInteractions);
 
   });
 

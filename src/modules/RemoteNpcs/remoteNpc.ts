@@ -6,6 +6,7 @@ import * as utils from '@dcl-sdk/utils'
 import { NpcCreationArgs, createNpc } from "./npcHelper"
 import { closeDialog } from "dcl-npc-toolkit/dist/dialog"
 import { NpcQuestionData } from "../../utils/customNpcUi/customUIFunctionality" 
+import { displayDialogNpcUi, setDialogNpcText } from "../../utils/customNpcUi_v2/npcDialogUi"
 
 const FILE_NAME: string = "remoteNpc.ts"
 
@@ -197,7 +198,10 @@ export function startThinking(npc: RemoteNpc, dialog: npcLib.Dialog[]): void {
   console.log("THOUGHTS", FILE_NAME, METHOD_NAME, "Entry", npc.name, dialog);
   showThinking(npc)
 
-  npcLib.talk(npc.entity, dialog)
+  displayDialogNpcUi(true)
+  setDialogNpcText('...')
+
+//   npcLib.talk(npc.entity, dialog)
   if (npc.npcAnimations.THINKING) npcLib.playAnimation(npc.entity, npc.npcAnimations.THINKING.name, true, npc.npcAnimations.THINKING.duration)
 }
 
@@ -215,5 +219,5 @@ export function endOfRemoteInteractionStream(npc: RemoteNpc) {
 
 export function goodBye(npc: RemoteNpc) {
   console.log("NPC.goodbye", "ENTRY", npc.name)
-  npcLib.handleWalkAway(npc.entity)
+  npcLib.handleWalkAway(npc.entity, engine.PlayerEntity)
 }

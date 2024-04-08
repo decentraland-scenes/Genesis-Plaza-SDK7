@@ -9,6 +9,8 @@ import { connectNpcToLobby } from '../../../lobby-scene/lobbyScene'
 import { genericPrefinedQuestions } from '../../../utils/customNpcUi/customUIFunctionality'
 import { TrackingElement, generateGUID, getRegisteredAnalyticsEntity, trackAction, trackEnd, trackStart } from '../../stats/analyticsComponents'
 import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES, AnalyticsLogLabel } from '../../stats/AnalyticsConfig'
+import { streamedMsgsUiControl } from '../../RemoteNpcs/streamedMsgsUIcontrol'
+import { closeAskNpcAiUi, openAskNpcAiUi } from '../../../utils/customNpcUi_v2/npcCustomUi'
 
 let simonas: RemoteNpc
 
@@ -26,9 +28,9 @@ const SIMONAS_NPC_ANIMATIONS: NpcAnimationNameType = {
 
 export function createSimonas() {
   simonas = new RemoteNpc(
-    { resourceName: "workspaces/genesis_city/characters/simone" },
+    { resourceName: "workspaces/genesis_city/characters/simone", id: 'Simone' },
     {
-      transformData: { position: Vector3.create(169, 105 - 1.1, 147.5), scale: Vector3.create(1, 1, 1), rotation: Quaternion.create(0, 1, 0, 0) },
+      transformData: { position: Vector3.create(169, 105 - 1.1, 147.5), scale: Vector3.create(1, 1, 1), rotation: Quaternion.fromEulerDegrees(0, -120, 0) },
       npcData: {
         type: npcLib.NPCType.CUSTOM,
         model: {
@@ -50,14 +52,18 @@ export function createSimonas() {
 
           trackEnd(simonas.entity)
 
-          closeCustomUI(false)
+        //   closeCustomUI(false)
+          closeAskNpcAiUi(false)
+
           hideThinking(simonas)
           trtDeactivateNPC(simonas)
+
+          streamedMsgsUiControl.reset()
         },
         portrait:
         {
-          path: SIMONAS_NPC_ANIMATIONS.IDLE.portraitPath, height: 300, width: 300
-          , offsetX: -100, offsetY: 0
+          path: 'images/portraits/simone/simone.png', height: 300, width: 300
+          , offsetX: -100, offsetY: -55
           , section: { sourceHeight: 256, sourceWidth: 256 }
         },
         idleAnim: SIMONAS_NPC_ANIMATIONS.IDLE.name,
@@ -81,7 +87,8 @@ export function createSimonas() {
         offsetZ: 0
       }
       , onEndOfRemoteInteractionStream: () => {
-        openCustomUI()
+        // openCustomUI()
+        openAskNpcAiUi()
       }
       , onEndOfInteraction: () => { }
     }

@@ -13,6 +13,8 @@ import { genericPrefinedQuestions } from "../../../utils/customNpcUi/customUIFun
 import { closeCustomUI, openCustomUI } from "../../../utils/customNpcUi/customUi";
 import { dogeModelPath } from "../../../lobby/resources/resources";
 import { connectNpcToLobby } from "../../../lobby-scene/lobbyScene";
+import { streamedMsgsUiControl } from "../../RemoteNpcs/streamedMsgsUIcontrol";
+import { closeAskNpcAiUi, openAskNpcAiUi } from "../../../utils/customNpcUi_v2/npcCustomUi";
 
 let doge: RemoteNpc
 
@@ -22,7 +24,7 @@ let blockMovement: boolean = false
 
 const DOGE_NPC_ANIMATIONS: NpcAnimationNameType = {
   HI: { name: "Hi", duration: 2, autoStart: undefined },
-  IDLE: { name: "Idle", duration: -1 },
+  IDLE: { name: "Idle", duration: -1, portraitPath: 'images/portraits/doge/doge.png' },
   WALK: { name: "Walk", duration: -1 },
   TALK: { name: "Talk1", duration: 5 },
   THINKING: { name: "Thinking", duration: 5 },
@@ -74,7 +76,7 @@ export function createDogeNpc(): void {
   }
 
   doge = new RemoteNpc(
-    { resourceName: "workspaces/genesis_city/characters/doge" },
+    { resourceName: "workspaces/genesis_city/characters/doge", id: 'Doge' },
     {
       transformData: {
         // parent: npcParent,
@@ -99,16 +101,18 @@ export function createDogeNpc(): void {
           console.log("NPC", doge.name, 'walk away')
 
           trackEnd(doge.entity)
-
-          closeCustomUI(false)
+        
+        //   closeCustomUI(false)
+          closeAskNpcAiUi(false)
           hideThinking(doge)
           trtDeactivateNPC(doge)
+          streamedMsgsUiControl.reset()
           if (!blockMovement) npcLib.followPath(doge.entity, dogePathData)
         },
         portrait:
         {
-          path: 'images/portraits/doge.png', height: 300, width: 300
-          , offsetX: -100, offsetY: 0
+          path: 'images/portraits/doge/doge.png', height: 250, width: 250
+          , offsetX: -100, offsetY: 10
           , section: { sourceHeight: 256, sourceWidth: 256 }
         },
         idleAnim: DOGE_NPC_ANIMATIONS.IDLE.name,
@@ -134,7 +138,8 @@ export function createDogeNpc(): void {
         offsetZ: 0
       }
       , onEndOfRemoteInteractionStream: () => {
-        openCustomUI()
+        // openCustomUI()
+        openAskNpcAiUi()
       }
       , onEndOfInteraction: () => {
       }

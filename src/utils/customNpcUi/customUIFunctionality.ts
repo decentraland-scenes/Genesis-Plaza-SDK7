@@ -4,6 +4,7 @@ import { closeCustomUI, resetInputField } from "./customUi"
 import * as serverStateSpec from '../../connection/state/server-state-spec'
 import { GAME_STATE } from "../../modules/RemoteNpcs/state"
 import { initArena } from "../../lobby-scene/lobbyScene"
+import { closeAskNpcAiUi } from "../customNpcUi_v2/npcCustomUi"
 
 export class NpcQuestionData {
   displayText: string
@@ -40,7 +41,8 @@ export function sendQuestion(questionData: NpcQuestionData | string) {
     return
   }
 
-  closeCustomUI(false)
+//   closeCustomUI(false)
+  closeAskNpcAiUi(false)
 
   resetInputField()//TODO: missing implementation
 }

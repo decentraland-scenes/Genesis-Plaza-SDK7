@@ -43,7 +43,7 @@ export function initBarNpcs(): void {
   createFashionistNpc()
   createArtistCouple()
   createDogeNpc()
-  createSimonas()
+  createAisha()
 }
 
 export function initOutsideNpcs(delay?: number): void {
@@ -54,6 +54,6 @@ export function initOutsideNpcs(delay?: number): void {
   initNpcFramework()
 
   utils.timers.setTimeout(() => {
-    createAisha()
+    createSimonas()
   }, delay ? delay : aishaSpawnSecondsDelay * 1000)
 }
