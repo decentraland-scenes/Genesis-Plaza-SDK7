@@ -9,6 +9,8 @@ import { genericPrefinedQuestions } from '../../../utils/customNpcUi/customUIFun
 import { TrackingElement, generateGUID, getRegisteredAnalyticsEntity, trackAction, trackEnd, trackStart } from '../../stats/analyticsComponents'
 import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES, AnalyticsLogLabel } from '../../stats/AnalyticsConfig'
 import { barOffset } from '../../../lobby/resources/globals'
+import { streamedMsgsUiControl } from '../../RemoteNpcs/streamedMsgsUIcontrol'
+import { closeAskNpcAiUi, openAskNpcAiUi } from '../../../utils/customNpcUi_v2/npcCustomUi'
 
 export let aisha: RemoteNpc
 
@@ -25,7 +27,7 @@ const AISHA_NPC_ANIMATIONS: NpcAnimationNameType = {
 
 export function createAisha() {
   aisha = new RemoteNpc(
-    { resourceName: "workspaces/genesis_city/characters/aisha" },
+    { resourceName: "workspaces/genesis_city/characters/aisha", id: 'Aisha' },
     {
       transformData: { position: Vector3.create(161.5, 0.2, 164.5), scale: Vector3.create(1.05, 1.05, 1.05), rotation: Quaternion.fromEulerDegrees(0, 180, 0)  },
       npcData: {
@@ -45,14 +47,16 @@ export function createAisha() {
 
           trackEnd(aisha.entity)
 
-          closeCustomUI(false)
+        //   closeCustomUI(false)
+          closeAskNpcAiUi(false)
           hideThinking(aisha)
           trtDeactivateNPC(aisha)
+          streamedMsgsUiControl.reset()
         },
         portrait:
         {
-          path: AISHA_NPC_ANIMATIONS.IDLE.portraitPath, height: 300, width: 300
-          , offsetX: -100, offsetY: 0
+          path: 'images/portraits/aisha/aisha.png', height: 250, width: 250
+          , offsetX: -100, offsetY: 10
           , section: { sourceHeight: 256, sourceWidth: 256 }
         },
         idleAnim: AISHA_NPC_ANIMATIONS.IDLE.name,
@@ -76,7 +80,8 @@ export function createAisha() {
         offsetZ: 0
       }
       , onEndOfRemoteInteractionStream: () => {
-        openCustomUI()
+        // openCustomUI()
+        openAskNpcAiUi()
       }
       , onEndOfInteraction: () => { }
     }

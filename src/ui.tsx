@@ -11,6 +11,8 @@ import {
   uiBasketballScore,
   uiOutOfBounds
 } from './modules/bar/basketball/basketballUI'
+import { uiDialogNpc } from './utils/customNpcUi_v2/npcDialogUi'
+import { uiCustomAskNpc } from './utils/customNpcUi_v2/npcCustomUi'
 
 let tieredModalScale = 1
 let tieredFontScale = 1
@@ -77,6 +79,8 @@ const uiComponent = () => [
   uiBasketballScore(),
   uiOutOfBounds(),
   uiEventDettails(),
+  uiDialogNpc(),
+  uiCustomAskNpc(),
   //uiSpawnCube()
   render()
 ]

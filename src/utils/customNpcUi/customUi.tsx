@@ -6,6 +6,7 @@ import { REGISTRY } from '../../registry'
 import { getData, handleWalkAway } from 'dcl-npc-toolkit'
 import { NPCData } from 'dcl-npc-toolkit/dist/types'
 import { TrackingElement, trackAction } from '../../modules/stats/analyticsComponents'
+import { engine } from '@dcl/sdk/ecs'
 
 let selectedPredefinedQuestion: NpcQuestionData[] = []
 
@@ -304,7 +305,7 @@ export function closeCustomUI(triggerWalkAway: boolean) {
   if (!triggerWalkAway) return
   if (REGISTRY.activeNPC) {
     console.log('DebugSession', 'CLOSEUI => walked away')
-    //handleWalkAway(REGISTRY.activeNPC.entity)
+    handleWalkAway(REGISTRY.activeNPC.entity, engine.PlayerEntity)
   }
 }
 

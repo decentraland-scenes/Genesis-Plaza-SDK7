@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "@dcl/js-runtime": "7.4.14",
-    "@dcl/sdk": "^7.4.14"
+    "@dcl/sdk": "latest"
   },
   "engines": {
     "node": ">=16.0.0",

@@ -36,6 +36,7 @@ export const _joinOrCreateRoomAsync = preventConcurrentExecution("joinOrCreateRo
   const options: any = joinOrCreateRoomAsync_options
 
   retVal = await connect(roomName, options)
+  console.log("connect-flow", "_joinOrCreateRoomAsync", roomName, options, "Connected!")
 
   REGISTRY.onConnectActions(retVal, "reconnect")
 
