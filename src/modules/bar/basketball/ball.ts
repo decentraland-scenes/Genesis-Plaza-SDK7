@@ -261,8 +261,7 @@ export class PhysicsManager {
     VisibilityComponent.create(this.puff).visible = false
     
     Animator.create(this.puff, {
-      states:[{
-          name: 'puff',
+      states:[{          
           clip: "Animation",
           playing: true,
           loop: false

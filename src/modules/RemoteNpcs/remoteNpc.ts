@@ -215,5 +215,5 @@ export function endOfRemoteInteractionStream(npc: RemoteNpc) {
 
 export function goodBye(npc: RemoteNpc) {
   console.log("NPC.goodbye", "ENTRY", npc.name)
-  npcLib.handleWalkAway(npc.entity)
+  //npcLib.handleWalkAway(npc.entity)
 }

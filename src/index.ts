@@ -30,6 +30,12 @@ import { isMovePlayerInProgress } from './back-ports/movePlayer'
 import * as resources from './lobby/resources/resources'
 import { getAndSetUserData, getAndSetUserDataIfNullNoWait, getUserDataFromLocal } from './utils/userData'
 import { loadBeamMesh } from './lobby/beamPortal'
+import { placeMuseumPieces } from './modules/museumItems'
+import { addNFTs } from './modules/nftBuilder'
+import { addRobots } from './modules/npcRobotBuilder'
+// import { addNFTs } from './modules/nftBuilder'
+// import { placeMuseumPieces } from './modules/museumItems'
+//import { placeMuseumPieces } from './modules/museumItems'
 
 // export all the functions required to make the scene work
 export * from '@dcl/sdk'
@@ -71,14 +77,19 @@ function exitBar() {
 function addOutsideOfIfPlayerOutsideOnGround(){
   const doIt = ()=>{
     const playerPos = Transform.getOrNull(engine.PlayerEntity)
-    if(playerPos.position.y < 10){
+   // if(playerPos.position.y < 10){
       console.log("index.ts", "addOutsideOfIfPlayerOutsideOnGround", "player on ground, init anything outside ground level")
       const spawnDealy = 1000
       initOutsideNpcs(spawnDealy)
       placePlatforms()
-    }else{
-      console.log("index.ts", "addOutsideOfIfPlayerOutsideOnGround", "player not on ground")
-    }  
+      placeMuseumPieces()
+      addNFTs() 
+      addRobots()
+
+
+  //  }else{
+   //   console.log("index.ts", "addOutsideOfIfPlayerOutsideOnGround", "player not on ground")
+  //  }  
   }
   //use timer to wait for player data
   const timerId = utils.timers.setInterval(() => {

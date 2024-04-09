@@ -13,9 +13,9 @@ let closeUrl = 'sounds/door-close.mp3'
 
 
 /// Reusable class for all platforms
-export class Door  {
+export class Door {
   //model: PBGltfContainer
-  entity:Entity
+  entity: Entity
   animationOpen: string//AnimationState
   animationClose: string//AnimationState
   isOpen: boolean = false
@@ -37,21 +37,19 @@ export class Door  {
     this.entity = engine.addEntity()
     //engine.addEntity(this)
 
-    GltfContainer.create(this.entity,model)
-    Transform.create(this.entity,doorPos)
+    GltfContainer.create(this.entity, model)
+    Transform.create(this.entity, doorPos)
     //this.addComponent(new Transform(doorPos))
 
     //this.addComponent(new Animator())
     Animator.create(this.entity, {
-      states:[
+      states: [
         {
-          name:'open',
           clip: animationOpen,
           playing: false,
           loop: false
         },
         {
-          name: 'close',
           clip: animationClose,
           playing: false,
           loop: false
@@ -61,61 +59,61 @@ export class Door  {
     )
     this.animationOpen = animationOpen
     this.animationClose = animationClose
-   
+
     this.soundOpen = engine.addEntity()
-    Transform.create(this.soundOpen,{parent:this.entity})
+    Transform.create(this.soundOpen, { parent: this.entity })
 
     this.soundClose = engine.addEntity()
-    Transform.create(this.soundClose,{parent:this.entity})
-    
-    AudioSource.create(this.soundClose,{
-      audioClipUrl:closeUrl,
-      volume:1,
+    Transform.create(this.soundClose, { parent: this.entity })
+
+    AudioSource.create(this.soundClose, {
+      audioClipUrl: closeUrl,
+      volume: 1,
       loop: false,
       playing: false
     })
 
-    AudioSource.create(this.soundOpen,{
-      audioClipUrl:openUrl,
-      volume:1,
+    AudioSource.create(this.soundOpen, {
+      audioClipUrl: openUrl,
+      volume: 1,
       loop: false,
       playing: false
     })
-    
+
 
     if (withTrigger) {
       const triggerEntity = engine.addEntity()
-      Transform.create(triggerEntity, {}) 
-     
-      console.log("doors.ts", "trigger.door.created","triggerParent",triggerEntity)
-      utils.triggers.addTrigger(triggerEntity, utils.NO_LAYERS, utils.LAYER_1, 
-        [{type: "box",position: triggerPos.position , scale: triggerScale}],
+      Transform.create(triggerEntity, {})
+
+      console.log("doors.ts", "trigger.door.created", "triggerParent", triggerEntity)
+      utils.triggers.addTrigger(triggerEntity, utils.NO_LAYERS, utils.LAYER_1,
+        [{ type: "box", position: triggerPos.position, scale: triggerScale }],
         (entity: Entity) => {
-            console.log("doors.ts", "trigger.door.enter","triggerParent",triggerEntity,"entityInteracting", entity)
-            this.isPlayerIn = true
-            sceneMessageBus.emit(messageBusHandle, { open: true })
+          console.log("doors.ts", "trigger.door.enter", "triggerParent", triggerEntity, "entityInteracting", entity)
+          this.isPlayerIn = true
+          sceneMessageBus.emit(messageBusHandle, { open: true })
         },
         (entity: Entity) => {
-          console.log("doors.ts", "trigger.door.exit","triggerParent",triggerEntity,"entityInteracting", entity)
-            this.isPlayerIn = false
-            sceneMessageBus.emit(messageBusHandle, { open: false })
+          console.log("doors.ts", "trigger.door.exit", "triggerParent", triggerEntity, "entityInteracting", entity)
+          this.isPlayerIn = false
+          sceneMessageBus.emit(messageBusHandle, { open: false })
         },
         Color3.Blue()
       )
     }
-    
 
-    Animator.getClip(this.entity,this.animationOpen).playing = this.isOpen
-    Animator.getClip(this.entity,this.animationClose).playing = !this.isOpen
+
+    Animator.getClip(this.entity, this.animationOpen).playing = this.isOpen
+    Animator.getClip(this.entity, this.animationClose).playing = !this.isOpen
   }
 
   public open(): void {
     if (this.isOpen) return
-    
-    Animator.getClip(this.entity,this.animationOpen).playing = false
-    Animator.getClip(this.entity,this.animationClose).playing = false
-    
-    Animator.getClip(this.entity,this.animationOpen).playing = true
+
+    Animator.getClip(this.entity, this.animationOpen).playing = false
+    Animator.getClip(this.entity, this.animationClose).playing = false
+
+    Animator.getClip(this.entity, this.animationOpen).playing = true
 
     this.isOpen = true
 
@@ -125,11 +123,11 @@ export class Door  {
 
   public close(): void {
     if (!this.isOpen || this.isPlayerIn) return
-    
-    Animator.getClip(this.entity,this.animationOpen).playing = false
-    Animator.getClip(this.entity,this.animationClose).playing = false
-    
-    Animator.getClip(this.entity,this.animationClose).playing = true
+
+    Animator.getClip(this.entity, this.animationOpen).playing = false
+    Animator.getClip(this.entity, this.animationClose).playing = false
+
+    Animator.getClip(this.entity, this.animationClose).playing = true
 
     this.isOpen = false
 
@@ -139,10 +137,12 @@ export class Door  {
 }
 
 export function placeDoors() {
-  let main_door1 = new Door( 
-    {src:'models/core_building/door_entrace_front_L_cutOut.glb'},
-    { position: Vector3.create(barCenter.x, 0, barCenter.z), 
-      rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
+  let main_door1 = new Door(
+    { src: 'models/core_building/door_entrace_front_L_cutOut.glb' },
+    {
+      position: Vector3.create(barCenter.x, 0, barCenter.z),
+      rotation: Quaternion.fromEulerDegrees(0, 180, 0)
+    },
     { position: Vector3.create(160 - coreBuildingOffset.x, 2, 126 - coreBuildingOffset.z) },
     Vector3.create(16, 8, 8),
     'DoorLeft_Open',
@@ -151,9 +151,11 @@ export function placeDoors() {
   )
 
   let main_door2 = new Door(
-    {src:'models/core_building/door_entrace_front_R_cutOut.glb'},
-    { position: Vector3.create(barCenter.x, 0, barCenter.z),
-      rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
+    { src: 'models/core_building/door_entrace_front_R_cutOut.glb' },
+    {
+      position: Vector3.create(barCenter.x, 0, barCenter.z),
+      rotation: Quaternion.fromEulerDegrees(0, 180, 0)
+    },
     { position: Vector3.create(160 - coreBuildingOffset.x, 2, 126 - coreBuildingOffset.z) },
     Vector3.create(16, 8, 8),
     'DoorRight_Open',
@@ -173,10 +175,12 @@ export function placeDoors() {
   })
 
   let right_door1 = new Door(
-    {src:'models/core_building/door_entrace_right_L_cutOut.glb'},
-    { position: Vector3.create(barCenter.x, 0, barCenter.z),
-      rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
-    { position: Vector3.create(186  - coreBuildingOffset.x, 2, 153  - coreBuildingOffset.z) },
+    { src: 'models/core_building/door_entrace_right_L_cutOut.glb' },
+    {
+      position: Vector3.create(barCenter.x, 0, barCenter.z),
+      rotation: Quaternion.fromEulerDegrees(0, 180, 0)
+    },
+    { position: Vector3.create(186 - coreBuildingOffset.x, 2, 153 - coreBuildingOffset.z) },
     Vector3.create(8, 8, 16),
     'EntranceRight_DoorLeft_Open',
     'EntranceRight_DoorLeft_Close',
@@ -184,10 +188,12 @@ export function placeDoors() {
   )
 
   let right_door2 = new Door(
-    {src:'models/core_building/door_entrace_right_R_cutOut.glb'},
-    { position: Vector3.create(barCenter.x, 0, barCenter.z),
-      rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
-    { position: Vector3.create(186  - coreBuildingOffset.x, 2, 153  - coreBuildingOffset.z) },
+    { src: 'models/core_building/door_entrace_right_R_cutOut.glb' },
+    {
+      position: Vector3.create(barCenter.x, 0, barCenter.z),
+      rotation: Quaternion.fromEulerDegrees(0, 180, 0)
+    },
+    { position: Vector3.create(186 - coreBuildingOffset.x, 2, 153 - coreBuildingOffset.z) },
     Vector3.create(8, 8, 16),
     'EntranceRight_DoorRight_Open',
     'EntranceRight_DoorRight_Close',
@@ -206,10 +212,12 @@ export function placeDoors() {
   })
 
   let left_door1 = new Door(
-    {src:'models/core_building/door_entrace_left_L_cutOut.glb'},
-    { position: Vector3.create(barCenter.x, 0, barCenter.z),
-      rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
-    { position: Vector3.create(135  - coreBuildingOffset.x, 2, 153  - coreBuildingOffset.z) },
+    { src: 'models/core_building/door_entrace_left_L_cutOut.glb' },
+    {
+      position: Vector3.create(barCenter.x, 0, barCenter.z),
+      rotation: Quaternion.fromEulerDegrees(0, 180, 0)
+    },
+    { position: Vector3.create(135 - coreBuildingOffset.x, 2, 153 - coreBuildingOffset.z) },
     Vector3.create(8, 8, 16),
     'EntranceLeft_DoorLeft_Open',
     'EntranceLeft_DoorLeft_Close',
@@ -217,10 +225,12 @@ export function placeDoors() {
   )
 
   let left_door2 = new Door(
-    {src:'models/core_building/door_entrace_left_R_cutOut.glb'},
-    { position: Vector3.create(barCenter.x, 0, barCenter.z),
-      rotation: Quaternion.fromEulerDegrees(0, 180, 0) },
-    { position: Vector3.create(135  - coreBuildingOffset.x, 2, 153  - coreBuildingOffset.z) },
+    { src: 'models/core_building/door_entrace_left_R_cutOut.glb' },
+    {
+      position: Vector3.create(barCenter.x, 0, barCenter.z),
+      rotation: Quaternion.fromEulerDegrees(0, 180, 0)
+    },
+    { position: Vector3.create(135 - coreBuildingOffset.x, 2, 153 - coreBuildingOffset.z) },
     Vector3.create(8, 8, 16),
     'EntranceLeft_DoorRight_Open',
     'EntranceLeft_DoorRight_Close',

@@ -74,7 +74,7 @@ export function createOctopusNpc() {
       if (engine.PlayerEntity === entity) {
         console.log(LogTag, "Player Enter Area");
        // npcLib.activate(octo, octo)
-        npcLib.activate(octo)
+        npcLib.activate(entity, octo)
         utils.triggers.removeTrigger(octo)
       }
     }
