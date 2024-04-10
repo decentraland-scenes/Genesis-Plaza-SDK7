@@ -3,7 +3,7 @@ import { getBestPlaces, getEvents, getTrendingScenes } from "./checkApi";
 import { MenuItem } from "./menuItem";
 import * as sfx from './resources/sounds'
 import { Quaternion, Vector3 } from "@dcl/sdk/math";
-import { AudioSource, ColliderLayer, Entity, GltfContainer, InputAction, MeshCollider, MeshRenderer, Transform, VisibilityComponent, engine, pointerEventsSystem } from "@dcl/sdk/ecs";
+import { AudioSource, ColliderLayer, Entity, GltfContainer, InputAction, MeshCollider, MeshRenderer, PointerEventType, PointerEvents, Transform, VisibilityComponent, engine, pointerEventsSystem } from "@dcl/sdk/ecs";
 import * as resource from "./resources/resources"
 import { AnimatedItem, ProximityScale, SlerpItem } from "./simpleAnimator";
 import { CrowdMenuItem } from "./menuItemCrowd";
@@ -273,7 +273,25 @@ export class HorizontalMenu {
         transform.parent = itemRoot       
         this.items.push(_item)
         let id = this.items.length -1
-        
+
+        PointerEvents.create(clickBox, {
+          pointerEvents: [
+            {
+              eventInfo: { button: InputAction.IA_POINTER, maxDistance: 14 },
+              eventType: PointerEventType.PET_HOVER_ENTER
+            },
+            {
+              eventInfo: { button: InputAction.IA_POINTER, maxDistance: 100 },
+              eventType: PointerEventType.PET_HOVER_LEAVE
+            },
+            {
+              eventInfo: { button: InputAction.IA_PRIMARY, maxDistance: 10, hoverText: "Pick Up" },
+              eventType: PointerEventType.PET_DOWN
+            },
+    
+          ]
+        })
+    
         pointerEventsSystem.onPointerDown(
           {
             entity:clickBox,
@@ -467,5 +485,9 @@ export class HorizontalMenu {
         loop:false,
         volume: volume
     })
+  }
+
+  update(dt:number){
+    
   }
 }
