@@ -358,15 +358,18 @@ export class HorizontalMenu {
     async updateCrowdsMenu(_count:number){
 
       let scenes = await getTrendingScenes(10)
-      console.log("SCENES:    " + scenes)
+      console.log("CROWD SCENES:    " + scenes)
       if(scenes){
-        if (scenes.length <= 0) {
+        
+        if (scenes.length <= 0) {          
           return
         }
       
        
        // console.log("scene:length: " + scenes.length)
         console.log("items:length: " + this.items.length)   
+        console.log("scenes:length: " + scenes.length)   
+
         for(let i=0; i < scenes.length; i++){
           
           if (i < this.items.length){        
@@ -374,7 +377,7 @@ export class HorizontalMenu {
             this.items[i].updateItemInfo(scenes[i])
           }
           else{
-           
+           // console.log("UPDATING IMAGE FROM URL: " + scenes[i].thumbnail + " - " +  scenes[i].name)
            // console.log(scenes[i])
             
             this.addMenuItem(new CrowdMenuItem({ 
@@ -444,7 +447,7 @@ export class HorizontalMenu {
       for(let i=0; i < this.items.length; i++){         
         
           if(i < this.visibleItems ){
-            //this.items[i].show()
+            //this.items[i].show() 
             this.showItem(i)             
           }
           else{

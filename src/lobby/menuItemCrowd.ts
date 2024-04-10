@@ -73,7 +73,7 @@ export class CrowdMenuItem extends MenuItem {
     this.scale = Vector3.create(1, 1, 1)
     this.scaleMultiplier = 1.2
 
-
+    
     this.thumbNail = new ThumbnailPlane(
       getImageOrFallback(_scene.thumbnail,"images/fallback-scene-thumb.png"),
       {
@@ -352,6 +352,7 @@ export class CrowdMenuItem extends MenuItem {
 
   updateItemInfo(_scene: any) {
     //image
+    
     this.thumbNail.updateImage(_scene.image)
 
     //counter

@@ -81,8 +81,8 @@ export class MuseumPiece{
         //Vector3.copyFrom(Transform.get(engine.PlayerEntity).position, Transform.getMutable(bob).position)    
          
        // openDialog(robot, dialog, textID)
-        let dialogWindow = npc.createDialogWindow()
-        npc.openDialogWindow(dialogWindow, dialog, textID)
+       // let dialogWindow = npc.createDialogWindow()
+        //npc.openDialogWindow(dialogWindow, dialog, textID)
 
       //   npc.talk(robot, dialog, textID)
       //  if (robot && dialog) {

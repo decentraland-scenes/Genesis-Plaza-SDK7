@@ -129,27 +129,27 @@ export class TeleportController {
 
       getRealm({}).then(
         (value:GetRealmResponse) => {
-          if(value.realmInfo?.isPreview){
-              console.log("beamPortal.ts","temp.planes","getRealm is preview, adding planes for spawn and ceiling")
-              //START find the max height, help with visualizing how high we can go
-              let spawnAreaPlane = engine.addEntity()
-              //PUT PARCEL SIZE HERE 4X5 FOR EXAMPLE
-              const parcelMaxHeight = (Math.log((ParcelCountX*ParcelCountZ)) * Math.LOG2E) * 20
-              Transform.create(spawnAreaPlane,{
-                position: { x: triggerUpSpawnArea.x + (spawnRandomX/2) , y: lobbyHeight, z: triggerUpSpawnArea.z + (spawnRandomZ/2)},
-                scale: Vector3.create(spawnRandomX,spawnRandomZ,.1),
-                rotation: Quaternion.fromEulerDegrees(90,0,0)
-              })
-              //MeshCollider.setPlane(findCeilingPlane)
-              MeshRenderer.setPlane(spawnAreaPlane)
-              Material.setPbrMaterial(spawnAreaPlane, {
-                //texture: Material.Texture.,
-                albedoColor: Color4.fromHexString("#00000088"),
-                specularIntensity: 0,
-                metallic: 0,
-                roughness: 1
-              })
-          }
+          // if(value.realmInfo?.isPreview){
+          //     console.log("beamPortal.ts","temp.planes","getRealm is preview, adding planes for spawn and ceiling")
+          //     //START find the max height, help with visualizing how high we can go
+          //     let spawnAreaPlane = engine.addEntity()
+          //     //PUT PARCEL SIZE HERE 4X5 FOR EXAMPLE
+          //     const parcelMaxHeight = (Math.log((ParcelCountX*ParcelCountZ)) * Math.LOG2E) * 20
+          //     Transform.create(spawnAreaPlane,{
+          //       position: { x: triggerUpSpawnArea.x + (spawnRandomX/2) , y: lobbyHeight, z: triggerUpSpawnArea.z + (spawnRandomZ/2)},
+          //       scale: Vector3.create(spawnRandomX,spawnRandomZ,.1),
+          //       rotation: Quaternion.fromEulerDegrees(90,0,0)
+          //     })
+          //     //MeshCollider.setPlane(findCeilingPlane)
+          //     MeshRenderer.setPlane(spawnAreaPlane)
+          //     Material.setPbrMaterial(spawnAreaPlane, {
+          //       //texture: Material.Texture.,
+          //       albedoColor: Color4.fromHexString("#00000088"),
+          //       specularIntensity: 0,
+          //       metallic: 0,
+          //       roughness: 1
+          //     })
+          // }
         }
       )
 
