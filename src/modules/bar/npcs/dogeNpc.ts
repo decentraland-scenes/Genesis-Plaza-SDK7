@@ -2,9 +2,9 @@ import { Transform, engine } from "@dcl/sdk/ecs";
 import { Color4, Vector3 } from "@dcl/sdk/math";
 import { NpcAnimationNameType, REGISTRY, trtDeactivateNPC } from "../../../registry";
 import { coreBuildingOffset } from "../../../lobby/resources/globals";
-import { FollowPathData } from "dcl-npc-toolkit/dist/types";
+import { FollowPathData, NPCData, NPCState } from "dcl-npc-toolkit/dist/types";
 import { createDebugEntity } from "../../RemoteNpcs/npcHelper";
-import { RemoteNpc, hideThinking } from "../../RemoteNpcs/remoteNpc";
+import { RemoteNpc, endInteraction, hideThinking } from "../../RemoteNpcs/remoteNpc";
 import { TrackingElement, generateGUID, getRegisteredAnalyticsEntity, trackAction, trackEnd, trackStart } from "../../stats/analyticsComponents";
 import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES, AnalyticsLogLabel } from "../../stats/AnalyticsConfig";
 import * as npcLib from 'dcl-npc-toolkit'
@@ -71,7 +71,7 @@ export function createDogeNpc(): void {
     path: dogePathPoints,
     loop: true,
     totalDuration: dogePathPoints.length * 3
-
+    
     // curve: true,
   }
 
@@ -94,6 +94,7 @@ export function createDogeNpc(): void {
           trackAction(doge.entity, "Interact", undefined)
           trackStart(doge.entity)
 
+          npcLib.stopWalking(doge.entity)
           connectNpcToLobby(REGISTRY.lobbyScene, doge)
         },
         onWalkAway: () => {
@@ -116,15 +117,15 @@ export function createDogeNpc(): void {
           , section: { sourceHeight: 256, sourceWidth: 256 }
         },
         idleAnim: DOGE_NPC_ANIMATIONS.IDLE.name,
+        hoverText: 'WOW',
         faceUser: true,
         darkUI: true,
         coolDownDuration: 3,
-        pathData: dogePathData,
-        walkingAnim: DOGE_NPC_ANIMATIONS.WALK.name,
-        hoverText: 'WOW',
         onlyETrigger: true,
         reactDistance: 5,
         continueOnWalkAway: false,
+        pathData: dogePathData,
+        walkingAnim: DOGE_NPC_ANIMATIONS.WALK.name,
       },
     },
     {
@@ -150,7 +151,6 @@ export function createDogeNpc(): void {
   REGISTRY.allNPCs.push(doge)
   npcLib.followPath(doge.entity)
 
-
   let debugCube = engine.addEntity()
   Transform.create(debugCube, {
     parent: doge.entity,
@@ -175,6 +175,12 @@ export function createDogeNpc(): void {
     (other) => {
       if (other === engine.PlayerEntity) {
         blockMovement = false
+        let npcData = npcLib.getData(doge.entity)as NPCData
+        
+        if(REGISTRY.activeNPC){
+            endInteraction(REGISTRY.activeNPC)
+            npcLib.handleWalkAway(REGISTRY.activeNPC.entity, REGISTRY.activeNPC.entity)
+        }
         if (isActive) return
         console.log("DogeView", "Left Player Entity");
         npcLib.followPath(doge.entity, dogePathData)
