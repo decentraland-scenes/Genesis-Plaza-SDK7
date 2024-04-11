@@ -4,13 +4,14 @@ import { AtlasTheme, getImageMapping, sourcesComponentsCoordinates } from '../cu
 import { NpcQuestionData, sendQuestion } from '../customNpcUi/customUIFunctionality'
 import { REGISTRY } from '../../registry'
 import { getData, handleWalkAway } from 'dcl-npc-toolkit'
-import { NPCData } from 'dcl-npc-toolkit/dist/types'
+import { NPCData, NPCState } from 'dcl-npc-toolkit/dist/types'
 import { TrackingElement, trackAction } from '../../modules/stats/analyticsComponents'
 import { engine } from '@dcl/sdk/ecs'
 import { getImageAtlasMapping } from 'dcl-npc-toolkit/dist/dialog'
 import { wrapText } from './uiHelper'
 import * as npcLib from 'dcl-npc-toolkit'
 import { endInteraction } from '../../modules/RemoteNpcs/remoteNpc'
+import { npcDataComponent } from 'dcl-npc-toolkit/dist/npc'
 
 let selectedPredefinedQuestion: NpcQuestionData[] = []
 
@@ -384,12 +385,10 @@ export function closeAskNpcAiUi(triggerWalkAway: boolean) {
   if (!triggerWalkAway) return
   if (REGISTRY.activeNPC) {
     console.log('DebugSession', 'CLOSEUI => walked away', REGISTRY.activeNPC.name)
-    // handleWalkAway(REGISTRY.activeNPC.entity, REGISTRY.activeNPC.entity)
-    // endInteraction(REGISTRY.activeNPC)
-    if(REGISTRY.activeNPC){
-        let npcData = getData(REGISTRY.activeNPC.entity)as NPCData
-        npcData.onWalkAway(engine.PlayerEntity)
-    }
+    endInteraction(REGISTRY.activeNPC)
+    handleWalkAway(REGISTRY.activeNPC.entity, REGISTRY.activeNPC.entity)
+    // let npcData = getData(REGISTRY.activeNPC.entity)as NPCData
+    // npcData.onWalkAway(engine.PlayerEntity)
   }
 }
 
