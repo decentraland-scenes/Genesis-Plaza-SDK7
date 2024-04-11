@@ -29,7 +29,7 @@ export let bela: Entity
 export let betty: Entity
 export let charlie: Entity
 export let marsha: Entity
-export let bob: Entity
+//export let bob: Entity
 
 
 
@@ -389,34 +389,34 @@ export function addRobots() {
   // )
   // marshaRings.setParent(marsha)
 
-  bob = npc.create( 
-    {
-      position: Vector3.create(119.7, 11.5, 280.3),
-      //position: Vector3.create(165.573, 11.5, 252.79),
-      rotation: Quaternion.fromEulerDegrees(0, 35, 0),
-    },
-    //NPC Data Object
-    {
-      type: npc.NPCType.CUSTOM,
-      model: resources.models.robots.bob,
-      portrait: { 
-        path: 'images/portraits/bob.png',
-        height: 256,
-        width: 256,
-        section: {
-          sourceHeight: 384,
-          sourceWidth: 384,
-        },
-      },
-      faceUser: true,
-      dialogSound: resources.sounds.robots.bob,
-      onActivate: () => {
-        console.log('npc activated')
-        npc.playAnimation(bob, 'Talk')        
-        npc.talk(bob, BobDialog, 0 )
-      },
-    }
-  )
+  // bob = npc.create( 
+  //   {
+  //     position: Vector3.create(119.7, 11.5, 280.3),
+  //     //position: Vector3.create(165.573, 11.5, 252.79),
+  //     rotation: Quaternion.fromEulerDegrees(0, 35, 0),
+  //   },
+  //   //NPC Data Object
+  //   {
+  //     type: npc.NPCType.CUSTOM,
+  //     model: resources.models.robots.bob,
+  //     portrait: { 
+  //       path: 'images/portraits/bob.png',
+  //       height: 256,
+  //       width: 256,
+  //       section: {
+  //         sourceHeight: 384,
+  //         sourceWidth: 384,
+  //       },
+  //     },
+  //     faceUser: true,
+  //     dialogSound: resources.sounds.robots.bob,
+  //     onActivate: () => {
+  //       console.log('npc activated')
+  //       npc.playAnimation(bob, 'Talk')        
+  //       npc.talk(bob, BobDialog, 0 )
+  //     },
+  //   }
+  // )
 
   // bob = new NPC(
   //   {

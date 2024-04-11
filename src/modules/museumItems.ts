@@ -6,8 +6,7 @@ import {
   bela,
   betty,
   charlie,
-  marsha,
-  bob,
+  marsha,  
 } from './npcRobotBuilder'
 import {
   BettyDialog,
@@ -20,6 +19,39 @@ import { Entity, GltfContainer, InputAction, Transform,  TransformTypeWithOption
 import { Color3, Vector3, Quaternion } from '@dcl/sdk/math'
 import { _openExternalURL } from '../back-ports/backPorts'
 import { openDialog } from 'dcl-npc-toolkit/dist/dialog'
+import resources from '../resources'
+
+export let bob: Entity
+
+
+bob = npc.create( 
+  {
+    //position: Vector3.create(119.7, 11.5, 280.3),
+    position: Vector3.create(165.573, 11.5, 252.79), 
+    rotation: Quaternion.fromEulerDegrees(0, 35, 0),
+  },
+  //NPC Data Object
+  {
+    type: npc.NPCType.CUSTOM,
+    model: resources.models.robots.bob,
+    portrait: { 
+      path: 'images/portraits/bob.png',
+      height: 256,
+      width: 256,
+      section: {
+        sourceHeight: 384,
+        sourceWidth: 384,
+      },
+    },
+    faceUser: true,
+    dialogSound: resources.sounds.robots.bob,
+    onActivate: () => {
+      console.log('npc activated')
+      npc.playAnimation(bob, 'Talk')        
+      npc.talk(bob, BobDialog, 0 )
+    },
+  }
+)
 
 // Opens informational dialog about a piece
 // function openPieceInfoWindow(piece: Entity, robot: NPC, textID: number) {
@@ -101,7 +133,7 @@ export class MuseumPiece{
       //   //    thisPiece
       //   //  )
       //   console.log("ROBOT TRYING TO TALK")
-      //    npc.talk(robot, dialog, textID)
+          npc.talk(robot, dialog, textID)
        //}
       }
     )

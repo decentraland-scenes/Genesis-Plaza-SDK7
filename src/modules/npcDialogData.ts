@@ -6,8 +6,9 @@ import {
   betty,
   charlie,
   marsha,
-  bob,
+  
 } from './npcRobotBuilder'
+import { bob } from './museumItems'
 
 // --- Main Dialog (Alice) ---
 export let AliceDialog: npc.Dialog[] = [
