@@ -33,6 +33,8 @@ import { loadBeamMesh } from './lobby/beamPortal'
 import { placeMuseumPieces } from './modules/museumItems'
 import { addNFTs } from './modules/nftBuilder'
 import { addRobots } from './modules/npcRobotBuilder'
+import { addBarVideo } from './modules/barVideoScreen'
+import { addAuditoriumVideo } from './modules/auditoriumScreen'
 // import { addNFTs } from './modules/nftBuilder'
 // import { placeMuseumPieces } from './modules/museumItems'
 //import { placeMuseumPieces } from './modules/museumItems'
@@ -58,6 +60,7 @@ function insideBar() {
   }
 
   placeJukeBox()
+  addBarVideo()
     
   if (!isBasketballAdded) {
 
@@ -85,7 +88,7 @@ function addOutsideOfIfPlayerOutsideOnGround(){
       placeMuseumPieces()
       addNFTs() 
       addRobots()
-
+      addAuditoriumVideo()
 
   //  }else{
    //   console.log("index.ts", "addOutsideOfIfPlayerOutsideOnGround", "player not on ground")
