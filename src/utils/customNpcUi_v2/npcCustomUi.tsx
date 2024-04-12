@@ -11,7 +11,6 @@ import { getImageAtlasMapping } from 'dcl-npc-toolkit/dist/dialog'
 import { wrapText } from './uiHelper'
 import * as npcLib from 'dcl-npc-toolkit'
 import { endInteraction } from '../../modules/RemoteNpcs/remoteNpc'
-import { npcDataComponent } from 'dcl-npc-toolkit/dist/npc'
 
 let selectedPredefinedQuestion: NpcQuestionData[] = []
 
@@ -36,6 +35,28 @@ let bIndex = 1
 // const moreOptionButtonHeight = 40
 // const inputTextWidth = modalWidth - 300
 
+let modalScale = 1
+let modalFontSizeScale = 1
+let modalTextWrapScale = 1
+
+export function setupNpcCustomQuestionUiScaling(inScale: number, inFontSize: number, inTextWrapScale: number) {
+    if (modalScale === inScale && modalFontSizeScale === inFontSize && modalTextWrapScale === inTextWrapScale) return
+    console.log(
+      'CustomNPCUI',
+      'resolution is changed',
+      'Scale:',
+      inScale,
+      'FontSize:',
+      inFontSize,
+      'TextWrapScale:',
+      inTextWrapScale
+    )
+    modalScale = inScale
+    modalFontSizeScale = inFontSize
+    modalTextWrapScale = inTextWrapScale
+}
+
+
 export const uiCustomAskNpc = () => {
     return (
         <UiEntity //Invisible Parent
@@ -47,7 +68,7 @@ export const uiCustomAskNpc = () => {
                 justifyContent: 'flex-end',
                 alignItems:'center',
                 positionType: 'absolute',
-                position: {bottom: 50}
+                position: {bottom: 50 * modalScale}
             }}
             uiBackground={{
                 // color: Color4.create(0.5, 0.5, 0.5, 0)
@@ -55,8 +76,8 @@ export const uiCustomAskNpc = () => {
             >
             <UiEntity //Dialog Holder
                 uiTransform={{
-                    width: 752,
-                    height: 496 - 256,
+                    width: 752 * modalScale,
+                    height: (496 - 256) * modalScale,
                     justifyContent: 'flex-start',
                     alignItems: 'center',
                     display: 'flex',
@@ -79,8 +100,8 @@ export const uiCustomAskNpc = () => {
 
                 <UiEntity //TOP
                     uiTransform={{
-                        width: 752,
-                        height: 70,
+                        width: 752 * modalScale,
+                        height: 70 * modalScale,
                         // margin: { bottom: 0 },
                         justifyContent: 'center'
                     }}
@@ -90,7 +111,7 @@ export const uiCustomAskNpc = () => {
                     >
                     <Label 
                         value="<b>Ask Me Anything!</b>" 
-                        fontSize={24}
+                        fontSize={24 * modalScale}
                         font='monospace'
                         color={Color4.create(0.4, 0.4, 0.4, 1)}
                     />
@@ -98,9 +119,9 @@ export const uiCustomAskNpc = () => {
                     <UiEntity // close button
                         uiTransform={{
                             positionType: 'absolute',
-                            position: { top: -10, right: -10 },
-                            width: 46,
-                            height: 46
+                            position: { top: -10 * modalScale, right: -10 * modalScale },
+                            width: 46 * modalScale,
+                            height: 46 * modalScale
                         }}
                         onMouseDown={() => {
                             closeAskNpcAiUi(true)
@@ -122,7 +143,7 @@ export const uiCustomAskNpc = () => {
             
                 <UiEntity // Input text box
                     uiTransform={{ 
-                        height: 80, 
+                        height: 80 * modalScale, 
                         width: '100%', 
                         justifyContent: 'center',
                     }}
@@ -132,14 +153,14 @@ export const uiCustomAskNpc = () => {
                     >
                     <Input
                         uiTransform={{ 
-                            width: 576, 
-                            height: 80 
+                            width: 576 * modalScale, 
+                            height: 80 * modalScale 
                         }}
 
                         uiBackground={{
                             color: Color4.create(244/255, 174/255, 62/255, 1)
                         }}
-                        fontSize={20}
+                        fontSize={20 * modalScale}
                         placeholder={placeHolderText}
                         color={Color4.White()}
                         placeholderColor={Color4.White()}
@@ -155,8 +176,8 @@ export const uiCustomAskNpc = () => {
 
                 <UiEntity //Options' Buttons
                     uiTransform={{
-                        width: 550,
-                        height: 80,
+                        width: 550 * modalScale,
+                        height: 80 * modalScale,
                         display: 'flex',
                         flexDirection: 'row',
                         justifyContent: 'space-between',
@@ -171,8 +192,8 @@ export const uiCustomAskNpc = () => {
                         value={selectedPredefinedQuestion?.length >= 2 ? selectedPredefinedQuestion[aIndex].displayText : 'option1'}
                         uiTransform={{
                             display: selectedPredefinedQuestion?.length > 0 ? 'flex' : 'none',
-                            width: 832 - 656,
-                            height: 176 - 128
+                            width: (832 - 656) * modalScale,
+                            height: (176 - 128) * modalScale
                         }}
                         uiBackground={{
                             texture: { src: customUiOrangeTheme },
@@ -187,7 +208,7 @@ export const uiCustomAskNpc = () => {
                                 sourceHeight:176 - 128
                             })
                         }}
-                        fontSize={15}
+                        fontSize={15 * modalScale}
                         onMouseDown={() => {
                             askQuestion(aIndex)
                         }}
@@ -200,8 +221,8 @@ export const uiCustomAskNpc = () => {
                         }
                         uiTransform={{
                             display: selectedPredefinedQuestion?.length > 0 ? 'flex' : 'none',
-                            width: 832 - 656,
-                            height: 176 - 128
+                            width: (832 - 656) * modalScale,
+                            height: (176 - 128) * modalScale
                         }}
                         uiBackground={{
                             texture: { src: customUiOrangeTheme },
@@ -216,7 +237,7 @@ export const uiCustomAskNpc = () => {
                                 sourceHeight:176 - 128
                             })
                         }}
-                        fontSize={15}
+                        fontSize={15 * modalScale}
                         onMouseDown={() => {
                             askQuestion(bIndex)
                         }}
@@ -226,8 +247,8 @@ export const uiCustomAskNpc = () => {
                         value="More Options"
                         uiTransform={{
                             display: selectedPredefinedQuestion?.length > 0 ? 'flex' : 'none',
-                            width: 832 - 656,
-                            height: 176 - 128
+                            width: (832 - 656) * modalScale,
+                            height: (176 - 128) * modalScale
                         }}
                         uiBackground={{
                             texture: { src: customUiOrangeTheme },
@@ -242,7 +263,7 @@ export const uiCustomAskNpc = () => {
                                 sourceHeight:176 - 128
                             })
                         }}
-                        fontSize={15}
+                        fontSize={15 * modalScale}
                         onMouseDown={() => {
                             nextQuestion()
                         }}
@@ -255,10 +276,10 @@ export const uiCustomAskNpc = () => {
                     flexDirection: 'row',
                     justifyContent: 'center',
                     alignItems:'center',
-                    width: npcPortraitWidth,
-                    height: npcPortraitHeight,
+                    width: npcPortraitWidth * modalScale,
+                    height: npcPortraitHeight * modalScale,
                     positionType: 'absolute',
-                    position: {left: -165, bottom: npcPortraitBottomPos}
+                    position: {left: -165 * modalScale, bottom: npcPortraitBottomPos * modalScale}
                 }}
                 uiBackground = {{
                     textureMode: 'stretch',
@@ -272,10 +293,10 @@ export const uiCustomAskNpc = () => {
                     flexDirection: 'row',
                     justifyContent: 'center',
                     alignItems:'center',
-                    width: 1024 - 992,
-                    height: 112 - 81,
+                    width: (1024 - 992) * modalScale,
+                    height: (112 - 81) * modalScale,
                     positionType: 'absolute',
-                    position: {bottom: 17, right: 12}
+                    position: {bottom: 17 * modalScale, right: 12 * modalScale}
                 }}
                 uiBackground = {{
                     textureMode: 'stretch',
@@ -300,10 +321,10 @@ export const uiCustomAskNpc = () => {
                     flexDirection: 'row',
                     justifyContent: 'center',
                     alignItems:'center',
-                    width: 912 - 753,
-                    height: 464 - 320,
+                    width: (912 - 753) * modalScale,
+                    height: (464 - 320) * modalScale,
                     positionType: 'absolute',
-                    position: {bottom: 50, right: -50}
+                    position: {bottom: 50 * modalScale, right: -50 * modalScale}
                 }}
                 uiBackground = {{
                     textureMode: 'stretch',
@@ -327,14 +348,14 @@ export const uiCustomAskNpc = () => {
                         width: '90%',
                         height: '80%',
                         positionType: 'absolute',
-                        position: {bottom: 20}
+                        position: {bottom: 20 * modalScale}
                     }}
                     uiBackground = {{
                         color: Color4.create(1, 0, 0, 0)
                     }}
                     uiText={{
                         value: wrapText("Disclaimer: Beta. Power by a 3rd party AI. \nYou may receive inaccurate information which is not endorsed by the Foundation or the Decentraland community. \nDo not share personal information.", 30),
-                        fontSize: 10
+                        fontSize: 10 * modalScale
                     }}
                     ></UiEntity>
 
@@ -348,6 +369,9 @@ export const uiCustomAskNpc = () => {
 
 function setVisibility(status: boolean): void {
   isVisible = status
+
+//   if(status) activateUiScalingSystem(true)
+//   else activateUiScalingSystem(false)
 }
 
 export function openAskNpcAiUi() {

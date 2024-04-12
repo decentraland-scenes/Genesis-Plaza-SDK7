@@ -5,7 +5,6 @@ import { REGISTRY } from '../../registry'
 import { wrapText } from './uiHelper'
 import { getData } from 'dcl-npc-toolkit'
 import { NPCData } from 'dcl-npc-toolkit/dist/types'
-// import { scaleFactor } from './ui'
 
 
 let showDialogUi: boolean = false
@@ -15,9 +14,31 @@ let npcPortraitWidth: number = 250
 let npcPortraitHeight: number = 250
 let npcPortraitBottomPos: number = 0
 
+let modalScale = 1
+let modalFontSizeScale = 1
+let modalTextWrapScale = 1
+
+export function setupNpcDialogUiScaling(inScale: number, inFontSize: number, inTextWrapScale: number) {
+    if (modalScale === inScale && modalFontSizeScale === inFontSize && modalTextWrapScale === inTextWrapScale) return
+    console.log(
+      'CustomNPCUI',
+      'resolution is changed',
+      'Scale:',
+      inScale,
+      'FontSize:',
+      inFontSize,
+      'TextWrapScale:',
+      inTextWrapScale
+    )
+    modalScale = inScale
+    modalFontSizeScale = inFontSize
+    modalTextWrapScale = inTextWrapScale
+}
 
 export function displayDialogNpcUi(value: boolean){
     showDialogUi = value
+    // if(value) activateUiScalingSystem(true)
+    // else activateUiScalingSystem(false)
 
     if(REGISTRY.activeNPC){
         let npcPortrait = (getData(REGISTRY.activeNPC.entity) as NPCData)
@@ -62,8 +83,8 @@ export const uiDialogNpc = () => (
                 flexDirection: 'row',
                 justifyContent: 'center',
                 alignItems:'center',
-                width: 656,
-                height: 256 - 80,
+                width: 656 * modalScale,
+                height: (256 - 80) * modalScale,
                 positionType: 'absolute'
             }}
             uiBackground = {{
@@ -86,10 +107,10 @@ export const uiDialogNpc = () => (
                     flexDirection: 'row',
                     justifyContent: 'center',
                     alignItems:'center',
-                    width: npcPortraitWidth,
-                    height: npcPortraitHeight,
+                    width: npcPortraitWidth * modalScale,
+                    height: npcPortraitHeight * modalScale,
                     positionType: 'absolute',
-                    position: {left: -150, bottom: npcPortraitBottomPos}
+                    position: {left: -150 * modalScale, bottom: npcPortraitBottomPos * modalScale}
                 }}
                 uiBackground = {{
                     textureMode: 'stretch',
@@ -101,10 +122,10 @@ export const uiDialogNpc = () => (
                 uiTransform={{
                     display: 'flex',
                     flexDirection: 'row',
-                    width: 944 - 912,
-                    height: 46 - 0,
+                    width: (944 - 912) * modalScale,
+                    height: (46 - 0) * modalScale,
                     positionType: 'absolute',
-                    position: {bottom: 15, right: 15}
+                    position: {bottom: 15 * modalScale, right: 15 * modalScale}
                 }}
                 uiBackground = {{
                     textureMode: 'stretch',
@@ -124,10 +145,10 @@ export const uiDialogNpc = () => (
                 uiTransform={{
                     display: 'flex',
                     flexDirection: 'row',
-                    width: 864 - 816,
-                    height: 46 - 0,
+                    width: (864 - 816) * modalScale,
+                    height: (46 - 0) * modalScale,
                     positionType: 'absolute',
-                    position: {bottom: -10}
+                    position: {bottom: -10 * modalScale}
                 }}
                 uiBackground = {{
                     textureMode: 'stretch',
@@ -147,10 +168,10 @@ export const uiDialogNpc = () => (
                 uiTransform={{
                     display: 'flex',
                     flexDirection: 'row',
-                    width: 832 - 576,
-                    height: 80 - 48,
+                    width: (832 - 576) * modalScale,
+                    height: (80 - 48) * modalScale,
                     positionType: 'absolute',
-                    position: {top: -17}
+                    position: {top: -17 * modalScale}
                 }}
                 uiBackground = {{
                     textureMode: 'stretch',
@@ -166,7 +187,7 @@ export const uiDialogNpc = () => (
                 }}
                 uiText={{
                     value: `<b>${REGISTRY.activeNPC ? REGISTRY.activeNPC.config.id : ''}</b>`,
-                    fontSize: 16
+                    fontSize: 16 * modalScale
                 }}
             ></UiEntity>
 
@@ -174,8 +195,8 @@ export const uiDialogNpc = () => (
                 uiTransform={{
                     display: 'flex',
                     flexDirection: 'row',
-                    width: 480,
-                    height: 96,
+                    width: 480 * modalScale,
+                    height: 96 * modalScale,
                     positionType: 'absolute'
                 }}
                 // uiBackground = {{
@@ -183,7 +204,7 @@ export const uiDialogNpc = () => (
                 // }}
                 uiText={{
                     value: dialogNpcText,
-                    fontSize: 18,
+                    fontSize: 18 * modalScale,
                     font: 'monospace',
                     color: Color4.create(0.2, 0.2, 0.2, 1)
                 }}
