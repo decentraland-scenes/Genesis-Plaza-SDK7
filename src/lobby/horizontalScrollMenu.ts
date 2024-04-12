@@ -3,7 +3,7 @@ import { getBestPlaces, getEvents, getTrendingScenes } from "./checkApi";
 import { MenuItem } from "./menuItem";
 import * as sfx from './resources/sounds'
 import { Quaternion, Vector3 } from "@dcl/sdk/math";
-import { AudioSource, ColliderLayer, Entity, GltfContainer, InputAction, MeshCollider, MeshRenderer, PointerEventType, PointerEvents, Transform, VisibilityComponent, engine, pointerEventsSystem } from "@dcl/sdk/ecs";
+import { AudioSource, ColliderLayer, Entity, GltfContainer, InputAction, MeshCollider, MeshRenderer, PointerEventType, PointerEvents, Transform, VisibilityComponent, engine, inputSystem, pointerEventsSystem } from "@dcl/sdk/ecs";
 import * as resource from "./resources/resources"
 import { AnimatedItem, ProximityScale, SlerpItem } from "./simpleAnimator";
 import { CrowdMenuItem } from "./menuItemCrowd";
@@ -29,6 +29,8 @@ export class HorizontalMenu {
     scrollLeftButton:Entity
     scrollRightButton:Entity
     scrollTarget:Quaternion
+    leftHoverArrow:Entity
+    rightHoverArrow:Entity
     visibleItems:number
     topFrame:Entity
     analyticParent:Entity
@@ -45,6 +47,29 @@ export class HorizontalMenu {
         this.visibleItems = 4
         this.analyticParent = _analyticParent
 
+
+        this.leftHoverArrow = engine.addEntity()
+        Transform.createOrReplace(this.leftHoverArrow, {
+          parent: this.menuRoot,
+          position: Vector3.create(-0.6,0.2,-12),
+          scale: Vector3.create(0.2, 0.2, 10),
+          
+        })
+        //MeshRenderer.setBox(this.leftHoverArrow)
+        GltfContainer.create(this.leftHoverArrow,resource.hoverArrowEShape)
+        VisibilityComponent.create(this.leftHoverArrow, {visible:false})
+
+        this.rightHoverArrow = engine.addEntity()
+        Transform.createOrReplace(this.rightHoverArrow, {
+          parent: this.menuRoot,
+          position: Vector3.create(0.6,0.2,-12),
+          scale: Vector3.create(0.2, 0.2, 10),
+         
+        })
+        //MeshRenderer.setBox(this.rightHoverArrow)
+        GltfContainer.create(this.rightHoverArrow,resource.hoverArrowFShape)
+        VisibilityComponent.create(this.rightHoverArrow, {visible:false})
+
         this.menuRoot = engine.addEntity()
         Transform.create(this.menuRoot, {
             position: Vector3.create(_position.x, _position.y, _position.z),
@@ -52,7 +77,7 @@ export class HorizontalMenu {
           //parent: engine.PlayerEntity
         })
 
-        this.scrollerRoot = engine.addEntity()
+        this.scrollerRoot = engine.addEntity() 
         Transform.create(this.scrollerRoot, {
             position: Vector3.create(0,0,0),
             parent:this.menuRoot
@@ -125,6 +150,21 @@ export class HorizontalMenu {
           parent: this.menuRoot
         })
 
+    }
+
+    setHover(itemEntity:Entity){
+
+      Transform.getMutable(this.leftHoverArrow).parent = itemEntity
+      VisibilityComponent.getMutable(this.leftHoverArrow).visible = true
+
+      Transform.getMutable(this.rightHoverArrow).parent = itemEntity
+      VisibilityComponent.getMutable(this.rightHoverArrow).visible = true
+      
+    }
+
+    endHover(itemEntity:Entity){
+      VisibilityComponent.getMutable(this.leftHoverArrow).visible = false
+      VisibilityComponent.getMutable(this.rightHoverArrow).visible = false
     }
 
     selectItem(_itemID: number, _silent:boolean) {
@@ -283,14 +323,10 @@ export class HorizontalMenu {
             {
               eventInfo: { button: InputAction.IA_POINTER, maxDistance: 100 },
               eventType: PointerEventType.PET_HOVER_LEAVE
-            },
-            {
-              eventInfo: { button: InputAction.IA_PRIMARY, maxDistance: 10, hoverText: "Pick Up" },
-              eventType: PointerEventType.PET_DOWN
-            },
+            },    
     
           ]
-        })
+        })        
     
         pointerEventsSystem.onPointerDown(
           {
@@ -488,6 +524,19 @@ export class HorizontalMenu {
   }
 
   update(dt:number){
-    
+    for (let item of this.clickBoxes) {
+
+      if (inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_HOVER_ENTER, item)) {
+       console.log("HOVERING "  )
+       this.setHover(item)
+      }
+
+      if (inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_HOVER_LEAVE, item)) {
+        console.log("ENDHOVER "  )
+       // this.endHover(item)
+        //this.setHover(this.menuRoot)
+      }
+      
+    }
   }
 }

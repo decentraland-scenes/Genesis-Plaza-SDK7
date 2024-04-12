@@ -15,11 +15,19 @@ let eventAnimFactor: number = 0
 let tieredModalScale = 1
 let tieredFontScale = 1
 let tieredModalTextWrapScale = 1
+let textWarpLimit = 43
 
 export function setupEventDetailsUIScaling(inModalScale: number, inFontScale: number, inModalTextWrapScale: number) {
   tieredModalScale = inModalScale
   tieredFontScale = inFontScale
-  tieredModalTextWrapScale = inModalTextWrapScale
+  tieredModalTextWrapScale = inModalTextWrapScale 
+  // textWarpLimit = 20
+ 
+   console.log("FONT SCALE: " + tieredFontScale ) 
+  
+  // if(inModalScale > 1.0){
+  //   textWarpLimit = 43 
+  // }
 }
 
 export const uiEventDettails = () => (
@@ -178,11 +186,11 @@ export function displayEventUI(event: any) {
 
   let rawTitle: string = event.name
   rawTitle = cleanString(rawTitle)
-  rawTitle = wordWrap(rawTitle, 32 * tieredModalTextWrapScale, 2)
+  rawTitle = wordWrap(rawTitle, 28 , 2) 
 
   eventTitleText = rawTitle
 
-  eventDetailText = '\n\n' + wordWrap(cleanString(event.description), 43 * tieredModalTextWrapScale, 18) + '</cspace>'
+  eventDetailText = '\n\n' + wordWrap(cleanString(event.description), textWarpLimit , 18) + '</cspace>'
 
   eventThumbnail = event.image
 
@@ -201,7 +209,7 @@ export function hideEventUI() {
 let factor = 0
 engine.addSystem((dt: number) => {
   // hide event card ui if player is furhter from the slider menu
-  if (Transform.get(engine.PlayerEntity).position.z > 40) {
+  if (Transform.get(engine.PlayerEntity).position.z > 150) {
     if (factor < 1) {
       factor += dt * 4
       if (factor > 1) {
