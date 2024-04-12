@@ -65,7 +65,8 @@ export function createFashionistNpc(): void {
       },
       portrait: {
         path: `images/portraits/WearableConnoisseur.png`,
-        offsetX: -70, offsetY: 10
+        height: 300, width: 300,
+        offsetX: -70, offsetY: -20
       }
     }
   )

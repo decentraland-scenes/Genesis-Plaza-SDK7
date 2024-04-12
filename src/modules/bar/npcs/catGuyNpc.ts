@@ -7,12 +7,10 @@ import { navigationForwardSfx } from "../../../lobby/resources/resources";
 let catguy: Entity
 
 export function createCatGuyNpc() {
-  let position: Vector3 = Vector3.create(160 - coreBuildingOffset.x - 10, 0.2, 141.4 - coreBuildingOffset.z)
-
   catguy = npcLib.create(
     {
-      position: position,
-      rotation: Quaternion.fromEulerDegrees(0, 0, 0)
+        position: Vector3.create(191.8, 0.225, 68.2),
+        rotation: Quaternion.fromEulerDegrees(0, 290, 0),
     },
     {
       type: npcLib.NPCType.CUSTOM,
@@ -31,7 +29,7 @@ export function createCatGuyNpc() {
       portrait: {
         path: `images/portraits/catguy.png`,
         height: 300, width: 300,
-        offsetX: -80, offsetY: 0
+        offsetX: -80, offsetY: -20
       },
     }
   )
