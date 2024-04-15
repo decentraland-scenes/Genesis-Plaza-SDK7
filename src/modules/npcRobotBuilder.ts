@@ -11,8 +11,8 @@ import * as npc from 'dcl-npc-toolkit'
 //   RonDialog,
 // } from './npcDialogData'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
-import { Entity } from '@dcl/sdk/ecs'
-import { BobDialog, RonDialog } from './npcDialogData'
+import { Entity, GltfContainer, PBGltfContainer, Transform, engine } from '@dcl/sdk/ecs'
+import { BelaDialog, BettyDialog, BobDialog, CharlieDialog, MarshaDialog, RonDialog } from './npcDialogData'
 
 /*
   Main = 0 (Alice)
@@ -38,6 +38,7 @@ export let marsha: Entity
 
 export function addRobots() {
   const ringShape = resources.models.robots.rings
+  let ringGLTFmodel: PBGltfContainer = { src:  ringShape }
 
   //   alice = new NPC(
   //     {
@@ -176,6 +177,34 @@ export function addRobots() {
   // )
   // ronRings.setParent(ron)
 
+  bela = npc.create( 
+    {
+      position: Vector3.create(37.27, 4, 265.32),
+      rotation: Quaternion.fromEulerDegrees(0, 90, 0),
+    },
+    //NPC Data Object
+    {
+      type: npc.NPCType.CUSTOM,
+      model: resources.models.robots.bela,
+      portrait: { 
+        path: 'images/portraits/bela.png',
+        height: 256,
+        width: 256,
+        section: {
+          sourceHeight: 384,
+          sourceWidth: 384,
+        },
+      },
+      faceUser: true,
+      dialogSound: resources.sounds.robots.bela,
+      onlyETrigger: true,
+      onActivate: () => {
+        console.log('npc activated')
+        npc.playAnimation(bela, 'Talk')        
+        npc.talk(bela, BelaDialog, 0 )
+      },
+    }
+  )
   // bela = new NPC(
   //   {
   //     position: Vector3.create(37.27, 4, 265.32),
@@ -225,6 +254,40 @@ export function addRobots() {
   //   })
   // )
   // belaRings.setParent(bela)
+
+  betty = npc.create( 
+    {
+      position: Vector3.create(117.657, 3.6, 39.98),
+    },
+    //NPC Data Object
+    {
+      type: npc.NPCType.CUSTOM,
+      model: resources.models.robots.betty,
+      portrait: { 
+        path: 'images/portraits/betty.png',
+        height: 256,
+        width: 256,
+        section: {
+          sourceHeight: 384,
+          sourceWidth: 384,
+        },
+      },
+      faceUser: true,
+      dialogSound: resources.sounds.robots.betty,
+      onlyETrigger: true,
+      onActivate: () => {
+        console.log('npc activated')
+        npc.playAnimation(betty, 'Talk')        
+        npc.talk(betty, BettyDialog, 0 )
+      },
+    }
+  )
+//   const bettyRings = engine.addEntity()
+//   GltfContainer.create(bettyRings, { src: ringShape })
+//   Transform.create(bettyRings, {
+//     parent: betty,
+//     position: Vector3.create(0, -0.65, 0),
+//   })
 
   // betty = new NPC(
   //   {
@@ -280,6 +343,41 @@ export function addRobots() {
   // )
   // belaRings.setParent(betty)
 
+  charlie = npc.create( 
+    {
+      position: Vector3.create(269.5, 5.35, 42.6),
+      rotation: Quaternion.fromEulerDegrees(0, -90, 0),
+    },
+    //NPC Data Object
+    {
+      type: npc.NPCType.CUSTOM,
+      model: resources.models.robots.charlie,
+      portrait: { 
+        path: 'images/portraits/charlie.png',
+        height: 256,
+        width: 256,
+        section: {
+          sourceHeight: 384,
+          sourceWidth: 384,
+        },
+      },
+      faceUser: true,
+      dialogSound: resources.sounds.robots.charlie,
+      onlyETrigger: true,
+      onActivate: () => {
+        console.log('npc activated')
+        npc.playAnimation(charlie, 'Talk')        
+        npc.talk(charlie, CharlieDialog, 0 )
+      },
+    }
+  )
+  const charlieRings = engine.addEntity()
+  GltfContainer.create(charlieRings, ringGLTFmodel)
+  Transform.create(charlieRings, {
+    parent: charlie,
+    position: Vector3.create(0, -0.65, 0),
+  })
+
   // charlie = new NPC(
   //   {
   //     position: Vector3.create(269.5, 5.35, 42.6),
@@ -326,15 +424,42 @@ export function addRobots() {
   //   }
   // )
 
-  // const charlieRings = new Entity()
-  // charlieRings.addComponent(ringShape)
-  // charlieRings.addComponent(
-  //   new Transform({
-  //     position: Vector3.create(0, -0.65, 0),
-  //   })
-  // )
-  // charlieRings.setParent(charlie)
+  marsha = npc.create( 
+    {
+      position: Vector3.create(50.945, 9.65, 31.1),
+    },
+    //NPC Data Object
+    {
+      type: npc.NPCType.CUSTOM,
+      model: resources.models.robots.marsha,
+      portrait: { 
+        path: 'images/portraits/marsha.png',
+        height: 256,
+        width: 256,
+        section: {
+          sourceHeight: 384,
+          sourceWidth: 384,
+        },
+      },
+      faceUser: true,
+      dialogSound: resources.sounds.robots.marsha,
+      onlyETrigger: true,
+      onActivate: () => {
+        console.log('npc activated')
+        npc.playAnimation(marsha, 'Talk')        
+        npc.talk(marsha, MarshaDialog, 0 )
+      },
+    }
+  )
 
+//   const marshaRings = engine.addEntity()
+//   GltfContainer.create(marshaRings, {src: ringShape})
+//   Transform.create(marshaRings, {
+//     parent: marsha,
+//     position: Vector3.create(0, -0.65, 0),
+//   })
+
+  // marshaRings.setParent(marsha)
   // marsha = new NPC(
   //   {
   //     position: Vector3.create(50.945, 9.65, 31.1),
@@ -379,15 +504,6 @@ export function addRobots() {
   //     },
   //   }
   // )
-
-  // const marshaRings = new Entity()
-  // marshaRings.addComponent(ringShape)
-  // marshaRings.addComponent(
-  //   new Transform({
-  //     position: Vector3.create(0, -0.65, 0),
-  //   })
-  // )
-  // marshaRings.setParent(marsha)
 
   // bob = npc.create( 
   //   {

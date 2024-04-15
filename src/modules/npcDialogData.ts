@@ -9,6 +9,7 @@ import {
   
 } from './npcRobotBuilder'
 import { bob } from './museumItems'
+import { engine } from '@dcl/sdk/ecs'
 
 // --- Main Dialog (Alice) ---
 export let AliceDialog: npc.Dialog[] = [
@@ -324,53 +325,50 @@ export let RonDialog: npc.Dialog[] = [
 
 // --- Agora Dialog (Bela) ---
 export let BelaDialog: npc.Dialog[] = [
-  {
-    text:
-      "Hello, I'm Bela - would you like to learn more about how the community shapes Decentraland?",
-    offsetY: 24,
+  { // 0
+    text: "Hello, I'm Bela - would you like to learn more about how the community shapes Decentraland?",
     isQuestion: true,
     buttons: [
-      { label: 'YES', goToDialog: 'yes' },
-      { label: 'NO', goToDialog: 'no' },
+      { label: 'NO', goToDialog: 1 },
+      { label: 'YES', goToDialog: 2 },
     ],
   },
-  {
+  { // 1
     name: 'no',
     text: "Okay, I'll be around if you get curious.",
     offsetY: 18,
     triggeredByNext: () => {
-      // bela.playAnimation('Goodbye', true, 2)
-      // bela.endInteraction()
-      //npc.playAnimation(bela,'Goodbye', true, 2 )
+        npc.handleWalkAway(bela, engine.PlayerEntity)
+        npc.playAnimation(bela,'Goodbye', true, 2 )
     },
     isEndOfDialog: true,
   },
-  {
+  { // 2
     name: 'yes',
     text: 'Decentraland is designed to be run 100% by the community.',
     offsetY: 18,
   },
-  {
+  { // 3
     text:
       "There's already been several petitions that have been voted on. Anyone with MANA or LAND can vote and determine the future of Decentraland.",
     offsetY: 6,
   },
-  {
+  { // 4
     text:
       'For example, the community decided through a vote that each land parcel should measure 16x16 meters instead of the original 10x10 meters.',
     offsetY: 6,
   },
-  {
+  { // 5
     text:
       'There will gradually be more and more ways in which you can pitch in to help shape the direction of the virtual world.',
     offsetY: 6,
   },
-  {
+  { // 6
     text:
       "You've joined us at a really exciting time, when we can own and shape the virtual spaces where we hang out.",
     offsetY: 6,
   },
-  {
+  { // 7
     text: 'I hope you found this information interesting!',
     offsetY: 18,
     triggeredByNext: () => {
@@ -384,225 +382,214 @@ export let BelaDialog: npc.Dialog[] = [
 
 // --- Garden Text (Betty) ---
 export let BettyDialog: npc.Dialog[] = [
-  {
+  { // 0
     text:
       "Hi, I'm Betty - a content creator! Would you like to learn about how content in Decentraland is made?",
-    offsetY: 24,
     isQuestion: true,
     buttons: [
-      { label: 'YES', goToDialog: 'yes' },
-      { label: 'NO', goToDialog: 'no' },
+      { label: 'NO', goToDialog: 1 },
+      { label: 'YES', goToDialog: 2 },
     ],
   },
-  {
+  { // 1
     name: 'no',
     text: "Okay, I'll be around if you get curious.",
     offsetY: 18,
     triggeredByNext: () => {
-      // betty.playAnimation('Goodbye', true, 2)
-      // betty.endInteraction()
-      //npc.playAnimation(betty,'Goodbye', true, 2 )
+        npc.handleWalkAway(betty, engine.PlayerEntity)
+        npc.playAnimation(betty,'Goodbye', true, 2 )
       
     },
     isEndOfDialog: true,
   },
-  {
+  { // 2
     name: 'yes',
     text:
       'Decentraland is made up of scenes and each scene is its own self-contained world that sits next to other scenes.',
     offsetY: 6,
   },
-  {
+  { // 3
     text:
       'A scene can take up a single LAND parcel or as many parcels as you want. Each LAND parcel measures 16x16 meters.',
     offsetY: 6,
   },
-  {
+  { // 4
     text:
       'With the exception of public spaces like plazas and roads, everything you see is created by members of the community like yourself.',
     offsetY: 6,
   },
-  {
+  { // 5
     text:
       "There are two different tools that can be used to build. First there's The Builder - an easy drag and drop tool.",
     offsetY: 6,
   },
-  {
+  { // 6
     text:
       "Then there's the SDK (Software Development Kit), which is a more powerful coding tool for developers.",
     offsetY: 6,
   },
-  {
+  { // 7
     text: 'Which one do you want to learn about first?',
-    offsetY: 24,
     isQuestion: true,
     buttons: [
-      {
-        label: 'BUILDER',
-        fontSize: 10,
-        goToDialog: 'builder',
-      },
-      { label: 'SDK', goToDialog: 'sdk' },
+      { label: 'BUILDER', fontSize: 10, goToDialog: 8 },
+      { label: 'SDK', goToDialog: 21 },
     ],
   },
-  {
+  { // 8
     name: 'builder',
     text:
       'The Builder is a lot of fun! You can drag and drop pre-made 3D items of a variety of themes into your scene.',
     offsetY: 6,
   },
-  {
+  { // 9
     text:
       'Some items come with built-in behaviors. You can use these as building-blocks to make up a whole game.',
     offsetY: 6,
   },
-  {
+  { // 10
     text:
       'If you’re a 3D artist, or want to import 3D content, you have the ability to import your own.',
     offsetY: 18,
   },
-  {
+  { // 11
     text: 'Do you want to also learn about the SDK (Software Development Kit)?',
-    offsetY: 24,
     isQuestion: true,
     buttons: [
-      { label: 'YES', goToDialog: 'sdk-end' },
-      { label: 'NO', goToDialog: 'end' },
+      { label: 'NO', goToDialog: 33 },
+      { label: 'YES', goToDialog: 12 },
     ],
   },
-  {
+  { // 12
     name: 'sdk-end',
     text:
       'The SDK is a very powerful tool that gives you a lot of freedom by writing your scenes in code.',
     offsetY: 18,
   },
-  {
+  { // 13
     text:
       'It is based on TypeScript, a language that’s very similar to JavaScript but more reliable.',
     offsetY: 18,
   },
-  {
+  { // 14
     text:
       'There are several great examples out in the world of scenes written with the SDK.',
     offsetY: 18,
   },
-  {
+  { // 15
     text: 'Many of the teleports around this plaza take you to such scenes.',
     offsetY: 18,
   },
-  {
+  { // 16
     text:
       'You can also use the SDK to create your own smart items with built-in logic.',
     offsetY: 18,
   },
-  {
+  { // 17
     text:
       'These can then be easily used in the Builder by dragging and dropping them.',
     offsetY: 18,
   },
-  {
+  { // 18
     text:
       'You can also start a scene using the Builder. Lay out the parts before exporting them to add specific functionality with code, using the SDK.',
     offsetY: 6,
   },
-  {
+  { // 19
     text:
       'Remember you can always visit docs.decentraland.org for a more in-depth guide on building scenes',
     offsetY: 6,
   },
-  {
+  { // 20
     text:
       "Hope that gets you excited about creating and sharing great things. Can't wait to see what you come up with!",
     offsetY: 6,
     triggeredByNext: () => {
-      // betty.playAnimation('Goodbye', true, 2)
-     // betty.endInteraction()
-      //npc.playAnimation(betty,'Goodbye', true, 2 )
+        npc.handleWalkAway(betty, engine.PlayerEntity)
+        npc.playAnimation(betty,'Goodbye', true, 2 )
     },
     isEndOfDialog: true,
   },
-  {
+  { // 21
     name: 'sdk',
     text:
       'The SDK is a very powerful tool that gives you a lot of freedom by writing your scenes in code.',
     offsetY: 18,
   },
-  {
+  { // 22
     text:
       'It is based on TypeScript, a language that’s very similar to JavaScript but more reliable.',
     offsetY: 18,
   },
-  {
+  { // 23
     text:
       'There are several great examples out in the world of scenes written with the SDK.',
     offsetY: 18,
   },
-  {
+  { // 24
     text: 'Many of the teleports around this plaza take you to such scenes.',
     offsetY: 18,
   },
-  {
+  { // 25
     text:
       'You can also use the SDK to create your own smart items with built-in logic.',
     offsetY: 18,
   },
-  {
+  { // 26
     text:
       'These can then be easily used in the Builder by dragging and dropping them.',
     offsetY: 18,
   },
-  {
+  { // 27
     text:
       'You can also start a scene using the Builder. Lay out the parts before exporting them to add specific functionality with code, using the SDK.',
     offsetY: 6,
   },
-  {
+  { // 28
     text:
       'Do you also want to learn about the Builder, our visual editor tool?',
-    offsetY: 24,
     isQuestion: true,
     buttons: [
-      { label: 'YES', goToDialog: 'builder-end' },
-      { label: 'NO', goToDialog: 'end' },
+      { label: 'NO', goToDialog: 33 },
+      { label: 'YES', goToDialog: 29 },
     ],
   },
-  {
+  { // 29
     name: 'builder-end',
     text:
       'The Builder is a lot of fun! You can drag and drop pre-made 3D items of a variety of themes into your scene.',
     offsetY: 6,
   },
-  {
+  { // 30
     text:
       'Some items come with built-in behaviors. You can use these as building-blocks to make up a whole game.',
     offsetY: 6,
   },
-  {
+  { // 31
     text:
       'If you’re a 3D artist, or want to import 3D content, you have the ability to import your own.',
     offsetY: 18,
   },
-  {
+  { // 32
     text:
       'Remember you can always visit docs.decentraland.org for a more in-depth guide on building scenes',
     offsetY: 6,
   },
-  {
+  { // 33
     name: 'end',
     text:
       "Hope that gets you excited about creating and sharing great things. Can't wait to see what you come up with!",
     offsetY: 6,
     triggeredByNext: () => {
-      //betty.playAnimation('Goodbye', true, 2)
-     // betty.endInteraction()
-     //npc.playAnimation(charlie,'Goodbye', true, 2 )
+        npc.handleWalkAway(betty, engine.PlayerEntity)
+        npc.playAnimation(betty,'Goodbye', true, 2 )
     },
     isEndOfDialog: true,
   },
 
   // --- YELLOW TEXT ---
   // Builder
-  {
+  { // 34
     text:
       'This is what a basic Builder scene looks like. There are tons of prefab items you can just drag and drop to create an experience of your own.',
     offsetY: 6,
@@ -610,19 +597,18 @@ export let BettyDialog: npc.Dialog[] = [
   },
 
   // Smart Items
-  {
+  { // 35
     text:
       'This is what a Builder scene looks like with some smart items in it.',
     offsetY: 18,
   },
-  {
+  { // 36
     text:
       'Smart items can be dragged in just as easily as other items, but can make things so much more interesting!',
     offsetY: 6,
     triggeredByNext: () => {
-     // betty.playAnimation('Goodbye', true, 2)
-     // betty.endInteraction()
-     //npc.playAnimation(charlie,'Goodbye', true, 2 )
+        npc.handleWalkAway(betty, engine.PlayerEntity)
+        npc.playAnimation(betty,'Goodbye', true, 2 )
     },
     isEndOfDialog: true,
   },
@@ -630,108 +616,104 @@ export let BettyDialog: npc.Dialog[] = [
 
 // --- Trade Dialog (Charlie) ---
 export let CharlieDialog: npc.Dialog[] = [
-  {
-    text:
-      "Hey, I'm Charlie - a master trader. Would you like to learn more about the Decentraland Marketplace?",
-    offsetY: 24,
+  { // 0
+    text: "Hey, I'm Charlie - a master trader. Would you like to learn more about the Decentraland Marketplace?",
     isQuestion: true,
     buttons: [
-      { label: 'YES', goToDialog: 'yes' },
-      { label: 'NO', goToDialog: 'no' },
+      { label: 'NO', goToDialog: 1 },
+      { label: 'YES', goToDialog: 2 },
     ],
   },
-  {
+  { // 1
     name: 'no',
     text: "Okay, I'll be around if you get curious.",
     offsetY: 18,
     triggeredByNext: () => {
-     // charlie.playAnimation('Goodbye', true, 2)
-     // charlie.endInteraction()
-     //npc.playAnimation(charlie,'Goodbye', true, 2 )
+        npc.handleWalkAway(charlie, engine.PlayerEntity)
+        npc.playAnimation(charlie,'Goodbye', true, 2 )
     },
     isEndOfDialog: true,
   },
-  {
+  { // 2
     name: 'yes',
     text:
       'This is the Metaverse Trade Center. Here you can see live stats from the Decentraland Marketplace.',
     offsetY: 6,
   },
-  {
+  { // 3
     text:
       'There’s a thriving economy behind Decentraland and every day people buy and sell unique items.',
     offsetY: 18,
   },
-  {
+  { // 4
     text: 'Items like LAND parcels, wearable items and reserved names.',
     offsetY: 18,
   },
-  {
+  { // 5
     text: 'As more trading happens on the platform, it grows and moves faster.',
     offsetY: 18,
   },
-  {
+  { // 6
     text:
       'You can explore this building to find real-time stats about what goes on in the Marketplace.',
     offsetY: 18,
   },
-  {
+  { // 7
     text:
       'Do you want to know more about how the Marketplace uses the blockchain?',
     offsetY: 24,
     isQuestion: true,
     buttons: [
-      { label: 'YES', goToDialog: 'blockchain' },
-      { label: 'NO', goToDialog: 'no-blockchain' },
+      { label: 'NO', goToDialog: 11 },
+      { label: 'YES', goToDialog: 8 },
     ],
   },
-  {
+  { // 8
     name: 'blockchain',
     text:
       'All sales, bids and other operations are transactions on the blockchain.',
     offsetY: 18,
   },
-  {
+  { // 9
     text:
       'Like all transactions, they require a small gas fee that is paid to the network of miners.',
     offsetY: 18,
   },
-  {
+  { // 10
     text:
       "The Marketplace charges a small fee over all transactions. This fee doesn't go into anyone's pocket. Instead it gets burned.",
     offsetY: 6,
   },
-  {
+  { // 11
     name: 'no-blockchain',
     text:
       'Remember to visit market.decentraland.org - over there you can buy or sell LAND, wearables or unique names. Happy shopping!',
     offsetY: 6,
     triggeredByNext: () => {
-    //  charlie.playAnimation('Goodbye', true, 2)
-     // charlie.endInteraction()
-     //npc.playAnimation(charlie,'Goodbye', true, 2 )
+        npc.handleWalkAway(charlie, engine.PlayerEntity)
+        npc.playAnimation(charlie,'Goodbye', true, 2 )
     },
     isEndOfDialog: true,
   },
 
   // --- YELLOW TEXT ---
   // Parcels
-  {
+  { // 12
     text:
       'All of Decentraland is made up of parcels of LAND. Each parcel is 16x16 meters (~17.5 yards)',
     offsetY: 18,
   },
-  {
+  { // 13
     text:
       'Some parcels of LAND are plazas or bits of road, those are owned by the Decentraland DAO.',
     offsetY: 18,
   },
-  {
+  { // 14
     text:
       'Together they make up all the public spaces of Decentraland and therefore cannot be traded on the market.',
     offsetY: 6,
   },
-  {
+  { // 15
     text: 'People buy and sell LAND in the Marketplace.',
     offsetY: 18,
     triggeredByNext: () => {
@@ -743,7 +725,7 @@ export let CharlieDialog: npc.Dialog[] = [
   },
 
   // Estate
-  {
+  { // 16
     text:
       'If you have several adjacent parcels of LAND, you can form an Estate to group these together and trade them as a single token.',
     offsetY: 6,
@@ -756,26 +738,26 @@ export let CharlieDialog: npc.Dialog[] = [
   },
 
   // Wearable Rarity
-  {
+  { // 17
     text:
       'Not all wearables are created equal. We have a few categories available to help distinguish their rarity.',
     offsetY: 6,
   },
-  {
+  { // 18
     text:
       "If a wearable is 'Epic' then there are a maximum of 1000 of its kind in circulation.",
     offsetY: 18,
   },
-  {
+  { // 19
     text: "If a wearable is 'Legendary' then there are only 100 of its kind.",
     offsetY: 18,
   },
-  {
+  { // 20
     text:
       "If a wearable is 'Mythic' then there are just 10. If it is 'Unique' then...well you get the picture.",
     offsetY: 18,
   },
-  {
+  { // 21
     text: "'Rare', 'Common' and 'Uncommon' rarities are relatively abundant.",
     offsetY: 18,
     triggeredByNext: () => {
@@ -790,13 +772,12 @@ export let CharlieDialog: npc.Dialog[] = [
 // --- Artichoke Dialog (Marsha) ---
 export let MarshaDialog: npc.Dialog[] = [
   {
-    text:
-      'Hey there! My name is Marsha and I’m here to have fun! Would you like to learn more about how to interact with other players?',
-    offsetY: 24,
+    text: 'Hey there! My name is Marsha and I’m here to have fun! Would you like to learn more about how to interact with other players?',
+    offsetY: 0,
     isQuestion: true,
     buttons: [
-      { label: 'YES', goToDialog: 'yes' },
-      { label: 'NO', goToDialog: 'no' },
+        { label: 'NO', goToDialog: 1 },
+      { label: 'YES', goToDialog: 3 },
     ],
   },
   {
@@ -806,7 +787,8 @@ export let MarshaDialog: npc.Dialog[] = [
     triggeredByNext: () => {
     //  marsha.playAnimation('Goodbye', true, 2)
     //  marsha.endInteraction()
-    //npc.playAnimation(marsha,'Goodbye', true, 2 )
+        npc.handleWalkAway(marsha, engine.PlayerEntity)
+        npc.playAnimation(marsha,'Goodbye', true, 2 )
     },
     isEndOfDialog: true,
   },
@@ -856,9 +838,8 @@ export let MarshaDialog: npc.Dialog[] = [
       "Well that's it from me, don't want to keep you here any longer. There are folks out there who are a lot more interesting to talk to. Enjoy!",
     offsetY: 6,
     triggeredByNext: () => {
-    //  marsha.playAnimation('Goodbye', true, 2)
-    //  marsha.endInteraction()
-    //npc.playAnimation(bob,'Goodbye', true, 2 )
+        npc.handleWalkAway(marsha, engine.PlayerEntity)
+        npc.playAnimation(marsha,'Goodbye', true, 2 )
     },
     isEndOfDialog: true,
   },
