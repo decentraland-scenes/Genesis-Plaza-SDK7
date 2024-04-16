@@ -47,29 +47,29 @@ export class HorizontalMenu {
         this.visibleItems = 4
         this.analyticParent = _analyticParent
 
-
+        //HOVER ARROWS
+        //LEFT
         this.leftHoverArrow = engine.addEntity()
         Transform.createOrReplace(this.leftHoverArrow, {
           parent: this.menuRoot,
-          position: Vector3.create(-0.6,0.2,-12),
-          scale: Vector3.create(0.2, 0.2, 10),
-          
-        })
-        //MeshRenderer.setBox(this.leftHoverArrow)
+          position: Vector3.create(-0.5,-0.1,-5),
+          scale: Vector3.create(0.12, 0.12, 10),          
+        })      
+       
         GltfContainer.create(this.leftHoverArrow,resource.hoverArrowEShape)
         VisibilityComponent.create(this.leftHoverArrow, {visible:false})
 
+        //RIGHT
         this.rightHoverArrow = engine.addEntity()
         Transform.createOrReplace(this.rightHoverArrow, {
           parent: this.menuRoot,
-          position: Vector3.create(0.6,0.2,-12),
-          scale: Vector3.create(0.2, 0.2, 10),
-         
-        })
-        //MeshRenderer.setBox(this.rightHoverArrow)
+          position: Vector3.create(0.5,-0.1,-5),
+          scale: Vector3.create(0.12, 0.12, 10),         
+        })       
         GltfContainer.create(this.rightHoverArrow,resource.hoverArrowFShape)
         VisibilityComponent.create(this.rightHoverArrow, {visible:false})
 
+        //MENU ROOT NODE
         this.menuRoot = engine.addEntity()
         Transform.create(this.menuRoot, {
             position: Vector3.create(_position.x, _position.y, _position.z),
@@ -154,16 +154,31 @@ export class HorizontalMenu {
 
     setHover(itemEntity:Entity){
 
+      this.endHover()
       Transform.getMutable(this.leftHoverArrow).parent = itemEntity
-      VisibilityComponent.getMutable(this.leftHoverArrow).visible = true
+
+      //if(this.clickBoxes.indexOf(itemEntity) != 0){
+      if(this.currentItem > 0){
+        VisibilityComponent.getMutable(this.leftHoverArrow).visible = true
+      }
+      
 
       Transform.getMutable(this.rightHoverArrow).parent = itemEntity
-      VisibilityComponent.getMutable(this.rightHoverArrow).visible = true
+     // if(this.clickBoxes.indexOf(itemEntity) != this.clickBoxes.length-1){
+      if(this.currentItem < this.items.length - this.visibleItems){
+        VisibilityComponent.getMutable(this.rightHoverArrow).visible = true
+      }
       
     }
 
-    endHover(itemEntity:Entity){
+    endHover(){
+      this.hideHoverLeft()
+      this.hideHoverRight()
+    }
+    hideHoverLeft(){
       VisibilityComponent.getMutable(this.leftHoverArrow).visible = false
+    }
+    hideHoverRight(){
       VisibilityComponent.getMutable(this.rightHoverArrow).visible = false
     }
 
@@ -241,10 +256,13 @@ export class HorizontalMenu {
               targetRotation:this.scrollTarget,
               
             })    
-            this.playAudio(sfx.menuUpSource, sfx.menuUpSourceVolume)         
+            this.playAudio(sfx.menuUpSource, sfx.menuUpSourceVolume)        
+            
+            this.endHover()
           }
           else{
             this.playAudio(sfx.menuScrollEndSource, sfx.menuDeselectSourceVolume)
+            //this.hideHoverRight()
           }
           
         }
@@ -269,9 +287,12 @@ export class HorizontalMenu {
               targetRotation:this.scrollTarget
             })
             this.playAudio(sfx.menuDownSource, sfx.menuDownSourceVolume)
+
+            this.endHover()
           }
           else{
             this.playAudio(sfx.menuScrollEndSource, sfx.menuDeselectSourceVolume)
+           // this.hideHoverLeft()
           }
         }        
     }
@@ -347,9 +368,11 @@ export class HorizontalMenu {
             }
             if(e.button == InputAction.IA_PRIMARY){
               this.scroll(true)
+              //this.endHover()
             }
             if(e.button == InputAction.IA_SECONDARY){
               this.scroll(false)
+              //this.endHover()
             }
               
           }
