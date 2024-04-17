@@ -552,12 +552,12 @@ export class HorizontalMenu {
       if (inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_HOVER_ENTER, item)) {
        console.log("HOVERING "  )
        this.setHover(item)
-       this.selectItem(this.clickBoxes.indexOf(item), false)
+       //this.selectItem(this.clickBoxes.indexOf(item), false)
       }
 
       if (inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_HOVER_LEAVE, item)) {
         console.log("ENDHOVER "  )
-        this.deselectAll()
+       // this.deselectAll()
        // this.endHover(item)
         //this.setHover(this.menuRoot)
       }
