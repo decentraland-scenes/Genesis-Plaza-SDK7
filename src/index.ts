@@ -36,6 +36,7 @@ import { addRobots } from './modules/npcRobotBuilder'
 import { addBarVideo } from './modules/barVideoScreen'
 import { addAuditoriumVideo } from './modules/auditoriumScreen'
 import { startArtichoke } from './modules/artichoke'
+import { addWearables } from './modules/wearables'
 // import { addNFTs } from './modules/nftBuilder'
 // import { placeMuseumPieces } from './modules/museumItems'
 //import { placeMuseumPieces } from './modules/museumItems'
@@ -91,6 +92,7 @@ function addOutsideOfIfPlayerOutsideOnGround(){
       addRobots()
       addAuditoriumVideo()
       startArtichoke()
+      addWearables()
 
   //  }else{
    //   console.log("index.ts", "addOutsideOfIfPlayerOutsideOnGround", "player not on ground")
