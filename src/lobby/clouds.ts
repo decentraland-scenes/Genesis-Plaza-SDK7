@@ -53,8 +53,8 @@ function addCloudRotate(entity:Entity,left: boolean, speed: number) {
 
 export function initClouds(){
       addClouds(
-        16, 
-        20, 
+        8, 
+        25, 
         Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyHeight, lobbyCenter.z - coreBuildingOffset.z)
       )
 
