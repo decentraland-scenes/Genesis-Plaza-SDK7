@@ -8,7 +8,7 @@ import { getUserData } from "~system/UserIdentity"
 
 //TODO MOVE TO GAME STATE
 let userData: UserData
-let playerRealm: EnvironmentRealm
+export let playerRealm: EnvironmentRealm
 
 export function initUserData(){
   
@@ -47,6 +47,14 @@ export async function setRealm() {
     playerRealm = realm.currentRealm
   }
 }
+
+// fetch the player's realm
+export async function getRealm() {
+    let realm = await getCurrentRealm({})
+    console.log(`You are in the realm: ${JSON.stringify(realm.currentRealm)}`)
+    return realm.currentRealm
+  }
+  
 /*
 onRealmChangedObservable.add(async (realmData) => {
   if (realmData && realmData.room) {

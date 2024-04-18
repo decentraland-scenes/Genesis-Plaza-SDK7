@@ -11,6 +11,8 @@ import { getImageAtlasMapping } from 'dcl-npc-toolkit/dist/dialog'
 import { wrapText } from './uiHelper'
 import * as npcLib from 'dcl-npc-toolkit'
 import { endInteraction } from '../../modules/RemoteNpcs/remoteNpc'
+import { resetMessages, streamedMsgs } from '../../modules/RemoteNpcs/streamedMsgs'
+import { streamedMsgsUiControl } from '../../modules/RemoteNpcs/streamedMsgsUIcontrol'
 
 let selectedPredefinedQuestion: NpcQuestionData[] = []
 
@@ -376,9 +378,11 @@ function setVisibility(status: boolean): void {
 
 export function openAskNpcAiUi() {
   let questions = REGISTRY.activeNPC.predefinedQuestions
-  setVisibility(true)
   selectedPredefinedQuestion = questions
   console.log('QUESTIONS', questions, selectedPredefinedQuestion)
+
+  resetMessages(streamedMsgs)
+  streamedMsgsUiControl.reset()
 
   let npcPortrait = (getData(REGISTRY.activeNPC.entity) as NPCData).portrait
   if (npcPortrait) {
@@ -400,6 +404,8 @@ export function openAskNpcAiUi() {
 
   aIndex = 0
   bIndex = 1
+  
+  setVisibility(true)
 }
 
 export function closeAskNpcAiUi(triggerWalkAway: boolean) {

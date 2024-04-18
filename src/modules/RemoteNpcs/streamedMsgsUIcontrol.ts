@@ -19,67 +19,22 @@ export class StreamedMsgUiControl{
 
     currentText: string = ''
     typingIntervalTimer: number = -1
-    typingIntervalMs: number = 50
+    typingIntervalMs: number = 40
     
-    clickIntervalSecond: number = 0.5
+    clickIntervalSecond: number = 0.25
     timerSec: number = 0
 
-    constructor(){
-        engine.addSystem((dt) => {
-            if(!this.started) return
-
-            if(!REGISTRY.activeNPC) {
-                if (this.started) {
-                    this.reset()
-                }
-                return
-            }
-            
-            this.timerSec += dt
-            if(this.timerSec < this.clickIntervalSecond) return
-
-            if (inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_DOWN)){
-                if(!this.started) return
-                this.timerSec = 0
-                console.log('StreamedMsgUiControl. Click detected')
-                if(this.isTyping){
-                    this._finishTyping()
-                }
-                else{
-                    let nextPart = streamedMsgs.next()
-                    if(nextPart.text){
-                        // show text
-                        this.showNextText(nextPart)
-                    }
-                    else{
-                        const checkRes = streamedMsgs._next(false, nextPart.indexStart)
-                        console.log('StreamedMsgUiControl. checkRes:', checkRes)
-                        if(nextPart.endOfInteraction || checkRes.endOfInteraction){
-                            console.log('StreamedMsgUiControl. end of interaction. stop')
-                            streamedMsgs.started = false
-                            streamedMsgs.waitingForMore = false
-
-                            endOfRemoteInteractionStream(REGISTRY.activeNPC)
-
-                            this.reset()
-                        }
-                        else{
-                            console.log('StreamedMsgUiControl. not end of interaction. waiting more streamed message')
-                            streamedMsgs.waitingForMore = true
-                            displayDialogNpcUi(false)
-                        }
-                    }
-                }
-            }
-        })
-    }
+    constructor(){}
     
     start(){
         console.log('StreamedMsgUiControl. Started')
+        if(!this.started) engine.addSystem(NextStreamedMsgsSystem)
         this.started = true
         displayDialogNpcUi(true)
     }
     reset(){
+        console.log('StreamedMsgUiControl. Reset')
+        if(this.started) engine.removeSystem(NextStreamedMsgsSystem)
         this.started = false
         this.currentIdx = -1
         this.isTyping = false
@@ -119,37 +74,112 @@ export class StreamedMsgUiControl{
     _startTyping(fullText: string){
         this.currentText = fullText
         this.isTyping = true
-        let idx: number = 0
+        // let idx: number = 0
+        charIdx = 0
+        engine.addSystem(TextTypingSystem)
 
-        this.typingIntervalTimer = utils.timers.setInterval(() => {
-            console.log("StreamedMsgUiControl. Interval active. typing:", this.isTyping)
+        // this.typingIntervalTimer = utils.timers.setInterval(() => {
+        //     console.log("StreamedMsgUiControl. Interval active. typing:", this.isTyping)
 
-            for(let i = idx + 1; i < this.currentText.length; i++){
-                if(this.currentText[i] !== '' || this.currentText[i] !== '\n'){
-                    idx = i
-                    break
-                }
-            }
-            let displayText = this.currentText.substring(0, idx + 1)
-            setDialogNpcText(displayText)
+        //     for(let i = idx + 1; i < this.currentText.length; i++){
+        //         if(this.currentText[i] !== '' || this.currentText[i] !== '\n'){
+        //             idx = i
+        //             break
+        //         }
+        //     }
+        //     let displayText = this.currentText.substring(0, idx + 1)
+        //     setDialogNpcText(displayText)
 
-            if(displayText.length === this.currentText.length){
-                this._finishTyping()
-            }
+        //     if(displayText.length === this.currentText.length){
+        //         this._finishTyping()
+        //     }
 
-        }, this.typingIntervalMs)
+        // }, this.typingIntervalMs)
     }
     _finishTyping(){
         console.log("StreamedMsgUiControl. finish typing.")
         this.isTyping = false
-        if(this.typingIntervalTimer !== -1) utils.timers.clearInterval(this.typingIntervalTimer)
+        // if(this.typingIntervalTimer !== -1) utils.timers.clearInterval(this.typingIntervalTimer)
         setDialogNpcText(this.currentText)
 
         this.timerSec = this.clickIntervalSecond
+        
+        engine.removeSystem(TextTypingSystem)
     }
 }
 
-
-
-
 export const streamedMsgsUiControl = new StreamedMsgUiControl()
+
+
+let charIdx: number = 0
+let intervalCount: number = 0
+
+function TextTypingSystem(dt: number){
+    if(!streamedMsgsUiControl.isTyping) return
+    
+    intervalCount += dt
+    if(intervalCount < streamedMsgsUiControl.typingIntervalMs / 1000) return
+
+    intervalCount = 0
+    for(let i = charIdx + 1; i < streamedMsgsUiControl.currentText.length; i++){
+        if(streamedMsgsUiControl.currentText[i] !== '' || streamedMsgsUiControl.currentText[i] !== '\n'){
+            charIdx = i
+            break
+        }
+    }
+    let displayText = streamedMsgsUiControl.currentText.substring(0, charIdx + 1)
+    console.log(streamedMsgsUiControl.currentText, streamedMsgsUiControl.currentIdx, displayText)
+    setDialogNpcText(displayText)
+
+    if(displayText.length === streamedMsgsUiControl.currentText.length){
+        streamedMsgsUiControl._finishTyping()
+    }
+}
+
+function NextStreamedMsgsSystem(dt: number){
+    if(!streamedMsgsUiControl.started) return
+
+    if(!REGISTRY.activeNPC) {
+        if (streamedMsgsUiControl.started) {
+            streamedMsgsUiControl.reset()
+        }
+        return
+    }
+    
+    streamedMsgsUiControl.timerSec += dt
+    if(streamedMsgsUiControl.timerSec < streamedMsgsUiControl.clickIntervalSecond) return
+
+    if (inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_DOWN)){
+        if(!streamedMsgsUiControl.started) return
+        streamedMsgsUiControl.timerSec = 0
+        console.log('StreamedMsgUiControl. Click detected')
+        if(streamedMsgsUiControl.isTyping){
+            streamedMsgsUiControl._finishTyping()
+        }
+        else{
+            let nextPart = streamedMsgs.next()
+            if(nextPart.text){
+                // show text
+                streamedMsgsUiControl.showNextText(nextPart)
+            }
+            else{
+                const checkRes = streamedMsgs._next(false, nextPart.indexStart)
+                console.log('StreamedMsgUiControl. checkRes:', checkRes)
+                if(nextPart.endOfInteraction || checkRes.endOfInteraction){
+                    console.log('StreamedMsgUiControl. end of interaction. stop')
+                    streamedMsgs.started = false
+                    streamedMsgs.waitingForMore = false
+
+                    endOfRemoteInteractionStream(REGISTRY.activeNPC)
+
+                    streamedMsgsUiControl.reset()
+                }
+                else{
+                    console.log('StreamedMsgUiControl. not end of interaction. waiting more streamed message')
+                    streamedMsgs.waitingForMore = true
+                    displayDialogNpcUi(false)
+                }
+            }
+        }
+    }
+}

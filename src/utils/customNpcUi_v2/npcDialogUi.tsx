@@ -36,24 +36,27 @@ export function setupNpcDialogUiScaling(inScale: number, inFontSize: number, inT
 }
 
 export function displayDialogNpcUi(value: boolean){
-    showDialogUi = value
-    // if(value) activateUiScalingSystem(true)
-    // else activateUiScalingSystem(false)
-
-    if(REGISTRY.activeNPC){
-        let npcPortrait = (getData(REGISTRY.activeNPC.entity) as NPCData)
-        
-        if (npcPortrait.portrait) {
-          if (typeof npcPortrait.portrait === 'string') {
-            npcPortraitSrc = npcPortrait.portrait
-          } else {
-            npcPortraitSrc = npcPortrait.portrait.path
-            npcPortraitWidth = npcPortrait.portrait.width
-            npcPortraitHeight = npcPortrait.portrait.height
-            npcPortraitBottomPos = npcPortrait.portrait.offsetY
-          }
+    if(value){
+        if(REGISTRY.activeNPC){
+            let npcPortrait = (getData(REGISTRY.activeNPC.entity) as NPCData)
+            
+            if (npcPortrait.portrait) {
+            if (typeof npcPortrait.portrait === 'string') {
+                npcPortraitSrc = npcPortrait.portrait
+            } else {
+                npcPortraitSrc = npcPortrait.portrait.path
+                npcPortraitWidth = npcPortrait.portrait.width
+                npcPortraitHeight = npcPortrait.portrait.height
+                npcPortraitBottomPos = npcPortrait.portrait.offsetY
+            }
+            }
         }
     }
+    else{
+        npcPortraitSrc = ''
+    }
+
+    showDialogUi = value
 }
 
 export function setDialogNpcText(value: string){
