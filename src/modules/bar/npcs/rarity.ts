@@ -1,5 +1,6 @@
 import { getUserData, UserData } from "~system/UserIdentity"
-import { getRealm, RealmInfo } from "~system/Runtime"
+// import { getRealm, RealmInfo } from "~system/Runtime"
+import { EnvironmentRealm, getCurrentRealm } from "~system/EnvironmentApi"
 
 export enum Rarity {
   Unique = 'unique',
@@ -81,7 +82,7 @@ export interface Snapshots {
 }
 
 export let userData: UserData
-export let playerRealm: RealmInfo
+export let playerRealm: EnvironmentRealm
 
 let rarestEquippedItem: rarityLevel = 0
 
@@ -100,22 +101,25 @@ export async function setUserData() {
 
 // fetch the player's realm
 export async function setRealm() {
-  let realm = await getRealm({})
-  if (realm) {
-    console.log(`You are in the realm: ${JSON.stringify(realm.realmInfo?.realmName)}`)
-    if(realm.realmInfo === undefined){
-      console.error("realm Info is undefined");
-      return
+    let realm = await getCurrentRealm({})
+    if (realm && realm.currentRealm) {
+        console.log(`You are in the realm: ${JSON.stringify(realm.currentRealm)}`)
+        //GAME_STATE.playerState.setDclUserRealm( realm )
+        playerRealm = realm.currentRealm
     }
-    playerRealm = realm.realmInfo
-    if (
-      realm.realmInfo.baseUrl === 'http://127.0.0.1:8000' ||
-      realm.realmInfo.baseUrl === 'http://192.168.0.18:8000'
-    ) {
-      realm.realmInfo.baseUrl = 'https://peer.decentraland.org'
-      console.log('CHANGED REALM TO: ', realm.realmInfo.baseUrl)
+    
+    if (playerRealm) {
+        console.log('here.')
+        if( playerRealm.serverName === undefined){
+            console.error("realm Info is undefined");
+            return
+        }
+
+        if ( playerRealm.domain === 'https://127.0.0.1' || playerRealm.domain === 'http://192.168.0.18'){
+            playerRealm.serverName = 'https://peer.decentraland.org'
+            console.log('CHANGED REALM TO: ', playerRealm.serverName)
+        }
     }
-  }
 }
 
 /**
@@ -125,7 +129,7 @@ export async function setRealm() {
  */
 export async function getUserInfo() {
   return (await fetch(
-    `${playerRealm.baseUrl}/content/entities/profiles?pointer=${userData.userId}`
+    `${playerRealm.serverName}/content/entities/profiles?pointer=${userData.userId}`
   )
     .then((res) => res.json())
     .then((res) => {
@@ -141,10 +145,10 @@ export async function getUserInfo() {
  */
 export async function getUserInventory() {
   console.log(
-    `${playerRealm.baseUrl}/lambdas/collections/wearables-by-owner/${userData.userId}?includeDefinitions`
+    `${playerRealm.serverName}/lambdas/collections/wearables-by-owner/${userData.userId}?includeDefinitions`
   )
   const response = await fetch(
-    `${playerRealm.baseUrl}/lambdas/collections/wearables-by-owner/${userData.userId}?includeDefinitions`
+    `${playerRealm.serverName}/lambdas/collections/wearables-by-owner/${userData.userId}?includeDefinitions`
   )
   const inventory = await response.json()
 
@@ -160,16 +164,16 @@ export async function rarestItem(
   equiped: boolean = false
 ): Promise<rarityLevel> {
   if (!userData) await setUserData()
+    console.log('user data:', userData)
   if (!playerRealm) await setRealm()
+    console.log('player realm:', playerRealm)
   if (!userData.hasConnectedWeb3) return rarityLevel.none
 
   const profile = await getUserInfo()
-  //log('PROFILE:, ',profile )
   const inventory = await getUserInventory()
-  //log('INVENTORY:, ',inventory )
   if (!profile || !inventory) return rarityLevel.none
-  // log('PROFILE: ', profile)
-  //log('INVENTORY :', inventory)
+  console.log('PROFILE: ', profile)
+  console.log('INVENTORY :', inventory)
   if (equiped) {
     const equipedAsUrn =
       profile.metadata.avatars[0]?.avatar?.wearables?.map(mapToUrn)
