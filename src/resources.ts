@@ -30,7 +30,27 @@ export default {
       ron: "models/robots/ron.glb",
       rings: "models/robots/rings.glb",
     },
-  }  
+  },
+  zenquencer: {
+    models:{
+      pool: 'models/zenquencer/pool.glb',
+      tube: 'models/zenquencer/tube.glb',
+      linearBtn: 'models/zenquencer/linear.glb',
+      randomBtn: 'models/zenquencer/random.glb',
+      musicDrop: 'models/zenquencer/music-drop.glb',
+      speedBtn: 'models/zenquencer/speedButton.glb',
+      stone: 'models/zenquencer/stone.glb'
+    },
+    kalimbaNotes:{
+      f3: 'sounds/zenquencer/f3.mp3',
+      a3: 'sounds/zenquencer/a3.mp3',
+      c3: 'sounds/zenquencer/c3.mp3',
+      a4: 'sounds/zenquencer/a4.mp3',
+      e4: 'sounds/zenquencer/e4.mp3',
+      f4: 'sounds/zenquencer/f4.mp3',
+      g4: 'sounds/zenquencer/g4.mp3'
+    }
+  }
 }
 
 

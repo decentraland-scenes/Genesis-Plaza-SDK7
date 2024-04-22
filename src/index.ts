@@ -37,6 +37,7 @@ import { addBarVideo } from './modules/barVideoScreen'
 import { addAuditoriumVideo } from './modules/auditoriumScreen'
 import { startArtichoke } from './modules/artichoke'
 import { addWearables } from './modules/wearables'
+import { addZenquencer } from './modules/zenquencer/zenquencer'
 // import { addNFTs } from './modules/nftBuilder'
 // import { placeMuseumPieces } from './modules/museumItems'
 //import { placeMuseumPieces } from './modules/museumItems'
@@ -93,7 +94,7 @@ function addOutsideOfIfPlayerOutsideOnGround(){
       addAuditoriumVideo()
       startArtichoke()
       addWearables()
-
+      addZenquencer()
   //  }else{
    //   console.log("index.ts", "addOutsideOfIfPlayerOutsideOnGround", "player not on ground")
   //  }  
