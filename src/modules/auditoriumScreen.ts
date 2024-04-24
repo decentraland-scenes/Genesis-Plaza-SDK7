@@ -10,7 +10,7 @@ export function addAuditoriumVideo(){
     MeshRenderer.setPlane(screen)
     Transform.create(screen, { 
         position: Vector3.create(285, 17.5, 279),
-        rotation: Quaternion.fromEulerDegrees(0, 210, 0),
+        rotation: Quaternion.fromEulerDegrees(0, 210 + 180, 0),
         scale: Vector3.create(10 * 2.8, 5.6 * 2.8, 10 * 2.8),
     })
 
