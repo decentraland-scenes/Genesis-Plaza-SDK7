@@ -73,7 +73,7 @@ export class CrowdMenuItem extends MenuItem {
     this.scale = Vector3.create(1, 1, 1)
     this.scaleMultiplier = 1.2
 
-
+    
     this.thumbNail = new ThumbnailPlane(
       getImageOrFallback(_scene.thumbnail,"images/fallback-scene-thumb.png"),
       {
@@ -322,13 +322,13 @@ export class CrowdMenuItem extends MenuItem {
 
    
     // highlights BG on selection
-    this.highlightRays = engine.addEntity()
-    Transform.create(this.highlightRays, {
+    this.highlightFrame = engine.addEntity()
+    Transform.create(this.highlightFrame, {
       parent: this.detailsRoot
     })
-    GltfContainer.create(this.highlightRays, resource.highlightRaysShape) 
-    
-    AnimatedItem.create(this.highlightRays, {
+    GltfContainer.create(this.highlightFrame, resource.highlightFrameFullShape)    
+
+    AnimatedItem.create(this.highlightFrame, {
       wasClicked:false,
       isHighlighted:false,
       defaultPosition: Vector3.create(0, 0, 0.05),
@@ -339,19 +339,21 @@ export class CrowdMenuItem extends MenuItem {
       animVeclocity: 0,
       speed: 0.9,
       done: false
-    })     
-   
-
-    this.highlightFrame = engine.addEntity()
-    Transform.create(this.highlightFrame, {
-      parent: this.highlightRays
+    })    
+    // highlights BG on selection
+    this.highlightRays = engine.addEntity()
+    Transform.create(this.highlightRays, {
+      position: Vector3.create(0,1.8,0),
+      scale: Vector3.create(3,3,3),
+      parent: this.highlightFrame
     })
-    GltfContainer.create(this.highlightFrame, resource.highlightFrameFullShape)    
+    GltfContainer.create(this.highlightRays, resource.highlightRaysShape) 
     
   }
 
   updateItemInfo(_scene: any) {
     //image
+    
     this.thumbNail.updateImage(_scene.image)
 
     //counter
@@ -434,7 +436,7 @@ export class CrowdMenuItem extends MenuItem {
 
     let rootInfo = AnimatedItem.getMutable(this.entity)
    // let jumpInButtonInfo = AnimatedItem.getMutable(this.jumpInButton)    
-    let highlightRaysInfo = AnimatedItem.getMutable(this.highlightRays)
+   let highlightFrameInfo = AnimatedItem.getMutable(this.highlightFrame)
     //let coordsPanelInfo = AnimatedItem.getMutable(this.coordsPanel)    
        
 
@@ -453,8 +455,8 @@ export class CrowdMenuItem extends MenuItem {
      // jumpInButtonInfo.isHighlighted = true
      // jumpInButtonInfo.done = false
 
-      highlightRaysInfo.isHighlighted = true
-      highlightRaysInfo.done = false
+     highlightFrameInfo.isHighlighted = true
+     highlightFrameInfo.done = false
 
      // coordsPanelInfo.isHighlighted = true
       //coordsPanelInfo.done = false
@@ -472,7 +474,7 @@ export class CrowdMenuItem extends MenuItem {
     }
     let rootInfo = AnimatedItem.getMutable(this.entity)
    // let jumpInButtonInfo = AnimatedItem.getMutable(this.jumpInButton)    
-    let highlightRaysInfo = AnimatedItem.getMutable(this.highlightRays)
+    let highlightFrameInfo = AnimatedItem.getMutable(this.highlightFrame)
     //let coordsPanelInfo = AnimatedItem.getMutable(this.coordsPanel)
    
 
@@ -482,8 +484,8 @@ export class CrowdMenuItem extends MenuItem {
    // jumpInButtonInfo.isHighlighted = false
    // jumpInButtonInfo.done = false 
 
-    highlightRaysInfo.isHighlighted = false
-    highlightRaysInfo.done = false
+   highlightFrameInfo.isHighlighted = false
+   highlightFrameInfo.done = false
 
     //coordsPanelInfo.isHighlighted = false
     //coordsPanelInfo.done = false

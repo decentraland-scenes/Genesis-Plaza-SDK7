@@ -3,7 +3,7 @@ import { getBestPlaces, getEvents, getTrendingScenes } from "./checkApi";
 import { MenuItem } from "./menuItem";
 import * as sfx from './resources/sounds'
 import { Quaternion, Vector3 } from "@dcl/sdk/math";
-import { AudioSource, ColliderLayer, Entity, GltfContainer, InputAction, MeshCollider, MeshRenderer, Transform, VisibilityComponent, engine, pointerEventsSystem } from "@dcl/sdk/ecs";
+import { AudioSource, ColliderLayer, Entity, GltfContainer, InputAction, MeshCollider, MeshRenderer, PointerEventType, PointerEvents, Transform, VisibilityComponent, engine, inputSystem, pointerEventsSystem } from "@dcl/sdk/ecs";
 import * as resource from "./resources/resources"
 import { AnimatedItem, ProximityScale, SlerpItem } from "./simpleAnimator";
 import { CrowdMenuItem } from "./menuItemCrowd";
@@ -29,6 +29,8 @@ export class HorizontalMenu {
     scrollLeftButton:Entity
     scrollRightButton:Entity
     scrollTarget:Quaternion
+    leftHoverArrow:Entity
+    rightHoverArrow:Entity
     visibleItems:number
     topFrame:Entity
     analyticParent:Entity
@@ -45,6 +47,29 @@ export class HorizontalMenu {
         this.visibleItems = 4
         this.analyticParent = _analyticParent
 
+        //HOVER ARROWS
+        //LEFT
+        this.leftHoverArrow = engine.addEntity()
+        Transform.createOrReplace(this.leftHoverArrow, {
+          parent: this.menuRoot,
+          position: Vector3.create(-0.5,-0.1,-5),
+          scale: Vector3.create(0.12, 0.12, 10),          
+        })      
+       
+        GltfContainer.create(this.leftHoverArrow,resource.hoverArrowEShape)
+        VisibilityComponent.create(this.leftHoverArrow, {visible:false})
+
+        //RIGHT
+        this.rightHoverArrow = engine.addEntity()
+        Transform.createOrReplace(this.rightHoverArrow, {
+          parent: this.menuRoot,
+          position: Vector3.create(0.5,-0.1,-5),
+          scale: Vector3.create(0.12, 0.12, 10),         
+        })       
+        GltfContainer.create(this.rightHoverArrow,resource.hoverArrowFShape)
+        VisibilityComponent.create(this.rightHoverArrow, {visible:false})
+
+        //MENU ROOT NODE
         this.menuRoot = engine.addEntity()
         Transform.create(this.menuRoot, {
             position: Vector3.create(_position.x, _position.y, _position.z),
@@ -52,7 +77,7 @@ export class HorizontalMenu {
           //parent: engine.PlayerEntity
         })
 
-        this.scrollerRoot = engine.addEntity()
+        this.scrollerRoot = engine.addEntity() 
         Transform.create(this.scrollerRoot, {
             position: Vector3.create(0,0,0),
             parent:this.menuRoot
@@ -125,6 +150,36 @@ export class HorizontalMenu {
           parent: this.menuRoot
         })
 
+    }
+
+    setHover(itemEntity:Entity){
+
+      this.endHover()
+      Transform.getMutable(this.leftHoverArrow).parent = itemEntity
+
+      //if(this.clickBoxes.indexOf(itemEntity) != 0){
+      if(this.currentItem > 0){
+        VisibilityComponent.getMutable(this.leftHoverArrow).visible = true
+      }
+      
+
+      Transform.getMutable(this.rightHoverArrow).parent = itemEntity
+     // if(this.clickBoxes.indexOf(itemEntity) != this.clickBoxes.length-1){
+      if(this.currentItem < this.items.length - this.visibleItems){
+        VisibilityComponent.getMutable(this.rightHoverArrow).visible = true
+      }
+      
+    }
+
+    endHover(){
+      this.hideHoverLeft()
+      this.hideHoverRight()
+    }
+    hideHoverLeft(){
+      VisibilityComponent.getMutable(this.leftHoverArrow).visible = false
+    }
+    hideHoverRight(){
+      VisibilityComponent.getMutable(this.rightHoverArrow).visible = false
     }
 
     selectItem(_itemID: number, _silent:boolean) {
@@ -201,10 +256,13 @@ export class HorizontalMenu {
               targetRotation:this.scrollTarget,
               
             })    
-            this.playAudio(sfx.menuUpSource, sfx.menuUpSourceVolume)         
+            this.playAudio(sfx.menuUpSource, sfx.menuUpSourceVolume)        
+            
+            this.endHover()
           }
           else{
             this.playAudio(sfx.menuScrollEndSource, sfx.menuDeselectSourceVolume)
+            //this.hideHoverRight()
           }
           
         }
@@ -229,9 +287,12 @@ export class HorizontalMenu {
               targetRotation:this.scrollTarget
             })
             this.playAudio(sfx.menuDownSource, sfx.menuDownSourceVolume)
+
+            this.endHover()
           }
           else{
             this.playAudio(sfx.menuScrollEndSource, sfx.menuDeselectSourceVolume)
+           // this.hideHoverLeft()
           }
         }        
     }
@@ -273,7 +334,21 @@ export class HorizontalMenu {
         transform.parent = itemRoot       
         this.items.push(_item)
         let id = this.items.length -1
-        
+
+        PointerEvents.create(clickBox, {
+          pointerEvents: [
+            {
+              eventInfo: { button: InputAction.IA_POINTER, maxDistance: 14 },
+              eventType: PointerEventType.PET_HOVER_ENTER
+            },
+            {
+              eventInfo: { button: InputAction.IA_POINTER, maxDistance: 100 },
+              eventType: PointerEventType.PET_HOVER_LEAVE
+            },    
+    
+          ]
+        })        
+    
         pointerEventsSystem.onPointerDown(
           {
             entity:clickBox,
@@ -293,9 +368,11 @@ export class HorizontalMenu {
             }
             if(e.button == InputAction.IA_PRIMARY){
               this.scroll(true)
+              //this.endHover()
             }
             if(e.button == InputAction.IA_SECONDARY){
               this.scroll(false)
+              //this.endHover()
             }
               
           }
@@ -358,15 +435,18 @@ export class HorizontalMenu {
     async updateCrowdsMenu(_count:number){
 
       let scenes = await getTrendingScenes(10)
-      console.log("SCENES:    " + scenes)
+      console.log("CROWD SCENES:    " + scenes)
       if(scenes){
-        if (scenes.length <= 0) {
+        
+        if (scenes.length <= 0) {          
           return
         }
       
        
        // console.log("scene:length: " + scenes.length)
         console.log("items:length: " + this.items.length)   
+        console.log("scenes:length: " + scenes.length)   
+
         for(let i=0; i < scenes.length; i++){
           
           if (i < this.items.length){        
@@ -374,7 +454,7 @@ export class HorizontalMenu {
             this.items[i].updateItemInfo(scenes[i])
           }
           else{
-           
+           // console.log("UPDATING IMAGE FROM URL: " + scenes[i].thumbnail + " - " +  scenes[i].name)
            // console.log(scenes[i])
             
             this.addMenuItem(new CrowdMenuItem({ 
@@ -444,7 +524,7 @@ export class HorizontalMenu {
       for(let i=0; i < this.items.length; i++){         
         
           if(i < this.visibleItems ){
-            //this.items[i].show()
+            //this.items[i].show() 
             this.showItem(i)             
           }
           else{
@@ -464,5 +544,24 @@ export class HorizontalMenu {
         loop:false,
         volume: volume
     })
+  }
+
+  update(dt:number){
+    for (let item of this.clickBoxes) {
+
+      if (inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_HOVER_ENTER, item)) {
+       console.log("HOVERING "  )
+       this.setHover(item)
+       //this.selectItem(this.clickBoxes.indexOf(item), false)
+      }
+
+      if (inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_HOVER_LEAVE, item)) {
+        console.log("ENDHOVER "  )
+       // this.deselectAll()
+       // this.endHover(item)
+        //this.setHover(this.menuRoot)
+      }
+      
+    }
   }
 }

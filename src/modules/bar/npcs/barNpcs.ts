@@ -10,6 +10,8 @@ import { createArtistCouple } from './artistCoupleNpcs'
 import { createSimonas } from './simonasNpc'
 import { createAisha } from './aishaNpc'
 import { REGISTRY } from '../../../registry'
+import { createCatGuyNpc } from './catGuyNpc'
+import { createWenMoonNpc } from './wenMoonNpc'
 
 export const LogTag: string = 'barNpcs'
 
@@ -55,5 +57,7 @@ export function initOutsideNpcs(delay?: number): void {
 
   utils.timers.setTimeout(() => {
     createSimonas()
+    createCatGuyNpc()
+    createWenMoonNpc()
   }, delay ? delay : aishaSpawnSecondsDelay * 1000)
 }

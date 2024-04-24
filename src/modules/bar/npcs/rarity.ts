@@ -1,5 +1,7 @@
 import { getUserData, UserData } from "~system/UserIdentity"
-import { getRealm, RealmInfo } from "~system/Runtime"
+// import { getRealm, RealmInfo } from "~system/Runtime"
+import { EnvironmentRealm, getCurrentRealm } from "~system/EnvironmentApi"
+import { getPlayer } from '@dcl/sdk/src/players'
 
 export enum Rarity {
   Unique = 'unique',
@@ -81,7 +83,7 @@ export interface Snapshots {
 }
 
 export let userData: UserData
-export let playerRealm: RealmInfo
+export let playerRealm: EnvironmentRealm
 
 let rarestEquippedItem: rarityLevel = 0
 
@@ -100,22 +102,25 @@ export async function setUserData() {
 
 // fetch the player's realm
 export async function setRealm() {
-  let realm = await getRealm({})
-  if (realm) {
-    console.log(`You are in the realm: ${JSON.stringify(realm.realmInfo?.realmName)}`)
-    if(realm.realmInfo === undefined){
-      console.error("realm Info is undefined");
-      return
+    let realm = await getCurrentRealm({})
+    if (realm && realm.currentRealm) {
+        console.log(`You are in the realm: ${JSON.stringify(realm.currentRealm)}`)
+        //GAME_STATE.playerState.setDclUserRealm( realm )
+        playerRealm = realm.currentRealm
     }
-    playerRealm = realm.realmInfo
-    if (
-      realm.realmInfo.baseUrl === 'http://127.0.0.1:8000' ||
-      realm.realmInfo.baseUrl === 'http://192.168.0.18:8000'
-    ) {
-      realm.realmInfo.baseUrl = 'https://peer.decentraland.org'
-      console.log('CHANGED REALM TO: ', realm.realmInfo.baseUrl)
+    
+    if (playerRealm) {
+        console.log('here.')
+        if( playerRealm.serverName === undefined){
+            console.error("realm Info is undefined");
+            return
+        }
+
+        if ( playerRealm.domain === 'https://127.0.0.1' || playerRealm.domain === 'http://192.168.0.18'){
+            playerRealm.serverName = 'https://peer.decentraland.org'
+            console.log('CHANGED REALM TO: ', playerRealm.serverName)
+        }
     }
-  }
 }
 
 /**
@@ -124,8 +129,10 @@ export async function setRealm() {
  * @param address ETH address
  */
 export async function getUserInfo() {
+    const userInfoUrl = `https://peer.decentraland.org/content/entities/profiles?pointer=${userData.userId}`
+    console.log('user info url:', userInfoUrl)
   return (await fetch(
-    `${playerRealm.baseUrl}/content/entities/profiles?pointer=${userData.userId}`
+    userInfoUrl
   )
     .then((res) => res.json())
     .then((res) => {
@@ -141,10 +148,10 @@ export async function getUserInfo() {
  */
 export async function getUserInventory() {
   console.log(
-    `${playerRealm.baseUrl}/lambdas/collections/wearables-by-owner/${userData.userId}?includeDefinitions`
+    `${playerRealm.serverName}/lambdas/collections/wearables-by-owner/${userData.userId}?includeDefinitions`
   )
   const response = await fetch(
-    `${playerRealm.baseUrl}/lambdas/collections/wearables-by-owner/${userData.userId}?includeDefinitions`
+    `${playerRealm.serverName}/lambdas/collections/wearables-by-owner/${userData.userId}?includeDefinitions`
   )
   const inventory = await response.json()
 
@@ -156,38 +163,65 @@ export async function getUserInventory() {
   return inventory
 }
 
+
+let playerItems: any = null
+export async function fetchPlayerItems(){
+    try {
+		// const userData = getPlayer()
+        if (!userData) await setUserData()
+		const wearablesReq = await fetch(`https://peer.decentraland.org/lambdas/users/${userData?.userId}/wearables`)
+		const wearablesData = await wearablesReq.json()
+		
+        const emotesReq = await fetch(`https://peer.decentraland.org/lambdas/users/${userData?.userId}/emotes`)
+		const emotesData = await emotesReq.json()
+
+        return [ ...wearablesData.elements, ...emotesData.elements]
+	} catch {
+		console.log('an error occurred while reaching for wearables data')
+	}
+}
+
+
 export async function rarestItem(
   equiped: boolean = false
 ): Promise<rarityLevel> {
   if (!userData) await setUserData()
-  if (!playerRealm) await setRealm()
+//     console.log('user data:', userData)
+//   if (!playerRealm) await setRealm()
+//     console.log('player realm:', playerRealm)
   if (!userData.hasConnectedWeb3) return rarityLevel.none
 
-  const profile = await getUserInfo()
-  //log('PROFILE:, ',profile )
-  const inventory = await getUserInventory()
-  //log('INVENTORY:, ',inventory )
-  if (!profile || !inventory) return rarityLevel.none
-  // log('PROFILE: ', profile)
-  //log('INVENTORY :', inventory)
-  if (equiped) {
-    const equipedAsUrn =
-      profile.metadata.avatars[0]?.avatar?.wearables?.map(mapToUrn)
-    for (const item of equipedAsUrn) {
-      for (let invItem of inventory) {
-        if (item === invItem.definition.id && invItem.definition.rarity) {
-          updateRarity(invItem.definition.rarity)
-          console.log('ONE ITEM OF RARITY ', invItem.definition.rarity)
-        }
-      }
-    }
-  } else {
-    for (let invItem of inventory) {
-      if (invItem.definition.rarity) {
-        updateRarity(invItem.definition.rarity)
-      }
-    }
+  if(!playerItems) playerItems = await fetchPlayerItems()
+  console.log(playerItems)
+
+//   const profile = await getUserInfo()
+//   const inventory = await getUserInventory()
+//   if (!profile || !inventory) return rarityLevel.none
+//   console.log('PROFILE: ', profile)
+//   console.log('INVENTORY :', inventory)
+
+  for(let i = 0; i < playerItems.length; i++){
+    updateRarity(playerItems[i].rarity)
+    console.log(playerItems[i].name, playerItems[i].rarity, rarestEquippedItem)
   }
+//   if (equiped) {
+//     const equipedAsUrn =
+//       profile.metadata.avatars[0]?.avatar?.wearables?.map(mapToUrn)
+    // for (const item of equipedAsUrn) {
+    //   for (let invItem of inventory) {
+    //     if (item === invItem.definition.id && invItem.definition.rarity) {
+    //       updateRarity(invItem.definition.rarity)
+    //       console.log('ONE ITEM OF RARITY ', invItem.definition.rarity)
+    //     }
+    //   }
+//     }
+//   } else {
+//     for (let invItem of inventory) {
+//       if (invItem.definition.rarity) {
+//         updateRarity(invItem.definition.rarity)
+//       }
+//     }
+//   }
   // log(rarityLevel[rarestEquippedItem])
   return rarestEquippedItem
 }

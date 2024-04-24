@@ -49,8 +49,8 @@ export function createOctopusNpc() {
       },
       portrait: {
         path: `images/portraits/bartender.png`,
-        height: 300, width: 300,
-        offsetX: -80, offsetY: 25
+        height: 350, width: 350,
+        offsetX: -100, offsetY: -20
       },
     }
   )

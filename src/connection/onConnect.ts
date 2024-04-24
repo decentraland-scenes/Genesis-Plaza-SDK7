@@ -329,9 +329,10 @@ function onLevelConnect(room: Room<clientState.NpcGameRoomState>) {
       streamedMsgs.started = true
       streamedMsgs.waitingForMore = false
       
-      streamedMsgsUiControl.start()
-      streamedMsgsUiControl.showNextText(nextPart)
-
+      utils.timers.setTimeout(() => {
+        streamedMsgsUiControl.start()
+        streamedMsgsUiControl.showNextText(nextPart)
+      }, 500)
     //   const dialog = createDialog(nextPart)
     //   let hasEmotion = nextPart.emotion ? true : false
     //   console.log("Emotions", "Do we have emotions?", hasEmotion, ":", nextPart);

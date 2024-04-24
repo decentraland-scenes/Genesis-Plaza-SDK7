@@ -9,7 +9,7 @@ import * as sceneDataHelper from './utils/sceneDataHelper'
 import { lowerVolume, outOfBar, placeJukeBox, setBarMusicOff, setBarMusicOn } from './modules/bar/jukebox'
 import { addRepeatTrigger } from './modules/Utils'
 import { log } from './back-ports/backPorts'
-import { TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, barOffset, coreBuildingOffset } from './lobby/resources/globals'
+import { TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, barOffset, basketballOffset, coreBuildingOffset, lobbyCenter } from './lobby/resources/globals'
 import { initBarNpcs, initOutsideNpcs } from './modules/bar/npcs/barNpcs'
 import { setupUi } from './ui'
 import { placeDoors } from './modules/bar/doors'
@@ -30,6 +30,17 @@ import { isMovePlayerInProgress } from './back-ports/movePlayer'
 import * as resources from './lobby/resources/resources'
 import { getAndSetUserData, getAndSetUserDataIfNullNoWait, getUserDataFromLocal } from './utils/userData'
 import { loadBeamMesh } from './lobby/beamPortal'
+import { placeMuseumPieces } from './modules/museumItems'
+import { addNFTs } from './modules/nftBuilder'
+import { addRobots } from './modules/npcRobotBuilder'
+import { addBarVideo } from './modules/barVideoScreen'
+import { addAuditoriumVideo } from './modules/auditoriumScreen'
+import { startArtichoke } from './modules/artichoke'
+import { addWearables } from './modules/wearables'
+import { addZenquencer } from './modules/zenquencer/zenquencer'
+// import { addNFTs } from './modules/nftBuilder'
+// import { placeMuseumPieces } from './modules/museumItems'
+//import { placeMuseumPieces } from './modules/museumItems'
 
 // export all the functions required to make the scene work
 export * from '@dcl/sdk'
@@ -52,14 +63,9 @@ function insideBar() {
   }
 
   placeJukeBox()
+  addBarVideo()
     
-  if (!isBasketballAdded) {
-
-    // ADD BASKETBALL GAME
-
-    let physicsManager = new PhysicsManager(3)
-    isBasketballAdded = true
-  }
+  
 }
 
 function exitBar() {
@@ -71,14 +77,29 @@ function exitBar() {
 function addOutsideOfIfPlayerOutsideOnGround(){
   const doIt = ()=>{
     const playerPos = Transform.getOrNull(engine.PlayerEntity)
-    if(playerPos.position.y < 10){
+   // if(playerPos.position.y < 10){
       console.log("index.ts", "addOutsideOfIfPlayerOutsideOnGround", "player on ground, init anything outside ground level")
       const spawnDealy = 1000
       initOutsideNpcs(spawnDealy)
       placePlatforms()
-    }else{
-      console.log("index.ts", "addOutsideOfIfPlayerOutsideOnGround", "player not on ground")
-    }  
+      placeMuseumPieces()
+      addNFTs() 
+      addRobots()
+      addAuditoriumVideo()
+      startArtichoke()
+      addWearables()
+      addZenquencer()
+
+      if (!isBasketballAdded) {
+
+        // ADD BASKETBALL GAME
+    
+        let physicsManager = new PhysicsManager(1)
+        isBasketballAdded = true
+      }
+  //  }else{
+   //   console.log("index.ts", "addOutsideOfIfPlayerOutsideOnGround", "player not on ground")
+  //  }  
   }
   //use timer to wait for player data
   const timerId = utils.timers.setInterval(() => {

@@ -27,6 +27,15 @@ export function createFashionistNpc(): void {
         console.log(AnalyticsLogLabel, "barNpcs.ts", "Fashionist")
         trackAction(fashionist, "Interact", undefined)
         trackStart(fashionist)
+        
+        let targetPosition = Vector3.clone(Transform.get(engine.PlayerEntity).position)
+        targetPosition.y = position.y
+
+        RotateFashionist(targetPosition)
+        
+
+        npcLib.playAnimation(fashionist, `Talk`, false)
+        npcLib.talk(fashionist, getFashionistDialog(fashionist), 11)
 
         let rareItem = await rarestItem(true)
 
@@ -47,14 +56,8 @@ export function createFashionistNpc(): void {
             dialogIndex = fashionistMythicDialog
             break
         }
-
-        npcLib.playAnimation(fashionist, `Talk`, false)
+        
         npcLib.talk(fashionist, getFashionistDialog(fashionist), dialogIndex)
-
-        let targetPosition = Vector3.clone(Transform.get(engine.PlayerEntity).position)
-        targetPosition.y = position.y
-
-        RotateFashionist(targetPosition)
       },
       onWalkAway: () => {
         console.log('NPC', 'fashionist', 'walk away');
@@ -65,7 +68,8 @@ export function createFashionistNpc(): void {
       },
       portrait: {
         path: `images/portraits/WearableConnoisseur.png`,
-        offsetX: -70, offsetY: 10
+        height: 300, width: 300,
+        offsetX: -70, offsetY: -20
       }
     }
   )

@@ -1,6 +1,6 @@
 import { engine, PBUiCanvasInformation, UiCanvasInformation } from '@dcl/sdk/ecs'
 import ReactEcs, { ReactEcsRenderer } from '@dcl/sdk/react-ecs'
-import { NpcUtilsUi,  } from 'dcl-npc-toolkit/dist/ui'
+import { NpcUtilsUi, setupNPCUiScaling,  } from 'dcl-npc-toolkit/dist/ui'
 import { customNpcUI, setupCustomNPCUiScaling } from './utils/customNpcUi/customUi'
 import { render } from 'dcl-ui-toolkit'
 import { setupEventDetailsUIScaling, uiEventDettails } from './lobby/eventDetailsUI'
@@ -11,8 +11,8 @@ import {
   uiBasketballScore,
   uiOutOfBounds
 } from './modules/bar/basketball/basketballUI'
-import { uiDialogNpc } from './utils/customNpcUi_v2/npcDialogUi'
-import { uiCustomAskNpc } from './utils/customNpcUi_v2/npcCustomUi'
+import { setupNpcDialogUiScaling, uiDialogNpc } from './utils/customNpcUi_v2/npcDialogUi'
+import { setupNpcCustomQuestionUiScaling, uiCustomAskNpc } from './utils/customNpcUi_v2/npcCustomUi'
 
 let tieredModalScale = 1
 let tieredFontScale = 1
@@ -69,6 +69,12 @@ export function updateUIScalingWithCanvasInfo(canvasInfo: PBUiCanvasInformation)
   //setupNPCUiScaling(scale, scale, scale)
   setupBasketballUiScaling(scale, scale, scale)
   setupEventDetailsUIScaling(scale, scale, scale)
+
+  const scale2 = canvasInfo.height / 958
+  setupNpcDialogUiScaling(scale2, scale2, scale2)
+  setupNpcCustomQuestionUiScaling(scale2, scale2, scale2)
+
+  setupNPCUiScaling(scale2, scale2, scale2)
 }
 
 const uiComponent = () => [
