@@ -23,6 +23,7 @@ export const lobbyHeightLegacy = 104.73
 export const lobbyHeight = 104.73 //shorten trees by 6 meters 72
 //export const lobbyHeight = 0.5 //shorten trees by 6 meters 72
 export const lobbyRadius = 14.8
+export const basketballOffset = Vector3.create(184, 0, 92) 
 export const barOffset = Vector3.create(128, 0, 112) 
 
 export interface NoArgCallBack {

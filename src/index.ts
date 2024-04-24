@@ -9,7 +9,7 @@ import * as sceneDataHelper from './utils/sceneDataHelper'
 import { lowerVolume, outOfBar, placeJukeBox, setBarMusicOff, setBarMusicOn } from './modules/bar/jukebox'
 import { addRepeatTrigger } from './modules/Utils'
 import { log } from './back-ports/backPorts'
-import { TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, barOffset, coreBuildingOffset } from './lobby/resources/globals'
+import { TRIGGER_LAYER_REGISTER_WITH_NO_LAYERS, barOffset, basketballOffset, coreBuildingOffset, lobbyCenter } from './lobby/resources/globals'
 import { initBarNpcs, initOutsideNpcs } from './modules/bar/npcs/barNpcs'
 import { setupUi } from './ui'
 import { placeDoors } from './modules/bar/doors'
@@ -65,13 +65,7 @@ function insideBar() {
   placeJukeBox()
   addBarVideo()
     
-  if (!isBasketballAdded) {
-
-    // ADD BASKETBALL GAME
-
-    let physicsManager = new PhysicsManager(3)
-    isBasketballAdded = true
-  }
+  
 }
 
 function exitBar() {
@@ -95,6 +89,14 @@ function addOutsideOfIfPlayerOutsideOnGround(){
       startArtichoke()
       addWearables()
       addZenquencer()
+
+      if (!isBasketballAdded) {
+
+        // ADD BASKETBALL GAME
+    
+        let physicsManager = new PhysicsManager(1)
+        isBasketballAdded = true
+      }
   //  }else{
    //   console.log("index.ts", "addOutsideOfIfPlayerOutsideOnGround", "player not on ground")
   //  }  
