@@ -88,7 +88,7 @@ export function createSimonas() {
       }
       , onEndOfRemoteInteractionStream: () => {
         // openCustomUI()
-        openAskNpcAiUi()
+        openAskNpcAiUi(1)
       }
       , onEndOfInteraction: () => { }
     }

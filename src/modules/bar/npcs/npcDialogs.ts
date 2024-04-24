@@ -1,7 +1,7 @@
 import * as npcLib from 'dcl-npc-toolkit'
 import type { Dialog } from 'dcl-npc-toolkit'
-import { Entity } from "@dcl/sdk/ecs"
-import { Vector3 } from '@dcl/sdk/math';
+import { EasingFunction, Entity, Transform, Tween } from "@dcl/sdk/ecs"
+import { Quaternion, Vector3 } from '@dcl/sdk/math';
 import * as utils from '@dcl-sdk/utils'
 import { _teleportTo, log } from "../../../back-ports/backPorts";
 import { boyArtist, girlArtist } from './artistCoupleNpcs';
@@ -12,17 +12,23 @@ const octopusEndDialog = 3
 export const octopusDialog = [
   {
     text: 'Welcome traveler, how can I help you!',
+    offsetY: 24,
     skipable: true,
   },
   {
     text: 'I may look quite busy, but worry not, I still have like 2 free hands and/or tentacles to spare.',
+    offsetY: 24,
     skipable: true,
   },
   {
     text: 'Is this your first time here? Do you want some pointers about how you can get around the place?',
+    // offsetY: 24,
     isQuestion: true,
     buttons: [
-      { label: 'NO', goToDialog: octopusEndDialog },
+      { 
+        label: 'NO',
+        goToDialog: octopusEndDialog 
+      },
       {
         label: 'YES',
         goToDialog: octopusYesDialog,
@@ -32,6 +38,7 @@ export const octopusDialog = [
   {
     name: 'end',
     text: 'Oh well, if for any reason you need a hand and/or tentacle, I’ll be here!',
+    offsetY: 24,
     isEndOfDialog: true,
     triggeredByNext: () => {
       //   if (!query(questProg).isTaskCompleted(taskIds.intro)) {
@@ -46,36 +53,42 @@ export const octopusDialog = [
   {
     name: 'yes',
     text: 'Here you can also find funky characters like myself. Don’t be shy, chat them up, everyone has a story to tell.',
+    offsetY: 24,
     skipable: true,
   },
   {
     text: 'You can also take that glowing beam of light back up to the happy place up in the clouds where you started out.',
+    offsetY: 24,
 
     skipable: true,
   },
   {
     text: 'There you can find a whole bunch of suggestions of places inside Decentraland you can visit, including <color="red">live events</color> and other highlights.',
+    offsetY: 24,
 
     skipable: true,
   },
   {
     text: 'You can also open up the map and <color="red">fast travel</color> anywhere! Just press <color="red">M</color> on your keyboard and explore it. You’ll see it’s pretty damn big!',
+    offsetY: 24,
 
     skipable: true,
   },
   {
     text: 'Or you can just walk out the door and keep walking, and see what you run into.',
+    offsetY: 24,
 
     skipable: true,
   },
   {
     text: 'Right now we’re in the center of the <color="red">Genesis Plaza</color>, a community-owned space that´s open to everyone. The roads fan out in all directions from here.',
+    offsetY: 24,
 
     skipable: true,
   },
   {
     text: 'If you venture out into the world beyond the plaza, you’ll see that the content is created by our growing community. Randomly bumping into things you didn’t expect is half the fun here.',
-
+    offsetY: 24,
     skipable: true,
     triggeredByNext: () => {
       //   if (!query(questProg).isTaskCompleted(taskIds.intro)) {
@@ -88,7 +101,7 @@ export const octopusDialog = [
   {
     name: 'normalEnd',
     text: 'Well that´s it from me. So what are you waiting for? Go and explore the world!',
-
+    offsetY: 24,
     skipable: true,
     //triggeredByNext: () => {
     //console.log("back to idle animation")
@@ -107,71 +120,90 @@ export const fashionistDefaultDialog: number = 7
 
 export function getFashionistDialog(npc: Entity): Dialog[] {
   let dialog = [
-    {
+    { //0
       name: 'none',
       text: 'Why? … Umm, what would someone <i>dressed like you</i> have to say to me?',
+      offsetY: 24,
       skipable: true,
     },
-    {
+    { //1
       text: 'Clearly you just put on whatever rags you slept in and think that’s an outfit, let me tell you something: you don’t cause a good impression on me like that.',
       skipable: true,
     },
-    {
+    { //2
       text: 'I guess you’re fine, I mean <i>we’re not going to be friends</i>, but I’m feeling generous today and will acknowledge that you exist.',
+      offsetY: 24,
       skipable: true,
       triggeredByNext: () => {
         npcLib.talk(npc, dialog, fashionistDefaultDialog)
       },
     },
-    {
+    { //3
       name: 'common',
       text: 'Well look at you, <i>all dressed up</i> with outlet-grade clothes that you probably bought at a gas station.',
+      offsetY: 24,
       skipable: true,
     },
-    {
+    { //4
       text: 'I guess you’re fine, I mean <i>we’re not going to be friends</i>, but I’m feeling generous today and will acknowledge that you exist.',
+      offsetY: 18,
       skipable: true,
       triggeredByNext: () => {
         npcLib.talk(npc, dialog, fashionistDefaultDialog)
       },
     },
-    {
+    { //5
       name: 'epic',
       text: 'I see that you know how to present yourself. If only everyone had a baseline of taste like yours. <i>Not that it’s a very high bar</i>, but it would be quite an improvement.',
+      offsetY: 24,
       skipable: true,
       triggeredByNext: () => {
         npcLib.talk(npc, dialog, fashionistDefaultDialog)
       },
     },
-    {
+    { //6
       name: 'mythic',
       text: 'Oh well <i>finally</i> someone I can talk to here without feeling embarrassed to be seen. You sir know how to dress, well done!',
+      offsetY: 24,
       skipable: true,
       triggeredByNext: () => {
         npcLib.talk(npc, dialog, fashionistDefaultDialog)
       },
     },
-    {
+    { //7
       // had to add a dummy to skip to
       name: 'default',
       text: 'I always say <i>“you are what you wear”</i>. So true. Dressing up is all about expressing who you want to be in the eyes of others.',
+      offsetY: 24,
       skipable: true,
     },
-    {
+    { //8
       text: 'I always say <i>“you are what you wear”</i>. So true.\nDressing up is all about expressing who you want to be in the eyes of others.',
+      offsetY: 24,
       skipable: true,
     },
-    {
+    { //9
       text: 'Me, as you can tell, I’m <i>one of a kind</i>. Dressed in the finest Non-Fungible Tokens in the marketplace. Worthy of a queen!',
+      offsetY: 24,
       skipable: true,
     },
-    {
+    { //10
       text: 'And you, who do your clothes say you are?\n<i>Have a think about that, hun</i>.',
+      offsetY: 24,
       skipable: true,
       isEndOfDialog: true,
       triggeredByNext: () => {
         console.log("barNpcs", "end dialog")
         npcLib.playAnimation(npc, `Idle`, false)
+
+        Tween.create(npc, {
+            mode: Tween.Mode.Rotate({
+                start: Transform.get(npc).rotation,
+                end: Quaternion.fromEulerDegrees(0, 0, 0)
+            }),
+            duration: 1000,
+            easingFunction: EasingFunction.EF_EASEINSINE
+        })
         /*
         utils.timers.tweens.startRotation(npc,
           Transform.get(npc).rotation,
@@ -192,6 +224,11 @@ export function getFashionistDialog(npc: Entity): Dialog[] {
         )
         */
       },
+    },
+    { //11
+      text: '...',
+      offsetY: 24,
+      skipable: false,
     },
   ]
   return dialog

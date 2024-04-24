@@ -376,7 +376,7 @@ function setVisibility(status: boolean): void {
 //   else activateUiScalingSystem(false)
 }
 
-export function openAskNpcAiUi() {
+export function openAskNpcAiUi(indexOffset = 0) {
   let questions = REGISTRY.activeNPC.predefinedQuestions
   selectedPredefinedQuestion = questions
   console.log('QUESTIONS', questions, selectedPredefinedQuestion)
@@ -401,9 +401,11 @@ export function openAskNpcAiUi() {
   }
 
 //   console.log('QUESTIONS', 'NPC Portrait', getData(REGISTRY.activeNPC.entity) as NPCData, portraitPath)
-
   aIndex = 0
   bIndex = 1
+  for(let i = 0; i < indexOffset; i++){
+    nextQuestion()
+  }
   
   setVisibility(true)
 }
@@ -426,9 +428,14 @@ function nextQuestion() {
   aIndex += 2
   bIndex += 2
   if (aIndex >= selectedPredefinedQuestion.length) {
-    aIndex = 0
+
+    if(REGISTRY.activeNPC.name === 'npc.simone') aIndex = 2
+    else aIndex = 0
+  
     if (bIndex >= selectedPredefinedQuestion.length) {
-      bIndex = 1
+      
+      if(REGISTRY.activeNPC.name === 'npc.simone') bIndex = 3
+      else bIndex = 1
     }
   }
 }
