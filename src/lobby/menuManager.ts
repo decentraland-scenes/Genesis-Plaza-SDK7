@@ -1,3 +1,4 @@
+import { engine } from "@dcl/sdk/ecs"
 import { HorizontalMenu } from "./horizontalScrollMenu"
 
 
@@ -7,6 +8,14 @@ export class MenuManager {
 
     constructor(){
         this.items = []
+
+        engine.addSystem((dt: number) => {
+
+            for(let menu of this.items){
+                menu.update(dt)
+            }
+            
+          })
     }
 
     addMenu(menu:HorizontalMenu){

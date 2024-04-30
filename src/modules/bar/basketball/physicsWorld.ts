@@ -44,7 +44,7 @@ export class PhysicsWorldStatic {
         new CANNON.Vec3(1, 0, 0),
         -Math.PI / 2
         ) // Reorient ground plane to be in the y-axis
-        groundBody.position.y = 0.23 // Thickness of ground base model
+        groundBody.position.y = 0.64 // Thickness of ground base model
         groundBody.material = ballBounceMaterial
         this.world.addBody(groundBody)      
     

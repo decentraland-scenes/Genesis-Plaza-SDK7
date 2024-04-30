@@ -8,7 +8,7 @@ import { connectNpcToLobby } from '../../../lobby-scene/lobbyScene'
 import { genericPrefinedQuestions } from '../../../utils/customNpcUi/customUIFunctionality'
 import { TrackingElement, generateGUID, getRegisteredAnalyticsEntity, trackAction, trackEnd, trackStart } from '../../stats/analyticsComponents'
 import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES, AnalyticsLogLabel } from '../../stats/AnalyticsConfig'
-import { barOffset } from '../../../lobby/resources/globals'
+import { basketballOffset } from '../../../lobby/resources/globals'
 import { streamedMsgsUiControl } from '../../RemoteNpcs/streamedMsgsUIcontrol'
 import { closeAskNpcAiUi, openAskNpcAiUi } from '../../../utils/customNpcUi_v2/npcCustomUi'
 

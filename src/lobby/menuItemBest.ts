@@ -6,7 +6,7 @@ import { MenuItem } from './menuItem'
 import * as sfx from './resources/sounds'
 import { lobbyCenter } from './resources/globals'
 import { getCurrentTime, getTimeStamp } from './checkApi'
-import { AudioSource, Entity, GltfContainer, InputAction, TextAlignMode, TextShape, Transform, TransformType, TransformTypeWithOptionals, VisibilityComponent, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
+import { AudioSource, ColliderLayer, Entity, GltfContainer, InputAction, TextAlignMode, TextShape, Transform, TransformType, TransformTypeWithOptionals, VisibilityComponent, engine, pointerEventsSystem } from '@dcl/sdk/ecs'
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { _openExternalURL, _teleportToString } from '../back-ports/backPorts'
 import { getImageOrFallback } from '../utils/allowedMediaHelper'
@@ -487,29 +487,68 @@ export class BestMenuItem extends MenuItem {
     //     sfx.menuDeselectSource.playOnce()
     // }
   }
+  hideElement(entity:Entity){
+    VisibilityComponent.getMutable(entity).visible = false    
+
+    if(GltfContainer.getOrNull(entity)){
+      let mesh = GltfContainer.getMutable(entity)
+      mesh.invisibleMeshesCollisionMask = ColliderLayer.CL_NONE
+      mesh.visibleMeshesCollisionMask = ColliderLayer.CL_NONE
+    }
+
+  }
+  showElement(entity:Entity){
+    VisibilityComponent.getMutable(entity).visible = true    
+
+    if(GltfContainer.getOrNull(entity)){
+      let mesh = GltfContainer.getMutable(entity)
+      mesh.invisibleMeshesCollisionMask = ColliderLayer.CL_POINTER | ColliderLayer.CL_PHYSICS
+      mesh.visibleMeshesCollisionMask = ColliderLayer.CL_POINTER | ColliderLayer.CL_PHYSICS
+    }
+  }
   show() {
-    VisibilityComponent.getMutable(this.itemBox).visible = true    
-    VisibilityComponent.getMutable(this.title).visible = true    
-    VisibilityComponent.getMutable(this.likeCounterBG).visible = true
-    VisibilityComponent.getMutable(this.likeCountRoot).visible = true
-    VisibilityComponent.getMutable(this.likesTitleRoot).visible = true
-    VisibilityComponent.getMutable(this.coordsPanel).visible = true 
-    VisibilityComponent.getMutable(this.jumpInButton).visible = true 
-    VisibilityComponent.getMutable(this.coords).visible = true 
-    VisibilityComponent.getMutable(this.jumpButtonText).visible = true 
+    this.showElement(this.itemBox)
+    this.showElement(this.title)
+    this.showElement(this.likeCounterBG)
+    this.showElement(this.likeCountRoot)
+    this.showElement(this.likesTitleRoot)
+    this.showElement(this.coordsPanel)
+    this.showElement(this.jumpInButton)
+    this.showElement(this.coords)
+    this.showElement(this.jumpButtonText)
+
+    // VisibilityComponent.getMutable(this.itemBox).visible = true    
+    // VisibilityComponent.getMutable(this.title).visible = true    
+    // VisibilityComponent.getMutable(this.likeCounterBG).visible = true
+    // VisibilityComponent.getMutable(this.likeCountRoot).visible = true
+    // VisibilityComponent.getMutable(this.likesTitleRoot).visible = true
+    // VisibilityComponent.getMutable(this.coordsPanel).visible = true 
+    // VisibilityComponent.getMutable(this.jumpInButton).visible = true 
+    // VisibilityComponent.getMutable(this.coords).visible = true 
+    // VisibilityComponent.getMutable(this.jumpButtonText).visible = true 
     this.thumbNail.show()
     Transform.getMutable(this.entity).scale = Vector3.One()
   }
   hide() {
-    VisibilityComponent.getMutable(this.itemBox).visible = false   
-    VisibilityComponent.getMutable(this.title).visible = false    
-    VisibilityComponent.getMutable(this.likeCounterBG).visible = false    
-    VisibilityComponent.getMutable(this.likeCountRoot).visible = false    
-    VisibilityComponent.getMutable(this.likesTitleRoot).visible = false    
-    VisibilityComponent.getMutable(this.coordsPanel).visible = false 
-    VisibilityComponent.getMutable(this.jumpInButton).visible = false 
-    VisibilityComponent.getMutable(this.coords).visible = false 
-    VisibilityComponent.getMutable(this.jumpButtonText).visible = false  
+    this.hideElement(this.itemBox)
+    this.hideElement(this.title)
+    this.hideElement(this.likeCounterBG)
+    this.hideElement(this.likeCountRoot)
+    this.hideElement(this.likesTitleRoot)
+    this.hideElement(this.coordsPanel)
+    this.hideElement(this.jumpInButton)
+    this.hideElement(this.coords)
+    this.hideElement(this.jumpButtonText)
+
+    // VisibilityComponent.getMutable(this.itemBox).visible = false   
+    // VisibilityComponent.getMutable(this.title).visible = false    
+    // VisibilityComponent.getMutable(this.likeCounterBG).visible = false    
+    // VisibilityComponent.getMutable(this.likeCountRoot).visible = false    
+    // VisibilityComponent.getMutable(this.likesTitleRoot).visible = false    
+    // VisibilityComponent.getMutable(this.coordsPanel).visible = false 
+    // VisibilityComponent.getMutable(this.jumpInButton).visible = false 
+    // VisibilityComponent.getMutable(this.coords).visible = false 
+    // VisibilityComponent.getMutable(this.jumpButtonText).visible = false  
     this.thumbNail.hide()
     Transform.getMutable(this.entity).scale = Vector3.Zero()
   }

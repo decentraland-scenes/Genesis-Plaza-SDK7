@@ -5,18 +5,57 @@ import { coreBuildingOffset } from '../../../lobby/resources/globals'
 import { NPCData } from 'dcl-npc-toolkit/dist/types'
 import { TrackingElement, generateGUID, getRegisteredAnalyticsEntity, trackAction, trackEnd, trackStart } from '../../stats/analyticsComponents'
 import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES, AnalyticsLogLabel } from '../../stats/AnalyticsConfig'
-import { Entity } from '@dcl/sdk/ecs'
+import { Animator, Entity } from '@dcl/sdk/ecs'
 import { artistRecommendations, girlArtistTalk } from './npcDialogs'
 import { aritst1ModelPath, aritst2ModelPath, navigationForwardSfx } from '../../../lobby/resources/resources'
 
 export let boyArtist: Entity
 export let girlArtist: Entity
 
+let npcRadius: number = 20
+let isUserInRadius: boolean = false
+
 export function createArtistCouple(): void {
   boyArtist = createBoyArtist()
   girlArtist = createGirlArtist()
 
   npcLib.talkBubble(girlArtist, girlArtistTalk)
+  utils.timers.setTimeout(() => {
+    if(isUserInRadius) {
+        npcLib.talkBubble(girlArtist, girlArtistTalk)
+    }
+    else{    
+        Animator.stopAllAnimations(boyArtist)
+        Animator.stopAllAnimations(girlArtist)
+        npcLib.closeBubble(boyArtist)
+        npcLib.closeBubble(girlArtist)
+    }
+  }, 2000)
+
+    utils.triggers.addTrigger(
+        boyArtist,
+        utils.NO_LAYERS,
+        utils.LAYER_1,
+        [
+            {
+                type: 'sphere',
+                radius: npcRadius
+            }
+        ],
+        (enterEntity)=>{
+            console.log('artists npc. user enter npcs radius')
+            isUserInRadius = true
+            npcLib.talkBubble(girlArtist, girlArtistTalk)
+        },
+        (exitEntity)=>{
+            console.log('artists npc. user exit npcs radius')
+            isUserInRadius = false
+            Animator.stopAllAnimations(boyArtist)
+            Animator.stopAllAnimations(girlArtist)
+            npcLib.closeBubble(boyArtist)
+            npcLib.closeBubble(girlArtist)
+        },
+    )
 }
 
 function createBoyArtist(): Entity {

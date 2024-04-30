@@ -89,7 +89,6 @@ export class BasketballHoop {
       }
       // back wall of hoop
       let wallOffset = Vector3.create(0, 0.821, -1.476)
-
       wallOffset = Vector3.rotate(wallOffset, _rotation)
 
       let cannonWall = new CANNON.Body({
@@ -106,8 +105,27 @@ export class BasketballHoop {
        //shape: new CANNON.Box(new CANNON.Vec3(0.35, 0.35, 0.35)),
       })
       cannonWall.material = hoopContactMaterial
-
       this.world.addBody(cannonWall)
+
+      // back wall of hoop
+      let poleOffset = Vector3.create(0, -2, -2.37)
+      poleOffset = Vector3.rotate(poleOffset, _rotation)
+
+      let cannonPole = new CANNON.Body({
+        mass: 0, // kg
+        position: new CANNON.Vec3(
+          hoopPos.x + poleOffset.x,
+          hoopPos.y + poleOffset.y,
+          hoopPos.z + poleOffset.z 
+        ), // m     
+        quaternion: new CANNON.Quaternion(_rotation.x, _rotation.y, _rotation.z, _rotation.w),
+        shape: new CANNON.Box( new CANNON.Vec3(1 /2, 2, 1/2)),
+        fixedRotation:true
+        
+       //shape: new CANNON.Box(new CANNON.Vec3(0.35, 0.35, 0.35)),
+      })
+      cannonPole.material = hoopContactMaterial
+      this.world.addBody(cannonPole)
     
       // bottom blocker preventing scoring from bottom-up
       let lockOffset = Vector3.create( lockTransform.position.x,  lockTransform.position.y,  lockTransform.position.z)

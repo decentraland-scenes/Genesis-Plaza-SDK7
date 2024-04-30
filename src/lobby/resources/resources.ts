@@ -43,8 +43,10 @@ export let playerCounterBGShape:PBGltfContainer =   {src:modelFolder + "player_c
 export let refreshShape:PBGltfContainer =           {src:modelFolder + "refresh_button.glb"}
 export let loadMoreShape:PBGltfContainer =          {src:modelFolder + "load_more_btn.glb"}
 export let menuArrowShape:PBGltfContainer =         {src:modelFolder + "menu_arrow_long.glb"}
+export let hoverArrowEShape:PBGltfContainer =       {src:modelFolder + "hover_arrow_e.glb"}
+export let hoverArrowFShape:PBGltfContainer =       {src:modelFolder + "hover_arrow_f.glb"}
 export let remainingBGShape:PBGltfContainer =       {src:modelFolder + "remaining_time_bg.glb"}
-export let likeCounterBGShape:PBGltfContainer =       {src:modelFolder + "like_counter_bg.glb"}
+export let likeCounterBGShape:PBGltfContainer =     {src:modelFolder + "like_counter_bg.glb"}
 
 // CLOUDS
 export let cloudDissolveShape:PBGltfContainer=      {src:modelFolder + "cloud_dissolve.glb"}
