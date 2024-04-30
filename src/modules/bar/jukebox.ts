@@ -11,7 +11,8 @@ import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES, AnalyticsLogLabel } f
 
 
 export enum Radios {
-  RAVE = 'https://icecast.ravepartyradio.org/ravepartyradio-192.mp3',
+  //RAVE = 'https://icecast.ravepartyradio.org/ravepartyradio-192.mp3', 
+  RAVE = 'https://radioislanegra.org/radio/8010/basic.aac',
   DELTA = 'https://cdn.instream.audio/:9069/stream?_=171cd6c2b6e',
   GRAFFITI = 'https://n07.radiojar.com/2qm1fc5kb.m4a?1617129761=&rj-tok=AAABeIR7VqwAilDFeUM39SDjmw&rj-ttl=5',
   SIGNS = 'https://edge.singsingmusic.net/MC2.mp3',
@@ -107,7 +108,7 @@ export function placeJukeBox() {
   })
 
   TextShape.createOrReplace(JukeBoxText, {
-    text: 'Radio:\nRave Party',
+    text: 'Radio:\nIsla Negra',
     fontSize: 1
   })
 
@@ -412,7 +413,7 @@ function getRadioName(radio: number) {
   let radioName: string = ''
   switch (radio) {
     case 0:
-      radioName = 'Rave Party'
+      radioName = 'Isla Negra'
       break
     case 1:
       radioName = 'Delta'
