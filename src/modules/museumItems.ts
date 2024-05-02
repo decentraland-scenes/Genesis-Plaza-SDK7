@@ -457,12 +457,12 @@ export function placeMuseumPieces() {
   //   )
   // )
 
-  let plazas = engine.addEntity()
-  Transform.create(plazas,{
-      position: Vector3.create(),
-      parent: plazas
-    })  
-  GltfContainer.createOrReplace(plazas, { src: 'models/museum/map/map_plazas.glb'})
+  // let plazas = engine.addEntity()
+  // Transform.create(plazas,{
+  //     position: Vector3.create(),
+  //     parent: map
+  //   })  
+  // GltfContainer.createOrReplace(plazas, { src: 'models/museum/map/map_plazas.glb'})
 
   //plazas.addComponent(new Animator())
  // plazas.getComponent(Animator).addClip(plazasOn)
