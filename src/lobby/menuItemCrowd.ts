@@ -507,6 +507,9 @@ export class CrowdMenuItem extends MenuItem {
     VisibilityComponent.getMutable(this.jumpButtonText).visible = true 
     this.thumbNail.show()
     Transform.getMutable(this.entity).scale = Vector3.One()
+
+    Transform.getMutable(this.jumpInButton).scale = Vector3.create(0.8, 0.8, 2)
+    Transform.getMutable(this.coordsPanel).scale =  Vector3.create(0.6, 0.6, 0.6)
   }
   hide() {
     VisibilityComponent.getMutable(this.itemBox).visible = false   
@@ -520,6 +523,10 @@ export class CrowdMenuItem extends MenuItem {
     VisibilityComponent.getMutable(this.jumpButtonText).visible = false   
     this.thumbNail.hide()
     Transform.getMutable(this.entity).scale = Vector3.Zero()
+
+    Transform.getMutable(this.jumpInButton).scale = Vector3.Zero()
+    Transform.getMutable(this.coordsPanel).scale = Vector3.Zero()
+
   }
 
   playAudio(sourceUrl:string, volume:number){

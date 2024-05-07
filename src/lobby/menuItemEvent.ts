@@ -732,6 +732,10 @@ export class EventMenuItem extends MenuItem {
    
     VisibilityComponent.getMutable(this.coordsPanel).visible = true 
     VisibilityComponent.getMutable(this.jumpInButton).visible = true 
+
+    Transform.getMutable(this.jumpInButton).scale = Vector3.create(0.8, 0.8, 2)
+    Transform.getMutable(this.coordsPanel).scale =  Vector3.create(0.6, 0.6, 0.6)
+
     VisibilityComponent.getMutable(this.coords).visible = true 
     VisibilityComponent.getMutable(this.jumpButtonText).visible = true 
     if(this.live){
@@ -761,6 +765,11 @@ export class EventMenuItem extends MenuItem {
     VisibilityComponent.getMutable(this.remainingTimeRoot).visible = false
     VisibilityComponent.getMutable(this.coordsPanel).visible = false 
     VisibilityComponent.getMutable(this.jumpInButton).visible = false 
+
+    Transform.getMutable(this.jumpInButton).scale = Vector3.Zero()
+    Transform.getMutable(this.coordsPanel).scale = Vector3.Zero()
+
+    
     VisibilityComponent.getMutable(this.coords).visible = false 
     VisibilityComponent.getMutable(this.jumpButtonText).visible = false 
     this.thumbNail.hide()

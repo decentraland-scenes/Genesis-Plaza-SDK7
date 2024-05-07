@@ -278,7 +278,7 @@ export class BestMenuItem extends MenuItem {
     this.jumpInButton = engine.addEntity()
     Transform.create(this.jumpInButton, {
       position: Vector3.create(0.77, 1, 0),
-      scale: Vector3.create(0.8, 0.8, 0.8), 
+      scale: Vector3.create(0.8, 0.8, 2), 
       parent: this.detailsRoot
     })
     GltfContainer.create(this.jumpInButton, resource.jumpInButtonShape)
@@ -300,33 +300,21 @@ export class BestMenuItem extends MenuItem {
     })      
     VisibilityComponent.create(this.jumpButtonText, {visible:true})
 
-    //skip genesis plaza
-    if(false){
-      TextShape.getMutable(this.jumpButtonText).text = 'HERE'    
-    
-      pointerEventsSystem.onPointerDown(
-        {
-          entity:this.jumpInButton,
-          opts: { hoverText: 'YOU ARE HERE', button: InputAction.IA_POINTER }
-        },
-        (e) => {
-          //__teleportToString(_scene.baseCoords[0], _scene.baseCoords[1])      
-        }
-      )    
-    }
-    else{
-      TextShape.getMutable(this.jumpButtonText).text = 'JUMP IN'    
-      pointerEventsSystem.onPointerDown(
-        {
-          entity:this.jumpInButton,
-          opts: { hoverText: 'JUMP IN', button: InputAction.IA_POINTER }
-        },
-        (e) => {
-          trackAction(this.itemBox, "button_jump_in", _scene.base_position, _scene.name)
-          _teleportToString(_scene.base_position)       
-        }
-      )
-    }
+   
+    TextShape.getMutable(this.jumpButtonText).text = 'JUMP IN'  
+    console.log("JUMP IN: ADDING POINTER EVENT TO: " + _scene.title)  
+    pointerEventsSystem.onPointerDown(
+      {
+        entity:this.jumpInButton,
+        opts: { hoverText: 'JUMP IN', button: InputAction.IA_POINTER },
+      
+      },
+      (e) => {
+        trackAction(this.itemBox, "button_jump_in", _scene.base_position, _scene.name)
+        _teleportToString(_scene.base_position)       
+      }
+    )
+    console.log("JUMP IN: ADDED POINTER EVENT TO: " + _scene.title)  
           
 
    
@@ -389,30 +377,8 @@ export class BestMenuItem extends MenuItem {
     //coords
     TextShape.getMutable(this.coords).text = (_scene.base_position)
     
-    //exclusion for genesis plaza   
-    if(false){
-      pointerEventsSystem.onPointerDown(
-        {
-          entity:this.coordsPanel,
-          opts: { hoverText: 'YOU ARE HERE', button: InputAction.IA_POINTER }
-        },
-        (e) => {
-          //__teleportToString(_scene.baseCoords[0], _scene.baseCoords[1])      
-        }
-      )
-
-      TextShape.getMutable(this.jumpButtonText).text = "HERE"
-      pointerEventsSystem.onPointerDown(
-        {
-          entity:this.jumpInButton,
-          opts: { hoverText: 'YOU ARE HERE', button: InputAction.IA_POINTER }
-        },
-        (e) => {
-          //__teleportToString(_scene.baseCoords[0], _scene.baseCoords[1])      
-        }
-      )
-    }
-    else{
+    
+    
       pointerEventsSystem.onPointerDown(
         {
           entity:this.coordsPanel,
@@ -425,6 +391,8 @@ export class BestMenuItem extends MenuItem {
       )
 
       TextShape.getMutable(this.jumpButtonText).text = "JUMP IN"
+
+      
       pointerEventsSystem.onPointerDown(
         {
           entity:this.jumpInButton,
@@ -435,7 +403,7 @@ export class BestMenuItem extends MenuItem {
           _teleportToString(_scene.base_position)      
         }
       )
-    }
+    
   }
 
 
@@ -491,9 +459,10 @@ export class BestMenuItem extends MenuItem {
     VisibilityComponent.getMutable(entity).visible = false    
 
     if(GltfContainer.getOrNull(entity)){
-      let mesh = GltfContainer.getMutable(entity)
-      mesh.invisibleMeshesCollisionMask = ColliderLayer.CL_NONE
-      mesh.visibleMeshesCollisionMask = ColliderLayer.CL_NONE
+     // let mesh = GltfContainer.getMutable(entity)
+      //let transform = GltfContainer.getMutable(entity)
+     // mesh.invisibleMeshesCollisionMask = ColliderLayer.CL_NONE
+      //mesh.visibleMeshesCollisionMask = 0
     }
 
   }
@@ -501,9 +470,9 @@ export class BestMenuItem extends MenuItem {
     VisibilityComponent.getMutable(entity).visible = true    
 
     if(GltfContainer.getOrNull(entity)){
-      let mesh = GltfContainer.getMutable(entity)
-      mesh.invisibleMeshesCollisionMask = ColliderLayer.CL_POINTER | ColliderLayer.CL_PHYSICS
-      mesh.visibleMeshesCollisionMask = ColliderLayer.CL_POINTER | ColliderLayer.CL_PHYSICS
+     // let mesh = GltfContainer.getMutable(entity)
+      //mesh.invisibleMeshesCollisionMask = ColliderLayer.CL_POINTER
+      //mesh.visibleMeshesCollisionMask = ColliderLayer.CL_POINTER 
     }
   }
   show() {
@@ -517,6 +486,9 @@ export class BestMenuItem extends MenuItem {
     this.showElement(this.coords)
     this.showElement(this.jumpButtonText)
 
+    Transform.getMutable(this.jumpInButton).scale = Vector3.create(0.8, 0.8, 2)
+    Transform.getMutable(this.coordsPanel).scale =  Vector3.create(0.6, 0.6, 0.6)
+
     // VisibilityComponent.getMutable(this.itemBox).visible = true    
     // VisibilityComponent.getMutable(this.title).visible = true    
     // VisibilityComponent.getMutable(this.likeCounterBG).visible = true
@@ -527,7 +499,7 @@ export class BestMenuItem extends MenuItem {
     // VisibilityComponent.getMutable(this.coords).visible = true 
     // VisibilityComponent.getMutable(this.jumpButtonText).visible = true 
     this.thumbNail.show()
-    Transform.getMutable(this.entity).scale = Vector3.One()
+    Transform.getMutable(this.entity).scale = Vector3.One() 
   }
   hide() {
     this.hideElement(this.itemBox)
@@ -539,6 +511,9 @@ export class BestMenuItem extends MenuItem {
     this.hideElement(this.jumpInButton)
     this.hideElement(this.coords)
     this.hideElement(this.jumpButtonText)
+
+    Transform.getMutable(this.jumpInButton).scale = Vector3.Zero()
+    Transform.getMutable(this.coordsPanel).scale = Vector3.Zero()
 
     // VisibilityComponent.getMutable(this.itemBox).visible = false   
     // VisibilityComponent.getMutable(this.title).visible = false    

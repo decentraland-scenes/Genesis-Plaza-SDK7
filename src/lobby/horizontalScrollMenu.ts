@@ -222,7 +222,7 @@ export class HorizontalMenu {
 
     hideItem(_itemID:number){
       this.items[_itemID].hide()      
-      MeshCollider.getMutable(this.clickBoxes[_itemID]).collisionMask = 0     
+      MeshCollider.getMutable(this.clickBoxes[_itemID]).collisionMask = ColliderLayer.CL_NONE     
     }
     showItem(_itemID:number){
       this.items[_itemID].show()   
@@ -489,25 +489,25 @@ export class HorizontalMenu {
   async updateBestMenu(_count:number){
 
     let scenes = await getBestPlaces(10)
-    console.log("Best  "+ scenes.length + "  SCENES:    " + scenes)
+   // console.log("Best  "+ scenes.length + "  SCENES:    " + scenes)
     if(scenes){
       if (scenes.length <= 0) {
-        console.log("NO BEST")
+       // console.log("NO BEST")
         return
       }
     
      
      // console.log("scene:length: " + scenes.length)
-      console.log("best items:length: " + this.items.length)   
+    //  console.log("best items:length: " + this.items.length)   
       for(let i=0; i < scenes.length; i++){
-        console.log("imageURL:  " + scenes[i].image)
+       // console.log("imageURL:  " + scenes[i].image)
         if (i < this.items.length){                 
           this.items[i].updateItemInfo(scenes[i])
         }
         else{
          
          // console.log(scenes[i])
-          console.log("ADDING BEST SCENE")
+         // console.log("ADDING BEST SCENE")
           this.addMenuItem(new BestMenuItem({ 
               position: Vector3.create(0,0,0),
               rotation: Quaternion.Zero(),   
@@ -550,13 +550,13 @@ export class HorizontalMenu {
     for (let item of this.clickBoxes) {
 
       if (inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_HOVER_ENTER, item)) {
-       console.log("HOVERING "  )
+      // console.log("HOVERING "  )
        this.setHover(item)
        //this.selectItem(this.clickBoxes.indexOf(item), false)
       }
 
       if (inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_HOVER_LEAVE, item)) {
-        console.log("ENDHOVER "  )
+       // console.log("ENDHOVER "  )
        // this.deselectAll()
        // this.endHover(item)
         //this.setHover(this.menuRoot)
