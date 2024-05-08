@@ -58,76 +58,76 @@ export function startArtichoke() {
     baseConsole,
     'Blue_ButtonAction'
   )
-  pointerEventsSystem.onPointerDown({
-    entity: blueButton.buttonEntity,
-    opts: {
-        button: InputAction.IA_POINTER,
-        hoverText: 'Rave'
-    }},
-    function () {
-        sceneMessageBus.emit('setRadio', {
-            station: Radios.RAVE,
-        })
-        blueButton.press()
-    }
-  )
+  // pointerEventsSystem.onPointerDown({
+  //   entity: blueButton.buttonEntity,
+  //   opts: {
+  //       button: InputAction.IA_POINTER,
+  //       hoverText: 'Rave'
+  //   }},
+  //   function () {
+  //       sceneMessageBus.emit('setRadio', {
+  //           station: Radios.ISLASLOWBEAT,
+  //       })
+  //       blueButton.press()
+  //   }
+  // )
 
   let greenButton = new ConsoleButton(
     { src: 'models/console-artichoke/green_button.glb' },
     baseConsole,
     'Green_ButtonAction'
   )
-  pointerEventsSystem.onPointerDown({
-    entity: greenButton.buttonEntity,
-    opts: {
-        button: InputAction.IA_POINTER,
-        hoverText: 'Vegas Jazz FM'
-    }},
-    function () {
-        sceneMessageBus.emit('setRadio', {
-            station: Radios.JAZZ,
-        })
-        greenButton.press()
-    }
-  )
+  // pointerEventsSystem.onPointerDown({
+  //   entity: greenButton.buttonEntity,
+  //   opts: {
+  //       button: InputAction.IA_POINTER,
+  //       hoverText: 'Isla Negra Radio'
+  //   }},
+  //   function () {
+  //       sceneMessageBus.emit('setRadio', {
+  //           station: Radios.ISLASLOWBEAT,
+  //       })
+  //       greenButton.press()
+  //   }
+  // )
 
   let lightBlueButton = new ConsoleButton(
     { src: 'models/console-artichoke/lightblue_button.glb' },
     baseConsole,
     'Lightblue_ButtonAction'
   )
-  pointerEventsSystem.onPointerDown({
-    entity: lightBlueButton.buttonEntity,
-    opts: {
-        button: InputAction.IA_POINTER,
-        hoverText: 'Delta'
-    }},
-    function () {
-        sceneMessageBus.emit('setRadio', {
-            station: Radios.DELTA,
-        })
-        lightBlueButton.press()
-    }
-  )
+  // pointerEventsSystem.onPointerDown({
+  //   entity: lightBlueButton.buttonEntity,
+  //   opts: {
+  //       button: InputAction.IA_POINTER,
+  //       hoverText: 'Upbeat'
+  //   }},
+  //   function () {
+  //       sceneMessageBus.emit('setRadio', {
+  //           station: Radios.ISLAUPBEAT,
+  //       })
+  //       lightBlueButton.press()
+  //   }
+  // )
 
   let redButton = new ConsoleButton(
     { src: 'models/console-artichoke/red_button.glb' },
     baseConsole,
     'Red_ButtonAction'
   )
-  pointerEventsSystem.onPointerDown({
-    entity: redButton.buttonEntity,
-    opts: {
-        button: InputAction.IA_POINTER,
-        hoverText: 'Signs'
-    }},
-    function () {
-        sceneMessageBus.emit('setRadio', {
-            station: Radios.SIGNS,
-        })
-        redButton.press()
-    }
-  )
+  // pointerEventsSystem.onPointerDown({
+  //   entity: redButton.buttonEntity,
+  //   opts: {
+  //       button: InputAction.IA_POINTER,
+  //       hoverText: 'Classic Radio'
+  //   }},
+  //   function () {
+  //       sceneMessageBus.emit('setRadio', {
+  //           station: Radios.ISLACLASSIC,
+  //       })
+  //       redButton.press()
+  //   }
+  // )
 
   let yellowButton = new ConsoleButton(
     { src: 'models/console-artichoke/yellow_button.glb' },
@@ -138,11 +138,11 @@ export function startArtichoke() {
     entity: yellowButton.buttonEntity,
     opts: {
         button: InputAction.IA_POINTER,
-        hoverText: 'Graffiti Kings'
+        hoverText: 'Upbeat'
     }},
     function () {
         sceneMessageBus.emit('setRadio', {
-            station: Radios.GRAFFITI,
+            station: Radios.ISLAUPBEAT,
         })
         yellowButton.press()
     }

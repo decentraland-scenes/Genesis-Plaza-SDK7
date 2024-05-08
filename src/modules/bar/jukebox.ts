@@ -12,11 +12,12 @@ import { ANALYTICS_ELEMENTS_IDS, ANALYTICS_ELEMENTS_TYPES, AnalyticsLogLabel } f
 
 export enum Radios {
   //RAVE = 'https://icecast.ravepartyradio.org/ravepartyradio-192.mp3', 
-  RAVE = 'https://radioislanegra.org/radio/8010/basic.aac',
-  DELTA = 'https://cdn.instream.audio/:9069/stream?_=171cd6c2b6e',
-  GRAFFITI = 'https://n07.radiojar.com/2qm1fc5kb.m4a?1617129761=&rj-tok=AAABeIR7VqwAilDFeUM39SDjmw&rj-ttl=5',
-  SIGNS = 'https://edge.singsingmusic.net/MC2.mp3',
-  JAZZ = 'https://live.vegascity.fm/radio/8010/the_flamingos.mp3',
+  ISLASLOWBEAT = 'https://radioislanegra.org/radio/8010/basic.aac',
+ // DELTA = 'https://cdn.instream.audio/:9069/stream?_=171cd6c2b6e',
+  ISLAUPBEAT = 'https://radioislanegra.org/listen/up/basic.aac', 
+  ISLACLASSIC = 'https://radioislanegra.org/radio/8000/basic.aac',
+  // SIGNS = 'https://edge.singsingmusic.net/MC2.mp3',
+  // JAZZ = 'https://live.vegascity.fm/radio/8010/the_flamingos.mp3',
 }
 
 let FullVolume = 0.1
@@ -25,14 +26,15 @@ let DistantVolume = 0.03
 //this has to be set false and triggered inside Index.ts see: https://github.com/nobodysGitHub/Genesis-Plaza/blob/master/src/game.ts#L92
 export let isInBar: boolean = false
 
-let barCurrentRadio: Radios | null = Radios.RAVE
+let barCurrentRadio: Radios | null = Radios.ISLASLOWBEAT
 let defaultStartStream: PBAudioStream = {
   url: barCurrentRadio,
   playing: false,
   volume: FullVolume
 }
+
 let barCurrentRadioIndex: number = 0
-let radioCount = 4
+let radioCount = 0
 let radioIsOn: boolean = true
 
 let JukeBoxText: Entity
@@ -53,6 +55,7 @@ TrackingElement.create(baseJukeBox, {
 })
 
 
+
 let jukeBoxAdded: boolean = false
 
 export function placeJukeBox() {
@@ -61,9 +64,10 @@ export function placeJukeBox() {
   jukeBoxAdded = true
 
   console.log("jukeBox.ts placeJukeBox has being called")
-
+  
   AudioStream.createOrReplace(audioStreamEntity, defaultStartStream)
-
+  
+ 
 
   GltfContainer.createOrReplace(baseJukeBox, {
     src: 'models/core_building/jukebox/Jukebox_Base.glb'
@@ -127,52 +131,55 @@ export function placeJukeBox() {
 
       console.log(AnalyticsLogLabel, "JukeBoxButton", "Button_On")
       let boxState = !musicState ? "ON" : "OFF"
-      trackAction(baseJukeBox, "button_on_off", boxState)
+      trackAction(baseJukeBox, "button_on_off", boxState)      
+
     },
     'On/Off'
   )
 
-  let nextButton = new JukeboxButton(
-    'models/core_building/jukebox/ButtonForward.glb',
-    'Button_Forward',
-    () => {
-      barCurrentRadioIndex += 1
-      if (barCurrentRadioIndex > radioCount) barCurrentRadioIndex = 0
-      TextShape.getMutable(JukeBoxText).text = 'Radio:\n' + getRadioName(barCurrentRadioIndex)
+  // let nextButton = new JukeboxButton(
+  //   'models/core_building/jukebox/ButtonForward.glb',
+  //   'Button_Forward',
+  //   () => {
+  //     barCurrentRadioIndex += 1
+  //     if (barCurrentRadioIndex > radioCount) barCurrentRadioIndex = 0
+  //     TextShape.getMutable(JukeBoxText).text = 'Radio:\n' + getRadioName(barCurrentRadioIndex)
 
-      let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
-      if (audioStreamRef && audioStreamRef.playing) {
-        sceneMessageBus.emit('setBarRadio', {
-          index: barCurrentRadioIndex
-        })
-      }
+  //     let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
+  //     if (audioStreamRef && audioStreamRef.playing) {
+  //       sceneMessageBus.emit('setBarRadio', {
+  //         index: barCurrentRadioIndex
+  //       })
+  //     }
 
-      console.log(AnalyticsLogLabel, "JukeBoxButton", "Button_Forward")
-      trackAction(baseJukeBox, "button_forward", undefined)
-    },
-    'Next'
-  )
+  //     console.log(AnalyticsLogLabel, "JukeBoxButton", "Button_Forward")
+  //     trackAction(baseJukeBox, "button_forward", undefined)
 
-  let prewiousButton = new JukeboxButton(
-    'models/core_building/jukebox/Button_Previous.glb',
-    'Button_Preview',
-    () => {
-      barCurrentRadioIndex -= 1
-      if (barCurrentRadioIndex < 0) barCurrentRadioIndex = radioCount - 1
-      TextShape.getMutable(JukeBoxText).text = 'Radio:\n' + getRadioName(barCurrentRadioIndex)
+      
+  //   },
+  //   'Next'
+  // )
 
-      let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
-      if (audioStreamRef && audioStreamRef.playing) {
-        sceneMessageBus.emit('setBarRadio', {
-          index: barCurrentRadioIndex,
-        })
-      }
+  // let prewiousButton = new JukeboxButton(
+  //   'models/core_building/jukebox/Button_Previous.glb',
+  //   'Button_Preview',
+  //   () => {
+  //     barCurrentRadioIndex -= 1
+  //     if (barCurrentRadioIndex < 0) barCurrentRadioIndex = radioCount 
+  //     TextShape.getMutable(JukeBoxText).text = 'Radio:\n' + getRadioName(barCurrentRadioIndex)
 
-      console.log(AnalyticsLogLabel, "JukeBoxButton", "Button_Preview")
-      trackAction(baseJukeBox, "previous_button", undefined)
-    },
-    'Previous'
-  )
+  //     let audioStreamRef = AudioStream.getMutable(audioStreamEntity)
+  //     if (audioStreamRef && audioStreamRef.playing) {
+  //       sceneMessageBus.emit('setBarRadio', {
+  //         index: barCurrentRadioIndex,
+  //       })
+  //     }
+
+  //     console.log(AnalyticsLogLabel, "JukeBoxButton", "Button_Preview")
+  //     trackAction(baseJukeBox, "previous_button", undefined)
+  //   },
+  //   'Previous'
+  // )
 
   sceneMessageBus.on('BarRadioToggle', (e) => {
     console.log("jukebox.ts", "onBarRadioToggle", "ENTRY")
@@ -193,22 +200,22 @@ export function placeJukeBox() {
 
     switch (e.index) {
       case 0:
-        newRadio = Radios.RAVE
+        newRadio = Radios.ISLASLOWBEAT
         break
-      case 1:
-        newRadio = Radios.DELTA
-        break
-      case 2:
-        newRadio = Radios.GRAFFITI
-        break
-      case 3:
-        newRadio = Radios.JAZZ
-        break
-      case 4:
-        newRadio = Radios.SIGNS
-        break
+      // case 1:
+      //   newRadio = Radios.ISLAUPBEAT
+      //   break
+      // case 2:
+      //   newRadio = Radios.ISLACLASSIC
+      //   break
+      // case 3:
+      //   newRadio = Radios.JAZZ
+      //   break
+      // case 4:
+      //   newRadio = Radios.SIGNS
+      //   break
       default:
-        newRadio = Radios.DELTA
+        newRadio = Radios.ISLAUPBEAT
         break
     }
 
@@ -221,6 +228,7 @@ export function placeJukeBox() {
     )
       return
     if (audioStreamRef) {
+      //console.log("cica")
       audioStreamRef.playing = false
     }
     barCurrentRadioIndex = e.index
@@ -229,6 +237,7 @@ export function placeJukeBox() {
 
     TextShape.getMutable(JukeBoxText).text = 'Radio:\n' + getRadioName(barCurrentRadioIndex)
 
+    console.log("SETTING BAR RADION TO: " + barCurrentRadio)
     barRadioOn(barCurrentRadio)
   })
 
@@ -250,7 +259,7 @@ export class JukeboxButton {
     this.entity = _entity
 
     GltfContainer.createOrReplace(this.entity, {
-      src: modelUrl
+      src: modelUrl 
     })
     Transform.createOrReplace(this.entity, {
       parent: baseJukeBox
@@ -310,11 +319,13 @@ function barRadioOn(station?: Radios) {
     barRadioOnTimeoutId = utils.timers.setTimeout(() => {
       console.log("jukebox.ts", "barRadioOn", "timer.fired", station)
       //debugger
+      
       AudioStream.createOrReplace(audioStreamEntity, {
-        url: station ? station : Radios.RAVE
+        url: station ? station : Radios.ISLASLOWBEAT
         , playing: true
         , volume: FullVolume
-      })
+      }) 
+      //AudioStream.createOrReplace(audioStreamEntity, getStream(0))
 
       VisibilityComponent.getMutable(baseJukeBoxLights1).visible = true
       VisibilityComponent.getMutable(baseJukeBoxLights2).visible = true
@@ -415,24 +426,25 @@ function getRadioName(radio: number) {
     case 0:
       radioName = 'Isla Negra'
       break
-    case 1:
-      radioName = 'Delta'
-      break
-    case 2:
-      radioName = 'Graffiti Kings'
-      break
-    case 3:
-      radioName = 'Vegas Jazz FM'
-      break
-    case 4:
-      radioName = 'Signs'
-      break
+    // case 1:
+    //   radioName = 'Upbeat'
+    //   break
+    // case 2:
+    //   radioName = 'Classic'
+    //   break
+    // case 3:
+    //   radioName = 'Vegas Jazz FM'
+    //   break
+    // case 4:
+    //   radioName = 'Signs'
+    //   break
     case null:
       radioName = 'Off'
       break
   }
   return radioName
 }
+
 
 
 
