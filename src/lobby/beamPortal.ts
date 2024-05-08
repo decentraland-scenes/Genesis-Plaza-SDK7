@@ -282,7 +282,7 @@ export class TeleportController {
       this.triggerBoxLobby = engine.addEntity()
       Transform.create(this.triggerBoxLobby, {})
       this.triggerBoxLobbyScale = Vector3.create(35,6,35)
-      this.triggerBoxLobbyPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y + lobbyHeight, lobbyCenter.z - coreBuildingOffset.z)
+      this.triggerBoxLobbyPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y + lobbyHeight-20, lobbyCenter.z - coreBuildingOffset.z)
   
       utils.triggers.addTrigger(this.triggerBoxLobby, utils.NO_LAYERS, utils.LAYER_1,  
         [{type: "box", position: this.triggerBoxLobbyPosition, scale: this.triggerBoxLobbyScale}],

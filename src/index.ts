@@ -285,8 +285,8 @@ export function main(){
   // proper bar interior
   console.log("index.ts", "trigger.bar2???.created","triggerParent",undefined)
   addRepeatTrigger(
-    Vector3.create(160 - coreBuildingOffset.x, 50, 152 - coreBuildingOffset.z),
-    Vector3.create(50, 102, 50),
+    Vector3.create(160 - coreBuildingOffset.x, 25, 152 - coreBuildingOffset.z),
+    Vector3.create(50, 51, 50),
     (entity: Entity) => { 
       console.log("index.ts", "trigger.bar2???.enter","triggerParent",undefined,"entityInteracting", entity)
       //FIXME cannot be set by a trigger when sharing state as it will turn on off for other players. 
