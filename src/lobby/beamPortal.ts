@@ -48,17 +48,22 @@ tutorialEnableObservable.add((tutorialEnabled: boolean) => {
 
 export let tutorialRunning: boolean = false
 
-const ambienceBox = engine.addEntity()
-const musicBox = engine.addEntity()
+export const ambienceBox = engine.addEntity()
+export const musicBox = engine.addEntity()
 
 export function loadLobbySound(){
   // AMBIENT SOUND, WATER + BIRDS
   
+  const playerPos = Transform.getOrNull(engine.PlayerEntity)
+  let playerInLobby:boolean = false
+  if(playerPos.position.y > 90){
+    playerInLobby = true
+  } 
   AudioSource.create(ambienceBox,{
     audioClipUrl: 'sounds/lobby_ambience.mp3',
     volume: 1,
     loop: true,
-    playing: false 
+    playing: playerInLobby ? true:false
   })
   Transform.create(ambienceBox, {
     position: Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyHeight, lobbyCenter.z - coreBuildingOffset.z)
@@ -79,7 +84,7 @@ export function loadLobbySound(){
       audioClipUrl: lobbyMusicSource,
       volume: lobbyMusicSourceVolume,
       loop: true,
-      playing: false
+      playing:  playerInLobby ? true:false
     })
 }
 
@@ -281,8 +286,8 @@ export class TeleportController {
 
       this.triggerBoxLobby = engine.addEntity()
       Transform.create(this.triggerBoxLobby, {})
-      this.triggerBoxLobbyScale = Vector3.create(35,6,35)
-      this.triggerBoxLobbyPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x, lobbyCenter.y + lobbyHeight-20, lobbyCenter.z - coreBuildingOffset.z)
+      this.triggerBoxLobbyScale = Vector3.create(35,30,35)
+      this.triggerBoxLobbyPosition = Vector3.create(lobbyCenter.x - coreBuildingOffset.x,  lobbyHeight-30, lobbyCenter.z - coreBuildingOffset.z)
   
       utils.triggers.addTrigger(this.triggerBoxLobby, utils.NO_LAYERS, utils.LAYER_1,  
         [{type: "box", position: this.triggerBoxLobbyPosition, scale: this.triggerBoxLobbyScale}],
