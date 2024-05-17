@@ -1,23 +1,33 @@
 import * as utils from '@dcl-sdk/utils'
-import { Material, MeshRenderer, Transform, VideoPlayer, engine } from '@dcl/sdk/ecs'
+import { Material, MeshRenderer, PBVideoPlayer, Transform, VideoPlayer, engine } from '@dcl/sdk/ecs'
 import { Vector3, Quaternion, Color3 } from '@dcl/sdk/math'
 
+const screen = engine.addEntity()
+
+export function updateAuditoriumVideoScreen(url: string){
+    console.log('videoScheduler. update auditorium video url:', url)
+    let videoPlayer: PBVideoPlayer = {
+        src: url,
+        playing: true,
+        loop: true
+    }
+    VideoPlayer.createOrReplace(screen, videoPlayer)
+}
 
 export function addAuditoriumVideo(){
-    const videoSrc = "https://player.vimeo.com/external/552481870.m3u8?s=c312c8533f97e808fccc92b0510b085c8122a875"
+    // const videoSrc = "https://player.vimeo.com/external/552481870.m3u8?s=c312c8533f97e808fccc92b0510b085c8122a875"
 
-    const screen = engine.addEntity()
+    // VideoPlayer.create(screen, {
+    //     src: videoSrc,
+    //     playing: false,
+    //     loop: true
+    // })
+
     MeshRenderer.setPlane(screen)
     Transform.create(screen, { 
         position: Vector3.create(285, 17.5, 279),
         rotation: Quaternion.fromEulerDegrees(0, 210 + 180, 0),
         scale: Vector3.create(10 * 2.8, 5.6 * 2.8, 10 * 2.8),
-    })
-
-    VideoPlayer.create(screen, {
-        src: videoSrc,
-        playing: false,
-        loop: true
     })
     
     const videoTexture = Material.Texture.Video({ videoPlayerEntity: screen })
