@@ -15,13 +15,13 @@ export function updateBarVideoScreen(url: string){
 }
 
 export function addBarVideo(){
-    // const barVideoSrc = "https://player.vimeo.com/external/843206751.m3u8?s=ad9e81b120faa9fa68506ed337e6095ac1de3f78"
+    const barVideoSrc = "https://player.vimeo.com/external/843206751.m3u8?s=ad9e81b120faa9fa68506ed337e6095ac1de3f78"
 
-    // VideoPlayer.create(screen, {
-    //     src: barVideoSrc,
-    //     playing: false,
-    //     loop: true
-    // })
+    VideoPlayer.create(screen, {
+        src: barVideoSrc,
+        playing: false,
+        loop: true
+    })
     
     MeshRenderer.setPlane(screen)
     Transform.create(screen, { 
