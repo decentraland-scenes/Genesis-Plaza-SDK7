@@ -6,8 +6,12 @@ import { barRadioOff, isInBar, setBarMusicOn } from "../bar/jukebox"
 export const eventVideoUrl = 'https://customer-ofzh1p2ow8r96rk0.cloudflarestream.com/1d86fcbe2c8c77b23dfb6d99c00af9ee/manifest/video.m3u8?clientBandwidthHint=0.5'
 
 //TODO: to set the correct event time and duration
-let eventStartTime = Math.floor(Date.now() / 1000) + 20 //epoch second
-let eventLength = 60 //3600 //8 * 60 * 60 //second
+
+// Wednesday, May 22, 2024 8:45:00 AM GMT-03:00
+let eventStartTime = 1716378300 // Math.floor(Date.now() / 1000) + 20 //epoch second
+
+// 10 hour
+let eventLength = 10 * 60 * 60 //3600 //8 * 60 * 60 //second
 
 let isVideoSchedulerAdded = false
 let isPlayingDefaultVideo = false
