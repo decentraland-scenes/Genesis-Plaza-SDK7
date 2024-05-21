@@ -1,12 +1,13 @@
 import { VideoState, engine, videoEventsSystem } from "@dcl/sdk/ecs"
 import { updateAuditoriumVideoScreen } from "../auditoriumScreen"
 import { screen, updateBarVideoScreen } from "../barVideoScreen"
+import { barRadioOff, isInBar, setBarMusicOn } from "../bar/jukebox"
 
 export const eventVideoUrl = 'https://customer-ofzh1p2ow8r96rk0.cloudflarestream.com/1d86fcbe2c8c77b23dfb6d99c00af9ee/manifest/video.m3u8?clientBandwidthHint=0.5'
 
 //TODO: to set the correct event time and duration
 let eventStartTime = Math.floor(Date.now() / 1000) + 20 //epoch second
-let eventLength = 3600 //8 * 60 * 60 //second
+let eventLength = 60 //3600 //8 * 60 * 60 //second
 
 let isVideoSchedulerAdded = false
 let isPlayingDefaultVideo = false
@@ -29,10 +30,21 @@ function VideoScheduler(dt: number) {
         console.log('videoScheduler. event end.')
 
         playDefaultVideo()
+
+        // console.log('videoScheduler. isInBar?', isInBar)
+        if(isInBar){
+            setBarMusicOn()
+        }
+
         engine.removeSystem(VideoScheduler)
     } else if (isPlayingDefaultVideo) {
         // playStream()
         videoStreamCheckAndPlay()
+
+        // console.log('videoScheduler. isInBar?', isInBar)
+        if(isInBar){
+            barRadioOff()
+        }
     }
 }
 

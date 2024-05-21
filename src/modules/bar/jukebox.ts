@@ -336,7 +336,7 @@ function barRadioOn(station?: Radios) {
   radioIsOn = true
 }
 
-function barRadioOff() {
+export function barRadioOff() {
   console.log("jukebox.ts ButtonOff has been pressed")
   let audioStreamRef = AudioStream.getMutableOrNull(audioStreamEntity)
   if (audioStreamRef) {
