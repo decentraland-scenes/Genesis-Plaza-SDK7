@@ -32,9 +32,9 @@ function VideoScheduler(dt: number) {
         playDefaultVideo()
 
         // console.log('videoScheduler. isInBar?', isInBar)
-        if(isInBar){
-            setBarMusicOn()
-        }
+        // if(isInBar){
+        //     setBarMusicOn()
+        // }
 
         engine.removeSystem(VideoScheduler)
     } else if (isPlayingDefaultVideo) {
@@ -42,9 +42,9 @@ function VideoScheduler(dt: number) {
         videoStreamCheckAndPlay()
 
         // console.log('videoScheduler. isInBar?', isInBar)
-        if(isInBar){
-            barRadioOff()
-        }
+        // if(isInBar){
+        //     barRadioOff()
+        // }
     }
 }
 
@@ -53,6 +53,9 @@ function playDefaultVideo () {
     isPlayingDefaultVideo = true
     updateBarVideoScreen("https://player.vimeo.com/external/843206751.m3u8?s=ad9e81b120faa9fa68506ed337e6095ac1de3f78")
     updateAuditoriumVideoScreen("https://player.vimeo.com/external/552481870.m3u8?s=c312c8533f97e808fccc92b0510b085c8122a875")
+    }
+    if(isInBar){
+        setBarMusicOn()
     }
 }
 
@@ -74,6 +77,7 @@ const videoStreamCheckAndPlay = async () => {
         playDefaultVideo()
     } else {
         playStream()
+        barRadioOff()
     }
 }
 
