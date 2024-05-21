@@ -16,7 +16,7 @@ let eventLength = 10 * 60 * 60 //3600 //8 * 60 * 60 //second
 let isVideoSchedulerAdded = false
 let isPlayingDefaultVideo = false
 
-let checkInterval = 1
+let checkInterval = 2
 let interval_count = 0
 
 function VideoScheduler(dt: number) {
