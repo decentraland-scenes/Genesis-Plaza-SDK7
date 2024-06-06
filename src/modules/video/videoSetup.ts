@@ -8,7 +8,8 @@ export const eventVideoUrl = 'https://customer-ofzh1p2ow8r96rk0.cloudflarestream
 //TODO: to set the correct event time and duration
 
 // Wednesday, May 22, 2024 8:45:00 AM GMT-03:00
-let eventStartTime = 1716378300 // Math.floor(Date.now() / 1000) + 20 //epoch second
+// let eventStartTime = 1716378300 // Math.floor(Date.now() / 1000) + 20 //epoch second
+let eventStartTime = Math.floor(Date.now() / 1000) + 20 //epoch second
 
 // 10 hour
 let eventLength = 10 * 60 * 60 //3600 //8 * 60 * 60 //second
@@ -29,7 +30,8 @@ function VideoScheduler(dt: number) {
 
     if (now < eventStartTime) {
         console.log('videoScheduler. event has not started.')
-            playDefaultVideo() 
+        console.log('videoScheduler minutes', (eventStartTime - now) / 60)
+        playDefaultVideo()
     } else if ((now > eventStartTime + eventLength)) {
         console.log('videoScheduler. event end.')
 
@@ -52,18 +54,18 @@ function VideoScheduler(dt: number) {
     }
 }
 
-function playDefaultVideo () {
+function playDefaultVideo() {
     if (!isPlayingDefaultVideo) {
-    isPlayingDefaultVideo = true
-    updateBarVideoScreen("https://player.vimeo.com/external/843206751.m3u8?s=ad9e81b120faa9fa68506ed337e6095ac1de3f78")
-    updateAuditoriumVideoScreen("https://player.vimeo.com/external/552481870.m3u8?s=c312c8533f97e808fccc92b0510b085c8122a875")
-    }
-    if(isInBar){
-        setBarMusicOn()
+        isPlayingDefaultVideo = true
+        updateBarVideoScreen("https://player.vimeo.com/external/843206751.m3u8?s=ad9e81b120faa9fa68506ed337e6095ac1de3f78")
+        updateAuditoriumVideoScreen("https://player.vimeo.com/external/552481870.m3u8?s=c312c8533f97e808fccc92b0510b085c8122a875")
+        if (isInBar) {
+            setBarMusicOn()
+        }
     }
 }
 
-function playStream () {
+function playStream() {
     isPlayingDefaultVideo = false
     console.log('videoScheduler. event start.')
     updateBarVideoScreen(eventVideoUrl)
@@ -77,7 +79,7 @@ const videoStreamCheckAndPlay = async () => {
     console.log('videoScheduler: checking stream status')
     const videoStatus = await (await fetch('https://customer-ofzh1p2ow8r96rk0.cloudflarestream.com/1d86fcbe2c8c77b23dfb6d99c00af9ee/lifecycle')).json()
     console.log(videoStatus)
-    if (videoStatus.status !== "ready"){
+    if (videoStatus.status !== "ready") {
         playDefaultVideo()
     } else {
         playStream()
@@ -107,8 +109,9 @@ export function addVideoSchedulerSystem() {
 
             if (videoEvent.state !== VideoState.VS_PLAYING) {
                 console.log('videoScheduler. video event - video is NOT PLAYING')
-
+                if (!isPlayingDefaultVideo){
                     videoStreamCheckAndPlay()
+                }
 
             }
             // switch (videoEvent.state) {
