@@ -13,8 +13,9 @@
     "upgrade-sdk:next": "npm install --save-dev @dcl/sdk@next"
   },
   "devDependencies": {
-    "@dcl/js-runtime": "7.4.14",
-    "@dcl/sdk": "latest"
+    "@dcl/asset-packs": "^1.20.0",
+    "@dcl/js-runtime": "7.5.4",
+    "@dcl/sdk": "^7.5.4"
   },
   "engines": {
     "node": ">=16.0.0",
@@ -27,11 +28,11 @@
     "trailingComma": "none"
   },
   "dependencies": {
-    "@dcl-sdk/utils": "latest",
+    "@dcl-sdk/utils": "^1.2.8",
     "cannon": "latest",
     "colyseus.js": "^0.14.15-alpha.0",
     "dcl-npc-toolkit": "^1.2.2",
-    "dcl-ui-toolkit": "latest"
+    "dcl-ui-toolkit": "^0.10.0"
   },
   "bundleDependencies": [
     "colyseus.js"
