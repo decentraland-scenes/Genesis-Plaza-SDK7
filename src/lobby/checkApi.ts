@@ -121,7 +121,7 @@ export async function getBestPlaces(_count: number) {
 
 export async function getTrendingScenes(_limit:number) {
   let trendingScenes: any[] = []
-  let url = 'https://peer.decentraland.org/lambdas/explore/hot-scenes/'
+  let url = 'https://realm-provider.decentraland.org/hot-scenes/' 
 
   try {
     let response = await fetch(url)
