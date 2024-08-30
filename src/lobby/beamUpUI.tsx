@@ -66,13 +66,13 @@ export const uiBeamMeUp = () => (
     }}
   >
     <Label
-      value={triggerCounter.counter.toFixed(0)}
+      value={`<b>${triggerCounter.counter.toFixed(0)}</b>`}
       color={Color4.Black()}
       fontSize={getScaledFontSize(40)}
       font="serif"
       textAlign="middle-center"
       uiTransform={{
-        position: { top: getScaledSize(55), right: getScaledSize(-248) }
+        position: { top: getScaledSize(52), right: getScaledSize(-235) }
       }}
     />
   </UiEntity>

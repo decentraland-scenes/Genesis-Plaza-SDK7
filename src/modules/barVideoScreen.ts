@@ -2,8 +2,13 @@ import * as utils from '@dcl-sdk/utils'
 import { Material, MeshRenderer, Transform, VideoPlayer, engine } from '@dcl/sdk/ecs'
 import { Vector3, Quaternion, Color3 } from '@dcl/sdk/math'
 
+let isBarVideoAdded = false
 
 export function addBarVideo(){
+    if(isBarVideoAdded) return
+
+    isBarVideoAdded = true
+    console.log('addBarVideo.')
     const barVideoSrc = "https://player.vimeo.com/external/843206751.m3u8?s=ad9e81b120faa9fa68506ed337e6095ac1de3f78"
 
     const screen = engine.addEntity()

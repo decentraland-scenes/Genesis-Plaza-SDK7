@@ -131,7 +131,7 @@ function createGirlArtist(): Entity {
       textBubble: true,
       portrait: {
         path: `images/portraits/ACch2.png`,
-        offsetX: -80, offsetY: 10
+        offsetX: -80, offsetY: -20
       },
       bubbleYOffset: .15,
       bubbleXOffset: 1.15

@@ -10,12 +10,13 @@
     "deploy": "sdk-commands deploy",
     "build": "sdk-commands build",
     "upgrade-sdk": "npm install --save-dev @dcl/sdk@latest",
-    "upgrade-sdk:next": "npm install --save-dev @dcl/sdk@next"
+    "upgrade-sdk:next": "npm install --save-dev @dcl/sdk@next",
+    "link-sdk": "cd node_modules/@dcl/sdk && npm link && cd ../js-runtime && npm link"
   },
   "devDependencies": {
     "@dcl/asset-packs": "^1.20.0",
-    "@dcl/js-runtime": "7.5.4",
-    "@dcl/sdk": "^7.5.4"
+    "@dcl/js-runtime": "7.5.6",
+    "@dcl/sdk": "latest"
   },
   "engines": {
     "node": ">=16.0.0",
@@ -28,11 +29,11 @@
     "trailingComma": "none"
   },
   "dependencies": {
-    "@dcl-sdk/utils": "^1.2.8",
+    "@dcl-sdk/utils": "latest",
     "cannon": "latest",
     "colyseus.js": "^0.14.15-alpha.0",
-    "dcl-npc-toolkit": "^1.2.2",
-    "dcl-ui-toolkit": "^0.10.0"
+    "dcl-npc-toolkit": "^1.4.1",
+    "dcl-ui-toolkit": "latest"
   },
   "bundleDependencies": [
     "colyseus.js"

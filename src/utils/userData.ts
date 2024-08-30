@@ -3,7 +3,6 @@
 
 import { EnvironmentRealm, getCurrentRealm } from "~system/EnvironmentApi"
 import { UserData } from "~system/Players"
-import { RealmInfo } from "~system/Runtime"
 import { getUserData } from "~system/UserIdentity"
 
 //TODO MOVE TO GAME STATE

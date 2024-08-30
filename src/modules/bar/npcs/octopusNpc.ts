@@ -24,7 +24,7 @@ export function createOctopusNpc() {
       type: npcLib.NPCType.CUSTOM,
       model: octopusModelPath,
       dialogSound: navigationForwardSfx,
-      continueOnWalkAway: false,
+    //   continueOnWalkAway: false,
       onlyETrigger: true,
       onActivate: () => {
         console.log(LogTag, "Hi! Octopus!")
@@ -61,7 +61,8 @@ export function createOctopusNpc() {
     elementId: ANALYTICS_ELEMENTS_IDS.octopus,
     parent: getRegisteredAnalyticsEntity(ANALYTICS_ELEMENTS_IDS.bar)
   })
-
+  
+  let isVisited: boolean = false
   utils.triggers.addTrigger(octo,
     utils.NO_LAYERS,
     utils.LAYER_1,
@@ -72,12 +73,16 @@ export function createOctopusNpc() {
     }],
     (entity) => {
       // console.log("DebugSession", "Octpus-OnTriggerEnter"); 
-      if (engine.PlayerEntity === entity && !REGISTRY.activeNPC) {
+      if (engine.PlayerEntity === entity && !REGISTRY.activeNPC && !isVisited) {
+        isVisited = true
         console.log(LogTag, "Player Enter Area");
-       // npcLib.activate(octo, octo)
+        // npcLib.activate(octo, octo)
         npcLib.activate(octo, engine.PlayerEntity)
-        utils.triggers.removeTrigger(octo)
+        // utils.triggers.removeTrigger(octo)
       }
+    },
+    () => {
+        npcLib.closeDialogWindow(octo)
     }
   )
 }

@@ -12,17 +12,14 @@ const octopusEndDialog = 3
 export const octopusDialog = [
   {
     text: 'Welcome traveler, how can I help you!',
-    offsetY: 24,
     skipable: true,
   },
   {
     text: 'I may look quite busy, but worry not, I still have like 2 free hands and/or tentacles to spare.',
-    offsetY: 24,
     skipable: true,
   },
   {
     text: 'Is this your first time here? Do you want some pointers about how you can get around the place?',
-    // offsetY: 24,
     isQuestion: true,
     buttons: [
       { 
@@ -32,13 +29,12 @@ export const octopusDialog = [
       {
         label: 'YES',
         goToDialog: octopusYesDialog,
-      },
+      }
     ],
   },
   {
     name: 'end',
     text: 'Oh well, if for any reason you need a hand and/or tentacle, I’ll be here!',
-    offsetY: 24,
     isEndOfDialog: true,
     triggeredByNext: () => {
       //   if (!query(questProg).isTaskCompleted(taskIds.intro)) {
@@ -53,42 +49,30 @@ export const octopusDialog = [
   {
     name: 'yes',
     text: 'Here you can also find funky characters like myself. Don’t be shy, chat them up, everyone has a story to tell.',
-    offsetY: 24,
     skipable: true,
   },
   {
     text: 'You can also take that glowing beam of light back up to the happy place up in the clouds where you started out.',
-    offsetY: 24,
-
     skipable: true,
   },
   {
     text: 'There you can find a whole bunch of suggestions of places inside Decentraland you can visit, including <color="red">live events</color> and other highlights.',
-    offsetY: 24,
-
     skipable: true,
   },
   {
     text: 'You can also open up the map and <color="red">fast travel</color> anywhere! Just press <color="red">M</color> on your keyboard and explore it. You’ll see it’s pretty damn big!',
-    offsetY: 24,
-
     skipable: true,
   },
   {
     text: 'Or you can just walk out the door and keep walking, and see what you run into.',
-    offsetY: 24,
-
     skipable: true,
   },
   {
     text: 'Right now we’re in the center of the <color="red">Genesis Plaza</color>, a community-owned space that´s open to everyone. The roads fan out in all directions from here.',
-    offsetY: 24,
-
     skipable: true,
   },
   {
     text: 'If you venture out into the world beyond the plaza, you’ll see that the content is created by our growing community. Randomly bumping into things you didn’t expect is half the fun here.',
-    offsetY: 24,
     skipable: true,
     triggeredByNext: () => {
       //   if (!query(questProg).isTaskCompleted(taskIds.intro)) {
@@ -101,7 +85,6 @@ export const octopusDialog = [
   {
     name: 'normalEnd',
     text: 'Well that´s it from me. So what are you waiting for? Go and explore the world!',
-    offsetY: 24,
     skipable: true,
     //triggeredByNext: () => {
     //console.log("back to idle animation")
@@ -123,7 +106,6 @@ export function getFashionistDialog(npc: Entity): Dialog[] {
     { //0
       name: 'none',
       text: 'Why? … Umm, what would someone <i>dressed like you</i> have to say to me?',
-      offsetY: 24,
       skipable: true,
     },
     { //1
@@ -132,7 +114,7 @@ export function getFashionistDialog(npc: Entity): Dialog[] {
     },
     { //2
       text: 'I guess you’re fine, I mean <i>we’re not going to be friends</i>, but I’m feeling generous today and will acknowledge that you exist.',
-      offsetY: 24,
+
       skipable: true,
       triggeredByNext: () => {
         npcLib.talk(npc, dialog, fashionistDefaultDialog)
@@ -141,12 +123,10 @@ export function getFashionistDialog(npc: Entity): Dialog[] {
     { //3
       name: 'common',
       text: 'Well look at you, <i>all dressed up</i> with outlet-grade clothes that you probably bought at a gas station.',
-      offsetY: 24,
       skipable: true,
     },
     { //4
       text: 'I guess you’re fine, I mean <i>we’re not going to be friends</i>, but I’m feeling generous today and will acknowledge that you exist.',
-      offsetY: 18,
       skipable: true,
       triggeredByNext: () => {
         npcLib.talk(npc, dialog, fashionistDefaultDialog)
@@ -155,7 +135,6 @@ export function getFashionistDialog(npc: Entity): Dialog[] {
     { //5
       name: 'epic',
       text: 'I see that you know how to present yourself. If only everyone had a baseline of taste like yours. <i>Not that it’s a very high bar</i>, but it would be quite an improvement.',
-      offsetY: 24,
       skipable: true,
       triggeredByNext: () => {
         npcLib.talk(npc, dialog, fashionistDefaultDialog)
@@ -164,7 +143,6 @@ export function getFashionistDialog(npc: Entity): Dialog[] {
     { //6
       name: 'mythic',
       text: 'Oh well <i>finally</i> someone I can talk to here without feeling embarrassed to be seen. You sir know how to dress, well done!',
-      offsetY: 24,
       skipable: true,
       triggeredByNext: () => {
         npcLib.talk(npc, dialog, fashionistDefaultDialog)
@@ -174,22 +152,18 @@ export function getFashionistDialog(npc: Entity): Dialog[] {
       // had to add a dummy to skip to
       name: 'default',
       text: 'I always say <i>“you are what you wear”</i>. So true. Dressing up is all about expressing who you want to be in the eyes of others.',
-      offsetY: 24,
       skipable: true,
     },
     { //8
       text: 'I always say <i>“you are what you wear”</i>. So true.\nDressing up is all about expressing who you want to be in the eyes of others.',
-      offsetY: 24,
       skipable: true,
     },
     { //9
       text: 'Me, as you can tell, I’m <i>one of a kind</i>. Dressed in the finest Non-Fungible Tokens in the marketplace. Worthy of a queen!',
-      offsetY: 24,
       skipable: true,
     },
     { //10
       text: 'And you, who do your clothes say you are?\n<i>Have a think about that, hun</i>.',
-      offsetY: 24,
       skipable: true,
       isEndOfDialog: true,
       triggeredByNext: () => {
@@ -264,8 +238,8 @@ export let artistRecommendations: Dialog[] = [
     text: 'Hey so you want to find out where you can find good art to admire?',
     isQuestion: true,
     buttons: [
-      { label: 'no', goToDialog: no },
-      { label: 'yes', goToDialog: voltaire },
+      { label: 'NO', goToDialog: no },
+      { label: 'YES', goToDialog: voltaire },
     ],
   },
   {
@@ -284,6 +258,7 @@ export let artistRecommendations: Dialog[] = [
   {
     name: 'voltaire',
     text: 'Ok, so first there’s <color="red">Voltaire District</color>, at 55,97. Lots of big players in the crypto art space have spot there.',
+    skipable: true
     // isQuestion: true,
     //   buttons: [
     //     { label: 'More', goToDialog: museum },
@@ -300,6 +275,7 @@ export let artistRecommendations: Dialog[] = [
   {
     name: 'museum',
     text: 'There’s the <color="red"> Museum District</color> at 20,80, quite a pioneer of the metaverse.',
+    skipable: true
     // isQuestion: true,
     // buttons: [
     //   { label: 'More', goToDialog: rapture },
@@ -317,6 +293,7 @@ export let artistRecommendations: Dialog[] = [
   {
     name: 'rapture',
     text: 'The  <color="red">Rapture Gallery</color> at -88,-65 is also a really hip spot worth visiting',
+    skipable: true
     // isQuestion: true,
     // buttons: [
     //   { label: 'More', goToDialog: hunderedX },
@@ -334,6 +311,7 @@ export let artistRecommendations: Dialog[] = [
   {
     name: '100x',
     text: 'Also  <color="red">100x Gallery</color>, at 86,-24, there’s a whole bunch of things around that area.',
+    skipable: true
     // isQuestion: true,
     // buttons: [
     //   { label: 'More', goToDialog: momus },
@@ -351,6 +329,7 @@ export let artistRecommendations: Dialog[] = [
   {
     name: 'momus',
     text: ' <color="red">Momus Park</color> covers a huge area made up of passages, it’s quite a scenic route. You could start your visti at 8,43.',
+    skipable: true
     // isQuestion: true,
     // buttons: [
     //   { label: 'More', goToDialog: vegas },
@@ -368,6 +347,7 @@ export let artistRecommendations: Dialog[] = [
   {
     name: 'vegas',
     text: 'Also the <color="red">Vegas Art Village</color> at -125,100 includes a whole assortment of very creative small museums from the community.',
+    skipable: true
     // isQuestion: true,
     // buttons: [
     //   { label: 'More', goToDialog: skate },
@@ -385,6 +365,7 @@ export let artistRecommendations: Dialog[] = [
   {
     name: 'skate',
     text: 'If you´re looking for a place with a more edgy underground vibe, check out the <color="red">Vegas City Skatepark Gallery</color> at -100,150.',
+    skipable: true
     // isQuestion: true,
     // buttons: [
     //   { label: 'Done', goToDialog: end },
@@ -402,6 +383,7 @@ export let artistRecommendations: Dialog[] = [
   {
     name: 'end',
     text: 'Those are the ones that come to mind to me right now. But there´s a LOT more to explore too.',
+    skipable: true
   },
   {
     isEndOfDialog: true,

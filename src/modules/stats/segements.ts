@@ -1,7 +1,7 @@
 import { Transform, engine } from "@dcl/sdk/ecs";
 import { AnalyticsLogLabel, SKIP_ANALYTICS } from "./AnalyticsConfig";
 import { getUserData } from "~system/UserIdentity"
-import { GetRealmResponse, RealmInfo, getRealm } from "~system/Runtime"
+import { GetRealmResponse, getRealm } from "~system/Runtime"
 import { getWorldPosition } from "@dcl-sdk/utils";
 import { log } from "../../back-ports/backPorts";
 import { GenesisData } from "./genesis.data";
