@@ -32,7 +32,7 @@ export class HorizontalMenu {
     leftHoverArrow:Entity
     rightHoverArrow:Entity
     visibleItems:number
-    topFrame:Entity
+    //topFrame:Entity
     analyticParent:Entity
 
     constructor(_position:Vector3, _rotation:Quaternion,_analyticParent:Entity, _menuManager:MenuManager, _id:number){
@@ -84,13 +84,13 @@ export class HorizontalMenu {
         })
 
          //Framing lines
-        this.topFrame = engine.addEntity()
-        GltfContainer.create(this.topFrame,{src:'models/lobby/menu_horizontal_bg.glb'})
-        Transform.create(this.topFrame,{
-            rotation: Quaternion.fromEulerDegrees(0, -126, 0),
-            position: Vector3.create(0,1.25,0),
-            parent: this.menuRoot
-          })
+        // this.topFrame = engine.addEntity()
+        // GltfContainer.create(this.topFrame,{src:'models/lobby/menu_horizontal_bg.glb'})
+        // Transform.create(this.topFrame,{
+        //     rotation: Quaternion.fromEulerDegrees(0, -126, 0),
+        //     position: Vector3.create(0,1.25,0),
+        //     parent: this.menuRoot
+        //   })
 
         let menuCenter = Transform.get(this.menuRoot).position
         let angle = -this.angleSpacing*0.75
