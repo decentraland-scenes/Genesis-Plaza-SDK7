@@ -69,7 +69,7 @@ export const aritst1ModelPath = 'models/core_building/ch1_crowdV5.glb'
 export const aritst2ModelPath = 'models/core_building/ch2_crowdV5.glb'
 export const dogeModelPath = 'models/core_building/doge.glb'
 export const simoneModelPath = 'models/core_building/Simone.glb'
-export const robModelPath = 'models/core_building/'
+export const robModelPath = 'models/robots/ron.glb' 
 export const aishaModelPath = 'models/core_building/Aisha.glb'
 
 
